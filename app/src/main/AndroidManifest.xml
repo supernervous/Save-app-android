@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.scal.openarchive" >
+    package="net.opendasharchive.openarchive" >
 
     <uses-sdk
         android:minSdkVersion="17"
@@ -20,11 +20,10 @@
 
     <!-- Required to sign in or register with archive.org -->
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="com.orm.SugarApp"
+        android:name="net.opendasharchive.openarchive.OpenArchiveApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -40,38 +39,41 @@
             android:value="true" />
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="io.scal.openarchive.db" />
+            android:value="net.opendasharchive.openarchive.db" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="net.opendasharchive.openarchive.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- filter for sending text or images; accepts SEND action and audio/photo/video data -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="image/*" />
-                <data android:mimeType="video/*"  />
+                <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstStartActivity"
+            android:name="net.opendasharchive.openarchive.FirstStartActivity"
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ReviewMediaActivity"
+            android:name="net.opendasharchive.openarchive.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
-            android:screenOrientation="portrait" >/>
+            android:screenOrientation="portrait" >
+/>
         </activity>
         <activity
-            android:name=".ArchiveSettingsActivity"
+            android:name="net.opendasharchive.openarchive.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
             android:theme="@style/SettingsTheme" >
@@ -79,21 +81,29 @@
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".FirstStartActivity"
+            android:parentActivityName="net.opendasharchive.openarchive.FirstStartActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.scal.openarchive.FirstStartActivity" />
+                android:value="net.opendasharchive.openarchive.FirstStartActivity" />
         </activity>
         <activity
-            android:name=".MediaListActivity"
+            android:name="net.opendasharchive.openarchive.MediaListActivity"
             android:label="@string/title_media_list"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="net.opendasharchive.openarchive.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme">
+            android:theme="@style/SettingsTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.scal.openarchive.MainActivity" />
+                android:value="net.opendasharchive.openarchive.MainActivity" />
+        </activity>
+        <activity
+            android:name="net.opendasharchive.openarchive.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName="net.opendasharchive.openarchive.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
     </application>
 
