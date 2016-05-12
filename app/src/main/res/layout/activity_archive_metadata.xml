@@ -295,6 +295,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/byncnd"
+            android:button="@null"
             android:text="" />
 
         <RadioButton
@@ -304,6 +305,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/by"
+            android:button="@null"
             android:text="" />
 
         <RadioButton
@@ -313,6 +315,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/bysa"
+            android:button="@null"
             android:text="" />
 
     </RadioGroup>

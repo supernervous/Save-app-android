@@ -188,9 +188,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
     }
 
     private void getMetadataValues() {
-        if(null == mMedia) {
-            return;
-        }
 
         // set default values
         final TextView tvTitle = (TextView) findViewById(R.id.tv_title);
@@ -199,11 +196,13 @@ public class ReviewMediaActivity extends ActionBarActivity {
         final TextView tvLocation = (TextView) findViewById(R.id.tv_location);
         final TextView tvTags = (TextView) findViewById(R.id.tv_tags);
 
-        tvTitle.setText(mMedia.getTitle());
-        tvDescription.setText(mMedia.getDescription());
-        tvAuthor.setText(mMedia.getAuthor());
-        tvLocation.setText(mMedia.getLocation());
-        tvTags.setText(mMedia.getTags());
+        if (mMedia != null) {
+            tvTitle.setText(mMedia.getTitle());
+            tvDescription.setText(mMedia.getDescription());
+            tvAuthor.setText(mMedia.getAuthor());
+            tvLocation.setText(mMedia.getLocation());
+            tvTags.setText(mMedia.getTags());
+        }
     }
 
     @Override
@@ -309,8 +308,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ReviewMediaActivity.this);
                 builder.setMessage(getString(R.string.view_published_media_online))
-                        .setPositiveButton(R.string.yes, dialogClickListener)
-                        .setNegativeButton(R.string.no, dialogClickListener).show();
+                        .setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener).show();
             }
         });
     }

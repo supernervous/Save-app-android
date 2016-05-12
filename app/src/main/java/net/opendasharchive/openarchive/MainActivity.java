@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import net.opendasharchive.openarchive.db.Media;
 
+import io.scal.secureshareui.lib.Util;
+
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         FragmentMain.OnFragmentInteractionListener{
@@ -162,39 +164,40 @@ public class MainActivity extends ActionBarActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
+        Uri uri = intent.getData();
         String path = null;
-        Media.MEDIA_TYPE mediaType = null;
+        String mimeType = getContentResolver().getType(uri);
+
+        if (mimeType == null)
+            mimeType = Utility.getMediaType(Utility.getRealPathFromURI(this,uri));
 
         if (resultCode == RESULT_OK) {
             if(requestCode == Globals.REQUEST_AUDIO_CAPTURE) {
-                Uri uri = intent.getData();
+
                 path = Utility.getRealPathFromURI(getApplicationContext(), uri);
-                mediaType = Media.MEDIA_TYPE.AUDIO;
 
                 Log.d(TAG, "onActivityResult, audio path:" + path);
 
             } else if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
                 path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
-                mediaType = Media.MEDIA_TYPE.IMAGE;
 
                 Log.d(TAG, "onActivityResult, image path:" + path);
 
             } else if(requestCode == Globals.REQUEST_VIDEO_CAPTURE) {
-                Uri uri = intent.getData();
+
                 path = Utility.getRealPathFromURI(getApplicationContext(), uri);
-                mediaType = Media.MEDIA_TYPE.VIDEO;
 
                 Log.d(TAG, "onActivityResult, video path:" + path);
 
             }  else if (requestCode == Globals.REQUEST_FILE_IMPORT) {
-                Uri uri = intent.getData();
+
                 // Will only allow stream-based access to files
                 if (Build.VERSION.SDK_INT >= 19) {
                     getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
 
                 path = uri.toString();
-                mediaType = Utility.getMediaType(path);
+//                mediaType = Utility.getMediaType(path);
 
                 Log.d(TAG, "onActivityResult, imported file path:" + path);
             }
@@ -202,12 +205,13 @@ public class MainActivity extends ActionBarActivity
             if (null == path) {
                 Log.d(TAG, "onActivityResult: Invalid file on import or capture");
                 Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
-            } else if (null == mediaType) {
+            } else if (null == mimeType) {
                 Log.d(TAG, "onActivityResult: Invalid Media Type");
                 Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
             } else {
                 // create media
-                Media media = new Media(this, path, mediaType);
+                Media media = new Media(this, path, mimeType);
+                media.save();
 
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
                 reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
@@ -231,26 +235,20 @@ public class MainActivity extends ActionBarActivity
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
+            handleOutsideMedia(intent, type);
 
-            if (type.startsWith("image/")) {
-                handleOutsideMedia(intent, Media.MEDIA_TYPE.IMAGE); // handle image
-            } else if (type.startsWith("video/")) {
-                handleOutsideMedia(intent, Media.MEDIA_TYPE.VIDEO); // handle video
-            } else if (type.startsWith("audio/")) {
-                handleOutsideMedia(intent, Media.MEDIA_TYPE.AUDIO); // handle audio
-            }
         }
     }
 
     //TODO Needs to be tested from various sources
-    private void handleOutsideMedia(Intent intent, Media.MEDIA_TYPE mediaType) {
+    private void handleOutsideMedia(Intent intent, String mimeType) {
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
 
         if (uri != null) {
             String path = Utility.getRealPathFromURI(getApplicationContext(), uri);
 
             // create media
-            Media media = new Media(this, path, mediaType);
+            Media media = new Media(this, path, mimeType);
 
             Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
             reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());

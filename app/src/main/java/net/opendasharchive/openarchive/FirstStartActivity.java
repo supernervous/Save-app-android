@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -153,6 +155,9 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
             } else {
                 Toast.makeText(this, getString(R.string.problem_authticating), Toast.LENGTH_LONG).show();
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+                sp.edit().putBoolean(Globals.PREF_FIRST_RUN, true).apply();
+
             }
         }
     }

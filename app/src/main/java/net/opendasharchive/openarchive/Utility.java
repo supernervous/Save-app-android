@@ -24,7 +24,7 @@ import net.opendasharchive.openarchive.db.Media;
 
 public class Utility {
 
-    public static Media.MEDIA_TYPE getMediaType(String mediaPath) {
+    public static String getMediaType(String mediaPath) {
         // makes comparisons easier
         mediaPath = mediaPath.toLowerCase();
 
@@ -51,15 +51,7 @@ public class Utility {
             }
         }
 
-        if (result.contains("audio")) {
-            return Media.MEDIA_TYPE.AUDIO;
-        } else if(result.contains("image")) {
-            return Media.MEDIA_TYPE.IMAGE;
-        } else if(result.contains("video")) {
-            return Media.MEDIA_TYPE.VIDEO;
-        }
-
-        return null;
+        return result;
     }
 
     public static String getRealPathFromURI(Context context, Uri contentUri) {
