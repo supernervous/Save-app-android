@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.opendasharchive.openarchive" >
+    package="net.opendasharchive.openarchive"
+    android:versionCode="1"
+    android:versionName="0.0.1"
+    android:installLocation="auto"
+    >
 
     <uses-sdk
-        android:minSdkVersion="17"
+        android:minSdkVersion="8"
         android:targetSdkVersion="21" />
 
     <uses-feature
