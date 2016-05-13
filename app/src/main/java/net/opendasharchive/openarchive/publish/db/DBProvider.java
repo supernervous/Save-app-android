@@ -5,9 +5,9 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import net.sqlcipher.database.SQLiteDatabase;
 
 import net.opendasharchive.openarchive.publish.model.JobTable;
 import net.opendasharchive.openarchive.publish.model.PublishJobTable;
@@ -125,7 +125,7 @@ public class DBProvider extends ContentProvider {
 
     private SQLiteDatabase getDB() {
         if (mDB == null) {
-            mDB = mDBHelper.getWritableDatabase(mPassphrase);
+            mDB = mDBHelper.getWritableDatabase();
         }
         return mDB;
     }

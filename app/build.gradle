@@ -11,8 +11,9 @@ android {
         targetSdkVersion 21
         versionCode 2
         versionName "1.0.2"
-        multiDexEnabled true
+        multiDexEnabled false
     }
+
 
     buildTypes {
         release {
@@ -32,9 +33,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':external:SecureShareLib:SecureShareUILibrary')
-    compile files('libs/sqlcipher.jar')
+
+    compile 'com.google.code.gson:gson:1.7.2'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.squareup.okhttp:okhttp:2.1.0'

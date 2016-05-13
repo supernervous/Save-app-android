@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import net.opendasharchive.openarchive.db.Media;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -243,8 +245,7 @@ public class ArchiveSettingsActivity extends Activity {
     }
 
     public static String getSlug(String title) {
-        // FIXME only do this if they are sharing title, otherwise use a random string of chars
-        return title.replace(' ', '-'); // FIXME need a real, i18n aware slug algorithm -- http://docs.aws.amazon.com/AmazonS3/latest/UG/CreatingaBucket.html
+        return title.replaceAll("[^A-Za-z0-9]", "-");
     }
 
     public static HashMap<String, String> getMediaMetadata(Context context, Media mMedia) {
@@ -258,9 +259,9 @@ public class ArchiveSettingsActivity extends Activity {
         boolean isLocationShared = true;
         boolean isDescriptionShared = true;
 
-        String path = Util.getPath(context, Uri.parse(mMedia.getOriginalFilePath()));
+        //String path = Util.getPath(context, Uri.parse(mMedia.getOriginalFilePath()));
 
-        valueMap.put(SiteController.VALUE_KEY_MEDIA_PATH, path);
+        valueMap.put(SiteController.VALUE_KEY_MEDIA_PATH, mMedia.getOriginalFilePath());
         valueMap.put(SiteController.VALUE_KEY_USE_TOR, isTorUsed ? "true" : "false");
         valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, "https://creativecommons.org/licenses/by/4.0/"); // TODO
         valueMap.put(SiteController.VALUE_KEY_SLUG, getSlug(mMedia.getTitle()));

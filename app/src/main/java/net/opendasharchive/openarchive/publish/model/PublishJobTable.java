@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.opendasharchive.openarchive.publish.db.DBProvider;
-import net.sqlcipher.database.SQLiteDatabase;
 
 import net.opendasharchive.openarchive.Utility;
 import net.opendasharchive.openarchive.publish.db.StoryMakerDB;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 

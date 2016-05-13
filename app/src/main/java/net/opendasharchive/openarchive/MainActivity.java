@@ -164,42 +164,34 @@ public class MainActivity extends ActionBarActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
-        Uri uri = intent.getData();
         String path = null;
-        String mimeType = getContentResolver().getType(uri);
+        String mimeType = null;
 
-        if (mimeType == null)
-            mimeType = Utility.getMediaType(Utility.getRealPathFromURI(this,uri));
+        if (intent != null) {
+            Uri uri = intent.getData();
+            mimeType = getContentResolver().getType(uri);
+
+            // Will only allow stream-based access to files
+
+            if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            path = Utility.getRealPathFromURI(this, uri);
+
+
+        }
+
+//        if (mimeType == null)
+  //          mimeType = Utility.getMediaType(Utility.getRealPathFromURI(this,uri));
 
         if (resultCode == RESULT_OK) {
-            if(requestCode == Globals.REQUEST_AUDIO_CAPTURE) {
-
-                path = Utility.getRealPathFromURI(getApplicationContext(), uri);
-
-                Log.d(TAG, "onActivityResult, audio path:" + path);
-
-            } else if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
+            if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
                 path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
-
+                mimeType = "image/jpeg";
                 Log.d(TAG, "onActivityResult, image path:" + path);
 
-            } else if(requestCode == Globals.REQUEST_VIDEO_CAPTURE) {
-
-                path = Utility.getRealPathFromURI(getApplicationContext(), uri);
-
-                Log.d(TAG, "onActivityResult, video path:" + path);
-
-            }  else if (requestCode == Globals.REQUEST_FILE_IMPORT) {
-
-                // Will only allow stream-based access to files
-                if (Build.VERSION.SDK_INT >= 19) {
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
-
-                path = uri.toString();
-//                mediaType = Utility.getMediaType(path);
-
-                Log.d(TAG, "onActivityResult, imported file path:" + path);
             }
 
             if (null == path) {
