@@ -5,12 +5,6 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_row_padding">
 
-        <ImageView
-            android:id="@+id/iv_title"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
-
         <TextView
             android:id="@+id/tv_title"
             android:hint="Title"
@@ -22,12 +16,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_row_padding">
-
-        <ImageView
-            android:id="@+id/iv_description"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
 
         <TextView
             android:id="@+id/tv_description"
@@ -41,12 +29,6 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_row_padding">
 
-        <ImageView
-            android:id="@+id/iv_author"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
-
         <TextView
             android:id="@+id/tv_author"
             android:hint="Author"
@@ -58,12 +40,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_row_padding">
-
-        <ImageView
-            android:id="@+id/iv_location"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
 
         <TextView
             android:id="@+id/tv_location"
@@ -77,32 +53,9 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_row_padding">
 
-        <ImageView
-            android:id="@+id/iv_tags"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
-
         <TextView
             android:id="@+id/tv_tags"
             android:hint="Tags"
-            android:layout_gravity="center_vertical"/>
-    </TableRow>
-    <TableRow
-        android:id="@+id/tr_tor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_row_padding">
-
-        <ImageView
-            android:id="@+id/iv_tor"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_picture" />
-
-        <TextView
-            android:id="@+id/tv_tor"
-            android:text="Use TOR"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 </merge>

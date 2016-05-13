@@ -35,13 +35,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private Media mMedia;
     private ProgressDialog progressDialog = null;
 
-    boolean isTitleShared;
-    boolean isDescriptionShared;
-    boolean isAuthorShared;
-    boolean isLocationShared;
-    boolean isTagsShared;
-    boolean isTorUsed;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,13 +74,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
         // get default metadata sharing values
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
 
-        isTitleShared = sharedPref.getBoolean(Globals.PREF_SHARE_TITLE, true);
-        isDescriptionShared = sharedPref.getBoolean(Globals.PREF_SHARE_DESCRIPTION, false);
-        isAuthorShared = sharedPref.getBoolean(Globals.PREF_SHARE_AUTHOR, false);
-        isLocationShared = sharedPref.getBoolean(Globals.PREF_SHARE_LOCATION, false);
-        isTagsShared = sharedPref.getBoolean(Globals.PREF_SHARE_TAGS, false);
-        isTorUsed = sharedPref.getBoolean(Globals.PREF_USE_TOR, false);
-
         // check for new file or existing media
         if (currentMediaId >= 0) {
             mMedia = Media.findById(Media.class, currentMediaId);
@@ -107,25 +93,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
         TableRow trAuthor = (TableRow) findViewById(R.id.tr_author);
         TableRow trLocation = (TableRow) findViewById(R.id.tr_location);
         TableRow trTags = (TableRow) findViewById(R.id.tr_tags);
-        TableRow trTor = (TableRow) findViewById(R.id.tr_tor);
-
-        int visibility = isTitleShared ? View.VISIBLE : View.GONE;
-        trTitle.setVisibility(visibility);
-
-        visibility = isDescriptionShared ? View.VISIBLE : View.GONE;
-        trDescription.setVisibility(visibility);
-
-        visibility = isAuthorShared ? View.VISIBLE : View.GONE;
-        trAuthor.setVisibility(visibility);
-
-        visibility = isLocationShared ? View.VISIBLE : View.GONE;
-        trLocation.setVisibility(visibility);
-
-        visibility = isTagsShared ? View.VISIBLE : View.GONE;
-        trTags.setVisibility(visibility);
-
-        visibility = isTorUsed ? View.VISIBLE : View.GONE;
-        trTor.setVisibility(visibility);
 
         // onclick listeners
         Button btnEditMetadata = (Button) findViewById(R.id.btnEditMetadata);
@@ -148,7 +115,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
                 HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
 
-                siteController.upload(account, valueMap);
+                boolean useTor = false;
+
+                siteController.upload(account, valueMap, useTor);
                 showProgressSpinner();
 //                Intent uploadIntent = new Intent(mContext, MainActivity.class);
 //                uploadIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -172,19 +141,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
         progressDialog.setMessage(getString(R.string.loading_message));
         progressDialog.show();
 
-//        Thread progressThread = new Thread(){
-//            @Override
-//            public void run(){
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    progressDialog.dismiss();
-//                }
-//            }
-//        };
-//        progressThread.start();
     }
 
     private void getMetadataValues() {

@@ -23,16 +23,11 @@ import net.opendasharchive.openarchive.db.Media;
 
 import io.scal.secureshareui.lib.Util;
 
-public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        FragmentMain.OnFragmentInteractionListener{
+public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
-
-    //FIXME
-    public static boolean SHOULD_SPIN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,42 +50,11 @@ public class MainActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_main);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
-
-        // set up nav drawer
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        //FIXME REMOVE
-        if(SHOULD_SPIN) {
-            SHOULD_SPIN = false;
-
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle(getString(R.string.loading_title));
-            progressDialog.setMessage(getString(R.string.loading_message));
-            progressDialog.show();
-
-            Thread progressThread = new Thread(){
-                @Override
-                public void run(){
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        progressDialog.dismiss();
-                    }
-                }
-            };
-            progressThread.start();
-        }
-
         // handle if started from outside app
         handleOutsideIntent(getIntent());
     }
 
+    /**
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -117,26 +81,13 @@ public class MainActivity extends ActionBarActivity
                 startActivity(settingsIntent);
                 break;
         }
-    }
+    }*/
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
             return true;
-        }
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -152,13 +103,25 @@ public class MainActivity extends ActionBarActivity
             startActivity(settingsIntent);
             return true;
         }
+        else if (id == R.id.action_uploads)
+        {
+            Intent mediaListIntent = new Intent(this, MediaListActivity.class);
+            startActivity(mediaListIntent);
+        }
+        else if (id == R.id.action_logout)
+        {
+            handleLogout();
+        }
+        else if (id == R.id.action_about)
+        {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -182,9 +145,6 @@ public class MainActivity extends ActionBarActivity
 
 
         }
-
-//        if (mimeType == null)
-  //          mimeType = Utility.getMediaType(Utility.getRealPathFromURI(this,uri));
 
         if (resultCode == RESULT_OK) {
             if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
@@ -232,12 +192,20 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    //TODO Needs to be tested from various sources
     private void handleOutsideMedia(Intent intent, String mimeType) {
-        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
 
-        if (uri != null) {
-            String path = Utility.getRealPathFromURI(getApplicationContext(), uri);
+        if (intent != null) {
+            Uri uri = intent.getData();
+            mimeType = getContentResolver().getType(uri);
+
+            // Will only allow stream-based access to files
+
+            if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            String path = Utility.getRealPathFromURI(this, uri);
 
             // create media
             Media media = new Media(this, path, mimeType);

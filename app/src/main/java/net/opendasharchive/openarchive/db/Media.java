@@ -40,7 +40,6 @@ public class Media extends SugarRecord {
     String author;
     String location;
     String tags;
-    boolean useTor;
 
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
@@ -160,14 +159,6 @@ public class Media extends SugarRecord {
         tags = tags.replace(' ', ';');
         tags = tags.replace(',', ';');
         this.tags = tags;
-    }
-
-    public boolean getUseTor() {
-        return useTor;
-    }
-
-    public void setUseTor(boolean useTor) {
-        this.useTor = useTor;
     }
 
     public Bitmap getThumbnail(Context context) { // TODO: disk cache, multiple sizes

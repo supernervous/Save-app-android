@@ -29,8 +29,6 @@ import net.opendasharchive  .openarchive.R;
 public class FragmentMain extends Fragment {
     private static final String TAG = "MainFragment";
 
-    private OnFragmentInteractionListener mListener;
-    private Context mContext;
 
     public static FragmentMain newInstance() {
         FragmentMain fragment = new FragmentMain();
@@ -52,30 +50,9 @@ public class FragmentMain extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-
-        mContext = activity;
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public interface OnFragmentInteractionListener {
@@ -105,7 +82,7 @@ public class FragmentMain extends Fragment {
                 //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
                 // Apply is async and fine for UI thread. commit() is synchronous
                 //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
-                ((Activity) mContext).startActivityForResult(intent, requestId);
+                getActivity().startActivityForResult(intent, requestId);
             }
         });
 
@@ -130,7 +107,7 @@ public class FragmentMain extends Fragment {
                         return;
                     }
 
-                    mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
+                    getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                     requestId = Globals.REQUEST_IMAGE_CAPTURE;
 
@@ -139,8 +116,8 @@ public class FragmentMain extends Fragment {
                     requestId = Globals.REQUEST_VIDEO_CAPTURE;
                 }
 
-                if (null != intent && intent.resolveActivity(mContext.getPackageManager()) != null) {
-                    ((Activity) mContext).startActivityForResult(intent, requestId);
+                if (null != intent && intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    getActivity().startActivityForResult(intent, requestId);
                 }
             }
         });
