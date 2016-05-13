@@ -47,42 +47,16 @@ public class MainActivity extends ActionBarActivity {
         if (isFirstRun) {
             initFirstRun(sp);
         }
+        else {
 
-        setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_main);
 
-        // handle if started from outside app
-        handleOutsideIntent(getIntent());
-    }
+            // handle if started from outside app
+            handleOutsideMedia(getIntent());
 
-    /**
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        switch (position) {
-            case 0: //home
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, FragmentMain.newInstance())
-                        .commit();
-                break;
-            case 1: //view uploads
-                Intent mediaListIntent = new Intent(this, MediaListActivity.class);
-                startActivity(mediaListIntent);
-                break;
-            case 2: //logout
-                handleLogout();
-                break;
-            case 3: //about
-                Intent intent = new Intent(this, AboutActivity.class);
-                startActivity(intent);
-                break;
-            case 4: //settings
-                Intent settingsIntent = new Intent(this, ArchiveSettingsActivity.class);
-                startActivity(settingsIntent);
-                break;
         }
-    }*/
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -181,34 +155,29 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    private void handleOutsideIntent(Intent intent) {
-        // Get intent, action and MIME type
-        String action = intent.getAction();
-        String type = intent.getType();
+    private void handleOutsideMedia(Intent intent) {
 
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            handleOutsideMedia(intent, type);
+        if (intent != null && intent.getAction().equals(Intent.ACTION_SEND)) {
 
-        }
-    }
+            String type = intent.getType();
 
-    private void handleOutsideMedia(Intent intent, String mimeType) {
-
-        if (intent != null) {
             Uri uri = intent.getData();
-            mimeType = getContentResolver().getType(uri);
 
-            // Will only allow stream-based access to files
-
-            if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (uri == null)
+            {
+                if (intent.getClipData() != null && intent.getClipData().getItemCount() > 0) {
+                    uri = intent.getClipData().getItemAt(0).getUri();
+                }
+                else {
+                    return;
+                }
             }
 
-            String path = Utility.getRealPathFromURI(this, uri);
 
+            String path = Utility.getRealPathFromURI(this, uri);
             // create media
-            Media media = new Media(this, path, mimeType);
+            Media media = new Media(this, path, type);
+            media.save();
 
             Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
             reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());

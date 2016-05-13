@@ -52,11 +52,12 @@ public class Media extends SugarRecord {
 
         this.originalFilePath = originalFilePath;
         this.mimeType = mimeType;
-        this.createDate = new Date();
-        this.updateDate = this.createDate;
 
-        this.title = context.getString(R.string.default_title);
-//        this.tags = context.getString(R.string.default_tags);
+        File fileMedia = new File(originalFilePath);
+
+        this.createDate = new Date(fileMedia.lastModified());
+        this.updateDate = new Date(fileMedia.lastModified());
+        this.title = new File(originalFilePath).getName();
 
     }
 

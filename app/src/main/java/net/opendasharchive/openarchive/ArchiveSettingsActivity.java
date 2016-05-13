@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import io.scal.secureshareui.controller.SiteController;
 
 
-public class ArchiveSettingsActivity extends Activity {
+public class ArchiveSettingsActivity extends ActionBarActivity {
     public static final String TAG = "ArchiveMetadataActivity";
 
     private Context mContext = this;

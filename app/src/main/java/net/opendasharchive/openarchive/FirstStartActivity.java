@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -31,7 +32,7 @@ import io.scal.secureshareui.model.Account;
  *
  * @author micahjlucas
  */
-public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
+public class FirstStartActivity extends ActionBarActivity implements OnEulaAgreedTo {
 
     private static final String TAG = "FirstStartActivity";
 
