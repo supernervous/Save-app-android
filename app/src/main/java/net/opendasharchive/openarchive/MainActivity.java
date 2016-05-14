@@ -10,16 +10,28 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
+import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.Security;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import io.scal.secureshareui.lib.Util;
 
@@ -54,9 +66,47 @@ public class MainActivity extends ActionBarActivity {
             // handle if started from outside app
             handleOutsideMedia(getIntent());
 
-        }
+            final FloatingActionsMenu fabMenu = (FloatingActionsMenu) findViewById(R.id.floating_menu);
+            FloatingActionButton fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_import);
+            fabAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fabMenu.collapse();
+                    importMedia();
+                }
+            });
 
+            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_camera);
+            fabAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fabMenu.collapse();
+                    captureMedia(Media.MEDIA_TYPE.IMAGE);
+                }
+            });
+
+            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_video);
+            fabAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fabMenu.collapse();
+                    captureMedia(Media.MEDIA_TYPE.VIDEO);
+                }
+            });
+
+            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_audio);
+            fabAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fabMenu.collapse();
+                    captureMedia(Media.MEDIA_TYPE.AUDIO);
+                }
+            });
+        }
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,15 +131,18 @@ public class MainActivity extends ActionBarActivity {
         {
             Intent mediaListIntent = new Intent(this, MediaListActivity.class);
             startActivity(mediaListIntent);
+            return true;
         }
         else if (id == R.id.action_logout)
         {
             handleLogout();
+            return true;
         }
         else if (id == R.id.action_about)
         {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -110,9 +163,15 @@ public class MainActivity extends ActionBarActivity {
 
             // Will only allow stream-based access to files
 
-            if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            try {
+                if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                    grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+            }
+            catch (SecurityException se)
+            {
+                Log.d("OA","security exception accessing URI",se);
             }
 
             path = Utility.getRealPathFromURI(this, uri);
@@ -157,7 +216,8 @@ public class MainActivity extends ActionBarActivity {
 
     private void handleOutsideMedia(Intent intent) {
 
-        if (intent != null && intent.getAction().equals(Intent.ACTION_SEND)) {
+        if (intent != null && intent.getAction()!= null
+        && intent.getAction().equals(Intent.ACTION_SEND)) {
 
             String type = intent.getType();
 
@@ -197,6 +257,9 @@ public class MainActivity extends ActionBarActivity {
                         //clear all user prefs
                         sharedPrefs.edit().clear().commit();
                         finish();
+                        Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
+                        firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(firstStartIntent);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -205,5 +268,74 @@ public class MainActivity extends ActionBarActivity {
                 })
                 .setIcon(R.drawable.ic_dialog_alert_holo_light)
                 .show();
+    }
+
+    private void importMedia ()
+    {
+        // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager
+        Intent intent;
+        int requestId = Globals.REQUEST_FILE_IMPORT;
+        if (Build.VERSION.SDK_INT >= 19) {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        }
+
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+
+        //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
+        // Apply is async and fine for UI thread. commit() is synchronous
+        //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
+        startActivityForResult(intent, requestId);
+    }
+
+    private void captureMedia (Media.MEDIA_TYPE mediaType)
+    {
+        Intent intent = null;
+        int requestId = -1;
+
+        if (mediaType == Media.MEDIA_TYPE.AUDIO) {
+            intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+            requestId = Globals.REQUEST_AUDIO_CAPTURE;
+
+        } else if (mediaType == Media.MEDIA_TYPE.IMAGE) {
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File photoFile;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "Unable to make image file");
+                return;
+            }
+
+            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            requestId = Globals.REQUEST_IMAGE_CAPTURE;
+
+        } else if (mediaType == Media.MEDIA_TYPE.VIDEO) {
+            intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            requestId = Globals.REQUEST_VIDEO_CAPTURE;
+        }
+
+        if (null != intent && intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, requestId);
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        return image;
     }
 }

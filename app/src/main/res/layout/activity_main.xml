@@ -1,4 +1,19 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/media_list"
+        android:name="net.opendasharchive.openarchive.MediaListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="net.opendasharchive.openarchive.MediaListActivity"
+        tools:layout="@android:layout/list_content"/>
+
+    <!--
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_main"
     android:name="net.opendasharchive.openarchive.FragmentMain"
@@ -8,3 +23,60 @@
     android:layout_marginRight="0dp"
     tools:context="net.opendasharchive.openarchive.MainActivity"
     tools:layout="@android:layout/list_content"/>
+    -->
+
+<net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
+android:id="@+id/floating_menu"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentRight="true"
+android:layout_alignParentEnd="true"
+android:layout_margin="16dp"
+    fab:fab_labelStyle="@style/menu_labels_style"
+    fab:fab_labelsPosition="left"
+    >
+
+<net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    fab:fab_colorNormal="@color/white"
+    fab:fab_title="Import Media"
+    fab:fab_colorPressed="@color/grey"
+    fab:fab_icon="@drawable/ic_action_picture"
+    android:id="@+id/floating_menu_import"
+
+    />
+
+<net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    fab:fab_colorNormal="@color/white"
+    fab:fab_title="Take Photo"
+    fab:fab_colorPressed="@color/grey"
+    fab:fab_icon="@drawable/ic_camera_alt_black_24dp"
+    android:id="@+id/floating_menu_camera"
+    />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_colorNormal="@color/white"
+        fab:fab_title="Take Video"
+        fab:fab_colorPressed="@color/grey"
+        fab:fab_icon="@drawable/ic_videocam_black_24dp"
+        android:id="@+id/floating_menu_video"
+        />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_colorNormal="@color/white"
+        fab:fab_title="Record Audio"
+        fab:fab_colorPressed="@color/grey"
+        fab:fab_icon="@drawable/ic_mic_black_24dp"
+        android:id="@+id/floating_menu_audio"
+        />
+
+</net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>
+
+    </RelativeLayout>

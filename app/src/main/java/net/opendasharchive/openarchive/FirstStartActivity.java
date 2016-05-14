@@ -32,7 +32,7 @@ import io.scal.secureshareui.model.Account;
  *
  * @author micahjlucas
  */
-public class FirstStartActivity extends ActionBarActivity implements OnEulaAgreedTo {
+public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     private static final String TAG = "FirstStartActivity";
 

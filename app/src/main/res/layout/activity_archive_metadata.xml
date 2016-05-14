@@ -9,15 +9,6 @@
     android:orientation="vertical"
     android:padding="8dp" >
 
-    <TextView
-        android:id="@+id/tvLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/lbl_share_prefs"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
 
         <EditText
 

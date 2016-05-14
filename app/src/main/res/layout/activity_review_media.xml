@@ -14,10 +14,9 @@
         android:id="@+id/ivMedia"
         android:contentDescription="@string/iv_content_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:minHeight="100dp"
-        android:maxHeight="300dp"/>
+        />
 
     <TableLayout
         android:id="@+id/tblMediaMetadata"
@@ -27,30 +26,10 @@
         android:shrinkColumns="0"
         android:stretchColumns="1">
 
-        <include layout="@layout/include_review_media"/>
+        <include layout="@layout/activity_archive_metadata"/>
 
     </TableLayout>
 
-    <Button
-        android:id="@+id/btnEditMetadata"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tblMediaMetadata"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="32dp"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/lblEditMetadata"
-        android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/btnUpload"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnEditMetadata"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/lblUpload"
-        android:textSize="14sp" />
 </RelativeLayout>
 </ScrollView>

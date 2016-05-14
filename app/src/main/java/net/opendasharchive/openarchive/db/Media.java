@@ -268,7 +268,7 @@ public class Media extends SugarRecord {
     }
 
     public static List<Media> getAllMediaAsList() {
-        return Media.listAll(Media.class);
+        return Media.listAll(Media.class,"ID DESC");
     }
 
     public static Media[] getAllMediaAsArray() {

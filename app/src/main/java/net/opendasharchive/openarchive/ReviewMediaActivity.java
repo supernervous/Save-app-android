@@ -12,11 +12,14 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -35,6 +38,14 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private Media mMedia;
     private ProgressDialog progressDialog = null;
 
+    private RadioGroup rgLicense;
+
+    private TextView tvTitle;
+    private TextView tvDescription;
+    private TextView tvAuthor;
+    private TextView tvTags;
+    private TextView tvLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +53,70 @@ public class ReviewMediaActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
-        getMetadataValues();
+
+        setTitle(mMedia.getTitle());
+
+        // instantiate values
+        tvTitle = (TextView) findViewById(R.id.tv_title_lbl);
+        tvDescription = (TextView) findViewById(R.id.tv_description_lbl);
+        tvAuthor = (TextView) findViewById(R.id.tv_author_lbl);
+        tvTags = (TextView) findViewById(R.id.tv_tags_lbl);
+        tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
+        rgLicense = (RadioGroup) findViewById(R.id.radioGroupCC);
+
+        // set up ccLicense link
+        final TextView tvCCLicenseLink = (TextView) findViewById(R.id.tv_cc_license);
+        tvCCLicenseLink.setMovementMethod(LinkMovementMethod.getInstance());
+        setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
+
+        rgLicense.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
+            }
+        });
+
+        // set values
+        tvTitle.setText(mMedia.getTitle());
+        tvDescription.setText(mMedia.getDescription());
+        tvAuthor.setText(mMedia.getAuthor());
+        tvLocation.setText(mMedia.getLocation());
+        tvTags.setText(mMedia.getTags());
+    }
+
+    private void saveMedia ()
+    {
+        mMedia.setTitle(tvTitle.getText().toString());
+        mMedia.setDescription(tvDescription.getText().toString());
+        mMedia.setAuthor(tvAuthor.getText().toString());
+        mMedia.setLocation(tvLocation.getText().toString());
+        mMedia.setTags(tvTags.getText().toString());
+
+        mMedia.save();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveMedia();
+    }
+
+    private void setCCLicenseText(int licenseId, TextView tvCCLicenseLink) {
+        if (licenseId == R.id.radioBy) {
+            tvCCLicenseLink.setText(R.string.archive_license_by);
+        } else if (licenseId == R.id.radioBySa) {
+            tvCCLicenseLink.setText(R.string.archive_license_bysa);
+        } else { // ByNcNd is default
+            tvCCLicenseLink.setText(R.string.archive_license_byncnd);
+        }
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_review_media, menu);
+        return true;
     }
 
     @Override
@@ -58,7 +132,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 break;
-
+            case R.id.menu_upload:
+                uploadMedia();
+                break;
             default:
                 break;
         }
@@ -87,45 +163,22 @@ public class ReviewMediaActivity extends ActionBarActivity {
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
         ivMedia.setImageBitmap(mMedia.getThumbnail(mContext));
 
-        // show/hide data rows
-        TableRow trTitle = (TableRow) findViewById(R.id.tr_title);
-        TableRow trDescription = (TableRow) findViewById(R.id.tr_description);
-        TableRow trAuthor = (TableRow) findViewById(R.id.tr_author);
-        TableRow trLocation = (TableRow) findViewById(R.id.tr_location);
-        TableRow trTags = (TableRow) findViewById(R.id.tr_tags);
 
-        // onclick listeners
-        Button btnEditMetadata = (Button) findViewById(R.id.btnEditMetadata);
-        btnEditMetadata.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent settingsIntent = new Intent(mContext, ArchiveSettingsActivity.class);
-                settingsIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, mMedia.getId());
-                startActivity(settingsIntent);
-            }
-        });
+    }
 
-        Button btnUpload = (Button) findViewById(R.id.btnUpload);
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Context context = ReviewMediaActivity.this;
-                SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
+    private void uploadMedia ()
+    {
+        saveMedia();
 
-                Account account = new Account(context, null);
+        Context context = ReviewMediaActivity.this;
+        SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
 
+        Account account = new Account(context, null);
 
-                HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
-
-                boolean useTor = false;
-
-                siteController.upload(account, valueMap, useTor);
-                showProgressSpinner();
-//                Intent uploadIntent = new Intent(mContext, MainActivity.class);
-//                uploadIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                uploadIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, mMedia.getId());
-//                MainActivity.SHOULD_SPIN = true; // FIXME we cannot rely on statics to do inter activity communication
-//                startActivity(uploadIntent);
-            }
-        });
+        HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
+        boolean useTor = false;
+        siteController.upload(account, valueMap, useTor);
+        showProgressSpinner();
     }
 
     private void closeProgressSpinner() {
@@ -144,14 +197,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
     }
 
     private void getMetadataValues() {
-
-        // set default values
-        final TextView tvTitle = (TextView) findViewById(R.id.tv_title);
-        final TextView tvDescription = (TextView) findViewById(R.id.tv_description);
-        final TextView tvAuthor = (TextView) findViewById(R.id.tv_author);
-        final TextView tvLocation = (TextView) findViewById(R.id.tv_location);
-        final TextView tvTags = (TextView) findViewById(R.id.tv_tags);
-
+/**
+        EditText edTitle = findViewById(R.id.tv_)
         if (mMedia != null) {
             tvTitle.setText(mMedia.getTitle());
             tvDescription.setText(mMedia.getDescription());
@@ -159,6 +206,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
             tvLocation.setText(mMedia.getLocation());
             tvTags.setText(mMedia.getTags());
         }
+ **/
     }
 
     @Override
