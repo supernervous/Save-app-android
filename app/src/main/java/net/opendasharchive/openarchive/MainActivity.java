@@ -121,19 +121,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, ArchiveSettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
-        }
-        else if (id == R.id.action_uploads)
-        {
-            Intent mediaListIntent = new Intent(this, MediaListActivity.class);
-            startActivity(mediaListIntent);
-            return true;
-        }
-        else if (id == R.id.action_logout)
+        if (id == R.id.action_logout)
         {
             handleLogout();
             return true;
