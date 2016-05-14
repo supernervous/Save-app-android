@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.opendasharchive.openarchive" >
+    package="net.opendasharchive.openarchive"
+    android:versionCode="1"
+    android:versionName="0.0.1"
+    android:installLocation="auto"
+    >
 
     <uses-sdk
-        android:minSdkVersion="17"
+        android:minSdkVersion="8"
         android:targetSdkVersion="21" />
 
     <uses-feature
@@ -28,18 +32,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data
-            android:name="DATABASE"
-            android:value="open_archive.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="1" />
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="true" />
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="net.opendasharchive.openarchive.db" />
+
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="net.opendasharchive.openarchive.db" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DATABASE" android:value="openarchive.db" />
+        <meta-data android:name="VERSION" android:value="5" />
 
         <activity
             android:name="net.opendasharchive.openarchive.MainActivity"
@@ -56,7 +53,7 @@
                 <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-
+                <data android:mimeType="audio/*" />
                 <data android:mimeType="image/*" />
                 <data android:mimeType="video/*" />
             </intent-filter>
@@ -69,7 +66,9 @@
         <activity
             android:name="net.opendasharchive.openarchive.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            >
 />
         </activity>
         <activity

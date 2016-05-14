@@ -39,7 +39,13 @@ public class MediaListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initMediaAdapter();
+
     }
 
     @Override

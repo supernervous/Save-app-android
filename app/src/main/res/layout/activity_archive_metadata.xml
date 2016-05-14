@@ -4,267 +4,59 @@
     android:layout_height="wrap_content" >
 
 <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp" >
 
-    <TextView
-        android:id="@+id/tvLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/lbl_share_prefs"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/background_dark" />
+        <EditText
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/iv_title"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_picture"
-            android:visibility="gone" />
-
-        <TextView
-            style="@style/TextViewLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/tv_title_lbl"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/iv_title"
-            android:text="Title"/>
+            android:hint="Title"/>
 
-        <Switch
-            android:id="@+id/sw_title"
-            android:layout_width="wrap_content"
+
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-
-    </RelativeLayout>
-
-    <TextView
-        style="@style/TextViewAlert"
-        android:id="@+id/tv_title_value"
-        android:hint="@string/lbl_enter_value" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/iv_description"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_emo_basic"
-            android:visibility="gone"/>
-
-        <TextView
-            style="@style/TextViewLabel"
             android:id="@+id/tv_description_lbl"
-            android:layout_toRightOf="@+id/iv_description"
             android:layout_centerVertical="true"
-            android:text="Description" />
+            android:hint="Description" />
 
-        <Switch
-            android:id="@+id/sw_description"
-            android:layout_width="wrap_content"
+
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-    </RelativeLayout>
-
-    <TextView
-        style="@style/TextViewAlert"
-        android:id="@+id/tv_description_value"
-        android:hint="@string/lbl_enter_value" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/iv_author"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_emo_basic"
-            android:visibility="gone" />
-
-        <TextView
-            style="@style/TextViewLabel"
             android:id="@+id/tv_author_lbl"
-            android:layout_toRightOf="@+id/iv_author"
             android:layout_centerVertical="true"
-            android:text="Author" />
+            android:hint="Author" />
 
-        <Switch
-            android:id="@+id/sw_author"
-            android:layout_width="wrap_content"
+
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-    </RelativeLayout>
-
-    <TextView
-        style="@style/TextViewAlert"
-        android:id="@+id/tv_author_value"
-        android:hint="@string/lbl_enter_value" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
-
-        <ImageView
-            android:id="@+id/iv_location"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_location"
-            android:visibility="gone" />
-
-        <TextView
-            style="@style/TextViewLabel"
             android:id="@+id/tv_location_lbl"
             android:layout_toRightOf="@+id/iv_location"
             android:layout_centerVertical="true"
-            android:text="Location" />
+            android:hint="Location" />
 
-        <Switch
-            android:id="@+id/sw_location"
-            android:layout_width="wrap_content"
+
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-    </RelativeLayout>
-
-    <TextView
-        style="@style/TextViewAlert"
-        android:id="@+id/tv_location_value"
-        android:hint="@string/lbl_enter_value" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
-
-        <ImageView
-            android:id="@+id/iv_tags"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_location"
-            android:visibility="gone" />
-
-        <TextView
-            style="@style/TextViewLabel"
             android:id="@+id/tv_tags_lbl"
             android:layout_toRightOf="@+id/iv_tags"
             android:layout_centerVertical="true"
-            android:text="Tags" />
+            android:hint="Tags" />
 
-        <Switch
-            android:id="@+id/sw_tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-    </RelativeLayout>
 
-    <TextView
-        style="@style/TextViewAlert"
-        android:id="@+id/tv_tags_value"
-        android:hint="@string/lbl_enter_value" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
-
-        <ImageView
-            android:id="@+id/iv_use_tor"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:paddingRight="8dp"
-            android:src="@drawable/ic_action_emo_basic"
-            android:visibility="gone" />
-
-        <TextView
-            style="@style/TextViewLabel"
-            android:layout_toRightOf="@+id/iv_use_tor"
-            android:layout_centerVertical="true"
-            android:text="Use Tor" />
-
-        <Switch
-            android:id="@+id/sw_use_tor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textOff="@string/lbl_off"
-            android:textOn="@string/lbl_on" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -295,6 +87,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/byncnd"
+            android:button="@null"
             android:text="" />
 
         <RadioButton
@@ -304,6 +97,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/by"
+            android:button="@null"
             android:text="" />
 
         <RadioButton
@@ -313,6 +107,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/bysa"
+            android:button="@null"
             android:text="" />
 
     </RadioGroup>

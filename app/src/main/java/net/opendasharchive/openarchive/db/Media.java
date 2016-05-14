@@ -25,39 +25,40 @@ import net.opendasharchive.openarchive.Utility;
 /**
  * Created by micahjlucas on 1/11/15.
  */
-public class Media extends SugarRecord<Media> {
-    private String originalFilePath;
-    private String scrubbedFilePath;
-    private MEDIA_TYPE mediaType;
-    private String thumbnailFilePath;
-    private Date createDate;
-    private Date updateDate;
-    private String serverUrl;
+public class Media extends SugarRecord {
 
-    private String title;
-    private String description;
-    private String author;
-    private String location;
-    private String tags;
-    private boolean useTor;
+    String originalFilePath;
+    String scrubbedFilePath;
+    String mimeType;
+    String thumbnailFilePath;
+    Date createDate;
+    Date updateDate;
+    String serverUrl;
+
+    String title;
+    String description;
+    String author;
+    String location;
+    String tags;
 
     public static enum MEDIA_TYPE {
-        AUDIO, IMAGE, VIDEO;
+        AUDIO, IMAGE, VIDEO, FILE;
     }
 
     //left public ONLY for Sugar ORM
     public Media() {};
 
-    public Media(Context context, String originalFilePath, MEDIA_TYPE mediaType) {
+    public Media(Context context, String originalFilePath, String mimeType) {
+
         this.originalFilePath = originalFilePath;
-        this.mediaType = mediaType;
-        this.createDate = new Date();
-        this.updateDate = this.createDate;
+        this.mimeType = mimeType;
 
-        this.title = context.getString(R.string.default_title);
-//        this.tags = context.getString(R.string.default_tags);
+        File fileMedia = new File(originalFilePath);
 
-        this.save();
+        this.createDate = new Date(fileMedia.lastModified());
+        this.updateDate = new Date(fileMedia.lastModified());
+        this.title = new File(originalFilePath).getName();
+
     }
 
 
@@ -76,12 +77,12 @@ public class Media extends SugarRecord<Media> {
         this.scrubbedFilePath = scrubbedFilePath;
     }
 
-    public MEDIA_TYPE getMediaType() {
-        return mediaType;
+    public String getMimeType() {
+        return mimeType;
     }
 
-    public void setMediaType(MEDIA_TYPE mediaType) {
-        this.mediaType = mediaType;
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public String getThumbnailFilePath() {
@@ -161,14 +162,6 @@ public class Media extends SugarRecord<Media> {
         this.tags = tags;
     }
 
-    public boolean getUseTor() {
-        return useTor;
-    }
-
-    public void setUseTor(boolean useTor) {
-        this.useTor = useTor;
-    }
-
     public Bitmap getThumbnail(Context context) { // TODO: disk cache, multiple sizes
         Bitmap thumbnail = null;
 
@@ -178,9 +171,9 @@ public class Media extends SugarRecord<Media> {
             String lastSegment = uri.getLastPathSegment();
             boolean isDocumentProviderUri = path.contains("content:/") && (lastSegment.contains(":"));
 
-            if (this.mediaType == MEDIA_TYPE.AUDIO) {
+            if (this.mimeType.startsWith("audio")) {
                 thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_waveform);
-            } else if (this.mediaType == MEDIA_TYPE.IMAGE) {
+            } else if (this.mimeType.startsWith("image")) {
                 if (isDocumentProviderUri) {
                     // path of form : content://com.android.providers.media.documents/document/video:183
                     // An Android Document Provider URI. Thumbnail already generated
@@ -214,7 +207,7 @@ public class Media extends SugarRecord<Media> {
                         }
                     }
                 }
-            } else if (this.mediaType == MEDIA_TYPE.VIDEO) {
+            } else if (this.mimeType.startsWith("video")) {
                 // path of form : content://com.android.providers.media.documents/document/video:183
                 if (isDocumentProviderUri) {
                     // An Android Document Provider URI. Thumbnail already generated
@@ -275,7 +268,7 @@ public class Media extends SugarRecord<Media> {
     }
 
     public static List<Media> getAllMediaAsList() {
-        return Media.listAll(Media.class);
+        return Media.listAll(Media.class,"ID DESC");
     }
 
     public static Media[] getAllMediaAsArray() {

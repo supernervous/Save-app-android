@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import net.opendasharchive.openarchive.publish.db.DBProvider;
-import net.sqlcipher.database.SQLiteDatabase;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import net.opendasharchive.openarchive.publish.db.StoryMakerDB;

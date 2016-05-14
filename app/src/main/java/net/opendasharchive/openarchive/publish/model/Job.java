@@ -3,9 +3,9 @@ package net.opendasharchive.openarchive.publish.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import net.opendasharchive.openarchive.publish.PublishController;
-import net.sqlcipher.database.SQLiteDatabase;
 
 import java.util.Date;
 

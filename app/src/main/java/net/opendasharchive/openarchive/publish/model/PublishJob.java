@@ -14,7 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  *  job which wraps renderjob's and upload jobs.  takes callbacks from render and publish classes to assemble the entire rendering
