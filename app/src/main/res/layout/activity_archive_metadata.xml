@@ -61,7 +61,10 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="vertical"
+        android:id="@+id/groupLicenseChooser"
+
+        >
 
         <TextView
             android:id="@+id/textView1"
@@ -69,10 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="Choose a license:"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="Choose a license:" />
 
-    </LinearLayout>
 
     <RadioGroup
         android:id="@+id/radioGroupCC"
@@ -112,11 +113,11 @@
 
     </RadioGroup>
 
+    </LinearLayout>
     <TextView
         android:id="@+id/tv_cc_license"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>
