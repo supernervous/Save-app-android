@@ -15,7 +15,7 @@
     <string name="title_media_list">Uploads</string>
 
     <!-- General -->
-    <string name="lblUpload">Upload Media</string>
+    <string name="menu_item_publish">PUBLISH</string>
     <string name="lblEditMetadata">Edit Media</string>
     <string name="lblSave">Save</string>
     <string name="loading_title">Uploading</string>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
 
-    <item android:id="@+id/menu_upload" android:title="@string/lblUpload"
+    <item android:id="@+id/menu_upload" android:title="@string/menu_item_publish"
         android:orderInCategory="100"
         app:showAsAction="always"/>
 

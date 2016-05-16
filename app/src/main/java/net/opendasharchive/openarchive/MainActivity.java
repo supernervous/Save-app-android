@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity {
 
             setContentView(R.layout.activity_main);
 
-            fragmentMediaList = null;//(MediaListFragment)findViewById(R.id.media_list);
+            fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
             // handle if started from outside app
             handleOutsideMedia(getIntent());
