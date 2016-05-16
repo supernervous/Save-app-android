@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/media_list"
-        android:name="net.opendasharchive.openarchive.MediaListFragment"
+        android:name="net.opendasharchive.openarchive.fragments.MediaListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

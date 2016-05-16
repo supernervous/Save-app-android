@@ -1,8 +1,6 @@
 package net.opendasharchive.openarchive;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,29 +9,26 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.fragments.MediaListFragment;
+import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
+import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.model.Account;
 
 public class MainActivity extends ActionBarActivity {
@@ -61,8 +56,9 @@ public class MainActivity extends ActionBarActivity {
             //otherwise go right into this app;
 
             setContentView(R.layout.activity_main);
+            setTitle(R.string.main_activity_title);
 
-            fragmentMediaList = null;//(MediaListFragment)findViewById(R.id.media_list);
+            fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
             // handle if started from outside app
             handleOutsideMedia(getIntent());

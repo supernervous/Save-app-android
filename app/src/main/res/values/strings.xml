@@ -15,7 +15,7 @@
     <string name="title_media_list">Uploads</string>
 
     <!-- General -->
-    <string name="lblUpload">Upload Media</string>
+    <string name="menu_item_publish">PUBLISH</string>
     <string name="lblEditMetadata">Edit Media</string>
     <string name="lblSave">Save</string>
     <string name="loading_title">Uploading</string>
@@ -102,7 +102,12 @@
     <string name="title_activity_about">About Open Archive</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="about_body"><a href="https://open-archive.net">OpenArchive</a> is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. You can add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive via Tor. It offers more agency over your media, while protecting civil liberties and increasing interoperability for those interested in finding it and reusing it in the future.\n\nOpen Archive was developed in partnership with <a href="http://scal.io">Scal.io</a>, <a href="http://storymaker.org">StoryMaker</a> and <a href="http://archive.org">Internet Archive</a> as part of the OpenArchive project with the generous support of the <a href="http://knightfoundation.org">Knight Foundation</a>.</string>
+    <string name="about_body">OpenArchive is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. You can add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive via Tor. It offers more agency over your media, while protecting civil liberties and increasing interoperability for those interested in finding it and reusing it in the future.
+        \n\n
+        OpenArchive was developed in partnership with the Internet Archive, StoryMaker, and Scal.io with generous support from the Knight Foundation.
+        \n\n
+        Learn more at <a href="https://open-archive.net">https://open-archive.net</a>
+    </string>
 
     <string name="upload_success">Your media is now available on the Internet Archive!</string>
 

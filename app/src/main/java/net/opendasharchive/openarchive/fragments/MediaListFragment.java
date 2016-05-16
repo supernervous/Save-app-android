@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -10,6 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import net.opendasharchive.openarchive.Globals;
+import net.opendasharchive.openarchive.db.MediaAdapter;
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.db.Media;
 
 public class MediaListFragment extends ListFragment {

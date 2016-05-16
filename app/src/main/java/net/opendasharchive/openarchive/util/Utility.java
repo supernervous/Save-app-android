@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.util;
 
 /**
  * Created by micahjlucas on 12/16/14.
