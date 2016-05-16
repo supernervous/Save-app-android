@@ -22,14 +22,7 @@ public class Globals {
     // prefs
     public static final String PREF_FILE_KEY            = "archive_pref_key";
 
-    public static final String PREF_FIRST_RUN           = "archive_pref_first_run";
 
-    public static final String PREF_USE_TOR             = "archive_pref_use_tor";
-    public static final String PREF_SHARE_TITLE         = "archive_pref_share_title";
-    public static final String PREF_SHARE_DESCRIPTION   = "archive_pref_share_description";
-    public static final String PREF_SHARE_AUTHOR        = "archive_pref_share_author";
-    public static final String PREF_SHARE_TAGS          = "archive_pref_share_tags";
-    public static final String PREF_SHARE_LOCATION      = "archive_pref_share_location";
     public static final String PREF_LICENSE_URL         = "archive_pref_share_license_url";
 
     public final static String SITE_ARCHIVE             = "archive"; //Text, Audio, Photo, Video

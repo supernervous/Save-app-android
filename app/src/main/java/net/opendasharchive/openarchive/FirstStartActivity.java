@@ -35,19 +35,21 @@ import io.scal.secureshareui.model.Account;
 public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     private static final String TAG = "FirstStartActivity";
+    private boolean eulaAgreed = false;
+    private Account mAccount = null;
 
     private SiteController.OnEventListener mAuthEventListener = new SiteController.OnEventListener() {
 
         @Override
         public void onSuccess(Account account) {
+            account.setAuthenticated(true);
             account.saveToSharedPrefs(FirstStartActivity.this, null);
         }
 
         @Override
         public void onFailure(Account account, String failureMessage) {
             // TODO we should invalidate the locally saved credentials rather than just clearing them
-            account.setCredentials(null);
-            account.setIsConnected(false);
+            account.setAuthenticated(false);
             account.saveToSharedPrefs(FirstStartActivity.this, null);
         }
 
@@ -58,16 +60,15 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         }
     };
 
-    private boolean mTosAccepted;
-    private Button mTosButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_first_start);
-        mTosAccepted = false;
-        mTosButton = (Button) findViewById(R.id.btnTos);
+
+        mAccount = new Account(this, null);
     }
 
     @Override
@@ -75,25 +76,31 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         super.onPause();
     }
 
-    /**
-     * When the EULA / TOS button is clicked, show the EULA if it hasn't been shown.
-     * Else, allow the user to accept immediately.
-     */
-    public void onTosButtonClick(View v) {
-        mTosAccepted = new EulaActivity(this).show();
-        if (mTosAccepted) {
-            markTosButtonAccepted();
+    public void onSignInButtonClick(View v) {
+        if (assertTosAccepted()) {
+            doAuthentication();
         }
     }
 
-    public void onSignupButtonClick(View v) {
-        if (assertTosAccepted()) {
-            Intent loginIntent = new Intent(this, MainActivity.class);
-            SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
-            siteController.setOnEventListener(mAuthEventListener);
-            Account account = new Account(this, null);
-            siteController.startAuthentication(account);
-        }
+    public void onSignUpButtonClick(View v) {
+            doSignUp();
+    }
+
+    private void doAuthentication ()
+    {
+        Intent loginIntent = new Intent(this, MainActivity.class);
+        SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
+        siteController.setOnEventListener(mAuthEventListener);
+
+        siteController.startAuthentication(mAccount);
+    }
+
+    private void doSignUp ()
+    {
+        Intent loginIntent = new Intent(this, MainActivity.class);
+        SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
+        siteController.setOnEventListener(mAuthEventListener);
+        siteController.startRegistration(mAccount);
     }
 
     /**
@@ -103,33 +110,14 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
      * @return
      */
     private boolean assertTosAccepted() {
-        if (!mTosAccepted) {
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.tos_dialog_title))
-                    .setMessage(getString(R.string.tos_dialog_msg))
-                    .setPositiveButton(getString(R.string.tos_dialog_positive_button),
-                            new OnClickListener() {
+        return new EulaActivity(this).show();
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int arg1) {
-                                    dialog.dismiss();
-                                }
-
-                            }).show();
-            return false;
-        }
-        return true;
     }
 
-    private void markTosButtonAccepted() {
-        Drawable tosStateDrawable = FirstStartActivity.this.getResources().getDrawable(R.drawable.ic_contextsm_checkbox_checked);
-        mTosButton.setCompoundDrawablesWithIntrinsicBounds(tosStateDrawable, null, null, null);
-    }
 
     @Override
     public void onEulaAgreedTo() {
-        mTosAccepted = true;
-        markTosButtonAccepted();
+        doAuthentication ();
     }
 
     @Override
@@ -137,7 +125,8 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 //        super.onActivityResult(requestCode, resultCode, intent); // FIXME do we really need to call up to the super?
         if (requestCode == SiteController.CONTROLLER_REQUEST_CODE) {
             if (resultCode == android.app.Activity.RESULT_OK) {
-                Account mAccount = new Account(this, null);
+
+                mAccount = new Account(this, null);
                 String credentials = intent.getStringExtra(SiteController.EXTRAS_KEY_CREDENTIALS);
                 mAccount.setCredentials(credentials != null ? credentials : "");
 
@@ -147,20 +136,21 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
                 String data = intent.getStringExtra(SiteController.EXTRAS_KEY_DATA);
                 mAccount.setData(data != null ? data : null);
 
-                mAccount.setAreCredentialsValid(true);
+                mAccount.setAuthenticated(true);
                 mAccount.saveToSharedPrefs(this, null);
 
                 Intent mainIntent = new Intent(this, MainActivity.class);
                 mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(mainIntent);
 
-            } else {
-                Toast.makeText(this, getString(R.string.problem_authticating), Toast.LENGTH_LONG).show();
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-                sp.edit().putBoolean(Globals.PREF_FIRST_RUN, true).apply();
-
             }
         }
+    }
+
+    public void showAbout(View v)
+    {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 }
 

@@ -3,6 +3,9 @@
 
     <!-- Activities -->
     <string name="app_name">OpenArchive</string>
+    <string name="app_subtext">An Internet Archive Powered Project\n<a href="#">learn more</a></string>
+
+    <string name="main_activity_title">Your Open Archive</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Login to Internet Archive</string>
     <string name="title_activity_settings">Settings</string>
@@ -46,7 +49,7 @@
     <string name="eula_title">You agree to:</string>
     <string name="eula_accept">Accept</string>
     <string name="eula_refuse">Refuse</string>
-    <string name="end_user_license_agreement">OpenArchive's Terms of Use and Privacy Policy</string>
+    <string name="end_user_license_agreement">Terms of Use and Privacy Policy</string>
     <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
     <string name="by_clicking_accept">By clicking \'Accept\' you agree to our terms and policies:</string>
     <string name="tos_dialog_title">Terms of Service</string>
@@ -54,7 +57,8 @@
     <string name="tos_dialog_positive_button">Got it</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_up_btn">Signup / Login</string>
+    <string name="sign_in_btn">Sign In</string>
+    <string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>
     <string name="tos_btn">I agree to the terms of service.</string>
 
     <!-- MainFragment -->
@@ -95,10 +99,13 @@
     <string name="uploading_to_internet_archive">Uploading to Internet Archive...</string>
     <string name="lbl_update_value">Update Value</string>
     <string name="lbl_enter_value">Tap to enter a value.</string>
-    <string name="view_published_media_online">View published media online?</string>
-    <string name="title_activity_about">AboutActivity</string>
+    <string name="title_activity_about">About Open Archive</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="about_body"><a href="https://open-archive.net">OpenArchive</a> is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. You can add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive via Tor. It offers more agency over your media, while protecting civil liberties and increasing interoperability for those interested in finding it and reusing it in the future.\n\nOpen Archive was developed in partnership with <a href="http://scal.io">Scal.io</a>, <a href="http://storymaker.org">StoryMaker</a> and <a href="http://archive.org">Internet Archive</a> as part of the OpenArchive project with the generous support of the <a href="http://knightfoundation.org">Knight Foundation</a>.</string>
 
+    <string name="upload_success">Your media is now available on the Internet Archive!</string>
+
+    <string name="share_using">Share archive link via</string>
+    <string name="share_text">shared from the Open Archive at</string>
 </resources>

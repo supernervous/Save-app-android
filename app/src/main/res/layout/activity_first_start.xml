@@ -2,73 +2,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/library"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="@dimen/activity_vertical_margin"
     tools:context=".FirstStartActivity">
 
-    <ImageView
-        android:id="@+id/backgroundImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
 
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/app_name"
+        android:textSize="38sp"
+        android:textIsSelectable="false" />
     <ImageView
         android:id="@+id/logo"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:src="@drawable/iarchive" />
+        android:layout_below="@id/title"
 
-    <TextView
-        android:id="@+id/title"
+        android:src="@drawable/iarchive" />
+    <Button
+        android:id="@+id/title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-condensed-bold"
-        android:text="@string/app_name"
-        android:textSize="38sp"
-        android:textIsSelectable="true" />
+        android:text="@string/app_subtext"
+        android:textIsSelectable="false"
+        android:onClick="showAbout"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent"
+
+        />
 
     <Button
-        android:id="@+id/btnSignup"
+        android:id="@+id/btnSignIn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
         android:layout_centerInParent="true"
         android:layout_marginTop="30dp"
-        android:fontFamily="sans-serif-condensed"
-        android:onClick="onSignupButtonClick"
-        android:text="@string/sign_up_btn"
-        android:textSize="22sp" />
-
-    <!--<Button-->
-        <!--android:id="@+id/btnLogin"-->
-        <!--android:layout_width="300dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/btnSignup"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:fontFamily="sans-serif-condensed"-->
-        <!--android:onClick="onSignupButtonClick"-->
-        <!--android:text="@string/login_btn"-->
-        <!--android:textSize="14sp" />-->
+        android:layout_above="@+id/btnSignUp"
+        android:onClick="onSignInButtonClick"
+        android:text="@string/sign_in_btn"
+        android:textSize="22dp" />
 
     <Button
-        android:id="@+id/btnTos"
+        android:id="@+id/btnSignUp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnSignup"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:drawableLeft="@drawable/ic_contextsm_checkbox"
-        android:fontFamily="sans-serif-condensed"
-        android:onClick="onTosButtonClick"
-        android:text="@string/tos_btn"
-        android:textSize="16sp" />
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:onClick="onSignUpButtonClick"
+        android:text="@string/sign_up_btn"
+        android:textSize="14dp"
+        android:background="@android:color/transparent"
+        />
+
+
+
 
 </RelativeLayout>
