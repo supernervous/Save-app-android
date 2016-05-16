@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -19,15 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.ShareActionProvider;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.util.Utility;
 
 import java.util.HashMap;
 
