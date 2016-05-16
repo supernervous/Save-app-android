@@ -61,6 +61,7 @@ public class MainActivity extends ActionBarActivity {
             //otherwise go right into this app;
 
             setContentView(R.layout.activity_main);
+            setTitle(R.string.main_activity_title);
 
             fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
