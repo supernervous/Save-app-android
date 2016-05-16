@@ -13,26 +13,6 @@ android:padding="16dp" >
     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 <TextView
-    android:id="@+id/txtPrivacyPolicy"
-    style="?android:attr/spinnerDropDownItemStyle"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:ellipsize="marquee"
-    android:paddingTop="8dp"
-    android:singleLine="false"
-    android:text="@string/privacy_policy" />
-
-<TextView
-    android:id="@+id/txtPrivacyPolicyUrl"
-    style="?android:attr/spinnerDropDownItemStyle"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:ellipsize="marquee"
-    android:singleLine="false"
-    android:autoLink="web"
-    android:text="@string/privacy_policy_url" />
-
-<TextView
     android:id="@+id/txtEULA"
     style="?android:attr/spinnerDropDownItemStyle"
     android:layout_width="fill_parent"

@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.scal.secureshareui.lib.Util;
+import io.scal.secureshareui.model.Account;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -41,27 +42,27 @@ public class MainActivity extends ActionBarActivity {
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
 
+    private MediaListFragment fragmentMediaList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // if user has not accepted EULA
-        if(!EulaActivity.isAccepted(this)) {
+        Account account = new Account(this, null);
+
+        // if user doesn't have an account
+        if(!account.isAuthenticated()) {
             Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
             firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(firstStartIntent);
             finish();
         }
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isFirstRun = sp.getBoolean(Globals.PREF_FIRST_RUN, true);
-        // if first time running app
-        if (isFirstRun) {
-            initFirstRun(sp);
-        }
         else {
+            //otherwise go right into this app;
 
             setContentView(R.layout.activity_main);
+
+            fragmentMediaList = null;//(MediaListFragment)findViewById(R.id.media_list);
 
             // handle if started from outside app
             handleOutsideMedia(getIntent());
@@ -103,9 +104,8 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
         }
+
     }
-
-
 
 
     @Override
@@ -186,26 +186,23 @@ public class MainActivity extends ActionBarActivity {
                 Media media = new Media(this, path, mimeType);
                 media.save();
 
+                //need to get fragment and refresh here
+                if (fragmentMediaList != null)
+                    fragmentMediaList.refreshMediaList();
+
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
                 reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
                 startActivity(reviewMediaIntent);
+
             }
         }
-    }
-
-    private void initFirstRun(SharedPreferences sp) {
-        //Do firstRUn things here
-
-
-        // set first run flag as false
-        sp.edit().putBoolean(Globals.PREF_FIRST_RUN, false).apply();
     }
 
 
     private void handleOutsideMedia(Intent intent) {
 
         if (intent != null && intent.getAction()!= null
-        && intent.getAction().equals(Intent.ACTION_SEND)) {
+          && intent.getAction().equals(Intent.ACTION_SEND)) {
 
             String type = intent.getType();
 
@@ -213,14 +210,13 @@ public class MainActivity extends ActionBarActivity {
 
             if (uri == null)
             {
-                if (intent.getClipData() != null && intent.getClipData().getItemCount() > 0) {
+                if (Build.VERSION.SDK_INT >= 16 && intent.getClipData() != null && intent.getClipData().getItemCount() > 0) {
                     uri = intent.getClipData().getItemAt(0).getUri();
                 }
                 else {
                     return;
                 }
             }
-
 
             String path = Utility.getRealPathFromURI(this, uri);
             // create media
@@ -234,7 +230,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void handleLogout() {
-        final SharedPreferences sharedPrefs = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
+
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.alert_lbl_logout)
@@ -243,7 +239,10 @@ public class MainActivity extends ActionBarActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //clear all user prefs
+                        SharedPreferences sharedPrefs = MainActivity.this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
                         sharedPrefs.edit().clear().commit();
+
+                        Account.clearSharedPreferences(MainActivity.this,null);
                         finish();
                         Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
                         firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
