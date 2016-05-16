@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +22,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.ShareActionProvider;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.opendasharchive.openarchive.db.Media;
 
@@ -45,16 +49,13 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private TextView tvAuthor;
     private TextView tvTags;
     private TextView tvLocation;
+    private TextView tvUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_media);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        init();
-
-        setTitle(mMedia.getTitle());
 
         // instantiate values
         tvTitle = (TextView) findViewById(R.id.tv_title_lbl);
@@ -63,6 +64,13 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvTags = (TextView) findViewById(R.id.tv_tags_lbl);
         tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
         rgLicense = (RadioGroup) findViewById(R.id.radioGroupCC);
+        tvUrl = (TextView) findViewById(R.id.tv_url);
+
+    }
+
+    private void bindMedia ()
+    {
+        setTitle(mMedia.getTitle());
 
         // set up ccLicense link
         final TextView tvCCLicenseLink = (TextView) findViewById(R.id.tv_cc_license);
@@ -82,6 +90,37 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvAuthor.setText(mMedia.getAuthor());
         tvLocation.setText(mMedia.getLocation());
         tvTags.setText(mMedia.getTags());
+
+        if (mMedia.getServerUrl() != null)
+        {
+            tvUrl.setText( Html.fromHtml("Your media is available on the Internet Archive at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
+            tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
+
+            tvUrl.setVisibility(View.VISIBLE);
+
+
+            tvTitle.setEnabled(false);
+
+            tvDescription.setEnabled(false);
+            if (TextUtils.isEmpty(mMedia.getDescription()))
+                tvDescription.setVisibility(View.GONE);
+
+            tvAuthor.setEnabled(false);
+            if (TextUtils.isEmpty(mMedia.getAuthor()))
+                tvAuthor.setVisibility(View.GONE);
+
+            tvLocation.setEnabled(false);
+            if (TextUtils.isEmpty(mMedia.getLocation()))
+                tvLocation.setVisibility(View.GONE);
+
+            tvTags.setEnabled(false);
+            if (TextUtils.isEmpty(mMedia.getTags()))
+                tvTags.setVisibility(View.GONE);
+
+            findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
+        }
+
+
     }
 
     private void saveMedia ()
@@ -115,7 +154,22 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_review_media, menu);
+
+        if (mMedia.getServerUrl() == null)
+            getMenuInflater().inflate(R.menu.menu_review_media, menu);
+        else {
+            //show a different menu!
+            getMenuInflater().inflate(R.menu.menu_share_media, menu);
+
+            // Locate MenuItem with ShareActionProvider
+            MenuItem item = menu.findItem(R.id.menu_item_share);
+
+
+
+
+
+        }
+
         return true;
     }
 
@@ -135,6 +189,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case R.id.menu_upload:
                 uploadMedia();
                 break;
+
+            case R.id.menu_item_share:
+                shareMedia();
             default:
                 break;
         }
@@ -164,6 +221,22 @@ public class ReviewMediaActivity extends ActionBarActivity {
         ivMedia.setImageBitmap(mMedia.getThumbnail(mContext));
 
 
+    }
+
+    //share the link to the file on the IA
+    private void shareMedia ()
+    {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("\"").append(mMedia.getTitle()).append("\"").append(' ');
+        sb.append(getString(R.string.share_text)).append(' ');
+        sb.append(mMedia.getServerUrl());
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
 
     private void uploadMedia ()
@@ -196,32 +269,15 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
     }
 
-    private void getMetadataValues() {
-/**
-        EditText edTitle = findViewById(R.id.tv_)
-        if (mMedia != null) {
-            tvTitle.setText(mMedia.getTitle());
-            tvDescription.setText(mMedia.getDescription());
-            tvAuthor.setText(mMedia.getAuthor());
-            tvLocation.setText(mMedia.getLocation());
-            tvTags.setText(mMedia.getTags());
-        }
- **/
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
 
         init();
-        getMetadataValues();
+        bindMedia();
     }
 
-    static HandlerThread bgThread = new HandlerThread("VideoRenderHandlerThread");
-    static {
-        bgThread.start();
-    }
-    public Handler mHandler = new Handler(bgThread.getLooper()) {
+    public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Bundle data = msg.getData();
@@ -236,7 +292,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
                     String resultUrl = getDetailsUrlFromResult(result);
                     mMedia.setServerUrl(resultUrl);
                     mMedia.save();
-                    showPublished(resultUrl);
+                    showSuccess();
+                    bindMedia();
                     closeProgressSpinner();
                     break;
                 case SiteController.MESSAGE_TYPE_FAILURE:
@@ -256,6 +313,11 @@ public class ReviewMediaActivity extends ActionBarActivity {
             }
         }
     };
+
+    private void showSuccess ()
+    {
+        Toast.makeText(this,getString(R.string.upload_success),Toast.LENGTH_SHORT).show();
+    }
 
     // result is formatted like http://s3.us.archive.org/Default-Title-19db/JPEG_20150123_160341_-1724212344_thumbnail.png
     public String getDetailsUrlFromResult(String result) {
@@ -287,34 +349,5 @@ public class ReviewMediaActivity extends ActionBarActivity {
         });
     }
 
-    public void showPublished(final String postUrl) {
-        this.runOnUiThread(new Runnable() {
-            public void run() {
-                Log.d(TAG, "dialog for showing published url: " + postUrl);
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(postUrl));
-                                startActivity(i);
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(ReviewMediaActivity.this);
-                builder.setMessage(getString(R.string.view_published_media_online))
-                        .setPositiveButton(android.R.string.yes, dialogClickListener)
-                        .setNegativeButton(android.R.string.no, dialogClickListener).show();
-            }
-        });
-    }
 }
