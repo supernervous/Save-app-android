@@ -41,6 +41,8 @@ public class Media extends SugarRecord {
     String location;
     String tags;
 
+    String licenseUrl;
+
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
     }
@@ -57,7 +59,6 @@ public class Media extends SugarRecord {
 
         this.createDate = new Date(fileMedia.lastModified());
         this.updateDate = new Date(fileMedia.lastModified());
-        this.title = new File(originalFilePath).getName();
 
     }
 
@@ -153,6 +154,15 @@ public class Media extends SugarRecord {
 
     public String getTags() {
         return tags;
+    }
+
+
+    public String getLicenseUrl() {
+        return licenseUrl;
+    }
+
+    public void setLicenseUrl(String licenseUrl) {
+        this.licenseUrl = licenseUrl;
     }
 
     public void setTags(String tags) {
