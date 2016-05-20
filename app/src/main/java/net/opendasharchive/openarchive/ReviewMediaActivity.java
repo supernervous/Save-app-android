@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.Utility;
 
+import java.io.File;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -47,6 +49,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private TextView tvLocation;
     private TextView tvUrl;
 
+    private MenuItem menuShare;
+    private MenuItem menuPublish;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +66,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
         rgLicense = (RadioGroup) findViewById(R.id.radioGroupCC);
         tvUrl = (TextView) findViewById(R.id.tv_url);
+
+
 
     }
 
@@ -116,6 +123,17 @@ public class ReviewMediaActivity extends ActionBarActivity {
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
         }
 
+        if (menuPublish != null) {
+            if (mMedia.getServerUrl() == null) {
+                menuPublish.setVisible(true);
+                menuShare.setVisible(false);
+
+            } else {
+                menuShare.setVisible(true);
+                menuPublish.setVisible(false);
+
+            }
+        }
 
     }
 
@@ -151,20 +169,15 @@ public class ReviewMediaActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.menu_review_media, menu);
+
+        menuShare = menu.findItem(R.id.menu_item_share);
+        menuPublish = menu.findItem(R.id.menu_item_publish);
+
         if (mMedia.getServerUrl() == null)
-            getMenuInflater().inflate(R.menu.menu_review_media, menu);
-        else {
-            //show a different menu!
-            getMenuInflater().inflate(R.menu.menu_share_media, menu);
-
-            // Locate MenuItem with ShareActionProvider
-            MenuItem item = menu.findItem(R.id.menu_item_share);
-
-
-
-
-
-        }
+            menuPublish.setVisible(true);
+        else
+            menuShare.setVisible(true);
 
         return true;
     }
@@ -182,12 +195,15 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_upload:
+            case R.id.menu_item_publish:
                 uploadMedia();
                 break;
-
-            case R.id.menu_item_share:
+            case R.id.menu_item_share_link:
+                shareLink();
+                break;
+            case R.id.menu_item_share_media:
                 shareMedia();
+                break;
             default:
                 break;
         }
@@ -216,11 +232,25 @@ public class ReviewMediaActivity extends ActionBarActivity {
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
         ivMedia.setImageBitmap(mMedia.getThumbnail(mContext));
 
+        ivMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMedia();
+            }
+        });
+    }
 
+    private void showMedia ()
+    {
+        Intent viewMediaIntent = new Intent();
+        viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(mMedia.getOriginalFilePath());
+        viewMediaIntent.setDataAndType(Uri.fromFile(file), mMedia.getMimeType().split("/")[0] + "/*");
+        startActivity(viewMediaIntent);
     }
 
     //share the link to the file on the IA
-    private void shareMedia ()
+    private void shareLink ()
     {
 
         StringBuffer sb = new StringBuffer();
@@ -232,6 +262,24 @@ public class ReviewMediaActivity extends ActionBarActivity {
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+    //share the link to the file on the IA
+    private void shareMedia ()
+    {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("\"").append(mMedia.getTitle()).append("\"").append(' ');
+        sb.append(getString(R.string.share_media_text)).append(' ');
+        sb.append(mMedia.getServerUrl());
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType(mMedia.getMimeType());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mMedia.getOriginalFilePath())));
+
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
 

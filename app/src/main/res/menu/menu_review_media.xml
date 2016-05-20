@@ -4,10 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
 
-    <item android:id="@+id/menu_upload" android:title="@string/menu_item_publish"
+    <item android:id="@+id/menu_item_publish" android:title="@string/menu_item_publish"
         android:orderInCategory="100"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:visible="false"
+        />
 
+    <item
+        android:id="@+id/menu_item_share"
+        app:showAsAction="always"
+        android:title="Share"
+        android:visible="false"
+        >
+        <menu>
+            <item android:id="@+id/menu_item_share_link"
+                android:title="Share Link" />
+            <item android:id="@+id/menu_item_share_media"
+                android:title="Share Media" />
+        </menu>
 
+    </item>
 
 </menu>
