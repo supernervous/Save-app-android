@@ -63,55 +63,56 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/groupLicenseChooser"
-
         >
 
         <TextView
-            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="Choose a license:" />
+            android:text="Allow adaptations of your work to be shared?" />
 
 
-    <RadioGroup
-        android:id="@+id/radioGroupCC"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <RadioButton
-            android:id="@+id/radioByNcNd"
+        <ToggleButton
+            android:id="@+id/tb_cc_deriv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/byncnd"
-            android:button="@null"
-            android:text="" />
+            android:textOff="No"
+            android:textOn="Yes"
+            android:checked="true"/>
 
-        <RadioButton
-            android:id="@+id/radioBy"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/by"
-            android:button="@null"
-            android:text="" />
+            android:layout_marginTop="8dp"
+            android:text="Require modified versions to also share?" />
 
-        <RadioButton
-            android:id="@+id/radioBySa"
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/bysa"
-            android:button="@null"
-            android:text="" />
+            android:textOff="No"
+            android:textOn="No"
+            android:checked="true"
+            android:id="@+id/tb_cc_sharealike"/>
 
-    </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Allow commercial uses of your work?" />
+
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="No"
+            android:textOn="Yes"
+            android:checked="true"
+            android:id="@+id/tb_cc_comm"/>
+
+
+
 
     </LinearLayout>
     <TextView

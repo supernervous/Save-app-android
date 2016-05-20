@@ -34,8 +34,6 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
     private Context mContext = this;
     private Media mMedia;
 
-    private RadioGroup rgLicense;
-
     private TextView tvTitle;
     private TextView tvDescription;
     private TextView tvAuthor;
@@ -47,13 +45,10 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive_metadata);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        rgLicense = (RadioGroup) findViewById(R.id.radioGroupCC);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // set defaults based on previous selections
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-        rgLicense.check(sharedPref.getInt(Globals.PREF_LICENSE_URL, R.id.radioByNcNd));
 
         // get current media
         final long mediaId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
@@ -63,14 +58,8 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
         // set up ccLicense link
         final TextView tvCCLicenseLink = (TextView) findViewById(R.id.tv_cc_license);
         tvCCLicenseLink.setMovementMethod(LinkMovementMethod.getInstance());
-        setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
+//        setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
 
-        rgLicense.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
-            }
-        });
 
     }
 
@@ -92,13 +81,14 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
     }
 
     private void setCCLicenseText(int licenseId, TextView tvCCLicenseLink) {
+        /**
         if (licenseId == R.id.radioBy) {
             tvCCLicenseLink.setText(R.string.archive_license_by);
         } else if (licenseId == R.id.radioBySa) {
             tvCCLicenseLink.setText(R.string.archive_license_bysa);
         } else { // ByNcNd is default
             tvCCLicenseLink.setText(R.string.archive_license_byncnd);
-        }
+        }*/
     }
 
     private void initViews(long mediaId) {
@@ -143,20 +133,21 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
 
     // TODO this also needs to store what the sharing prefs were when this was submitted I believe
     private void saveMediaMetadata() {
-        String licenseUrl = null;
+        String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
+        /**
         int licenseId = rgLicense.getCheckedRadioButtonId();
         if (licenseId == R.id.radioBy) {
-            licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
+
         } else if (licenseId == R.id.radioBySa) {
             licenseUrl = "https://creativecommons.org/licenses/by-sa/4.0/";
         } else { // ByNcNd is default
             licenseUrl = "http://creativecommons.org/licenses/by-nc-nd/4.0/";
-        }
+        }*/
 
         // save defaults for future selections
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(Globals.PREF_LICENSE_URL, licenseId); // FIXME this should store the license url not the idx
+        editor.putString(Globals.PREF_LICENSE_URL, licenseUrl); // FIXME this should store the license url not the idx
         editor.apply();
 
         // save value changes in db
@@ -186,8 +177,10 @@ public class ArchiveSettingsActivity extends ActionBarActivity {
         valueMap.put(SiteController.VALUE_KEY_SLUG, getSlug(mMedia.getTitle()));
         valueMap.put(SiteController.VALUE_KEY_TITLE, mMedia.getTitle());
 
-        //TODO use license as set by user
-        valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, "https://creativecommons.org/licenses/by/4.0/"); // TODO
+        if (!TextUtils.isEmpty(mMedia.getLicenseUrl()))
+            valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, mMedia.getLicenseUrl());
+        else
+            valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, "https://creativecommons.org/licenses/by/4.0/");
 
         if (!TextUtils.isEmpty(mMedia.getTags())) {
             String tags = context.getString(R.string.default_tags) + ";" + mMedia.getTags(); // FIXME are keywords/tags separated by spaces or commas?

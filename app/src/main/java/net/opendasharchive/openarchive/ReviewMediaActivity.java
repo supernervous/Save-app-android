@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,10 +22,12 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.Utility;
 
+import java.io.File;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -38,14 +41,19 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private Media mMedia;
     private ProgressDialog progressDialog = null;
 
-    private RadioGroup rgLicense;
-
     private TextView tvTitle;
     private TextView tvDescription;
     private TextView tvAuthor;
     private TextView tvTags;
     private TextView tvLocation;
     private TextView tvUrl;
+    private TextView tvLicenseUrl;
+
+
+    private ToggleButton tbDeriv, tbShare, tbComm;
+
+    private MenuItem menuShare;
+    private MenuItem menuPublish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,26 +67,22 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvAuthor = (TextView) findViewById(R.id.tv_author_lbl);
         tvTags = (TextView) findViewById(R.id.tv_tags_lbl);
         tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
-        rgLicense = (RadioGroup) findViewById(R.id.radioGroupCC);
         tvUrl = (TextView) findViewById(R.id.tv_url);
+
+        tbDeriv = (ToggleButton)findViewById(R.id.tb_cc_deriv);
+        tbShare = (ToggleButton)findViewById(R.id.tb_cc_sharealike);
+        tbComm = (ToggleButton)findViewById(R.id.tb_cc_comm);
+
+        tvLicenseUrl = (TextView) findViewById(R.id.tv_cc_license);
 
     }
 
     private void bindMedia ()
     {
-        setTitle(mMedia.getTitle());
 
-        // set up ccLicense link
-        final TextView tvCCLicenseLink = (TextView) findViewById(R.id.tv_cc_license);
-        tvCCLicenseLink.setMovementMethod(LinkMovementMethod.getInstance());
-        setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
+        if (!TextUtils.isEmpty(mMedia.getTitle()))
+            setTitle(mMedia.getTitle());
 
-        rgLicense.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                setCCLicenseText(rgLicense.getCheckedRadioButtonId(), tvCCLicenseLink);
-            }
-        });
 
         // set values
         tvTitle.setText(mMedia.getTitle());
@@ -87,13 +91,16 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvLocation.setText(mMedia.getLocation());
         tvTags.setText(mMedia.getTags());
 
+        tvLicenseUrl.setText(mMedia.getLicenseUrl());
+
+
         if (mMedia.getServerUrl() != null)
         {
             tvUrl.setText( Html.fromHtml("Your media is available on the Internet Archive at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
             tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
-
             tvUrl.setVisibility(View.VISIBLE);
 
+            tvLicenseUrl.setMovementMethod(LinkMovementMethod.getInstance());
 
             tvTitle.setEnabled(false);
 
@@ -116,16 +123,60 @@ public class ReviewMediaActivity extends ActionBarActivity {
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
         }
 
+        if (menuPublish != null) {
+            if (mMedia.getServerUrl() == null) {
+                menuPublish.setVisible(true);
+                menuShare.setVisible(false);
+
+            } else {
+                menuShare.setVisible(true);
+                menuPublish.setVisible(false);
+
+            }
+        }
 
     }
 
     private void saveMedia ()
     {
-        mMedia.setTitle(tvTitle.getText().toString());
+        if (tvTitle.getText().length() > 0)
+            mMedia.setTitle(tvTitle.getText().toString());
+        else
+        {
+            //use the file name if the user doesn't set a title
+            mMedia.setTitle(new File(mMedia.getOriginalFilePath()).getName());
+        }
+
         mMedia.setDescription(tvDescription.getText().toString());
         mMedia.setAuthor(tvAuthor.getText().toString());
         mMedia.setLocation(tvLocation.getText().toString());
         mMedia.setTags(tvTags.getText().toString());
+
+        //the default
+        String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
+
+        if (tbDeriv.isChecked() && tbComm.isChecked() && tbShare.isChecked())
+        {
+            licenseUrl = "http://creativecommons.org/licenses/by-sa/4.0/";
+        }
+        else if (tbDeriv.isChecked() && tbShare.isChecked())
+        {
+            licenseUrl = "http://creativecommons.org/licenses/by-nc-sa/4.0/";
+        }
+        else if (tbDeriv.isChecked() && tbComm.isChecked())
+        {
+            licenseUrl = "http://creativecommons.org/licenses/by/4.0/";
+        }
+        else if (tbDeriv.isChecked())
+        {
+            licenseUrl = "http://creativecommons.org/licenses/by-nc/4.0/";
+        }
+        else
+        {
+            licenseUrl = "http://creativecommons.org/licenses/by-nc-nd/4.0/";
+        }
+
+        mMedia.setLicenseUrl(licenseUrl);
 
         mMedia.save();
     }
@@ -137,13 +188,14 @@ public class ReviewMediaActivity extends ActionBarActivity {
     }
 
     private void setCCLicenseText(int licenseId, TextView tvCCLicenseLink) {
+        /**
         if (licenseId == R.id.radioBy) {
             tvCCLicenseLink.setText(R.string.archive_license_by);
         } else if (licenseId == R.id.radioBySa) {
             tvCCLicenseLink.setText(R.string.archive_license_bysa);
         } else { // ByNcNd is default
             tvCCLicenseLink.setText(R.string.archive_license_byncnd);
-        }
+        }*/
     }
 
 
@@ -151,20 +203,15 @@ public class ReviewMediaActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.menu_review_media, menu);
+
+        menuShare = menu.findItem(R.id.menu_item_share);
+        menuPublish = menu.findItem(R.id.menu_item_publish);
+
         if (mMedia.getServerUrl() == null)
-            getMenuInflater().inflate(R.menu.menu_review_media, menu);
-        else {
-            //show a different menu!
-            getMenuInflater().inflate(R.menu.menu_share_media, menu);
-
-            // Locate MenuItem with ShareActionProvider
-            MenuItem item = menu.findItem(R.id.menu_item_share);
-
-
-
-
-
-        }
+            menuPublish.setVisible(true);
+        else
+            menuShare.setVisible(true);
 
         return true;
     }
@@ -182,12 +229,15 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_upload:
+            case R.id.menu_item_publish:
                 uploadMedia();
                 break;
-
-            case R.id.menu_item_share:
+            case R.id.menu_item_share_link:
+                shareLink();
+                break;
+            case R.id.menu_item_share_media:
                 shareMedia();
+                break;
             default:
                 break;
         }
@@ -216,11 +266,25 @@ public class ReviewMediaActivity extends ActionBarActivity {
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
         ivMedia.setImageBitmap(mMedia.getThumbnail(mContext));
 
+        ivMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMedia();
+            }
+        });
+    }
 
+    private void showMedia ()
+    {
+        Intent viewMediaIntent = new Intent();
+        viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(mMedia.getOriginalFilePath());
+        viewMediaIntent.setDataAndType(Uri.fromFile(file), mMedia.getMimeType().split("/")[0] + "/*");
+        startActivity(viewMediaIntent);
     }
 
     //share the link to the file on the IA
-    private void shareMedia ()
+    private void shareLink ()
     {
 
         StringBuffer sb = new StringBuffer();
@@ -232,6 +296,24 @@ public class ReviewMediaActivity extends ActionBarActivity {
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+    //share the link to the file on the IA
+    private void shareMedia ()
+    {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("\"").append(mMedia.getTitle()).append("\"").append(' ');
+        sb.append(getString(R.string.share_media_text)).append(' ');
+        sb.append(mMedia.getServerUrl());
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType(mMedia.getMimeType());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mMedia.getOriginalFilePath())));
+
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
 

@@ -113,4 +113,6 @@
 
     <string name="share_using">Share archive link via</string>
     <string name="share_text">shared from the Open Archive at</string>
+    <string name="share_media_text">originally published on the Open Archive at</string>
+
 </resources>
