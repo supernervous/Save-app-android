@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -50,7 +52,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private TextView tvLicenseUrl;
 
 
-    private ToggleButton tbDeriv, tbShare, tbComm;
+    private SwitchCompat tbDeriv, tbShare, tbComm;
 
     private MenuItem menuShare;
     private MenuItem menuPublish;
@@ -69,9 +71,27 @@ public class ReviewMediaActivity extends ActionBarActivity {
         tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
         tvUrl = (TextView) findViewById(R.id.tv_url);
 
-        tbDeriv = (ToggleButton)findViewById(R.id.tb_cc_deriv);
-        tbShare = (ToggleButton)findViewById(R.id.tb_cc_sharealike);
-        tbComm = (ToggleButton)findViewById(R.id.tb_cc_comm);
+        tbDeriv = (SwitchCompat)findViewById(R.id.tb_cc_deriv);
+        tbDeriv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setLicense();
+            }
+        });
+        tbShare = (SwitchCompat)findViewById(R.id.tb_cc_sharealike);
+        tbShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setLicense();
+            }
+        });
+        tbComm = (SwitchCompat)findViewById(R.id.tb_cc_comm);
+        tbComm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setLicense();
+            }
+        });
 
         tvLicenseUrl = (TextView) findViewById(R.id.tv_cc_license);
 
@@ -120,6 +140,10 @@ public class ReviewMediaActivity extends ActionBarActivity {
             if (TextUtils.isEmpty(mMedia.getTags()))
                 tvTags.setVisibility(View.GONE);
 
+            tvLicenseUrl.setEnabled(false);
+            if (TextUtils.isEmpty(mMedia.getLicenseUrl()))
+                tvTags.setVisibility(View.GONE);
+
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
         }
 
@@ -137,20 +161,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
     }
 
-    private void saveMedia ()
+    private void setLicense ()
     {
-        if (tvTitle.getText().length() > 0)
-            mMedia.setTitle(tvTitle.getText().toString());
-        else
-        {
-            //use the file name if the user doesn't set a title
-            mMedia.setTitle(new File(mMedia.getOriginalFilePath()).getName());
-        }
-
-        mMedia.setDescription(tvDescription.getText().toString());
-        mMedia.setAuthor(tvAuthor.getText().toString());
-        mMedia.setLocation(tvLocation.getText().toString());
-        mMedia.setTags(tvTags.getText().toString());
 
         //the default
         String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
@@ -171,12 +183,32 @@ public class ReviewMediaActivity extends ActionBarActivity {
         {
             licenseUrl = "http://creativecommons.org/licenses/by-nc/4.0/";
         }
-        else
+        else if (tbComm.isChecked())
         {
-            licenseUrl = "http://creativecommons.org/licenses/by-nc-nd/4.0/";
+            licenseUrl = "http://creativecommons.org/licenses/by-nd/4.0/";
         }
 
+        tvLicenseUrl.setText(licenseUrl);
+
         mMedia.setLicenseUrl(licenseUrl);
+    }
+
+    private void saveMedia ()
+    {
+        if (tvTitle.getText().length() > 0)
+            mMedia.setTitle(tvTitle.getText().toString());
+        else
+        {
+            //use the file name if the user doesn't set a title
+            mMedia.setTitle(new File(mMedia.getOriginalFilePath()).getName());
+        }
+
+        mMedia.setDescription(tvDescription.getText().toString());
+        mMedia.setAuthor(tvAuthor.getText().toString());
+        mMedia.setLocation(tvLocation.getText().toString());
+        mMedia.setTags(tvTags.getText().toString());
+
+        setLicense();
 
         mMedia.save();
     }
@@ -187,16 +219,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
         saveMedia();
     }
 
-    private void setCCLicenseText(int licenseId, TextView tvCCLicenseLink) {
-        /**
-        if (licenseId == R.id.radioBy) {
-            tvCCLicenseLink.setText(R.string.archive_license_by);
-        } else if (licenseId == R.id.radioBySa) {
-            tvCCLicenseLink.setText(R.string.archive_license_bysa);
-        } else { // ByNcNd is default
-            tvCCLicenseLink.setText(R.string.archive_license_byncnd);
-        }*/
-    }
 
 
 

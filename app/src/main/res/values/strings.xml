@@ -115,4 +115,14 @@
     <string name="share_text">shared from the Open Archive at</string>
     <string name="share_media_text">originally published on the Open Archive at</string>
 
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Allow anyone to remix this work and share it publicly?</string>
+    <string name="info_license_sharealike">Require them to share their versions in the same way you have?</string>
+    <string name="info_license_comm">Allow someone to include your work in a commercial product?</string>
+
 </resources>
