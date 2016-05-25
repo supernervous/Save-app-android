@@ -349,7 +349,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
         Account account = new Account(context, null);
 
         HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
-        boolean useTor = false;
+        boolean useTor = true;
         siteController.upload(account, valueMap, useTor);
         showProgressSpinner();
     }
