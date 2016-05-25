@@ -42,7 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_location_lbl"
-            android:layout_toRightOf="@+id/iv_location"
             android:layout_centerVertical="true"
             android:hint="Location" />
 
@@ -52,74 +51,112 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_tags_lbl"
-            android:layout_toRightOf="@+id/iv_tags"
             android:layout_centerVertical="true"
             android:hint="Tags" />
 
 
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/groupLicenseChooser"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Allow adaptations of your work to be shared?" />
-
-
-        <ToggleButton
-            android:id="@+id/tb_cc_deriv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="No"
-            android:textOn="Yes"
-            android:checked="true"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Require modified versions to also share?" />
-
-
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="No"
-            android:textOn="No"
-            android:checked="true"
-            android:id="@+id/tb_cc_sharealike"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Allow commercial uses of your work?" />
-
-
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="No"
-            android:textOn="Yes"
-            android:checked="true"
-            android:id="@+id/tb_cc_comm"/>
-
-
-
-
-    </LinearLayout>
-    <TextView
+    <EditText
         android:id="@+id/tv_cc_license"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:hint="License (see questions below)"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/groupLicenseChooser"
+        android:padding="8dp"
+        >
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/tb_cc_deriv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textOff="No"
+                android:textOn="Yes"
+                android:checked="true"
+                android:showText="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+        <TextView
+            android:id="@+id/tb_cc_deriv_label"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/info_license_deriv"/>
+
+</RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+
+            <android.support.v7.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textOff="No"
+                android:textOn="Yes"
+                android:checked="true"
+                android:id="@+id/tb_cc_sharealike"
+
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                />
+        <TextView
+            android:id="@+id/tb_cc_sharealike_label"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/info_license_sharealike"
+
+            />
+
+</RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+
+            <android.support.v7.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textOff="No"
+                android:textOn="Yes"
+                android:checked="true"
+                android:id="@+id/tb_cc_comm"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/info_license_comm"
+            android:id="@+id/tb_cc_comm_label"
+
+            />
+
+
+</RelativeLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>
 </ScrollView>

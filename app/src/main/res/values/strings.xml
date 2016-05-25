@@ -5,7 +5,7 @@
     <string name="app_name">OpenArchive</string>
     <string name="app_subtext">An Internet Archive Powered Project\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">Your Open Archive</string>
+    <string name="main_activity_title">Your OpenArchive</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Login to Internet Archive</string>
     <string name="title_activity_settings">Settings</string>
@@ -18,8 +18,8 @@
     <string name="menu_item_publish">PUBLISH</string>
     <string name="lblEditMetadata">Edit Media</string>
     <string name="lblSave">Save</string>
-    <string name="loading_title">Uploading</string>
-    <string name="loading_message">Please wait…</string>
+    <string name="loading_title">Uploading Media</string>
+    <string name="loading_message">Please wait while your media uploads to the Internet Archive...</string>
 
     <!-- Default Values -->
     <string name="default_title">My Title</string>
@@ -99,20 +99,26 @@
     <string name="uploading_to_internet_archive">Uploading to Internet Archive...</string>
     <string name="lbl_update_value">Update Value</string>
     <string name="lbl_enter_value">Tap to enter a value.</string>
-    <string name="title_activity_about">About Open Archive</string>
+    <string name="title_activity_about">About OpenArchive</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="about_body">OpenArchive is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. You can add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive via Tor. It offers more agency over your media, while protecting civil liberties and increasing interoperability for those interested in finding it and reusing it in the future.
-        \n\n
-        OpenArchive was developed in partnership with the Internet Archive, StoryMaker, and Scal.io with generous support from the Knight Foundation.
-        \n\n
-        Learn more at <a href="https://open-archive.net">https://open-archive.net</a>
+    <string name="about_body">OpenArchive is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. You can add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive via Tor. It offers more agency over your media, while protecting civil liberties and increasing interoperability for those interested in finding it and reusing it in the future.55\n\nOpenArchive was developed in partnership with the Internet Archive, StoryMaker, and Scal.io with generous support from the Knight Foundation.\n\nLearn more at <a href="https://open-archive.net">https://open-archive.net</a>
     </string>
 
     <string name="upload_success">Your media is now available on the Internet Archive!</string>
 
     <string name="share_using">Share archive link via</string>
-    <string name="share_text">shared from the Open Archive at</string>
-    <string name="share_media_text">originally published on the Open Archive at</string>
+    <string name="share_text">shared via OpenArchive at</string>
+    <string name="share_media_text">published via OpenArchive at</string>
+
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Allow anyone to remix this work and share it publicly?</string>
+    <string name="info_license_sharealike">Require them to share their versions in the same way you have?</string>
+    <string name="info_license_comm">Allow someone to include your work in a commercial product?</string>
 
 </resources>
