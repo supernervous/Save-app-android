@@ -19,8 +19,8 @@ allprojects {
         // these are common variables used in */build.gradle
         buildToolsVersion="23.0.2"
         compileSdkVersion=23
-        minSdkVersion=15
-        targetSdkVersion=23
+        minSdkVersion=9
+        targetSdkVersion=21
         appcompat='com.android.support:appcompat-v7:23.1.0'
     }
 }
