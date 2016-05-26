@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/about_body"
-        android:id="@+id/textView"
+        android:id="@+id/about_view"
         android:layout_marginTop="16dp"
         android:layout_below="@id/title"
         android:layout_centerVertical="true"

@@ -271,7 +271,7 @@ public class Media extends SugarRecord {
 
         // set to default if none found
         if(null == thumbnail) {
-            thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+//            thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
         }
 
         return thumbnail;

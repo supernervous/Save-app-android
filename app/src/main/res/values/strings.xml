@@ -58,7 +58,9 @@
 
     <!-- FirstStartActivity -->
     <string name="sign_in_btn">Sign In</string>
-    <string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
+    <string name="sign_up_btn">Don\'t have a virtual library card for Archive.org?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>
     <string name="tos_btn">I agree to the terms of service.</string>
 
     <!-- MainFragment -->
