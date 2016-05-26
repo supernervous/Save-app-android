@@ -32,6 +32,7 @@ import net.opendasharchive.openarchive.util.Utility;
 import java.io.File;
 import java.util.HashMap;
 
+import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
 
@@ -56,6 +57,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
     private MenuItem menuShare;
     private MenuItem menuPublish;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,8 @@ public class ReviewMediaActivity extends ActionBarActivity {
         });
 
         tvLicenseUrl = (TextView) findViewById(R.id.tv_cc_license);
+
+
 
     }
 
@@ -343,13 +347,22 @@ public class ReviewMediaActivity extends ActionBarActivity {
     {
         saveMedia();
 
+        ((OpenArchiveApp)getApplication()).checkTor();//refresh the state of Orbot
+        boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
+
+        if (useTor)
+        {
+            Toast.makeText(this,R.string.orbot_detected,Toast.LENGTH_SHORT).show();
+        }
+
         Context context = ReviewMediaActivity.this;
         SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
+        siteController.setUseTor(useTor);
 
         Account account = new Account(context, null);
 
         HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
-        boolean useTor = true;
+
         siteController.upload(account, valueMap, useTor);
         showProgressSpinner();
     }

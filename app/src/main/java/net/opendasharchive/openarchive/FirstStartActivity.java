@@ -88,8 +88,14 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     private void doAuthentication ()
     {
+        boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
+
+        if (useTor)
+            Toast.makeText(this, R.string.orbot_detected,Toast.LENGTH_SHORT).show();
+
         Intent loginIntent = new Intent(this, MainActivity.class);
         SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
+        siteController.setUseTor(useTor);
         siteController.setOnEventListener(mAuthEventListener);
 
         siteController.startAuthentication(mAccount);
@@ -97,8 +103,14 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     private void doSignUp ()
     {
+        boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
+
+        if (useTor)
+            Toast.makeText(this, R.string.orbot_detected,Toast.LENGTH_SHORT).show();
+
         Intent loginIntent = new Intent(this, MainActivity.class);
         SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
+        siteController.setUseTor(useTor);
         siteController.setOnEventListener(mAuthEventListener);
         siteController.startRegistration(mAccount);
     }

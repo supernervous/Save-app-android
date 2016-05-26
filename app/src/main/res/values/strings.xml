@@ -121,4 +121,6 @@
     <string name="info_license_sharealike">Require them to share their versions in the same way you have?</string>
     <string name="info_license_comm">Allow someone to include your work in a commercial product?</string>
 
+    <string name="orbot_detected">Orbot detected; using Tor network to connect more securely...</string>
+
 </resources>
