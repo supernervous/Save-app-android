@@ -33,11 +33,7 @@ android {
     }
     productFlavors {
         releaseflavor {
-            minSdkVersion 9
             applicationId 'net.opendasharchive.openarchive.release'
-            targetSdkVersion 21
-            versionCode 9
-            versionName '0.0.9'
         }
     }
 }
