@@ -147,4 +147,10 @@ public class MediaListFragment extends ListFragment {
     private long getMediaIdByPosition(int position) {
         return Media.getAllMediaAsList().get(position).getId();
     }
+
+    public int getCount ()
+    {
+        return mMediaAdapter.getCount();
+
+    }
 }

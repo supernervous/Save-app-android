@@ -125,4 +125,6 @@
 
     <string name="orbot_detected">Orbot detected; using Tor network to connect more securely...</string>
 
+    <string name="media_hint">Click the (+) button to import or create media to add to your archive</string>
+
 </resources>

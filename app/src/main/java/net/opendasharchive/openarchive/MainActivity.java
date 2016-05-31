@@ -103,6 +103,24 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (fragmentMediaList.getCount() == 0)
+        {
+            findViewById(R.id.media_list).setVisibility(View.GONE);
+            findViewById(R.id.media_hint).setVisibility(View.VISIBLE);
+
+
+        }
+        else
+        {
+            findViewById(R.id.media_list).setVisibility(View.VISIBLE);
+            findViewById(R.id.media_hint).setVisibility(View.GONE);
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
