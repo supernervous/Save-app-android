@@ -271,9 +271,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case R.id.menu_item_share_torrent:
                 shareTorrentLink();
                 break;
-            case R.id.menu_item_stamp:
-                stampMedia();
-                break;
+           // case R.id.menu_item_stamp:
+            //    stampMedia();
+             //   break;
             default:
                 break;
         }
