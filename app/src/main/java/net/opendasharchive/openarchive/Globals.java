@@ -17,8 +17,7 @@ public class Globals {
 
     // intent extras
     public static final String EXTRA_FILE_LOCATION      = "archive_extra_file_location";
-    public static final String EXTRA_CURRENT_MEDIA_ID   = "archive_extra_current_media_id";
-
+    public static final String EXTRA_CURRENT_MEDIA_ID   = "archive_extra_current_media_id"; 
     // prefs
     public static final String PREF_FILE_KEY            = "archive_pref_key";
 
