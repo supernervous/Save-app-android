@@ -48,6 +48,7 @@ dependencies {
     compile 'com.github.satyan:sugar:1.4'
     compile 'info.guardianproject.netcipher:netcipher:1.2.1'
     compile 'net.i2p.android.ext:floatingactionbutton:1.10.1'
+    compile project(":stampery")
 }
 
 apt {

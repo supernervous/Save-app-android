@@ -26,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.stampery.api.Stampery;
+import com.stampery.api.StamperyListener;
+
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -58,6 +61,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
     private MenuItem menuShare;
     private MenuItem menuPublish;
 
+    private final static String BASE_DETAILS_URL = "https://archive.org/details/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,6 +268,12 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case R.id.menu_item_share_media:
                 shareMedia();
                 break;
+            case R.id.menu_item_share_torrent:
+                shareTorrentLink();
+                break;
+            case R.id.menu_item_stamp:
+                stampMedia();
+                break;
             default:
                 break;
         }
@@ -326,6 +336,31 @@ public class ReviewMediaActivity extends ActionBarActivity {
     }
 
     //share the link to the file on the IA
+    private void shareTorrentLink ()
+    {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("\"").append(mMedia.getTitle()).append("\"").append(' ');
+        sb.append(getString(R.string.share_torrent_text)).append(' ');
+
+        StringBuffer sbTorrentUrl = new StringBuffer();
+
+        String tagId = Uri.parse(mMedia.getServerUrl()).getLastPathSegment();
+
+        sb.append("https://archive.org/download/");
+        sb.append(tagId);
+        sb.append("/");
+        sb.append(tagId);
+        sb.append("_archive.torrent");
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+    //share the link to the file on the IA
     private void shareMedia ()
     {
 
@@ -341,6 +376,25 @@ public class ReviewMediaActivity extends ActionBarActivity {
         sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mMedia.getOriginalFilePath())));
 
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+    }
+
+    private void stampMedia ()
+    {
+        Stampery sApi = new Stampery();
+        sApi.setListener(new StamperyListener() {
+            @Override
+            public void stampSuccess(String action, String hash) {
+                Log.i("OAStampery","stamp success: " + action + " hash=" + hash);
+            }
+
+            @Override
+            public void stampFailed(String action, Exception e) {
+                Log.w("OAStampery","stamp failed: " + action,e);
+
+            }
+        });
+        sApi.authenticate("nathan@guardianproject.info","ADANiXj2JPHJ");
+        sApi.stamp("OpenArchive URL","mMedia.getServerUrl()");
     }
 
     private void uploadMedia ()
@@ -438,7 +492,7 @@ public class ReviewMediaActivity extends ActionBarActivity {
         String[] splits = result.split("/");
         String slug = splits[3];
 
-        return "http://archive.org/details/" + slug;
+        return BASE_DETAILS_URL + slug;
     }
 
     public void showError(final String message) {

@@ -13,6 +13,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,14 +25,17 @@ import java.io.IOException;
  */
 public class Stampery {
 
-    private String mSecretToken;
-    private String mClientId;
     private String authHeader;
 
     private StamperyListener mListener;
 
     private final static String MIME_TYPE_JSON = "application/json";
     private final static String BASE_API = "https://stampery.com/api/v2/";
+
+    public void setListener (StamperyListener listener)
+    {
+        mListener = listener;
+    }
 
     //curl -XPOST -H "Content-type: application/json" -d '{"email":"nathan@guardianproject.info", "password":"ADANiXj2JPHJ"}' 'https://stampery.com/api/v2/login'
     public void authenticate (String username, String password)
@@ -123,10 +127,8 @@ public class Stampery {
                      */
 
                     try {
-                        JSONObject jObj = new JSONObject(response.body().toString());
+                        JSONArray jObj = new JSONArray(response.body().toString());
 
-                        mSecretToken = jObj.getJSONObject("api_token").getString("secretToken");
-                        mClientId = jObj.getJSONObject("api_token").getString("clientId");
 
                     }
                     catch (JSONException jse)

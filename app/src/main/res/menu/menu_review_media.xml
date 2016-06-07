@@ -21,6 +21,12 @@
                 android:title="Share Link" />
             <item android:id="@+id/menu_item_share_media"
                 android:title="Share Media" />
+            <item android:id="@+id/menu_item_share_torrent"
+                android:title="Share Torrent" />
+            <!--
+            <item android:id="@+id/menu_item_stamp"
+                android:title="Stamp Media" />
+                -->
         </menu>
 
     </item>
