@@ -47,10 +47,11 @@ public class MainActivity extends ActionBarActivity {
 
         // if user doesn't have an account
         if(!account.isAuthenticated()) {
+            finish();
             Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
             firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(firstStartIntent);
-            finish();
+
         }
         else {
             //otherwise go right into this app;
