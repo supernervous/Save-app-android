@@ -31,6 +31,7 @@ import java.util.Date;
 
 import io.scal.secureshareui.model.Account;
 
+
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
