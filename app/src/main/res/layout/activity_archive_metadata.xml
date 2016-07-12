@@ -92,7 +92,10 @@
             android:id="@+id/tb_cc_deriv_label"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="@string/info_license_deriv"/>
+            android:text="@string/info_license_deriv"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+
+            />
 
 </RelativeLayout>
 
@@ -109,7 +112,7 @@
                 android:layout_height="match_parent"
                 android:textOff="No"
                 android:textOn="Yes"
-                android:checked="true"
+                android:checked="false"
                 android:id="@+id/tb_cc_sharealike"
 
                 android:layout_alignParentRight="true"
@@ -121,6 +124,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="@string/info_license_sharealike"
+            android:textAppearance="?android:attr/textAppearanceSmall"
 
             />
 
@@ -149,6 +153,7 @@
             android:layout_height="wrap_content"
             android:text="@string/info_license_comm"
             android:id="@+id/tb_cc_comm_label"
+            android:textAppearance="?android:attr/textAppearanceSmall"
 
             />
 
