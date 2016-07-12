@@ -30,6 +30,7 @@ import com.stampery.api.Stampery;
 import com.stampery.api.StamperyListener;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.nearby.NearbyActivity;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
@@ -101,16 +102,12 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
         tvLicenseUrl = (TextView) findViewById(R.id.tv_cc_license);
 
-
+        setTitle("");
 
     }
 
     private void bindMedia ()
     {
-
-        if (!TextUtils.isEmpty(mMedia.getTitle()))
-            setTitle(mMedia.getTitle());
-
 
         // set values
         tvTitle.setText(mMedia.getTitle());
@@ -262,6 +259,9 @@ public class ReviewMediaActivity extends ActionBarActivity {
             case R.id.menu_item_publish:
                 uploadMedia();
                 break;
+            case R.id.menu_item_nearby:
+                startNearby();
+                break;
             case R.id.menu_item_share_link:
                 shareLink();
                 break;
@@ -308,6 +308,16 @@ public class ReviewMediaActivity extends ActionBarActivity {
                 showMedia();
             }
         });
+    }
+
+    private void startNearby ()
+    {
+        Intent intent = new Intent(this, NearbyActivity.class);
+        intent.putExtra("isServer",true);
+
+        intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, mMedia.getId());
+
+        startActivity(intent);
     }
 
     private void showMedia ()
@@ -399,26 +409,35 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
     private void uploadMedia ()
     {
-        saveMedia();
+        Account account = new Account(this, null);
 
-        ((OpenArchiveApp)getApplication()).checkTor();//refresh the state of Orbot
-        boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
+        // if user doesn't have an account
+        if(!account.isAuthenticated()) {
+            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            startActivity(firstStartIntent);
 
-        if (useTor)
-        {
-            Toast.makeText(this,R.string.orbot_detected,Toast.LENGTH_SHORT).show();
         }
+        else {
 
-        Context context = ReviewMediaActivity.this;
-        SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
-        siteController.setUseTor(useTor);
 
-        Account account = new Account(context, null);
+            saveMedia();
 
-        HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
+            ((OpenArchiveApp) getApplication()).checkTor();//refresh the state of Orbot
+            boolean useTor = ((OpenArchiveApp) getApplication()).getUseTor();
 
-        siteController.upload(account, valueMap, useTor);
-        showProgressSpinner();
+            if (useTor) {
+                Toast.makeText(this, R.string.orbot_detected, Toast.LENGTH_SHORT).show();
+            }
+
+            Context context = ReviewMediaActivity.this;
+            SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
+            siteController.setUseTor(useTor);
+
+            HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
+
+            siteController.upload(account, valueMap, useTor);
+            showProgressSpinner();
+        }
     }
 
     private void closeProgressSpinner() {

@@ -22,6 +22,7 @@ import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
+import net.opendasharchive.openarchive.nearby.NearbyActivity;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
@@ -44,64 +45,63 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Account account = new Account(this, null);
 
-        // if user doesn't have an account
-        if(!account.isAuthenticated()) {
-            finish();
-            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-            firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(firstStartIntent);
+        //otherwise go right into this app;
 
-        }
-        else {
-            //otherwise go right into this app;
+        setContentView(R.layout.activity_main);
+        setTitle(R.string.main_activity_title);
 
-            setContentView(R.layout.activity_main);
-            setTitle(R.string.main_activity_title);
+        fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
-            fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
+        // handle if started from outside app
+        handleOutsideMedia(getIntent());
 
-            // handle if started from outside app
-            handleOutsideMedia(getIntent());
+        final FloatingActionsMenu fabMenu = (FloatingActionsMenu) findViewById(R.id.floating_menu);
+        FloatingActionButton fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_import);
+        fabAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                importMedia();
+            }
+        });
 
-            final FloatingActionsMenu fabMenu = (FloatingActionsMenu) findViewById(R.id.floating_menu);
-            FloatingActionButton fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_import);
-            fabAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fabMenu.collapse();
-                    importMedia();
-                }
-            });
+        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_camera);
+        fabAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                captureMedia(Media.MEDIA_TYPE.IMAGE);
+            }
+        });
 
-            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_camera);
-            fabAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fabMenu.collapse();
-                    captureMedia(Media.MEDIA_TYPE.IMAGE);
-                }
-            });
+        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_video);
+        fabAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                captureMedia(Media.MEDIA_TYPE.VIDEO);
+            }
+        });
 
-            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_video);
-            fabAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fabMenu.collapse();
-                    captureMedia(Media.MEDIA_TYPE.VIDEO);
-                }
-            });
+        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_audio);
+        fabAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                captureMedia(Media.MEDIA_TYPE.AUDIO);
+            }
+        });
 
-            fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_audio);
-            fabAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fabMenu.collapse();
-                    captureMedia(Media.MEDIA_TYPE.AUDIO);
-                }
-            });
-        }
+        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_nearby);
+        fabAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                startNearby();
+            }
+        });
+
 
     }
 
@@ -271,6 +271,12 @@ public class MainActivity extends ActionBarActivity {
                 })
                 .setIcon(R.drawable.ic_dialog_alert_holo_light)
                 .show();
+    }
+
+    private void startNearby ()
+    {
+        Intent intent = new Intent(this, NearbyActivity.class);
+        startActivity(intent);
     }
 
     private void importMedia ()

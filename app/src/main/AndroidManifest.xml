@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.opendasharchive.openarchive"
-    android:installLocation="auto"
-    >
+    android:installLocation="auto">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -14,6 +13,12 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+
     <!--
      For 4.4 up. Allows us to take permanent permission on File URI Without having
      to show file chooser each time
@@ -22,85 +27,108 @@
 
     <!-- Required to sign in or register with archive.org -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="net.opendasharchive.openarchive.OpenArchiveApp"
+        android:name=".OpenArchiveApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="net.opendasharchive.openarchive.db" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DATABASE" android:value="openarchive.db" />
-        <meta-data android:name="VERSION" android:value="7" />
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="net.opendasharchive.openarchive.db" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DATABASE"
+            android:value="openarchive.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="7" />
 
         <activity
-            android:name="net.opendasharchive.openarchive.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- filter for sending text or images; accepts SEND action and audio/photo/video data -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="audio/*" />
                 <data android:mimeType="image/*" />
                 <data android:mimeType="video/*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:pathPattern=".*\\.mp3" />
+                <data android:pathPattern=".*\\.wav" />
+                <data android:pathPattern=".*\\.3gp" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.mp3" />
+                <data android:pathPattern=".*\\.wav" />
+                <data android:pathPattern=".*\\.3gp" />
+            </intent-filter>
+
+
         </activity>
         <activity
-            android:name="net.opendasharchive.openarchive.FirstStartActivity"
+            android:name=".FirstStartActivity"
             android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="net.opendasharchive.openarchive.ReviewMediaActivity"
+            android:name=".ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            >
-/>
+            android:windowSoftInputMode="stateHidden">
+            />
         </activity>
         <activity
-            android:name="net.opendasharchive.openarchive.ArchiveSettingsActivity"
+            android:name=".ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme" >
-        </activity>
+            android:theme="@style/SettingsTheme"></activity>
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName="net.opendasharchive.openarchive.FirstStartActivity"
-            android:screenOrientation="portrait" >
+            android:parentActivityName=".FirstStartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.FirstStartActivity" />
         </activity>
         <activity
-            android:name="net.opendasharchive.openarchive.MediaListActivity"
+            android:name=".MediaListActivity"
             android:label="@string/title_media_list"
-            android:parentActivityName="net.opendasharchive.openarchive.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme" >
+            android:theme="@style/SettingsTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
         <activity
-            android:name="net.opendasharchive.openarchive.AboutActivity"
+            android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName="net.opendasharchive.openarchive.MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
+        <activity android:name=".nearby.NearbyActivity"></activity>
     </application>
 
 </manifest>
