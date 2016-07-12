@@ -15,7 +15,9 @@
     <string name="title_media_list">Uploads</string>
 
     <!-- General -->
-    <string name="menu_item_publish">PUBLISH</string>
+    <string name="menu_item_publish">Publish</string>
+    <string name="menu_item_nearby">Share Nearby</string>
+
     <string name="lblEditMetadata">Edit Media</string>
     <string name="lblSave">Save</string>
     <string name="loading_title">Uploading Media</string>
@@ -120,9 +122,9 @@
     <string name="info_license_comm">Allow commercial uses of your work?</string>
     -->
 
-    <string name="info_license_deriv">Allow anyone to remix this work and share it publicly?</string>
-    <string name="info_license_sharealike">Require them to share their versions in the same way you have?</string>
-    <string name="info_license_comm">Allow someone to include your work in a commercial product?</string>
+    <string name="info_license_deriv">Allow anyone to remix and share?</string>
+    <string name="info_license_sharealike">Require them to share like you have?</string>
+    <string name="info_license_comm">Allow commercial use?</string>
 
     <string name="orbot_detected">Orbot detected; using Tor network to connect more securely...</string>
 

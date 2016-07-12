@@ -6,8 +6,9 @@
 
     <item android:id="@+id/menu_item_publish" android:title="@string/menu_item_publish"
         android:orderInCategory="100"
-        app:showAsAction="always"
+        app:showAsAction="always|collapseActionView"
         android:visible="false"
+        android:icon="@drawable/ic_cloud_upload_white_36dp"
         />
 
     <item
@@ -15,6 +16,7 @@
         app:showAsAction="always"
         android:title="Share"
         android:visible="false"
+        android:icon="@drawable/ic_share_white_36dp"
         >
         <menu>
             <item android:id="@+id/menu_item_share_link"
@@ -30,5 +32,12 @@
         </menu>
 
     </item>
+
+    <item android:id="@+id/menu_item_nearby" android:title="@string/menu_item_nearby"
+        android:orderInCategory="100"
+        app:showAsAction="always|collapseActionView"
+        android:visible="true"
+        android:icon="@drawable/ic_people_white_36dp"
+        />
 
 </menu>
