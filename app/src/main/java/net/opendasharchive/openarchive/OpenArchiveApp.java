@@ -28,7 +28,8 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     public boolean checkTor ()
     {
-        mUseTor = OrbotHelper.isOrbotInstalled(this) && OrbotHelper.isOrbotRunning(this);
+        //TODO move to new NetCipher API
+        mUseTor = false;//OrbotHelper.isOrbotInstalled(this) && OrbotHelper.isOrbotRunning(this);
 
         return mUseTor;
     }

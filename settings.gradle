@@ -1,3 +1,4 @@
 include ':app', ':stampery', ':ipfs-android'
 include ':external:SecureShareLib:SecureShareUILibrary'
-//include ':external:SecureShareLib:SecureShareUILibrary:external:facebook-sdk:facebook'
+include ':Android-Multi-Bluetooth-Library:Bluetooth:Bluetooth_lib'
+

@@ -7,3 +7,6 @@ OpenArchive was developed in partnership with the Internet Archive, StoryMaker, 
 Credits
 
 Photo by (Patrik Goethe)[https://unsplash.com/patrikgoethe]
+
+Icons by:
+Share by Alex Podolsky from the Noun Project
