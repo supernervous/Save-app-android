@@ -1,12 +1,8 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion project.ext.compileSdkVersion
     buildToolsVersion project.ext.buildToolsVersion
-
-    lintOptions {
-        abortOnError false
-    }
 
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
@@ -16,14 +12,16 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 16
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 9
+        targetSdkVersion 21
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.android.support:appcompat-v7:21.+'
     compile 'de.greenrobot:eventbus:2.2.0'
 }
