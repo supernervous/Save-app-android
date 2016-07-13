@@ -11,7 +11,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +50,8 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
     private boolean mIsServer = false;
     private ServerThread serverThread = null;
+    private ClientThread clientThread = null;
+
     private Media mMedia = null;
 
     private Handler mHandler = new Handler ()
@@ -82,9 +87,12 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                     log("data received");
 
                     if (message.obj instanceof File) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.fromFile((File) message.obj), "image/jpeg");
-                        startActivity(intent);
+
+                        File fileMedia = (File) message.obj;
+                        String mimeType = "image/jpeg";
+
+                        addMedia(fileMedia, mimeType);
+
                     }
 
                     break;
@@ -112,8 +120,19 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
                     long remaining = pd.totalSize-pd.remainingSize;
 
-                    log ("progress: " + (pd.totalSize-pd.remainingSize) + "/" + pd.totalSize);
-                    int perComplete = (int)((((float)remaining)/((float)pd.totalSize))*100f);
+
+
+                    int perComplete = -1;
+
+                    if (mIsServer) {
+                        perComplete = 100 - (int) ((((float) remaining) / ((float) pd.totalSize)) * 100f);
+                        log("progress: " + (pd.remainingSize) + "/" + pd.totalSize);
+
+                    }
+                    else {
+                        perComplete = (int) ((((float) remaining) / ((float) pd.totalSize)) * 100f);
+                        log("progress: " + (pd.totalSize - pd.remainingSize) + "/" + pd.totalSize);
+                    }
 
                     mProgress.setProgress(perComplete);
                 }
@@ -123,6 +142,27 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         }
     };
 
+    private void addMedia (final File fileMedia, final String mimeType)
+    {
+        Media media = new Media(NearbyActivity.this, fileMedia.getAbsolutePath(), mimeType);
+        media.save();
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_SHORT);
+
+        snackbar.setAction("Open", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(fileMedia),mimeType);
+                startActivity(intent);
+            }
+        });
+
+        snackbar.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +171,15 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         mTvNearbyLog = (TextView)findViewById(R.id.tvnearbylog);
         mProgress = (DonutProgress)findViewById(R.id.donut_progress);
         mProgress.setMax(100);
+
+        Button btn = (Button)findViewById(R.id.btnCancel);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelNearby();
+                finish();
+            }
+        });
 
         EventBus.getDefault().register(this);
 
@@ -144,6 +193,23 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
     }
 
+    private void cancelNearby ()
+    {
+        if (serverThread != null)
+            serverThread.cancel();
+
+        if (clientThread != null)
+            clientThread.cancel();
+
+        if (mIsServer) {
+
+            disconnectServer();
+
+        }
+        else
+            disconnectClient();
+    }
+
     private void log (String msg)
     {
         mTvNearbyLog.setText(msg);
@@ -155,19 +221,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
-        if (serverThread != null)
-            serverThread.cancel();
-
-   //     if (clientThread != null)
-     //       clientThread.cancel();
-
-        if (mIsServer) {
-
-            disconnectServer();
-
-        }
-        else
-            disconnectClient();
+        cancelNearby();
     }
 
     private void startServer () {
@@ -302,7 +356,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                         device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
             log("Found device: " + device.getName() + ":" + device.getAddress());
 
-            ClientThread clientThread = new ClientThread(device, mHandler, false);
+            clientThread = new ClientThread(device, mHandler, false);
             clientThread.start();
         }
 
