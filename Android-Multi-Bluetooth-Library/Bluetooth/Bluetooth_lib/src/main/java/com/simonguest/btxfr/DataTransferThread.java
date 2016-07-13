@@ -9,6 +9,7 @@ import android.util.Log;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +78,6 @@ class DataTransferThread extends Thread {
                     }
 
                     int bytesRead = inputStream.read(headerBytes);
-
 
                     Log.v(TAG, "Received Header Bytes: " + bytesRead);
 
@@ -164,7 +164,7 @@ class DataTransferThread extends Thread {
             handler.sendEmptyMessage(MessageType.SENDING_DATA);
 
             InputStream is = new FileInputStream(fileMedia);
-            OutputStream outputStream = new BufferedOutputStream(socket.getOutputStream());
+            DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
             // Send the header control first
             outputStream.write(Constants.HEADER_MSB);
@@ -199,7 +199,7 @@ class DataTransferThread extends Thread {
             outputStream.flush();
 
             Log.v(TAG, "Data sent.  Waiting for return digest as confirmation");
-            InputStream inputStream = socket.getInputStream();
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             byte[] incomingDigest = new byte[16];
             int incomingIndex = 0;
 
@@ -209,7 +209,7 @@ class DataTransferThread extends Thread {
                     inputStream.read(header, 0, 1);
                     incomingDigest[incomingIndex++] = header[0];
                     if (incomingIndex == 16) {
-                        if (Utils.digestMatch(dataDigest, incomingDigest)) {
+                        if (Arrays.equals(dataDigest, incomingDigest)) {
                             Log.d(TAG, "Digest matched OK.  Data was received OK.");
                             handler.sendEmptyMessage(MessageType.DATA_SENT_OK);
                         } else {

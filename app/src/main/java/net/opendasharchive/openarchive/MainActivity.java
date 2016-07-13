@@ -122,6 +122,10 @@ public class MainActivity extends ActionBarActivity {
             findViewById(R.id.media_hint).setVisibility(View.GONE);
 
         }
+
+        if (fragmentMediaList != null)
+            fragmentMediaList.refreshMediaList();
+
     }
 
     @Override

@@ -31,7 +31,7 @@ public class Utils {
     }
 
     public static boolean digestMatch(byte[] imageData, byte[] digestData) {
-        return Arrays.equals(getDigest(imageData), digestData);
+        return Arrays.equals((imageData), digestData);
     }
 
     public static byte[] getDigest(byte[] imageData) {
