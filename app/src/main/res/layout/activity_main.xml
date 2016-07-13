@@ -94,7 +94,7 @@ android:layout_margin="16dp"
         fab:fab_colorNormal="@color/white"
         fab:fab_title="Nearby Receive"
         fab:fab_colorPressed="@color/bright_blue"
-        fab:fab_icon="@drawable/ic_people_black_24dp"
+        fab:fab_icon="@drawable/ic_nearby_black_24dp"
         android:id="@+id/floating_menu_nearby"
         />
 

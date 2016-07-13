@@ -37,7 +37,7 @@
         android:orderInCategory="100"
         app:showAsAction="always|collapseActionView"
         android:visible="true"
-        android:icon="@drawable/ic_people_white_36dp"
+        android:icon="@drawable/ic_nearby_white_24dp"
         />
 
 </menu>
