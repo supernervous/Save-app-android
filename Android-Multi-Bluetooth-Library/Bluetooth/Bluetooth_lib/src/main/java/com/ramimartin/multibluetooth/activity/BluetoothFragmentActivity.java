@@ -83,6 +83,7 @@ public abstract class BluetoothFragmentActivity extends FragmentActivity {
     }
 
     public void disconnectClient(){
+        mBluetoothManager.stopScanningBluetoothDevices();
         mBluetoothManager.disconnectClient();
     }
 

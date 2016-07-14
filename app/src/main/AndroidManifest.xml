@@ -128,7 +128,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
-        <activity android:name=".nearby.NearbyActivity"></activity>
+        <activity android:name=".nearby.NearbyActivity"
+            android:screenOrientation="portrait"
+            ></activity>
     </application>
 
 </manifest>

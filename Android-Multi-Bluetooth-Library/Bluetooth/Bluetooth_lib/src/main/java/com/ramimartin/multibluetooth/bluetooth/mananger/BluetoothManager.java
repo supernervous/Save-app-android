@@ -59,6 +59,7 @@ public class BluetoothManager extends BroadcastReceiver {
     public boolean isConnected;
     private boolean mBluetoothIsEnableOnStart;
     private String mBluetoothNameSaved;
+    private boolean mStopScanning = false;
 
     public BluetoothManager(Activity activity) {
         mActivity = activity;
@@ -213,10 +214,21 @@ public class BluetoothManager extends BroadcastReceiver {
     }
 
     public void scanAllBluetoothDevice() {
-        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        mActivity.registerReceiver(this, intentFilter);
-        mBluetoothAdapter.startDiscovery();
 
+        if (mType != TypeBluetooth.None && mBluetoothAdapter != null && (!mStopScanning)) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+            intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            mActivity.registerReceiver(this, intentFilter);
+            mBluetoothAdapter.startDiscovery();
+            mStopScanning = false;
+        }
+
+    }
+
+    public void stopScanningBluetoothDevices ()
+    {
+        mStopScanning = true;
     }
 
     public void createClient(String addressMac) {
@@ -305,7 +317,12 @@ public class BluetoothManager extends BroadcastReceiver {
                 EventBus.getDefault().post(device);
             }
         }
-        if(intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
+        else if (intent.getAction().equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
+        {
+                //start it up again!
+                scanAllBluetoothDevice();
+        }
+        else if(intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
             //Log.e("", "===> ACTION_BOND_STATE_CHANGED");
             int prevBondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1);
             int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1);
