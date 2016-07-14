@@ -12,6 +12,14 @@
     android:id="@+id/main_nearby"
     tools:context="net.opendasharchive.openarchive.nearby.NearbyActivity">
 
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="30dp"
+        >
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/donut_progress"
         android:layout_width="240dp"
@@ -19,25 +27,63 @@
         custom:donut_progress="0"
         custom:donut_max="100"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
         />
 
     <TextView
         android:id="@+id/tvnearbylog"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text=""
+        android:layout_height="40dp"
+        android:text="--------------------"
         android:gravity="center_horizontal"
         />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="5dp"
+        android:background="#eeeeee"
+        android:id="@+id/nearbydevices"
+        >
+</LinearLayout>
 
 
-    <Button
+    <RelativeLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:text="Cancel"
-        android:gravity="center_horizontal"
-        android:id="@+id/btnCancel"
-        />
+        >
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/tbPairedDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textOff="Public"
+            android:textOn="Private"
+            android:checked="false"
+            android:showText="true"
+            android:layout_alignParentLeft="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Paired Devices Only?"
+            android:layout_toRightOf="@+id/tbPairedDevices"
+            android:gravity="center_vertical"
+            />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:text="Cancel"
+            android:id="@+id/btnCancel"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+
+            />
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -1,23 +1,32 @@
 package net.opendasharchive.openarchive.nearby;
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelUuid;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.ramimartin.multibluetooth.activity.BluetoothActivity;
@@ -37,6 +46,7 @@ import net.opendasharchive.openarchive.db.Media;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
@@ -47,12 +57,18 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
     private TextView mTvNearbyLog;
     private DonutProgress mProgress;
+    private LinearLayout mViewNearbyDevices;
+    private SwitchCompat mSwitchPairedOnly;
 
     private boolean mIsServer = false;
     private ServerThread serverThread = null;
-    private ClientThread clientThread = null;
 
     private Media mMedia = null;
+
+    private boolean mPairedDevicesOnly = false;
+
+    private static HashMap<String,BluetoothDevice> mFoundDevices = new HashMap<String,BluetoothDevice>();
+    private static HashMap<String, ClientThread> clientThreads = new HashMap<String, ClientThread>();
 
     private Handler mHandler = new Handler ()
     {
@@ -91,8 +107,10 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                         File fileMedia = (File) message.obj;
                         String mimeType = "image/jpeg";
 
+                        log ("");
                         addMedia(fileMedia, mimeType);
 
+                        return;
                     }
 
                     break;
@@ -148,7 +166,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         media.save();
 
         Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_SHORT);
+                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_INDEFINITE);
 
         snackbar.setAction("Open", new View.OnClickListener() {
             @Override
@@ -169,6 +187,27 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         setContentView(R.layout.activity_nearby);
 
         mTvNearbyLog = (TextView)findViewById(R.id.tvnearbylog);
+        mViewNearbyDevices = (LinearLayout)findViewById(R.id.nearbydevices);
+        mSwitchPairedOnly = (SwitchCompat)findViewById(R.id.tbPairedDevices);
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        mPairedDevicesOnly = prefs.getBoolean("pairedonly",false);
+        mSwitchPairedOnly.setChecked(mPairedDevicesOnly);
+
+        mSwitchPairedOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPairedDevicesOnly = isChecked;
+
+                prefs.edit().putBoolean("pairedonly",mPairedDevicesOnly).commit();
+
+                restartNearby();
+
+
+            }
+        });
+
         mProgress = (DonutProgress)findViewById(R.id.donut_progress);
         mProgress.setMax(100);
 
@@ -176,8 +215,9 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelNearby();
                 finish();
+                cancelNearby();
+
             }
         });
 
@@ -193,26 +233,76 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
     }
 
+    private void restartNearby ()
+    {
+
+        new Thread ()
+        {
+            public void run ()
+            {
+                if (serverThread != null)
+                    serverThread.cancel();
+
+                for (ClientThread clientThread : clientThreads.values()) {
+
+                    if (clientThread != null && clientThread.isAlive())
+                        clientThread.cancel();
+                }
+
+                if (mIsServer) {
+
+                    disconnectServer();
+
+                }
+                else
+                    disconnectClient();
+
+                mFoundDevices.clear();
+                clientThreads.clear();
+
+                //now start again
+                if (mIsServer)
+                    startServer();
+                else
+                    startClient();
+
+            }
+        }.start();
+    }
+
     private void cancelNearby ()
     {
-        if (serverThread != null)
-            serverThread.cancel();
+        new Thread ()
+        {
+            public void run ()
+            {
+                if (serverThread != null)
+                    serverThread.cancel();
 
-        if (clientThread != null)
-            clientThread.cancel();
 
-        if (mIsServer) {
+                for (ClientThread clientThread : clientThreads.values()) {
 
-            disconnectServer();
+                    if (clientThread != null && clientThread.isAlive())
+                        clientThread.cancel();
+                }
 
-        }
-        else
-            disconnectClient();
+                if (mIsServer) {
+
+                    disconnectServer();
+
+                }
+                else
+                    disconnectClient();
+            }
+        }.start();
+
     }
 
     private void log (String msg)
     {
-        mTvNearbyLog.setText(msg);
+        if (mTvNearbyLog != null)
+            mTvNearbyLog.setText(msg);
+
         Log.d("Nearby",msg);
     }
 
@@ -231,15 +321,21 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         if (currentMediaId >= 0)
             mMedia = Media.findById(Media.class, currentMediaId);
 
-        setTimeDiscoverable(BluetoothManager.BLUETOOTH_TIME_DICOVERY_3600_SEC);
-        selectServerMode();
-        if (mBluetoothManager.isDiscoverable())
+        if (!mPairedDevicesOnly) {
+            if (!mBluetoothManager.isDiscoverable()) {
+                setTimeDiscoverable(BluetoothManager.BLUETOOTH_TIME_DICOVERY_3600_SEC);
+            }
+        }
+        else if (mBluetoothManager.isDiscoverable())
         {
-
-            onBluetoothStartDiscovery();
+            //turn off discover
+            setTimeDiscoverable(1);
 
         }
-        serverThread = new ServerThread(mBluetoothManager.getAdapter(),mHandler,false);
+
+        selectServerMode();
+
+        serverThread = new ServerThread(mBluetoothManager.getAdapter(),mHandler,mPairedDevicesOnly);
         sendMediaFile();
         serverThread.start();
 
@@ -275,7 +371,35 @@ public class NearbyActivity extends BluetoothFragmentActivity {
     private void startClient ()
     {
         selectClientMode();
-        scanAllBluetoothDevice();
+
+        if (mPairedDevicesOnly)
+        {
+            for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
+            {
+                mFoundDevices.put(device.getAddress(),device);
+                //for previously found devices, try to automatically connect
+                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+                clientThread.start();
+
+                clientThreads.put(device.getAddress(),clientThread);
+            }
+
+
+        }
+        else {
+            scanAllBluetoothDevice();
+        }
+
+        if (clientThreads.isEmpty()) {
+            for (BluetoothDevice device : mFoundDevices.values()) {
+
+                //for previously found devices, try to automatically connect
+                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+                clientThread.start();
+
+                clientThreads.put(device.getAddress(),clientThread);
+            }
+        }
     }
 
     @Override
@@ -354,14 +478,47 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                 (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
                         device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
                         device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
-            log("Found device: " + device.getName() + ":" + device.getAddress());
 
-            clientThread = new ClientThread(device, mHandler, false);
-            clientThread.start();
+
+            if (!mFoundDevices.containsKey(device.getAddress())) {
+
+                if (mPairedDevicesOnly && device.getBondState() != BluetoothDevice.BOND_BONDED)
+                    return; //we can only support paired devices
+
+                mFoundDevices.put(device.getAddress(),device);
+
+                addDeviceToView(device);
+
+                log("Found device: " + device.getName() + ":" + device.getAddress());
+
+                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+                clientThread.start();
+
+                clientThreads.put(device.getAddress(), clientThread);
+            }
         }
 
 
 
+
+    }
+
+    private void addDeviceToView (BluetoothDevice device)
+    {
+
+        LinearLayout.LayoutParams imParams =
+        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        LinearLayout.LayoutParams imgvwDimens = new LinearLayout.LayoutParams(60, 60);
+        ImageView iv = new ImageView(this);
+        iv.setLayoutParams(imgvwDimens);
+
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRoundRect(device.getName().substring(0,1), Color.GREEN, 10);
+
+        iv.setImageDrawable(drawable);
+
+        mViewNearbyDevices.addView(iv,imParams);
 
     }
 
