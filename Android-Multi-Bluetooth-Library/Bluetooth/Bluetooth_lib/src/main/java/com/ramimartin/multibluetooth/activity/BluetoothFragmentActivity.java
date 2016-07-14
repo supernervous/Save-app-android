@@ -71,6 +71,7 @@ public abstract class BluetoothFragmentActivity extends FragmentActivity {
     }
 
     public void startDiscovery(){
+
         mBluetoothManager.makeDiscoverable();
     }
 
@@ -95,8 +96,10 @@ public abstract class BluetoothFragmentActivity extends FragmentActivity {
         mBluetoothManager.createServeur(address);
     }
 
-    public void selectServerMode(){
+    public void selectServerMode(boolean isDiscoverable){
         mBluetoothManager.selectServerMode();
+        if (isDiscoverable)
+            mBluetoothManager.makeDiscoverable();
       //  mBluetoothManager.createServeur("foo");
     }
     public void selectClientMode(){

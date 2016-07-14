@@ -82,7 +82,7 @@ public class BluetoothManager extends BroadcastReceiver {
     }
 
     public void selectServerMode(){
-        makeDiscoverable();
+      //  makeDiscoverable();
         mType = TypeBluetooth.Server;
         setServerBluetoothName();
     }
