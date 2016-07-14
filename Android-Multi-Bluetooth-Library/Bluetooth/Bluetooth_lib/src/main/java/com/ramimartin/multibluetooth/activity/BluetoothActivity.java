@@ -90,8 +90,10 @@ public abstract class BluetoothActivity extends Activity {
         mBluetoothManager.createServeur(address);
     }
 
-    public void selectServerMode(){
+    public void selectServerMode(boolean isDiscoverable){
         mBluetoothManager.selectServerMode();
+        if (isDiscoverable)
+            mBluetoothManager.makeDiscoverable();
     }
     public void selectClientMode(){
         mBluetoothManager.selectClientMode();

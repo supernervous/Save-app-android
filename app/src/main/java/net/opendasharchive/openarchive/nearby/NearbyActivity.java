@@ -68,7 +68,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
     private boolean mPairedDevicesOnly = false;
 
     private static HashMap<String,BluetoothDevice> mFoundDevices = new HashMap<String,BluetoothDevice>();
-    private static HashMap<String, ClientThread> clientThreads = new HashMap<String, ClientThread>();
+    private HashMap<String, ClientThread> clientThreads = new HashMap<String, ClientThread>();
 
     private Handler mHandler = new Handler ()
     {
@@ -166,7 +166,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         media.save();
 
         Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_INDEFINITE);
+                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_LONG);
 
         snackbar.setAction("Open", new View.OnClickListener() {
             @Override
@@ -225,11 +225,14 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
         mIsServer = getIntent().getBooleanExtra("isServer",false);
 
-
-        if (mIsServer)
+        if (mIsServer) {
             startServer();
-        else
+            mProgress.setInnerBottomText("Sharing >>");
+        }
+        else {
             startClient();
+            mProgress.setInnerBottomText(">> Receiving");
+        }
 
     }
 
@@ -247,6 +250,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
                     if (clientThread != null && clientThread.isAlive())
                         clientThread.cancel();
+
                 }
 
                 if (mIsServer) {
@@ -257,7 +261,6 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                 else
                     disconnectClient();
 
-                mFoundDevices.clear();
                 clientThreads.clear();
 
                 //now start again
@@ -285,6 +288,8 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                     if (clientThread != null && clientThread.isAlive())
                         clientThread.cancel();
                 }
+
+                clientThreads.clear();
 
                 if (mIsServer) {
 
@@ -321,23 +326,36 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         if (currentMediaId >= 0)
             mMedia = Media.findById(Media.class, currentMediaId);
 
-        if (!mPairedDevicesOnly) {
+        boolean isDiscoverable = !mPairedDevicesOnly;
+
+        if (isDiscoverable) {
             if (!mBluetoothManager.isDiscoverable()) {
                 setTimeDiscoverable(BluetoothManager.BLUETOOTH_TIME_DICOVERY_3600_SEC);
             }
         }
-        else if (mBluetoothManager.isDiscoverable())
-        {
-            //turn off discover
-            setTimeDiscoverable(1);
 
-        }
-
-        selectServerMode();
+        selectServerMode(isDiscoverable);
 
         serverThread = new ServerThread(mBluetoothManager.getAdapter(),mHandler,mPairedDevicesOnly);
         sendMediaFile();
         serverThread.start();
+
+        boolean foundPairedDevice = false;
+
+        //first check for paired devices
+        for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
+        {
+            if (device != null && device.getName() != null &&
+                    (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
+                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
+                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
+                foundPairedDevice = true;
+            }
+        }
+
+        if (mPairedDevicesOnly && (!foundPairedDevice))
+            noPairedDevices(); //no paired device? Prompt user to add!
+
 
         /**
         serverThread.setServerListener(new ServerThread.ServerListener() {
@@ -372,32 +390,47 @@ public class NearbyActivity extends BluetoothFragmentActivity {
     {
         selectClientMode();
 
-        if (mPairedDevicesOnly)
+        boolean foundPairedDevice = false;
+
+        //first check for paired devices
+        for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
         {
-            for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
-            {
-                mFoundDevices.put(device.getAddress(),device);
+            if (device != null && device.getName() != null &&
+                    (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
+                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
+                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
+
+                mFoundDevices.put(device.getAddress(), device);
                 //for previously found devices, try to automatically connect
                 ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+                clientThreads.put(device.getAddress(), clientThread);
+
                 clientThread.start();
 
-                clientThreads.put(device.getAddress(),clientThread);
+                foundPairedDevice = true;
             }
-
-
         }
-        else {
+
+        if (mPairedDevicesOnly && (!foundPairedDevice))
+            noPairedDevices(); //no paired device? Prompt user to add!
+
+        if (!mPairedDevicesOnly) {
+
+            //start scanning
             scanAllBluetoothDevice();
-        }
 
-        if (clientThreads.isEmpty()) {
-            for (BluetoothDevice device : mFoundDevices.values()) {
+            //connecting to previously connected devices
+            if (clientThreads.isEmpty()) {
+                for (BluetoothDevice device : mFoundDevices.values()) {
 
-                //for previously found devices, try to automatically connect
-                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
-                clientThread.start();
+                    if (!clientThreads.containsKey(device.getAddress())) {
+                        //for previously found devices, try to automatically connect
+                        ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+                        clientThread.start();
 
-                clientThreads.put(device.getAddress(),clientThread);
+                        clientThreads.put(device.getAddress(), clientThread);
+                    }
+                }
             }
         }
     }
@@ -480,22 +513,27 @@ public class NearbyActivity extends BluetoothFragmentActivity {
                         device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
 
 
+            if (mPairedDevicesOnly && device.getBondState() == BluetoothDevice.BOND_NONE)
+                return; //we can only support paired devices
+
+
             if (!mFoundDevices.containsKey(device.getAddress())) {
-
-                if (mPairedDevicesOnly && device.getBondState() != BluetoothDevice.BOND_BONDED)
-                    return; //we can only support paired devices
-
-                mFoundDevices.put(device.getAddress(),device);
-
+                mFoundDevices.put(device.getAddress(), device);
                 addDeviceToView(device);
 
-                log("Found device: " + device.getName() + ":" + device.getAddress());
-
-                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
-                clientThread.start();
-
-                clientThreads.put(device.getAddress(), clientThread);
             }
+
+            if (clientThreads.containsKey(device.getAddress()))
+                if (clientThreads.get(device.getAddress()).isAlive())
+                    return; //we have a running thread here people!
+
+            log("Found device: " + device.getName() + ":" + device.getAddress());
+
+            ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
+            clientThread.start();
+
+            clientThreads.put(device.getAddress(), clientThread);
+
         }
 
 
@@ -520,6 +558,27 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
         mViewNearbyDevices.addView(iv,imParams);
 
+    }
+
+    private void noPairedDevices ()
+    {
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.main_nearby), "You have no paired devices. Add now?", Snackbar.LENGTH_LONG);
+
+        snackbar.setAction("Add", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            openBluetoothSettings();
+            }
+        });
+
+        snackbar.show();
+    }
+    private void openBluetoothSettings ()
+    {
+        Intent intentOpenBluetoothSettings = new Intent();
+        intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+        startActivity(intentOpenBluetoothSettings);
     }
 
 
