@@ -8,8 +8,8 @@ android {
     buildToolsVersion project.ext.buildToolsVersion
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
-        minSdkVersion 9
-        targetSdkVersion 21
+        minSdkVersion 10
+        targetSdkVersion 16
         versionCode 12
         versionName "0.0.12"
         multiDexEnabled false
@@ -39,16 +39,20 @@ android {
 }
 
 dependencies {
-    compile project(':external:SecureShareLib:SecureShareUILibrary')
     compile 'com.google.code.gson:gson:1.7.2'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:design:22.2.1'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okio:okio:1.1.0'
     compile 'com.github.satyan:sugar:1.4'
     compile 'info.guardianproject.netcipher:netcipher:1.2.1'
     compile 'net.i2p.android.ext:floatingactionbutton:1.10.1'
-    compile project(":stampery")
+    compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile project(":external:stampery")
+    compile project(":external:LibNearby:LibNearbyBluetooth")
+    compile 'com.github.paolorotolo:appintro:4.0.0'
 }
 
 apt {

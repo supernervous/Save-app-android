@@ -6,6 +6,8 @@
     <color name="black">#000000</color>
     <color name="transparent_black">#33333333</color>
     <color name="storymaker_blue">#27aae1</color>
+    <color name="bright_blue">#00b0ff</color>
+
 
     <color name="extra_light_grey">#ffbebebe</color>
     <color name="light_grey">#9e9e9e</color>
@@ -24,4 +26,11 @@
     <color name="pink_pressed">#ec407a</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
+
+    <color name="oablue">#36a9c6</color>
+
+    <color name="intro1bg">#34c5ff</color>
+    <color name="intro2bg">#34c5ff</color>
+    <color name="intro3bg">#34c5ff</color>
+
 </resources>
