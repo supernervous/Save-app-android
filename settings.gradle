@@ -1,4 +1,5 @@
-include ':app', ':stampery', ':ipfs-android'
-include ':external:SecureShareLib:SecureShareUILibrary'
-include ':Android-Multi-Bluetooth-Library:Bluetooth:Bluetooth_lib'
+include ':app', ':ipfs-android'
+include ':external:stampery'
+include ':external:ipfs-android'
+include ':external:LibNearby:LibNearbyBluetooth'
 

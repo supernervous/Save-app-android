@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-    compile project(':external:SecureShareLib:SecureShareUILibrary')
     compile 'com.google.code.gson:gson:1.7.2'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v4:21.0.3'
@@ -51,8 +50,8 @@ dependencies {
     compile 'net.i2p.android.ext:floatingactionbutton:1.10.1'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile project(":stampery")
-    compile project(":Android-Multi-Bluetooth-Library:Bluetooth:Bluetooth_lib")
+    compile project(":external:stampery")
+    compile project(":external:LibNearby:LibNearbyBluetooth")
     compile 'com.github.paolorotolo:appintro:4.0.0'
 }
 
