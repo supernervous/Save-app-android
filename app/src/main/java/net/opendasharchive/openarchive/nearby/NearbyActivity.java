@@ -360,7 +360,6 @@ public class NearbyActivity extends BluetoothFragmentActivity {
             noPairedDevices(); //no paired device? Prompt user to add!
 
 
-
     }
 
     private void sendMediaFile ()

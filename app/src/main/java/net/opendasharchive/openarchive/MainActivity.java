@@ -296,6 +296,12 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    private void startNearby ()
+    {
+        Intent intent = new Intent(this, NearbyActivity.class);
+        startActivity(intent);
+    }
+
     private void importMedia ()
     {
         // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager

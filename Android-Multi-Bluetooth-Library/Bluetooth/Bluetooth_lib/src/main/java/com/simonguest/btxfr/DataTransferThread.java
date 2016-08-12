@@ -206,8 +206,6 @@ class DataTransferThread extends Thread {
             outputStream.writeUTF(fileTitle);
             outputStream.writeUTF(fileMimeType);
 
-            Log.v(TAG, "Sending file of " + dataLength + " length");
-
             byte[] buffer = new byte[Constants.CHUNK_SIZE];
             int bytesRead;
             while ((bytesRead = is.read(buffer)) != -1) {

@@ -54,7 +54,6 @@ dependencies {
     compile project(":stampery")
     compile project(":Android-Multi-Bluetooth-Library:Bluetooth:Bluetooth_lib")
     compile 'com.github.paolorotolo:appintro:4.0.0'
-
 }
 
 apt {
