@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Activities -->
+    <string name="app_name">آرشیو باز</string>
+    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:
+\\n<a href=\"#\">
+</a></string>
+
+    <string name="main_activity_title">آرشیوباز شما</string>
+    <string name="title_activity_main">رسانه بگیر</string>
+    <string name="title_activity_login">به آرشیو وارد شو</string>
+    <string name="title_activity_settings">تنظیمات</string>
+    <string name="title_activity_first_start">اولین آغاز</string>
+    <string name="title_activity_view_media">رسانه را ببین</string>
+    <string name="title_activity_archive_metadata">متادیتا</string>
+    <string name="title_media_list">آپلود</string>
+
+    <!-- General -->
+    <string name="menu_item_publish">نشر</string>
+    <string name="menu_item_nearby">با کسانی که در نزدیکی هستند به اشتراک بذار</string>
+
+    <string name="lblEditMetadata">تدوین رسانه</string>
+    <string name="lblSave">ذخیره</string>
+    <string name="loading_title">رسانه آپلود میشود</string>
+    <string name="loading_message">لطفا صبر کن تا رسانه به آرشیو اینترنت آپلود شود...</string>
+
+    <!-- Default Values -->
+    <string name="default_title">عنوان من</string>
+    <string name="default_tags">آرشیو باز</string>
+
+    <!-- Alert Values -->
+    <string name="alert_lbl_logout">خروج؟</string>
+    <string name="alert_logout">خروج تمام تنظیمات شما را از میان میبرد اما محتوای آپلود شده باقی میماند</string>
+
+    <string name="alert_lbl_delete_media">حذف رسانه؟</string>
+    <string name="alert_media_deleted">رسانه با موفقیت حذف شد</string>
+    <string name="alert_delete_media">رسانه برای همیشه پاک خواهد شد</string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">منوی اصلی را باز کن</string>
+    <string name="navigation_drawer_close">منوی اصلی را ببند</string>
+    <string name="action_example">یک مثال</string>
+    <string name="action_settings">تنظیمات</string>
+
+    <string name="drawer_home">خانه</string>
+    <string name="drawer_uploads">آپلودها</string>
+    <string name="drawer_logout">خروج</string>
+    <string name="drawer_about">درباره</string>
+    <string name="drawer_settings">تنظیمات</string>
+
+    <!-- EULA/Terms of Service -->
+    <string name="eula_title">با این موافقت میکنید:</string>
+    <string name="eula_accept">تایید</string>
+    <string name="eula_refuse">تکذیب</string>
+    <string name="end_user_license_agreement">شرایط استفاده و سیاستهای حریم خصوصی</string>
+    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
+    <string name="by_clicking_accept">با کلیک روی تایید با تمام شرایط و سیاستها موافقت میکنید</string>
+    <string name="tos_dialog_title">شرایط سرویس</string>
+    <string name="tos_dialog_msg">لطفا پیش از جلو رفتن شرایط سرویس را قبول کنید</string>
+    <string name="tos_dialog_positive_button">متوجه شدم</string>
+
+    <!-- FirstStartActivity -->
+    <string name="sign_in_btn">وارد آرشیو دات اورگ شو</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
+    <string name="sign_up_btn">حساب ندارید؟ به رایگان حساب درست کنید</string>
+    <string name="tos_btn">با شرایط سرویس موافقم</string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">وارد کن</string>
+    <string name="capture_btn">بگیر</string>
+
+    <string name="capture_photo">عکس</string>
+    <string name="capture_video">ویدیو</string>
+    <string name="capture_audio">صدا</string>
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">عکس اصلی</string>
+
+    <!-- Errors -->
+    <string name="error_file_not_found">فایل پیدا نشد</string>
+    <string name="error_invalid_media_type">نوع فایل تشخیص داده نشد</string>
+    <string name="error_no_media">رسانه ای پیدا نشد</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">بله</string>
+    <string name="lbl_Cancel">لغو</string>
+    <string name="lbl_off">خاموش</string>
+    <string name="lbl_on">روشن</string>
+    <string name="lbl_ok">بله</string>
+    <string name="lbl_settings">تنظیمات</string>
+    <string name="lbl_cancelled">لغو شد</string>
+    <string name="lbl_success">موفقیت</string>
+    <string name="lbl_continue">ادامه</string>
+    <string name="archive_title">تایید ایمیل</string>
+    <string name="archive_message">لطفا ایمیل خود را تایید کرده و باز برای ورود به آرشیو باز برگردید</string>
+    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
+    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
+    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
+    <string name="upload_to_internet_archive">به آرشیو اینترنت آپلود کن</string>
+    <string name="upload_securely_via_tor">با استفاده از تور آپلود امن انجام بده</string>
+    <string name="lbl_share_prefs"> مشخصات به اشتراک گذاری</string>
+    <string name="problem_authticating">مشکلی در تایید صحت هویت وجود دارد</string>
+    <string name="uploading_to_internet_archive">در حال آپلود به آرشیو اینترنت</string>
+    <string name="lbl_update_value">ارزش آپلود</string>
+    <string name="lbl_enter_value">برای ورود ارزش کلیک کنید</string>
+    <string name="title_activity_about">آرشیو باز یک اپ رایگان و کد باز است برای </string>
+
+    <string name="about_body">آرشیپ باز یک اپ رایگان و کد باز است برای حفاظت از حریم خصوصی، اصلیت، و بقای رسانه های شما. به شما اجازه میدهد به رسانه های خود پروانه حق تکثیر کریتیو کامنز و دیگر اطلاعات را اضافه کنید و سپس آنرا از طریق اینترنت و با استفاده از شبکه ناشناسی تور آنرا منتشر کنید. اینکار ضمن دادن قدرت مدیریت بیشتر فایلها به شما، به دیگران اجازه میدهد رسانه شما را راحت پیدا کرده و از آن استفاده کنند. آرشیو باز با همکاری بنیادهای پروژه گاردین، استوری میکر، اسکالیو، و آرشیو اینترنت ساخته شده. این پروژه توسط ناتالی کادرانل و حمایت مالی سخاوتمندانه بنیاد نایت آغاز شد. برای اطلاع بیشتر از این پروژه به آدرس زیر مراجعه کنید.
+
+https://open-archive.net
+</string>
+
+    <string name="upload_success">رسانه شما حالا در آرشیو اینترنت قابل دسترسی است</string>
+
+    <string name="share_using">لینک آرشیو را از این طریق به اشتراک بذار</string>
+    <string name="share_text">توسط آرشیو باز و از این طریق به اشتراک گذاشته شد:</string>
+    <string name="share_torrent_text">توسط بیت تورنت و آرشیو باز قابل دسترسی است:</string>
+    <string name="share_media_text">توسط آرشیو باز منتشر شد:</string>
+
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">به هر کسی اجازه بازنشر و استفاده داده شود؟</string>
+    <string name="info_license_sharealike">بخواه که مانند خودت به اشتراک بگذارند؟</string>
+    <string name="info_license_comm">اجازه استفاده تجاری بده؟</string>
+
+    <string name="orbot_detected">اپ اوربات تشخیص داده شد. برای اتصال امن تر از شبکه تور استفاده میشود...</string>
+
+    <string name="media_hint">برای وارد کردن رسانه و یا ساخت رسانه جدید و اضافه کردن آن به آرشیو خود، روی علامت + کلیک کن</string>
+
+    <string name="intro1_title">به آرشیو باز خود خوش آمدی</string>
+    <string name="intro1_desc">آرشیو باز یک اپ رایگان و کدباز برای حفاظت از عکس، ویدیو و فایل صوتی شماست</string>
+
+    <string name="intro2_title">ما  &lt;3 آرشیو اینترنت هستیم</string>
+    <string name="intro2_desc">براحتی روی آرشیو باز به اشتراک بذار، یا بطور مستقیم یا از طریق شبکه تور</string>
+
+    <string name="intro3_title">با دوستانی که در نزدیکی هستند به اشتراک بذار</string>
+    <string name="intro3_desc">با استفاده از بلوتوث با گروهی از دوستان به اشتراک بذار</string>
+
+
+</resources>
