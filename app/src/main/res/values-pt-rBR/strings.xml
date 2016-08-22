@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Activities -->
+    <string name="app_name">OpenArchive </string>
+    <string name="app_subtext">Projeto Patrocinado pelo Internet Archive\n<a href="#">saber mais</a> </string>
+
+    <string name="main_activity_title">O seu OpenArchive</string>
+    <string name="title_activity_main">Capturar Média </string>
+    <string name="title_activity_login">Ligar ao Internet Archive </string>
+    <string name="title_activity_settings">Configurações</string>
+    <string name="title_activity_first_start">Iniciar pela primeira vez</string>
+    <string name="title_activity_view_media">Visualizar Média </string>
+    <string name="title_activity_archive_metadata">Metadados </string>
+    <string name="title_media_list">Transferências </string>
+
+    <!-- General -->
+    <string name="menu_item_publish">Publicar </string>
+    <string name="menu_item_nearby">Partilhar Vizinhança</string>
+
+    <string name="lblEditMetadata">Editar Média </string>
+    <string name="lblSave">Salvar </string>
+    <string name="loading_title">Transferir Média </string>
+    <string name="loading_message">Por favor, aguarde enquanto transferimos os seus média para o Internet Archive... </string>
+
+    <!-- Default Values -->
+    <string name="default_title">Designação</string>
+    <string name="default_tags">openarchive </string>
+
+    <!-- Alert Values -->
+    <string name="alert_lbl_logout">Sair? </string>
+    <string name="alert_logout">Ao desligar removerá todas as suas configurações, mas conservará as suas transferências.</string>
+
+    <string name="alert_lbl_delete_media">Apagar Média? </string>
+    <string name="alert_media_deleted">Média apagado com êxito</string>
+    <string name="alert_delete_media">Este média será permanentemente apagado. </string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">Abrir gaveta de navegação </string>
+    <string name="navigation_drawer_close">Fechar a gaveta de navegação </string>
+    <string name="action_example">Exemplo de ação </string>
+    <string name="action_settings">Configurações </string>
+
+    <string name="drawer_home">Casa</string>
+    <string name="drawer_uploads">Transferências </string>
+    <string name="drawer_logout">Sair</string>
+    <string name="drawer_about">Sobre</string>
+    <string name="drawer_settings">Configurações</string>
+
+    <!-- EULA/Terms of Service -->
+    <string name="eula_title">Concorda com: </string>
+    <string name="eula_accept">Aceitar </string>
+    <string name="eula_refuse">Recusar </string>
+    <string name="end_user_license_agreement">Termos de Utilização e Política de Privacidade </string>
+    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
+    <string name="by_clicking_accept">Ao clicar em \'Aceitar\' concorda com os nossos termos e políticas: </string>
+    <string name="tos_dialog_title">Termos de Serviço </string>
+    <string name="tos_dialog_msg">Por favor, Aceite os nossos Termos de Serviço antes de continuar</string>
+    <string name="tos_dialog_positive_button">Entendi</string>
+
+    <!-- FirstStartActivity -->
+    <string name="sign_in_btn">Entrar em Archive.org </string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
+    <string name="sign_up_btn">Não tem conta?\n<a href="https://archive.org/account/login.createaccount.php">Registe-se gratuitamente!</a> </string>
+    <string name="tos_btn">Concordo com os termos de serviço </string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">Importar</string>
+    <string name="capture_btn">Capturar </string>
+
+    <string name="capture_photo">Foto</string>
+    <string name="capture_video">Vídeo </string>
+    <string name="capture_audio">Áudio </string>
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">Imagem Principal</string>
+
+    <!-- Errors -->
+    <string name="error_file_not_found">Ficheiro não encontrado </string>
+    <string name="error_invalid_media_type">Tipo de Ficheiro não reconhecido </string>
+    <string name="error_no_media">nenhum Média Detetado!</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">Sim</string>
+    <string name="lbl_Cancel">Cancelar </string>
+    <string name="lbl_off">Desligado</string>
+    <string name="lbl_on">Ligado</string>
+    <string name="lbl_ok">Ok</string>
+    <string name="lbl_settings">Configurações</string>
+    <string name="lbl_cancelled">Cancelado </string>
+    <string name="lbl_success">Êxito</string>
+    <string name="lbl_continue">Continuar</string>
+    <string name="archive_title">E-mail de Confirmação</string>
+    <string name="archive_message">Por favor, confirme o seu e-mail e volte para ligar a sua conta Archive. </string>
+    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
+    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
+    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
+    <string name="upload_to_internet_archive">Transferir para o Internet Archive</string>
+    <string name="upload_securely_via_tor">Transferir em Segurança via Tor</string>
+    <string name="lbl_share_prefs">Partilhar Preferências </string>
+    <string name="problem_authticating">Problemas com a autenticação no Internet Archive. </string>
+    <string name="uploading_to_internet_archive">Transferir para o Internet Archive... </string>
+    <string name="lbl_update_value">Atualizar Valor</string>
+    <string name="lbl_enter_value">Clique para inserir um valor. </string>
+    <string name="title_activity_about">Sobre OpenArchive</string>
+
+    <string name="about_body">OpenArchive é uma aplicação móvel de fonte aberta, grátis, dedicada à manutenção da privacidade, origem e preservação dos seus média. Permite-lhe a adição de metadados e de Creative Commons licenciados aos seus média audiovisuais e o seu envio para o Internet Archive via Tor; oferece uma maior ação sobre os seus média, enquanto protege as liberdades cívicas e aumenta a interoperabilidade para os que os pretendem encontrar, reutilizar e misturar no futuro.\n\n
+OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal.io, e Guardian Project. O projeto foi iniciado por Natalie Cadranel com o generoso apoio da Knight Foundation\'s Prototype Fund.\n\nSaiba mais em <a href="https://open-archive.net">https://open-archive.net</a></string>
+
+    <string name="upload_success">Os seus média estão agora disponíveis no Internet Archive! </string>
+
+    <string name="share_using">Partilhar link do ficheiro via </string>
+    <string name="share_text">partilhar via OpenArchive em </string>
+    <string name="share_torrent_text">disponível via BitTorrent e OpenArchive: </string>
+    <string name="share_media_text">publicar via OpenArchive em</string>
+
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Permitir que outros misturem e partilhem?</string>
+    <string name="info_license_sharealike">Obrigatório partilhar conforme apresentado?</string>
+    <string name="info_license_comm">Permitir o uso comercial?</string>
+
+    <string name="orbot_detected">Orbot detetado ; utilizar rede Tor para uma ligação mais segura</string>
+
+    <string name="media_hint">Clique o botão (+)  para importar ou criar média</string>
+
+    <string name="intro1_title">Bem-vindo ao *Seu* OpenArchive! </string>
+    <string name="intro1_desc">OpenArchive é uma aplicação de fonte aberta, grátis, dedicada para a preservação das suas fotos, vídeos e áudios </string>
+
+    <string name="intro2_title">Nós &lt;3 o Internet Archive</string>
+    <string name="intro2_desc">Publicar facilmente em Archive.org, diretamente ou com maior segurança via Tor </string>
+
+    <string name="intro3_title">Partilhar Vizinhança Com os Amigos</string>
+    <string name="intro3_desc">Utilizar Bluetooth para partilhar instantaneamente qualquer ficheiro de média com um grupo de amigos </string>
+
+
+</resources>

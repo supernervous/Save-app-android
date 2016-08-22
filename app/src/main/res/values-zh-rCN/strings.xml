@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Activities -->
+    <string name="app_name">OpenArchive</string>
+    <string name="app_subtext">Internet Archive 支持的项目\n<a href="#">了解更多</a></string>
+
+    <string name="main_activity_title">您的 OpenArchive</string>
+    <string name="title_activity_main">捕获媒体</string>
+    <string name="title_activity_login">登录 Internet Archive</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="title_activity_first_start">首次启动</string>
+    <string name="title_activity_view_media">查看媒体</string>
+    <string name="title_activity_archive_metadata">元数据</string>
+    <string name="title_media_list">上传</string>
+
+    <!-- General -->
+    <string name="menu_item_publish">发布</string>
+    <string name="menu_item_nearby">附近分享</string>
+
+    <string name="lblEditMetadata">编辑媒体</string>
+    <string name="lblSave">保存</string>
+    <string name="loading_title">上传媒体</string>
+    <string name="loading_message">正在将您的媒体上传到 Internet Archive，请稍候...</string>
+
+    <!-- Default Values -->
+    <string name="default_title">我的标题</string>
+    <string name="default_tags">openarchive</string>
+
+    <!-- Alert Values -->
+    <string name="alert_lbl_logout">注销？</string>
+    <string name="alert_logout">注销将删除您的所有设置，但仍会保留您的上传内容。</string>
+
+    <string name="alert_lbl_delete_media">删除媒体？</string>
+    <string name="alert_media_deleted">已成功删除媒体</string>
+    <string name="alert_delete_media">此媒体将被永久删除。</string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">打开滑出导航</string>
+    <string name="navigation_drawer_close">关闭滑出导航</string>
+    <string name="action_example">示范操作</string>
+    <string name="action_settings">设置</string>
+
+    <string name="drawer_home">主页</string>
+    <string name="drawer_uploads">上传</string>
+    <string name="drawer_logout">注销</string>
+    <string name="drawer_about">关于</string>
+    <string name="drawer_settings">设置</string>
+
+    <!-- EULA/Terms of Service -->
+    <string name="eula_title">您同意：</string>
+    <string name="eula_accept">接受</string>
+    <string name="eula_refuse">拒绝</string>
+    <string name="end_user_license_agreement">使用条款和隐私政策</string>
+    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
+    <string name="by_clicking_accept">单击“接受”即表示您同意我们的条款和政策：</string>
+    <string name="tos_dialog_title">服务条款</string>
+    <string name="tos_dialog_msg">在继续之前，请接受我们的“服务条款”</string>
+    <string name="tos_dialog_positive_button">知道了</string>
+
+    <!-- FirstStartActivity -->
+    <string name="sign_in_btn">登录 Archive.org</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
+    <string name="sign_up_btn">没有帐户？\n<a href="https://archive.org/account/login.createaccount.php">免费注册！</a></string>
+    <string name="tos_btn">我同意服务条款。</string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">导入</string>
+    <string name="capture_btn">捕获</string>
+
+    <string name="capture_photo">照片</string>
+    <string name="capture_video">视频</string>
+    <string name="capture_audio">音频</string>
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">主要图像</string>
+
+    <!-- Errors -->
+    <string name="error_file_not_found">未找到文件</string>
+    <string name="error_invalid_media_type">无法识别文件类型</string>
+    <string name="error_no_media">未找到媒体！</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">是</string>
+    <string name="lbl_Cancel">取消</string>
+    <string name="lbl_off">关</string>
+    <string name="lbl_on">开</string>
+    <string name="lbl_ok">确定</string>
+    <string name="lbl_settings">设置</string>
+    <string name="lbl_cancelled">已取消</string>
+    <string name="lbl_success">成功</string>
+    <string name="lbl_continue">继续</string>
+    <string name="archive_title">电子邮件确认</string>
+    <string name="archive_message">请确认您的电子邮箱并返回以连接您的 Archive 帐户。</string>
+    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
+    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
+    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
+    <string name="upload_to_internet_archive">上传到 Internet Archive</string>
+    <string name="upload_securely_via_tor">通过 Tor 安全上传</string>
+    <string name="lbl_share_prefs">共享首选项</string>
+    <string name="problem_authticating">进行 Internet Archive 验证时出现问题。</string>
+    <string name="uploading_to_internet_archive">正在上传到 Internet Archive...</string>
+    <string name="lbl_update_value">更新值</string>
+    <string name="lbl_enter_value">点按以输入值</string>
+    <string name="title_activity_about">关于 OpenArchive</string>
+
+    <string name="about_body">OpenArchive 是一个免费的开源移动应用程序，致力于维护您的媒体的隐私、出处和保存。利用此程序，您可以将元数据和 Creative Commons 许可添加到您的闭音视频媒体中，然后通过 Tor 将其发送到 Internet Archive；为您的媒体提供更多能动性，同时保护公民自由，为将来需要查找、再利用及混合您的媒体的人提供更好的互操作性。\n\n
+OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 合作开发的。该项目由 Natalie Cadranel 成立，得到了骑士基金会 (Knight Foundation) 的原型基金 (Prototype Fund) 的慷慨支持。\n\n如需了解更多，请访问 <a href="https://open-archive.net">https://open-archive.net</a>
+</string>
+
+    <string name="upload_success">现在，您的媒体在 Internet Archive 上可用！</string>
+
+    <string name="share_using">分享归档链接时通过</string>
+    <string name="share_text">通过 OpenArchive 共享于</string>
+    <string name="share_torrent_text">通过 BitTorrent 和 OpenArchive 提供：</string>
+    <string name="share_media_text">通过 OpenArchive 发布于</string>
+
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">允许任何人再混合并共享？</string>
+    <string name="info_license_sharealike">要求他们像您一样分享？</string>
+    <string name="info_license_comm">允许商业使用？</string>
+
+    <string name="orbot_detected">检测到 Orbot；正使用 Tor 网络连接以提高安全性...</string>
+
+    <string name="media_hint">单击 (+) 按钮导入或创建要添加到您的归档中的媒体</string>
+
+    <string name="intro1_title">欢迎使用 *您的* OpenArchive！</string>
+    <string name="intro1_desc">OpenArchive 是一款免费的开源应用程序，致力于保存您的照片、视频和音频</string>
+
+    <string name="intro2_title">我们 &lt;3 Internet Archive</string>
+    <string name="intro2_desc">轻松地直接发布到 Archive.org，或者通过 Tor 发布以提高安全性</string>
+
+    <string name="intro3_title">与好友进行附近分享</string>
+    <string name="intro3_desc">使用蓝牙与一群好友即时分享某个媒体文件</string>
+
+
+</resources>
