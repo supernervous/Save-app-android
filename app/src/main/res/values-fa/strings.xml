@@ -3,7 +3,9 @@
 
     <!-- Activities -->
     <string name="app_name">آرشیو باز</string>
-    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:\n<a href="#"></a></string>
+    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:
+\\n<a href=\"#\">
+</a></string>
 
     <string name="main_activity_title">آرشیوباز شما</string>
     <string name="title_activity_main">رسانه بگیر</string>
@@ -140,5 +142,26 @@ https://open-archive.net
     <string name="intro3_title">با دوستانی که در نزدیکی هستند به اشتراک بذار</string>
     <string name="intro3_desc">با استفاده از بلوتوث با گروهی از دوستان به اشتراک بذار</string>
 
+    <string name="menu_import_media">رسانه وارد کن</string>
+    <string name="menu_take_photo">عکس بگیر</string>
+    <string name="menu_take_video">ویدیو بگیر</string>
+    <string name="menu_record_audio">صدا ضبط کن</string>
+    <string name="menu_nearby_rec">گرفتن در نزدیکی</string>
+
+    <string name="hint_title">عنوان</string>
+    <string name="hint_description">توضیحات</string>
+    <string name="hint_author">نویسنده</string>
+    <string name="hint_location">موقعیت</string>
+    <string name="hint_tags">تگ ها</string>
+    <string name="hint_license">گواهی (سوالهای زیر را ببین)</string>
+
+    <string name="answer_yes">بله</string>
+    <string name="answer_no">خیر</string>
+
+    <string name="nearby_public">عمومی</string>
+    <string name="nearby_private">خصوصی</string>
+    <string name="nearby_paired_only">فقط دستگاه های شناخته شده؟</string>
+
+    <string name="action_cancel">لغو</string>
 
 </resources>

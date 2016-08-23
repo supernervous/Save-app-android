@@ -140,5 +140,26 @@
     <string name="intro3_title">مشاركة قريبة مع الأصدقاء</string>
     <string name="intro3_desc">استخدام البلوتوث لتبادل أي ملف وسائط على الفور مع مجموعة من الأصدقاء</string>
 
+    <string name="menu_import_media">استيراد الوسائط</string>
+    <string name="menu_take_photo">التقاط صورة</string>
+    <string name="menu_take_video">التقاط فيديو</string>
+    <string name="menu_record_audio">تسجيل صوت</string>
+    <string name="menu_nearby_rec">الاستقبال القريب</string>
+
+    <string name="hint_title">العنوان</string>
+    <string name="hint_description">الوصف</string>
+    <string name="hint_author">المؤلف</string>
+    <string name="hint_location">الموقع</string>
+    <string name="hint_tags">الوسوم</string>
+    <string name="hint_license">الرخصة (انظر الأسئلة أدناه)</string>
+
+    <string name="answer_yes">نعم</string>
+    <string name="answer_no">لا</string>
+
+    <string name="nearby_public">عام</string>
+    <string name="nearby_private">خاص</string>
+    <string name="nearby_paired_only">هل تريد استخدام الأجهزة المقترنة فقط؟</string>
+
+    <string name="action_cancel">إلغاء</string>
 
 </resources>

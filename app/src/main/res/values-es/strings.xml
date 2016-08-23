@@ -138,5 +138,26 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="intro3_title">Compartir Nearby con tus amigos</string>
     <string name="intro3_desc">Utiliza Bluetooth para compartir instantáneamente cualquier archivo multimedia con un grupo de amigos</string>
 
+    <string name="menu_import_media">Importar medios</string>
+    <string name="menu_take_photo">Sacar una foto</string>
+    <string name="menu_take_video">Grabar un vídeo</string>
+    <string name="menu_record_audio">Grabar audio</string>
+    <string name="menu_nearby_rec">Recibir cercanos</string>
+
+    <string name="hint_title">Título</string>
+    <string name="hint_description">Descripción</string>
+    <string name="hint_author">Autor</string>
+    <string name="hint_location">Ubicación</string>
+    <string name="hint_tags">Etiquetas</string>
+    <string name="hint_license">Licencia (ver preguntas a continuación)</string>
+
+    <string name="answer_yes">Sí</string>
+    <string name="answer_no">No</string>
+
+    <string name="nearby_public">Público</string>
+    <string name="nearby_private">Privado</string>
+    <string name="nearby_paired_only">¿Solo dispositivos vinculados?</string>
+
+    <string name="action_cancel">Cancelar</string>
 
 </resources>

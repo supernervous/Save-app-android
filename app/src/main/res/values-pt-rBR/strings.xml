@@ -138,5 +138,27 @@ OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal
     <string name="intro3_title">Partilhar Vizinhança Com os Amigos</string>
     <string name="intro3_desc">Utilizar Bluetooth para partilhar instantaneamente qualquer ficheiro de média com um grupo de amigos </string>
 
+    <string name="menu_import_media">Importar mídia</string>
+    <string name="menu_take_photo">Tirar foto
+</string>
+    <string name="menu_take_video">Fazer vídeo</string>
+    <string name="menu_record_audio">Gravar Áudio</string>
+    <string name="menu_nearby_rec">Receber nas proximidades</string>
+
+    <string name="hint_title">Título</string>
+    <string name="hint_description">Descrição</string>
+    <string name="hint_author">Autor</string>
+    <string name="hint_location">Locação</string>
+    <string name="hint_tags">Tags</string>
+    <string name="hint_license">Licensa (ver questões abaixo)</string>
+
+    <string name="answer_yes">Sim</string>
+    <string name="answer_no">Não</string>
+
+    <string name="nearby_public">Público</string>
+    <string name="nearby_private">Privado</string>
+    <string name="nearby_paired_only">Apenas dispositivos emparelhados?</string>
+
+    <string name="action_cancel">Cancelar</string>
 
 </resources>
