@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_title_lbl"
             android:layout_centerVertical="true"
-            android:hint="Title"/>
+            android:hint="@string/hint_title"/>
 
 
 
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_description_lbl"
             android:layout_centerVertical="true"
-            android:hint="Description" />
+            android:hint="@string/hint_description" />
 
 
 
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_author_lbl"
             android:layout_centerVertical="true"
-            android:hint="Author" />
+            android:hint="@string/hint_author" />
 
 
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_location_lbl"
             android:layout_centerVertical="true"
-            android:hint="Location" />
+            android:hint="@string/hint_location" />
 
 
 
@@ -52,14 +52,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_tags_lbl"
             android:layout_centerVertical="true"
-            android:hint="Tags" />
+            android:hint="@string/hint_tags" />
 
 
     <EditText
         android:id="@+id/tv_cc_license"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="License (see questions below)"
+        android:hint="@string/hint_license"
         />
 
     <LinearLayout
@@ -81,8 +81,8 @@
                 android:id="@+id/tb_cc_deriv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textOff="No"
-                android:textOn="Yes"
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes"
                 android:checked="true"
                 android:showText="true"
                 android:layout_alignParentRight="true"
@@ -110,8 +110,8 @@
             <android.support.v7.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textOff="No"
-                android:textOn="Yes"
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes"
                 android:checked="false"
                 android:id="@+id/tb_cc_sharealike"
 
@@ -141,8 +141,8 @@
             <android.support.v7.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textOff="No"
-                android:textOn="Yes"
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes"
                 android:checked="true"
                 android:id="@+id/tb_cc_comm"
                 android:layout_alignParentRight="true"

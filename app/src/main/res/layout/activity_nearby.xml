@@ -58,8 +58,8 @@
             android:id="@+id/tbPairedDevices"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:textOff="Public"
-            android:textOn="Private"
+            android:textOff="@string/nearby_public"
+            android:textOn="@string/nearby_private"
             android:checked="false"
             android:showText="true"
             android:layout_alignParentLeft="true"
@@ -67,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="Paired Devices Only?"
+            android:text="@string/nearby_paired_only"
             android:layout_toRightOf="@+id/tbPairedDevices"
             android:gravity="center_vertical"
             />
@@ -77,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:background="@null"
-            android:text="Cancel"
+            android:text="@string/action_cancel"
             android:id="@+id/btnCancel"
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical"

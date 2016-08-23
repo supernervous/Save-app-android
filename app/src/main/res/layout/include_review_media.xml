@@ -7,7 +7,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:hint="Title"
+            android:hint="@string/hint_title"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 
@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/tv_description"
-            android:hint="Description"
+            android:hint="@string/hint_description"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/tv_author"
-            android:hint="Author"
+            android:hint="@string/hint_author"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 
@@ -43,7 +43,7 @@
 
         <TextView
             android:id="@+id/tv_location"
-            android:hint="Location"
+            android:hint="@string/hint_location"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 
@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/tv_tags"
-            android:hint="Tags"
+            android:hint="@string/hint_tags"
             android:layout_gravity="center_vertical"/>
     </TableRow>
 </merge>
