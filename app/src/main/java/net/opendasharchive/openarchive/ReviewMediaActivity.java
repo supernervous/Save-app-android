@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -300,7 +301,16 @@ public class ReviewMediaActivity extends ActionBarActivity {
 
         // display media preview if available
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
-        ivMedia.setImageBitmap(mMedia.getThumbnail(mContext));
+
+        Bitmap bThumb = mMedia.getThumbnail(mContext);
+
+        if (bThumb != null)
+            ivMedia.setImageBitmap(bThumb);
+        else if (mMedia.getMimeType().startsWith("audio"))
+            ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
+        else
+            ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.no_thumbnail));
+
 
         ivMedia.setOnClickListener(new View.OnClickListener() {
             @Override

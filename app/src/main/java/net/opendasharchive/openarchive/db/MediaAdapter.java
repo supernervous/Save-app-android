@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.db;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,15 @@ public class MediaAdapter extends ArrayAdapter<Media> {
         TextView tvTitle = (TextView)rowView.findViewById(R.id.tvTitle);
         TextView tvCreateDate = (TextView)rowView.findViewById(R.id.tvCreateDate);
 
-        ivIcon.setImageBitmap(currentMedia.getThumbnail(mContext));
+        Bitmap bThumb = currentMedia.getThumbnail(mContext);
+
+        if (bThumb != null)
+            ivIcon.setImageBitmap(bThumb);
+        else if (currentMedia.getMimeType().startsWith("audio"))
+            ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.audio_waveform));
+        else
+            ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.no_thumbnail));
+
         tvTitle.setText(currentMedia.getTitle());
         tvCreateDate.setText(currentMedia.getFormattedCreateDate());
 

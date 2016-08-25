@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.db;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -46,6 +47,9 @@ public class Media extends SugarRecord {
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
     }
+
+    public final static int THUMBNAIL_WIDTH = 320;
+    public final static int THUMBNAIL_HEIGHT = 240;
 
     //left public ONLY for Sugar ORM
     public Media() {};
@@ -97,10 +101,7 @@ public class Media extends SugarRecord {
         return this.createDate;
     }
     public String getFormattedCreateDate() {
-        String format = "MM-dd-yyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-
-        return sdf.format(this.createDate);
+        return SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(this.createDate);
     }
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
@@ -182,7 +183,7 @@ public class Media extends SugarRecord {
             boolean isDocumentProviderUri = path.contains("content:/") && (lastSegment.contains(":"));
 
             if (this.mimeType.startsWith("audio")) {
-                thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.audio_waveform);
+                thumbnail = null;//new BitmapDrawable(context.getResources().getDrawable(R.drawable.audio_waveform));
             } else if (this.mimeType.startsWith("image")) {
                 if (isDocumentProviderUri) {
                     // path of form : content://com.android.providers.media.documents/document/video:183
@@ -197,7 +198,7 @@ public class Media extends SugarRecord {
                     File originalFile = new File(path);
                     String fileName = originalFile.getName();
                     String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                    thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.png";
+                    thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
                     File thumbnailFile = new File(thumbnailFilePath);
                     if (thumbnailFile.exists()) {
                         thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
@@ -206,8 +207,8 @@ public class Media extends SugarRecord {
 
                         try {
                             FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
-                            thumbnail = ThumbnailUtils.extractThumbnail(bitMap, 400, 300); // FIXME figure out the real aspect ratio and size needed
-                            thumbnail.compress(Bitmap.CompressFormat.PNG, 75, thumbnailStream); // FIXME make compression level configurable
+                            thumbnail = ThumbnailUtils.extractThumbnail(bitMap, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT); // FIXME figure out the real aspect ratio and size needed
+                            thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
                             thumbnailStream.flush();
                             thumbnailStream.close();
                         } catch (FileNotFoundException e) {
@@ -239,7 +240,7 @@ public class Media extends SugarRecord {
                         File originalFile = new File(path);
                         String fileName = originalFile.getName();
                         String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                        thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.png";
+                        thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
                         File thumbnailFile = new File(thumbnailFilePath);
                         if (thumbnailFile.exists()) {
                             thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
@@ -248,7 +249,7 @@ public class Media extends SugarRecord {
 
                             thumbnail = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
                             if (thumbnail != null) {
-                                thumbnail.compress(Bitmap.CompressFormat.PNG, 75, thumbnailStream); // FIXME make compression level configurable
+                                thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable... for thumbnails??!
                                 thumbnailStream.flush();
                                 thumbnailStream.close();
                             }
@@ -260,18 +261,13 @@ public class Media extends SugarRecord {
                 }
             }  else {
                 Log.e(this.getClass().getName(), "can't create thumbnail file for " + path + ", unsupported medium");
-                thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_thumbnail);
+                thumbnail = null;// BitmapFactory.decodeResource(context.getResources(), R.drawable.no_thumbnail);
             }
 
             // save new thumbnail path
             this.save();
         } else {
             thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-        }
-
-        // set to default if none found
-        if(null == thumbnail) {
-//            thumbnail = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
         }
 
         return thumbnail;
