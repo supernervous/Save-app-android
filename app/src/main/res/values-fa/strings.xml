@@ -3,9 +3,7 @@
 
     <!-- Activities -->
     <string name="app_name">آرشیو باز</string>
-    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:
-\\n<a href=\"#\">
-</a></string>
+    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:\n<a href="#"></a></string>
 
     <string name="main_activity_title">آرشیوباز شما</string>
     <string name="title_activity_main">رسانه بگیر</string>
