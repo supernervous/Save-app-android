@@ -90,7 +90,7 @@
                 />
         <TextView
             android:id="@+id/tb_cc_deriv_label"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/info_license_deriv"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -121,7 +121,7 @@
                 />
         <TextView
             android:id="@+id/tb_cc_sharealike_label"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/info_license_sharealike"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -149,12 +149,11 @@
                 android:layout_alignParentEnd="true" />
 
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/info_license_comm"
             android:id="@+id/tb_cc_comm_label"
             android:textAppearance="?android:attr/textAppearanceSmall"
-
             />
 
 
