@@ -1,5 +1,5 @@
-include ':app', ':ipfs-android'
+include ':app', ':ipfs-android', ':LibNearbyShare'
 include ':external:stampery'
 include ':external:ipfs-android'
-include ':external:LibNearby:LibNearbyBluetooth'
+
 

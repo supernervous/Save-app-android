@@ -1,21 +1,17 @@
 package net.opendasharchive.openarchive.nearby;
 
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
+
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ParcelUuid;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,36 +21,30 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.github.lzyzsd.circleprogress.DonutProgress;
-import com.ramimartin.multibluetooth.activity.BluetoothActivity;
-import com.ramimartin.multibluetooth.activity.BluetoothFragmentActivity;
-import com.ramimartin.multibluetooth.bluetooth.mananger.BluetoothManager;
-import com.simonguest.btxfr.ClientThread;
-import com.simonguest.btxfr.MessageType;
-import com.simonguest.btxfr.ProgressData;
-import com.simonguest.btxfr.ServerThread;
-import com.simonguest.btxfr.Utils;
 
 import net.opendasharchive.openarchive.Globals;
-import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.util.ExceptionToResourceMapping;
+import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.Neighbor;
+import info.guardianproject.nearby.bluetooth.BluetoothReceiver;
+import info.guardianproject.nearby.bluetooth.BluetoothSender;
+import info.guardianproject.nearby.bluetooth.roles.Constants;
+import info.guardianproject.nearby.bluetooth.roles.Utils;
+import info.guardianproject.nearby.nsd.NSDReceiver;
+import info.guardianproject.nearby.nsd.NSDSender;
 
-public class NearbyActivity extends BluetoothFragmentActivity {
 
+public class NearbyActivity extends FragmentActivity {
 
     private TextView mTvNearbyLog;
     private DonutProgress mProgress;
@@ -62,98 +52,111 @@ public class NearbyActivity extends BluetoothFragmentActivity {
     private SwitchCompat mSwitchPairedOnly;
 
     private boolean mIsServer = false;
-    private ServerThread serverThread = null;
+
+    private NSDSender mNsdService = null;
+    private BluetoothReceiver mBluetoothClient = null;
+    private BluetoothSender mBluetoothServer = null;
+
+    private NearbyListener mNearbyListener = null;
 
     private Media mMedia = null;
 
     private boolean mPairedDevicesOnly = false;
 
-    private static HashMap<String,BluetoothDevice> mFoundDevices = new HashMap<String,BluetoothDevice>();
-    private HashMap<String, ClientThread> clientThreads = new HashMap<String, ClientThread>();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_nearby);
 
-    private Handler mHandler = new Handler ()
-    {
-        @Override
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case MessageType.READY_FOR_DATA: {
-                    log("ready for data");
+        mTvNearbyLog = (TextView)findViewById(R.id.tvnearbylog);
+        mViewNearbyDevices = (LinearLayout)findViewById(R.id.nearbydevices);
+        mSwitchPairedOnly = (SwitchCompat)findViewById(R.id.tbPairedDevices);
 
-                    break;
-                }
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                case MessageType.COULD_NOT_CONNECT: {
-                    log("could not connect");
+        mPairedDevicesOnly = prefs.getBoolean("pairedonly",false);
+        mSwitchPairedOnly.setChecked(mPairedDevicesOnly);
 
-                    break;
-                }
+        mSwitchPairedOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPairedDevicesOnly = isChecked;
 
-                case MessageType.SENDING_DATA: {
-                    log("sending data");
+                prefs.edit().putBoolean("pairedonly",mPairedDevicesOnly).commit();
+                restartNearby();
 
-                    break;
-                }
 
-                case MessageType.DATA_SENT_OK: {
-                    log("data sent ok");
+            }
+        });
 
-                    break;
-                }
+        mProgress = (DonutProgress)findViewById(R.id.donut_progress);
+        mProgress.setMax(100);
 
-                case MessageType.DATA_RECEIVED: {
-                    log("data received");
+        Button btn = (Button)findViewById(R.id.btnCancel);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                cancelNearby();
 
-                    if (message.obj instanceof File) {
+            }
+        });
 
-                        File fileMedia = (File) message.obj;
-                        String mediaType = message.getData().getString("type");
-                        String mediaName = message.getData().getString("name");
+        mNearbyListener = new NearbyListener() {
 
-                        log ("");
-                        addMedia(fileMedia, mediaName, mediaType);
+            @Override
+            public void transferComplete (Neighbor neighbor, File fileMedia, String title, String mimeType) {
+                addMedia(fileMedia, title, mimeType);
 
-                        return;
-                    }
-
-                    break;
-                }
-
-                case MessageType.DATA_PROGRESS_UPDATE: {
-                    log("data progress update");
-
-                    break;
-                }
-
-                case MessageType.DIGEST_DID_NOT_MATCH: {
-                    log("digest did not match");
-
-                    break;
-                }
+                Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
+                message.getData().putInt("progress",100);
+                message.sendToTarget();
             }
 
-            if (message.obj != null) {
-                if (message.obj instanceof byte[])
-                    log(new String((byte[])message.obj));
-                else if (message.obj instanceof ProgressData)
-                {
-                    ProgressData pd = (ProgressData)message.obj;
+            @Override
+            public void foundNeighbor (Neighbor neighbor)
+            {
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.main_nearby), "Found " + neighbor.mName, Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
 
-                    long remaining = pd.totalSize-pd.remainingSize;
+            @Override
+            public void transferProgress (Neighbor neighbor, File fileMedia, String title, String mimeType, long transferred, long total)
+            {
+                int perComplete = (int) ((((float) (total-transferred)) / ((float) total)) * 100f);
 
+                Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
+                message.getData().putInt("progress",perComplete);
+                message.sendToTarget();
+            }
 
+            @Override
+            public void noNeighborsFound()
+            {
 
-                    int perComplete = -1;
+            }
+        };
 
-                    perComplete = (int) ((((float) remaining) / ((float) pd.totalSize)) * 100f);
-                    log("progress: " + (pd.totalSize - pd.remainingSize) + "/" + pd.totalSize);
+        mIsServer = getIntent().getBooleanExtra("isServer",false);
 
-                    mProgress.setProgress(perComplete);
-                }
-                else
-                    log(message.obj.toString());
+        if (mIsServer) {
+            try {
+                startServer();
+                mProgress.setInnerBottomText(">>>>>>>>");
+            }
+            catch (IOException ioe)
+            {
+                Log.e("Nearby","error starting server",ioe);
             }
         }
-    };
+        else {
+            startClient();
+            mProgress.setInnerBottomText("<<<<<<<<");
+        }
+
+    }
+
 
     private void addMedia (final File fileMedia, final String mediaName, final String mimeType)
     {
@@ -177,61 +180,6 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         snackbar.show();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nearby);
-
-        mTvNearbyLog = (TextView)findViewById(R.id.tvnearbylog);
-        mViewNearbyDevices = (LinearLayout)findViewById(R.id.nearbydevices);
-        mSwitchPairedOnly = (SwitchCompat)findViewById(R.id.tbPairedDevices);
-
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        mPairedDevicesOnly = prefs.getBoolean("pairedonly",false);
-        mSwitchPairedOnly.setChecked(mPairedDevicesOnly);
-
-        mSwitchPairedOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mPairedDevicesOnly = isChecked;
-
-                prefs.edit().putBoolean("pairedonly",mPairedDevicesOnly).commit();
-
-                restartNearby();
-
-
-            }
-        });
-
-        mProgress = (DonutProgress)findViewById(R.id.donut_progress);
-        mProgress.setMax(100);
-
-        Button btn = (Button)findViewById(R.id.btnCancel);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                cancelNearby();
-
-            }
-        });
-
-        EventBus.getDefault().register(this);
-
-        mIsServer = getIntent().getBooleanExtra("isServer",false);
-
-        if (mIsServer) {
-            startServer();
-            mProgress.setInnerBottomText("Sharing >>");
-        }
-        else {
-            startClient();
-            mProgress.setInnerBottomText(">> Receiving");
-        }
-
-    }
-
     private void restartNearby ()
     {
 
@@ -239,29 +187,22 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         {
             public void run ()
             {
-                if (serverThread != null)
-                    serverThread.cancel();
+                if (mBluetoothServer != null)
+                    mBluetoothServer.stopServer();
 
-                for (ClientThread clientThread : clientThreads.values()) {
-
-                    if (clientThread != null && clientThread.isAlive())
-                        clientThread.cancel();
-
-                }
-
-                if (mIsServer) {
-
-                    disconnectServer();
-
-                }
-                else
-                    disconnectClient();
-
-                clientThreads.clear();
+                if (mBluetoothClient != null)
+                    mBluetoothClient.cancel();
 
                 //now start again
                 if (mIsServer)
-                    startServer();
+                    try {
+                        startServer();
+
+                    }
+                    catch (IOException ioe)
+                    {
+                        Log.e("Nearby","error starting server",ioe);
+                    }
                 else
                     startClient();
 
@@ -275,25 +216,17 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         {
             public void run ()
             {
-                if (serverThread != null)
-                    serverThread.cancel();
+                if (mBluetoothServer != null)
+                    mBluetoothServer.stopServer();
+
+                if (mBluetoothClient != null)
+                    mBluetoothClient.cancel();
+
+                if (mNsdService != null)
+                    mNsdService.tearDown();
 
 
-                for (ClientThread clientThread : clientThreads.values()) {
 
-                    if (clientThread != null && clientThread.isAlive())
-                        clientThread.cancel();
-                }
-
-                clientThreads.clear();
-
-                if (mIsServer) {
-
-                    disconnectServer();
-
-                }
-                else
-                    disconnectClient();
             }
         }.start();
 
@@ -310,233 +243,58 @@ public class NearbyActivity extends BluetoothFragmentActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
 
         cancelNearby();
     }
 
-    private void startServer () {
-
-        if (!mBluetoothManager.getAdapter().isEnabled())
-        {
-            Toast.makeText(this,"You must enable Bluetooth for this sharing to work",Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+    private void startServer () throws IOException {
 
         long currentMediaId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
 
         if (currentMediaId >= 0)
             mMedia = Media.findById(Media.class, currentMediaId);
 
-        boolean isDiscoverable = !mPairedDevicesOnly;
+        File fileMedia = new File(mMedia.getOriginalFilePath());
 
-        if (isDiscoverable) {
-            if (!mBluetoothManager.isDiscoverable()) {
-                setTimeDiscoverable(BluetoothManager.BLUETOOTH_TIME_DICOVERY_3600_SEC);
-            }
+        InputStream is = new FileInputStream(fileMedia);
+        byte[] digest = Utils.calculateMD5(fileMedia);
+        String title = mMedia.getTitle();
+        if (TextUtils.isEmpty(title))
+            title = fileMedia.getName();
+
+        mBluetoothServer = new BluetoothSender(this);
+
+        if (mBluetoothServer.isNetworkEnabled()) {
+            mBluetoothServer.setPairedDevicesOnly(mPairedDevicesOnly);
+            mBluetoothServer.setNearbyListener(mNearbyListener);
+            mBluetoothServer.startServer(fileMedia, digest, title, mMedia.getMimeType());
         }
 
-        selectServerMode(isDiscoverable);
+        mNsdService = new NSDSender(this);
+        mNsdService.setShareFile(fileMedia,mMedia.getMimeType());
+        mNsdService.startService();
 
-        serverThread = new ServerThread(mBluetoothManager.getAdapter(),mHandler,mPairedDevicesOnly);
-        sendMediaFile();
-        serverThread.start();
-
-        boolean foundPairedDevice = false;
-
-        //first check for paired devices
-        for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
-        {
-            if (device != null && device.getName() != null &&
-                    (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
-                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
-                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
-                foundPairedDevice = true;
-            }
-        }
-
-        if (mPairedDevicesOnly && (!foundPairedDevice))
-            noPairedDevices(); //no paired device? Prompt user to add!
-
-
-    }
-
-    private void sendMediaFile ()
-    {
-        try
-        {
-            File fileMedia = new File(mMedia.getOriginalFilePath());
-
-            InputStream is = new FileInputStream(fileMedia);
-            byte[] digest = Utils.calculateMD5(fileMedia);
-            String title = mMedia.getTitle();
-            if (TextUtils.isEmpty(title))
-                title = fileMedia.getName();
-
-            serverThread.setShareMedia(fileMedia,(int)fileMedia.length(),digest,title,mMedia.getMimeType());
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     private void startClient ()
     {
-        selectClientMode();
 
-        boolean foundPairedDevice = false;
+        mBluetoothClient = new BluetoothReceiver(this);
 
-        //first check for paired devices
-        for (BluetoothDevice device: mBluetoothManager.getAdapter().getBondedDevices())
-        {
-            if (device != null && device.getName() != null &&
-                    (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
-                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
-                            device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
-
-                mFoundDevices.put(device.getAddress(), device);
-                //for previously found devices, try to automatically connect
-                ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
-                clientThreads.put(device.getAddress(), clientThread);
-
-                clientThread.start();
-
-                foundPairedDevice = true;
-            }
+        if (mBluetoothClient.isNetworkEnabled()) {
+            mBluetoothClient.setPairedDevicesOnly(mPairedDevicesOnly);
+            mBluetoothClient.setNearbyListener(mNearbyListener);
+            mBluetoothClient.start();
         }
 
-        if (mPairedDevicesOnly && (!foundPairedDevice))
-            noPairedDevices(); //no paired device? Prompt user to add!
-
-        if (!mPairedDevicesOnly) {
-
-            //start scanning
-            scanAllBluetoothDevice();
-
-            //connecting to previously connected devices
-            if (clientThreads.isEmpty()) {
-                for (BluetoothDevice device : mFoundDevices.values()) {
-
-                    if (!clientThreads.containsKey(device.getAddress())) {
-                        //for previously found devices, try to automatically connect
-                        ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
-                        clientThread.start();
-
-                        clientThreads.put(device.getAddress(), clientThread);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-
-    }
-
-    @Override
-    public int myNbrClientMax() {
-        return 6;
-    }
-
-    @Override
-    public void onBluetoothDeviceFound(BluetoothDevice device) {
-
-        log("Found device: " + device.getName());
-
-    }
-
-    @Override
-    public void onClientConnectionSuccess() {
-        log("client connected");
-        sendMessage("Helllooooo client!");
-
-    }
-
-    @Override
-    public void onClientConnectionFail() {
-        log("client failed");
-
-    }
-
-    @Override
-    public void onServeurConnectionSuccess() {
-        log("server connected");
-        sendMessage("Helllooooo server!");
-
-    }
-
-    @Override
-    public void onServeurConnectionFail() {
-        log("server failed");
-
-    }
-
-    @Override
-    public void onBluetoothStartDiscovery() {
-        log("Local BT Address: " + mBluetoothManager.getLocalMacAddress());
-        log("bluetooth start discovery");
-
-    }
-
-    @Override
-    public void onBluetoothCommunicator(String messageReceive) {
-        log("BT communication: " + messageReceive);
-
-    }
-
-    @Override
-    public void onBluetoothNotAviable() {
-        log("BT failed");
-
-    }
-
-    public void onEventMainThread(BluetoothDevice device) {
-
-        if (device != null && device.getName() != null &&
-                (device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_HANDHELD_PC_PDA ||
-                        device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.COMPUTER_PALM_SIZE_PC_PDA ||
-                        device.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART)) {
-
-
-            if (mPairedDevicesOnly && device.getBondState() == BluetoothDevice.BOND_NONE)
-                return; //we can only support paired devices
-
-
-            if (!mFoundDevices.containsKey(device.getAddress())) {
-                mFoundDevices.put(device.getAddress(), device);
-                addDeviceToView(device);
-
-            }
-
-            if (clientThreads.containsKey(device.getAddress()))
-                if (clientThreads.get(device.getAddress()).isAlive())
-                    return; //we have a running thread here people!
-
-            log("Found device: " + device.getName() + ":" + device.getAddress());
-
-            ClientThread clientThread = new ClientThread(device, mHandler, mPairedDevicesOnly);
-            clientThread.start();
-
-            clientThreads.put(device.getAddress(), clientThread);
-
-        }
-
+        NSDReceiver nsdClient = new NSDReceiver(this);
+        nsdClient.setListener(mNearbyListener);
+        nsdClient.startDiscovery();
 
 
 
     }
+
 
     private void addDeviceToView (BluetoothDevice device)
     {
@@ -571,6 +329,7 @@ public class NearbyActivity extends BluetoothFragmentActivity {
 
         snackbar.show();
     }
+
     private void openBluetoothSettings ()
     {
         Intent intentOpenBluetoothSettings = new Intent();
@@ -578,5 +337,21 @@ public class NearbyActivity extends BluetoothFragmentActivity {
         startActivity(intentOpenBluetoothSettings);
     }
 
+    private Handler mHandler = new Handler ()
+    {
+        @Override
+        public void handleMessage(Message message) {
+            switch (message.what) {
+
+                case Constants.MessageType.DATA_PROGRESS_UPDATE: {
+                    log("data progress update");
+                    mProgress.setProgress(message.getData().getInt("progress"));
+                    break;
+                }
+
+
+            }
+        }
+    };
 
 }
