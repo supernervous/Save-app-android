@@ -11,6 +11,7 @@ import android.util.Log;
 import java.io.File;
 
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbySender;
 import info.guardianproject.nearby.bluetooth.roles.ClientThread;
 import info.guardianproject.nearby.bluetooth.roles.Constants;
 import info.guardianproject.nearby.bluetooth.roles.ProgressData;
@@ -20,7 +21,7 @@ import info.guardianproject.nearby.bluetooth.roles.mananger.BluetoothManager;
 /**
  * Created by n8fr8 on 9/2/16.
  */
-public class BluetoothSender {
+public class BluetoothSender implements NearbySender {
 
     protected BluetoothManager mBluetoothManager;
     private boolean mPairedDevicesOnly = false;
@@ -54,7 +55,15 @@ public class BluetoothSender {
         mBluetoothManager.setTimeDiscoverable(timeInSec);
     }
 
-    public void startServer (File fileMedia, byte[] digest, String title, String mimeType) {
+    public void setShareFile (File fileMedia, byte[] digest, String title, String mimeType) {
+
+
+        mServerThread = new ServerThread(mBluetoothManager.getAdapter(), mHandler, mPairedDevicesOnly);
+        mServerThread.setShareMedia(fileMedia, (int) fileMedia.length(), digest, title, mimeType);
+    }
+
+    public void startSharing ()
+    {
         boolean isDiscoverable = !mPairedDevicesOnly;
 
         if (isDiscoverable) {
@@ -67,12 +76,11 @@ public class BluetoothSender {
         if (isDiscoverable)
             mBluetoothManager.makeDiscoverable();
 
-        mServerThread = new ServerThread(mBluetoothManager.getAdapter(), mHandler, mPairedDevicesOnly);
-        mServerThread.setShareMedia(fileMedia, (int) fileMedia.length(), digest, title, mimeType);
         mServerThread.start();
+
     }
 
-    public void stopServer ()
+    public void stopSharing ()
     {
 
             new Thread ()

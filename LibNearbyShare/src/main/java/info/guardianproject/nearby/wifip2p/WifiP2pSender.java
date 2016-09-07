@@ -18,6 +18,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import java.net.InetAddress;
 
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbySender;
 import info.guardianproject.nearby.Neighbor;
 
 /**
@@ -25,7 +26,7 @@ import info.guardianproject.nearby.Neighbor;
  */
 @TargetApi(14)
 @SuppressLint("NewApi")
-public class WifiP2pSender extends BroadcastReceiver {
+public class WifiP2pSender extends BroadcastReceiver implements NearbySender {
 
     private final IntentFilter intentFilter = new IntentFilter();
 
@@ -50,6 +51,16 @@ public class WifiP2pSender extends BroadcastReceiver {
     {
         mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(context, context.getMainLooper(), null);
+    }
+
+    public void startSharing ()
+    {
+
+    }
+
+    public void stopSharing ()
+    {
+
     }
 
     public void stopReceiver (Activity context)

@@ -188,7 +188,7 @@ public class NearbyActivity extends FragmentActivity {
             public void run ()
             {
                 if (mBluetoothServer != null)
-                    mBluetoothServer.stopServer();
+                    mBluetoothServer.stopSharing();
 
                 if (mBluetoothClient != null)
                     mBluetoothClient.cancel();
@@ -217,13 +217,13 @@ public class NearbyActivity extends FragmentActivity {
             public void run ()
             {
                 if (mBluetoothServer != null)
-                    mBluetoothServer.stopServer();
+                    mBluetoothServer.stopSharing();
 
                 if (mBluetoothClient != null)
                     mBluetoothClient.cancel();
 
                 if (mNsdService != null)
-                    mNsdService.tearDown();
+                    mNsdService.stopSharing();
 
 
 
@@ -267,12 +267,13 @@ public class NearbyActivity extends FragmentActivity {
         if (mBluetoothServer.isNetworkEnabled()) {
             mBluetoothServer.setPairedDevicesOnly(mPairedDevicesOnly);
             mBluetoothServer.setNearbyListener(mNearbyListener);
-            mBluetoothServer.startServer(fileMedia, digest, title, mMedia.getMimeType());
+            mBluetoothServer.setShareFile(fileMedia, digest, title, mMedia.getMimeType());
+            mBluetoothServer.startSharing();
         }
 
         mNsdService = new NSDSender(this);
         mNsdService.setShareFile(fileMedia,mMedia.getMimeType());
-        mNsdService.startService();
+        mNsdService.startSharing();
 
     }
 

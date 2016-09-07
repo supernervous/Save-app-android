@@ -14,6 +14,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbySender;
 import info.guardianproject.nearby.Neighbor;
 
 /**
@@ -22,7 +23,7 @@ import info.guardianproject.nearby.Neighbor;
 
 @TargetApi(16)
 @SuppressLint("NewApi")
-public class NSDSender implements Runnable {
+public class NSDSender implements Runnable, NearbySender {
 
     public final static String SERVICE_NAME_DEFAULT = "NSDNearbyShare";
     public final static String SERVICE_TYPE = "_http._tcp.";
@@ -46,7 +47,7 @@ public class NSDSender implements Runnable {
         mContext = context;
     }
 
-    public void startService ()
+    public void startSharing ()
     {
         new Thread (this).start();
     }
@@ -143,7 +144,7 @@ public class NSDSender implements Runnable {
         return mServiceName;
     }
 
-    public synchronized void tearDown() {
+    public synchronized void stopSharing() {
 
         if (mNsdManager != null && mRegistrationListener != null) {
             mNsdManager.unregisterService(mRegistrationListener);
