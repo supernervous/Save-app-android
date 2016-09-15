@@ -1,9 +1,9 @@
 
 LibNearbyShare is an Android library that is meant to simplify the discovery of other LibNearbyShare enabled Android devices nearby, and sharing data with them. It attemps to unify all possible nearby network technologies under a simple, clean interface that any developer can implement without too much trouble or overhead.
 
-This project is still under heavy development, and does not yet have a finalized API or implementation. However, as we are doing work to unify and organize code for effectively using Bluetooth, WiFi LAN/NSD sharing, and Wifi P2P Sharing, we felt it is still useful even in its current form.
+PLEASE NOTE: This library does not require any Internet connection, cloud service, or other centralized method for discovering peers. We don't use GPS, cell towers, or other infrastructure. All detection is done purely using the signals being broadcast by devices themselves.
 
-We are also investigating adding additional methods for discovery and sharing, including audio-based discovery using ultrasonic and audible tones, QR code bootstrapping, WiFi Hotspot auto-setup, NFC and more.
+This project is still under heavy development, and does not yet have a finalized API or implementation. However, as we are doing work to unify and organize code for effectively using Bluetooth, WiFi LAN/NSD sharing, and Wifi P2P Sharing, we felt it is still useful even in its current form. We are also investigating adding additional methods for discovery and sharing, including audio-based discovery using ultrasonic and audible tones, QR code bootstrapping, WiFi Hotspot auto-setup, NFC and more.
 
 License
 -------
