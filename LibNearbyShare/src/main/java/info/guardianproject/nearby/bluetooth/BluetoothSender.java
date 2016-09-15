@@ -73,6 +73,12 @@ public class BluetoothSender implements NearbySender {
         mServerThread.setShareMedia(nearbyMedia);
     }
 
+    public void setShareFile (NearbyMedia nearbyMedia) {
+
+        mServerThread = new ServerThread(mBluetoothManager.getAdapter(), mHandler, mPairedDevicesOnly);
+        mServerThread.setShareMedia(nearbyMedia);
+    }
+
     public void startSharing ()
     {
         boolean isDiscoverable = !mPairedDevicesOnly;
