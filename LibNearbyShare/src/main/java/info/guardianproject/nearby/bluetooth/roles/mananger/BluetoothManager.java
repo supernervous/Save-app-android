@@ -340,6 +340,7 @@ public class BluetoothManager extends BroadcastReceiver {
 
     public void disconnectClient(){
         mType = TypeBluetooth.None;
+
         cancelDiscovery();
         resetClient();
     }
@@ -364,6 +365,10 @@ public class BluetoothManager extends BroadcastReceiver {
             mBluetoothClient.closeConnexion();
             mBluetoothClient = null;
         }
+
+        try{
+            mActivity.unregisterReceiver(this);
+        }catch(Exception e){}
     }
 
     public void closeAllConnexion(){

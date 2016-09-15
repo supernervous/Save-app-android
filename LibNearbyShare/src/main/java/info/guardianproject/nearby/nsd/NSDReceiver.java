@@ -219,7 +219,7 @@ public class NSDReceiver {
             Neighbor neighbor = new Neighbor(host.getHostAddress(),host.getHostName(),Neighbor.TYPE_WIFI_NSD);
 
             if (mNearbyListener != null)
-                mNearbyListener.transferProgress(neighbor, fileOut, media.mTitle, media.mMimeType, 0, Long.parseLong(response.header("Content-Length","0")));
+                mNearbyListener.transferProgress(neighbor, fileOut, media.mTitle, media.mMimeType, 50, Long.parseLong(response.header("Content-Length","0")));
 
             InputStream inputStream = response.body().byteStream();
 

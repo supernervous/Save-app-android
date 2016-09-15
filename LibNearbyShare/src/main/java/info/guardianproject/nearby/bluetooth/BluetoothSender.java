@@ -13,6 +13,7 @@ import java.io.File;
 import info.guardianproject.nearby.NearbyListener;
 import info.guardianproject.nearby.NearbyMedia;
 import info.guardianproject.nearby.NearbySender;
+import info.guardianproject.nearby.Neighbor;
 import info.guardianproject.nearby.bluetooth.roles.ClientThread;
 import info.guardianproject.nearby.bluetooth.roles.Constants;
 import info.guardianproject.nearby.bluetooth.roles.ProgressData;
@@ -174,7 +175,15 @@ public class BluetoothSender implements NearbySender {
                     perComplete = (int) ((((float) remaining) / ((float) pd.totalSize)) * 100f);
                     log("progress: " + (pd.totalSize - pd.remainingSize) + "/" + pd.totalSize);
 
-                   // mProgress.setProgress(perComplete);
+                    if (mNearbyListener != null) {
+                        String deviceName = message.getData().getString("deviceName");
+                        String deviceAddress = message.getData().getString("deviceAddress");
+                        String mimeType = message.getData().getString("type");
+                        String mediaName = message.getData().getString("name");
+
+                        Neighbor neighbor = new Neighbor(deviceAddress, deviceName, Neighbor.TYPE_BLUETOOTH);
+                        mNearbyListener.transferProgress(neighbor, null, mediaName,mimeType, pd.remainingSize, pd.totalSize);
+                    }
                 }
                 else
                     log(message.obj.toString());

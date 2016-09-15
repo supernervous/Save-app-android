@@ -43,6 +43,7 @@ public class Media extends SugarRecord {
     public String tags;
 
     public String licenseUrl;
+    public byte[] mediaHash;
 
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
@@ -88,7 +89,10 @@ public class Media extends SugarRecord {
         return this.createDate;
     }
     public String getFormattedCreateDate() {
-        return SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(this.createDate);
+        if (this.createDate != null)
+            return SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(this.createDate);
+        else
+            return "";
     }
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
@@ -144,13 +148,22 @@ public class Media extends SugarRecord {
         return tags;
     }
 
-
     public String getLicenseUrl() {
         return licenseUrl;
     }
 
     public void setLicenseUrl(String licenseUrl) {
         this.licenseUrl = licenseUrl;
+    }
+
+    public byte[] getMediaHash ()
+    {
+        return mediaHash;
+    }
+
+    public void setMediaHash (byte[] mediaHash)
+    {
+        this.mediaHash = mediaHash;
     }
 
     public void setTags(String tags) {

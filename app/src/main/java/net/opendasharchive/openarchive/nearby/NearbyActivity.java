@@ -25,16 +25,20 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import net.opendasharchive.openarchive.Globals;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaDeserializer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import info.guardianproject.nearby.NearbyListener;
 import info.guardianproject.nearby.NearbyMedia;
@@ -160,7 +164,7 @@ public class NearbyActivity extends FragmentActivity {
 
     }
 
-    private void addMedia (final NearbyMedia nearbyMedia)
+    private synchronized void addMedia (final NearbyMedia nearbyMedia)
     {
 
         Media media = null;
@@ -175,60 +179,61 @@ public class NearbyActivity extends FragmentActivity {
         }
         else
         {
-            Gson gson = new Gson();
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(Media.class, new MediaDeserializer());
+            gsonBuilder.setDateFormat(DateFormat.FULL, DateFormat.FULL);
+            Gson gson = gsonBuilder.create();
             media = gson.fromJson(nearbyMedia.mMetadataJson, Media.class);
         }
+
+        if (media.getMediaHash() == null)
+            media.setMediaHash(nearbyMedia.mDigest);
 
         //set the local file path for both
         media.setOriginalFilePath(nearbyMedia.mFileMedia.getAbsolutePath());
 
-        media.save();
+        List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
 
-        Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.main_nearby), media.getTitle(), Snackbar.LENGTH_LONG);
+        if (results == null || results.isEmpty()) {
+            media.save();
 
-        snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.main_nearby), media.getTitle(), Snackbar.LENGTH_LONG);
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(nearbyMedia.mFileMedia),nearbyMedia.mMimeType);
-                startActivity(intent);
-            }
-        });
+            snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        snackbar.show();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(nearbyMedia.mFileMedia), nearbyMedia.mMimeType);
+                    startActivity(intent);
+                }
+            });
+
+            snackbar.show();
+        }
+        else
+        {
+            final Media mediaExisting = results.get(0);
+
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.main_nearby), mediaExisting.getTitle(), Snackbar.LENGTH_LONG);
+
+            snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(nearbyMedia.mFileMedia), nearbyMedia.mMimeType);
+                    startActivity(intent);
+                }
+            });
+
+            snackbar.show();
+        }
     }
 
 
-    private void addMedia (final File fileMedia, final String mediaName, final String mimeType)
-    {
-        Media media = new Media();
-
-        media.setOriginalFilePath(fileMedia.getAbsolutePath());
-        media.setMimeType(mimeType);
-
-        media.setCreateDate(new Date(fileMedia.lastModified()));
-        media.setUpdateDate(new Date(fileMedia.lastModified()));
-
-        media.setTitle(mediaName);
-        media.save();
-
-        Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.main_nearby), "New file received: " + fileMedia.getName(), Snackbar.LENGTH_LONG);
-
-        snackbar.setAction("Open", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(fileMedia),mimeType);
-                startActivity(intent);
-            }
-        });
-
-        snackbar.show();
-    }
 
     private void restartNearby ()
     {
@@ -299,6 +304,8 @@ public class NearbyActivity extends FragmentActivity {
 
     private void startServer () throws IOException {
 
+        NearbyMedia nearbyMedia = new NearbyMedia();
+
         long currentMediaId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
 
         if (currentMediaId >= 0)
@@ -309,29 +316,31 @@ public class NearbyActivity extends FragmentActivity {
 
         InputStream is = new FileInputStream(fileMedia);
         byte[] digest = Utils.getDigest(fileMedia);
+
+        if (mMedia.getMediaHash() == null)
+            mMedia.setMediaHash(digest);
+
         String title = mMedia.getTitle();
         if (TextUtils.isEmpty(title))
             title = fileMedia.getName();
 
         mBluetoothServer = new BluetoothSender(this);
 
+        Gson gson = new GsonBuilder()
+                .setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
+        nearbyMedia.mMetadataJson = gson.toJson(mMedia);
+
         if (mBluetoothServer.isNetworkEnabled()) {
             mBluetoothServer.setPairedDevicesOnly(mPairedDevicesOnly);
             mBluetoothServer.setNearbyListener(mNearbyListener);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(mMedia);
-
-            mBluetoothServer.setShareFile(fileMedia, digest, title, mMedia.getMimeType(),json);
+            mBluetoothServer.setShareFile(fileMedia, digest, title, mMedia.getMimeType(),nearbyMedia.mMetadataJson);
             mBluetoothServer.startSharing();
         }
 
-        NearbyMedia nearbyMedia = new NearbyMedia();
         nearbyMedia.mTitle = mMedia.getTitle();
         nearbyMedia.mFileMedia = fileMedia;
         nearbyMedia.mMimeType = mMedia.getMimeType();
-        Gson gson = new Gson();
-        nearbyMedia.mMetadataJson = gson.toJson(mMedia);
 
         mNsdService = new NSDSender(this);
         mNsdService.setShareFile(nearbyMedia);
