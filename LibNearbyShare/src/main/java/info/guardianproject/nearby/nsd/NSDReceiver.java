@@ -14,6 +14,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import java.net.InetAddress;
 import java.util.Date;
 
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbyMedia;
 import info.guardianproject.nearby.Neighbor;
 import okio.BufferedSink;
 import okio.Okio;
@@ -188,32 +190,36 @@ public class NSDReceiver {
         try {
             Response response = client.newCall(request).execute();
 
-            String mimeType = response.header("Content-Type", "text/plain");
+            NearbyMedia media = new NearbyMedia();
 
+            media.mMimeType = response.header("Content-Type", "text/plain");
 
-            String fileName = new Date().getTime() + "";
-            String fileExt = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            media.mTitle = new Date().getTime() + "";
+
+            String fileExt = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mMimeType);
 
             if (fileExt == null)
             {
-                if (mimeType.startsWith("image"))
+                if (media.mMimeType.startsWith("image"))
                     fileExt = "jpg";
-                else if (mimeType.startsWith("video"))
+                else if (media.mMimeType.startsWith("video"))
                     fileExt = "mp4";
-                else if (mimeType.startsWith("audio"))
+                else if (media.mMimeType.startsWith("audio"))
                     fileExt = "m4a";
 
             }
 
-            fileName += "." + fileExt;
+            media.mTitle += "." + fileExt;
 
             File dirDownloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File fileOut = new File(dirDownloads, new Date().getTime() + "." + fileName);
+            File fileOut = new File(dirDownloads, new Date().getTime() + "." + media.mTitle);
+
+            media.mFileMedia = fileOut;
 
             Neighbor neighbor = new Neighbor(host.getHostAddress(),host.getHostName(),Neighbor.TYPE_WIFI_NSD);
 
             if (mNearbyListener != null)
-                mNearbyListener.transferProgress(neighbor, fileOut, fileName, mimeType, 0, Long.parseLong(response.header("Content-Length","0")));
+                mNearbyListener.transferProgress(neighbor, fileOut, media.mTitle, media.mMimeType, 0, Long.parseLong(response.header("Content-Length","0")));
 
             InputStream inputStream = response.body().byteStream();
 
@@ -221,8 +227,28 @@ public class NSDReceiver {
             sink.writeAll(response.body().source());
             sink.close();
 
+            //now get the metadata
+            sbUrl = new StringBuilder();
+            sbUrl.append("http://");
+            sbUrl.append(host.getHostName());
+            sbUrl.append(":").append(port);
+            sbUrl.append(NSDSender.SERVICE_DOWNLOAD_METADATA_PATH);
+
+            request = new Request.Builder().url(sbUrl.toString())
+                    .addHeader("NearbyClientId",mClientId)
+                    .build();
+            response = client.newCall(request).execute();
+            inputStream = response.body().byteStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            sink = Okio.buffer(Okio.sink(baos));
+            sink.writeAll(response.body().source());
+            sink.close();
+
+            media.mMetadataJson = new String(baos.toByteArray());
+
+
             if (mNearbyListener != null)
-                mNearbyListener.transferComplete(neighbor, fileOut, fileName, mimeType);
+                mNearbyListener.transferComplete(neighbor, media);
 
 
         } catch (IOException ioe) {

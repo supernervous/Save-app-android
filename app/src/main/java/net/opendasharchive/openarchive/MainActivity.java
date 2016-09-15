@@ -179,22 +179,23 @@ public class MainActivity extends ActionBarActivity {
 
         if (intent != null) {
             Uri uri = intent.getData();
-            mimeType = getContentResolver().getType(uri);
 
-            // Will only allow stream-based access to files
+            if (uri != null) {
+                mimeType = getContentResolver().getType(uri);
 
-            try {
-                if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                    grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // Will only allow stream-based access to files
+
+                try {
+                    if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                        grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                } catch (SecurityException se) {
+                    Log.d("OA", "security exception accessing URI", se);
                 }
-            }
-            catch (SecurityException se)
-            {
-                Log.d("OA","security exception accessing URI",se);
-            }
 
-            path = Utility.getRealPathFromURI(this, uri);
+                path = Utility.getRealPathFromURI(this, uri);
+            }
 
 
         }
@@ -215,7 +216,14 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
             } else {
                 // create media
-                Media media = new Media(this, path, mimeType);
+                Media media = new Media();
+                media.setOriginalFilePath(path);
+                media.setMimeType(mimeType);
+
+                File fileMedia = new File(path);
+                media.setCreateDate(new Date(fileMedia.lastModified()));
+                media.setUpdateDate(new Date(fileMedia.lastModified()));
+
                 media.save();
 
                 //need to get fragment and refresh here
@@ -252,7 +260,15 @@ public class MainActivity extends ActionBarActivity {
 
             String path = Utility.getRealPathFromURI(this, uri);
             // create media
-            Media media = new Media(this, path, type);
+            Media media = new Media();
+
+            media.setOriginalFilePath(path);
+            media.setMimeType(type);
+
+            File fileMedia = new File(path);
+            media.setCreateDate(new Date(fileMedia.lastModified()));
+            media.setUpdateDate(new Date(fileMedia.lastModified()));
+
             media.save();
 
             Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);

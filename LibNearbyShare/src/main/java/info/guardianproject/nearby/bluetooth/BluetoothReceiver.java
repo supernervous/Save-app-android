@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbyMedia;
 import info.guardianproject.nearby.Neighbor;
 import info.guardianproject.nearby.bluetooth.bus.BluetoothCommunicator;
 import info.guardianproject.nearby.bluetooth.bus.BondedDevice;
@@ -235,16 +236,21 @@ public class BluetoothReceiver {
 
                     if (message.obj instanceof File) {
 
-                        File fileMedia = (File) message.obj;
+                        NearbyMedia media = new NearbyMedia();
+
+                        media.mFileMedia = (File) message.obj;
+
                         String deviceName = message.getData().getString("deviceName");
                         String deviceAddress = message.getData().getString("deviceAddress");
-                        String mediaType = message.getData().getString("type");
-                        String mediaName = message.getData().getString("name");
+                        Neighbor neighbor = new Neighbor(deviceAddress, deviceName, Neighbor.TYPE_BLUETOOTH);
 
-                        if (mNearbyListener != null) {
-                            Neighbor neighbor = new Neighbor(deviceAddress, deviceName, Neighbor.TYPE_BLUETOOTH);
-                            mNearbyListener.transferComplete(neighbor, fileMedia, mediaName, mediaType);
-                        }
+
+                        media.mMimeType = message.getData().getString("type");
+                        media.mTitle = message.getData().getString("name");
+                        media.mMetadataJson = message.getData().getString("metadataJson");
+
+                        if (mNearbyListener != null)
+                            mNearbyListener.transferComplete(neighbor, media);
 
                         return;
                     }

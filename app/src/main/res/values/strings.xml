@@ -161,4 +161,5 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
 
     <string name="action_cancel">Cancel</string>
 
+    <string name="action_open">Open</string>
 </resources>

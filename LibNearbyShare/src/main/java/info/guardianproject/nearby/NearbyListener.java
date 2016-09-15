@@ -7,7 +7,7 @@ import java.io.File;
  */
 public interface NearbyListener {
 
-    public void transferComplete (Neighbor neighbor, File fileMedia, String title, String mimeType);
+    public void transferComplete (Neighbor neighbor, NearbyMedia media);
 
     public void foundNeighbor (Neighbor neighbor);
 

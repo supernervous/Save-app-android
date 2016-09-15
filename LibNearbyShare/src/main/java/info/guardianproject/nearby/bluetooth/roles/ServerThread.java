@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import info.guardianproject.nearby.NearbyMedia;
+
 public class ServerThread extends Thread {
     private final String TAG = "btxfr/ServerThread";
     private final BluetoothServerSocket serverSocket;
@@ -19,11 +21,7 @@ public class ServerThread extends Thread {
 
     private ServerListener serverListener;
 
-    private File fileMedia;
-    private String fileTitle;
-    private String fileType;
-    private byte[] digest;
-    private int length;
+    private NearbyMedia mMedia;
 
     public interface ServerListener {
         public void onDeviceConnected(BluetoothDevice device);
@@ -46,13 +44,9 @@ public class ServerThread extends Thread {
 
     }
 
-    public void setShareMedia (File fileMedia, int length, byte[] digest, String fileTitle, String fileType)
+    public void setShareMedia (NearbyMedia media)
     {
-        this.fileMedia = fileMedia;
-        this.fileTitle = fileTitle;
-        this.fileType = fileType;
-        this.length = length;
-        this.digest = digest;
+        mMedia = media;
     }
 
     public void setServerListener (ServerListener sl)
@@ -75,7 +69,7 @@ public class ServerThread extends Thread {
                 try {
                     Log.v(TAG, "Got connection from client.  Spawning new data transfer thread.");
                     DataTransferThread dataTransferThread = new DataTransferThread(socket, handler);
-                    dataTransferThread.setData(fileMedia,length, digest, fileTitle, fileType);
+                    dataTransferThread.setData(mMedia);
                     dataTransferThread.start();
 
                 } catch (Exception e) {

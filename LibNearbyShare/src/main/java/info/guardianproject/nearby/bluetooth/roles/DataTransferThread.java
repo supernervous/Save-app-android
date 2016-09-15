@@ -18,17 +18,15 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Date;
 
+import info.guardianproject.nearby.NearbyMedia;
+
 class DataTransferThread extends Thread {
 
     private final String TAG = "btxfr";
     private final BluetoothSocket socket;
     private Handler handler;
 
-    File fileMedia;
-    String fileMimeType;
-    String fileTitle;
-    int dataLength;
-    byte[] dataDigest;
+    private NearbyMedia mMedia;
 
 
     public DataTransferThread(BluetoothSocket socket, Handler handler) {
@@ -38,20 +36,16 @@ class DataTransferThread extends Thread {
 
     public void run() {
 
-        if (this.fileMedia != null)
+        if (this.mMedia != null)
             sendData();
        else
             receiveData();
 
     }
 
-    public void setData (File fileMedia, int dataLength, byte[] dataDigest, String fileTitle, String mimeType) {
+    public void setData (NearbyMedia media) {
 
-        this.fileMedia = fileMedia;
-        this.fileTitle = fileTitle;
-        this.dataLength = dataLength;
-        this.dataDigest = dataDigest;
-        this.fileMimeType = mimeType;
+        mMedia = media;
     }
 
     private void receiveData ()
@@ -66,6 +60,8 @@ class DataTransferThread extends Thread {
             File fileOut = null;
             String fileName = null;
             String fileType = null;
+            String metadataJson = null;
+
             OutputStream dataOutputStream = null;
 
             byte[] headerBytes = new byte[22];
@@ -82,20 +78,23 @@ class DataTransferThread extends Thread {
                         try { Thread.sleep(50);} catch (Exception e){}
                     }
 
-                    int bytesRead = inputStream.read(headerBytes);
+                    int byteMsb = (int)inputStream.readByte();
+                    int byteLsb = (int)inputStream.readByte();
 
-                    Log.v(TAG, "Received Header Bytes: " + bytesRead);
-
-                    if ((headerBytes[0] == Constants.HEADER_MSB) && (headerBytes[1] == Constants.HEADER_LSB)) {
+                    if ((byteMsb == Constants.HEADER_MSB) && (byteLsb == Constants.HEADER_LSB)) {
                         Log.v(TAG, "Header Received.  Now obtaining length");
-                        byte[] dataSizeBuffer = Arrays.copyOfRange(headerBytes, 2, 6);
-                        progressData.totalSize = Utils.byteArrayToInt(dataSizeBuffer);
+
+                        progressData.totalSize = inputStream.readLong();
                         progressData.remainingSize = progressData.totalSize;
                         Log.v(TAG, "Data size: " + progressData.totalSize);
-                        digest = Arrays.copyOfRange(headerBytes, 6, 22);
+
+                        int digestLength = inputStream.readInt();
+                        digest = new byte[digestLength];
+                        inputStream.read(digest);
 
                         fileName = inputStream.readUTF();
                         fileType = inputStream.readUTF();
+                        metadataJson = inputStream.readUTF();
 
                         String fileExt = MimeTypeMap.getSingleton().getExtensionFromMimeType(fileType);
 
@@ -137,7 +136,7 @@ class DataTransferThread extends Thread {
                 }
             }
 
-            if (Utils.checkMD5(digest,fileOut)) {
+            if (Utils.checkDigest(digest,fileOut)) {
                 Log.v(TAG, "Digest matches OK.");
                 Message message = new Message();
                 message.obj = fileOut;
@@ -147,6 +146,7 @@ class DataTransferThread extends Thread {
                 message.getData().putString("deviceName",socket.getRemoteDevice().getName());
                 message.getData().putString("name",fileName);
                 message.getData().putString("type",fileType);
+                message.getData().putString("metadataJson",metadataJson);
                 handler.sendMessage(message);
 
                 // Send the digest back to the client as a confirmation
@@ -186,30 +186,27 @@ class DataTransferThread extends Thread {
         try {
             handler.sendEmptyMessage(Constants.MessageType.SENDING_DATA);
 
-            InputStream is = new FileInputStream(fileMedia);
+            InputStream is = new FileInputStream(mMedia.mFileMedia);
             DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
             // Send the header control first
-            outputStream.write(Constants.HEADER_MSB);
-            outputStream.write(Constants.HEADER_LSB);
+            outputStream.writeByte(Constants.HEADER_MSB);
+            outputStream.writeByte(Constants.HEADER_LSB);
 
             // write size
-            outputStream.write(Utils.intToByteArray(dataLength));
+            outputStream.writeLong(mMedia.mLength);
 
-            // write digest
-            outputStream.write(dataDigest);
-
-            // now write the data
-            //outputStream.write(payload);
-            //dataOutputStream.write(buffer, 0, bytesRead);
-            //progressData.remainingSize -= bytesRead;
-            //sendProgress(progressData);
             ProgressData progressData = new ProgressData();
-            progressData.totalSize = dataLength;
+            progressData.totalSize = mMedia.mLength;
             progressData.remainingSize = progressData.totalSize;
 
-            outputStream.writeUTF(fileTitle);
-            outputStream.writeUTF(fileMimeType);
+            // write digest
+            outputStream.writeInt(mMedia.mDigest.length);
+            outputStream.write(mMedia.mDigest);
+
+            outputStream.writeUTF(mMedia.mTitle);
+            outputStream.writeUTF(mMedia.mMimeType);
+            outputStream.writeUTF(mMedia.mMetadataJson);
 
             byte[] buffer = new byte[Constants.CHUNK_SIZE];
             int bytesRead;
@@ -217,7 +214,7 @@ class DataTransferThread extends Thread {
             //    Log.v(TAG, "Read " + bytesRead + " bytes into buffer; Writing to output...");
                 outputStream.write(buffer, 0, bytesRead);
                 progressData.remainingSize -= bytesRead;
-                sendProgress(progressData,fileTitle, fileMimeType);
+                sendProgress(progressData,mMedia.mTitle, mMedia.mMimeType);
             }
 
             outputStream.flush();
@@ -233,7 +230,7 @@ class DataTransferThread extends Thread {
                     inputStream.read(header, 0, 1);
                     incomingDigest[incomingIndex++] = header[0];
                     if (incomingIndex == 16) {
-                        if (Arrays.equals(dataDigest, incomingDigest)) {
+                        if (Utils.digestMatch(mMedia.mDigest,incomingDigest)) {
                             Log.d(TAG, "Digest matched OK.  Data was received OK.");
                             handler.sendEmptyMessage(Constants.MessageType.DATA_SENT_OK);
                         } else {

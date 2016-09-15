@@ -12,7 +12,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class Utils {
+
     private final static String TAG = "android-btxfr/Utils";
+    private final static String DIGEST_ALGO = "SHA1";
 
     public static byte[] intToByteArray(int a) {
         byte[] ret = new byte[4];
@@ -33,33 +35,31 @@ public class Utils {
 
     public static byte[] getDigest(byte[] imageData) {
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
             return messageDigest.digest(imageData);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
-            throw new UnsupportedOperationException("MD5 algorithm not available on this device.");
+            throw new UnsupportedOperationException(DIGEST_ALGO + " algorithm not available on this device.");
         }
     }
 
 
+    public static boolean checkDigest(byte[] digestBytes, File updateFile) {
 
 
-    public static boolean checkMD5(byte[] md5, File updateFile) {
-
-
-        byte[] calculatedDigest = calculateMD5(updateFile);
+        byte[] calculatedDigest = getDigest(updateFile);
         if (calculatedDigest == null) {
             Log.e(TAG, "calculatedDigest null");
             return false;
         }
 
-        return Arrays.equals(calculatedDigest,md5);
+        return Arrays.equals(calculatedDigest,digestBytes);
     }
 
-    public static byte[] calculateMD5(File updateFile) {
+    public static byte[] getDigest(File updateFile) {
         MessageDigest digest;
         try {
-            digest = MessageDigest.getInstance("MD5");
+            digest = MessageDigest.getInstance(DIGEST_ALGO);
         } catch (NoSuchAlgorithmException e) {
             Log.e(TAG, "Exception while getting digest", e);
             return null;
@@ -79,15 +79,15 @@ public class Utils {
             while ((read = is.read(buffer)) > 0) {
                 digest.update(buffer, 0, read);
             }
-            byte[] md5sum = digest.digest();
-            return md5sum;
+            byte[] sum = digest.digest();
+            return sum;
         } catch (IOException e) {
-            throw new RuntimeException("Unable to process file for MD5", e);
+            throw new RuntimeException("Unable to process file for " + DIGEST_ALGO, e);
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
-                Log.e(TAG, "Exception on closing MD5 input stream", e);
+                Log.e(TAG, "Exception on closing input stream", e);
             }
         }
     }

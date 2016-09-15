@@ -14,6 +14,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import info.guardianproject.nearby.NearbyListener;
+import info.guardianproject.nearby.NearbyMedia;
 import info.guardianproject.nearby.NearbySender;
 import info.guardianproject.nearby.Neighbor;
 
@@ -37,8 +38,7 @@ public class NSDSender implements Runnable, NearbySender {
     private NsdManager mNsdManager;
 
     private WebServer mWebServer;
-    private File mShareMedia;
-    private String mShareMediaMimeType;
+    private NearbyMedia mShareMedia;
 
     private NearbyListener mNearbyListener;
 
@@ -52,10 +52,9 @@ public class NSDSender implements Runnable, NearbySender {
         new Thread (this).start();
     }
 
-    public void setShareFile (File shareMedia, String mimeType)
+    public void setShareFile (NearbyMedia shareMedia)
     {
         mShareMedia = shareMedia;
-        mShareMediaMimeType = mimeType;
     }
 
     public void setNearbyListener (NearbyListener nearbyListener)
@@ -174,7 +173,7 @@ public class NSDSender implements Runnable, NearbySender {
             if (session.getUri().endsWith(SERVICE_DOWNLOAD_FILE_PATH))
             {
                 try {
-                    return NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, mShareMediaMimeType, new FileInputStream(mShareMedia));
+                    return NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, mShareMedia.mMimeType, new FileInputStream(mShareMedia.mFileMedia));
                 }
                 catch (IOException ioe)
                 {
@@ -183,7 +182,7 @@ public class NSDSender implements Runnable, NearbySender {
             }
             else if (session.getUri().endsWith(SERVICE_DOWNLOAD_METADATA_PATH))
             {
-                return NanoHTTPD.newFixedLengthResponse(Response.Status.OK,"text/plain","metadata will be here");
+                return NanoHTTPD.newFixedLengthResponse(Response.Status.OK,"text/plain",mShareMedia.mMetadataJson);
 
             }
             else {

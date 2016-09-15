@@ -28,21 +28,21 @@ import net.opendasharchive.openarchive.util.Utility;
  */
 public class Media extends SugarRecord {
 
-    String originalFilePath;
-    String scrubbedFilePath;
-    String mimeType;
-    String thumbnailFilePath;
-    Date createDate;
-    Date updateDate;
-    String serverUrl;
+    public String originalFilePath;
+    public String scrubbedFilePath;
+    public String mimeType;
+    public String thumbnailFilePath;
+    public Date createDate;
+    public Date updateDate;
+    public String serverUrl;
 
-    String title;
-    String description;
-    String author;
-    String location;
-    String tags;
+    public String title;
+    public String description;
+    public String author;
+    public String location;
+    public String tags;
 
-    String licenseUrl;
+    public String licenseUrl;
 
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
@@ -53,19 +53,6 @@ public class Media extends SugarRecord {
 
     //left public ONLY for Sugar ORM
     public Media() {};
-
-    public Media(Context context, String originalFilePath, String mimeType) {
-
-        this.originalFilePath = originalFilePath;
-        this.mimeType = mimeType;
-
-        File fileMedia = new File(originalFilePath);
-
-        this.createDate = new Date(fileMedia.lastModified());
-        this.updateDate = new Date(fileMedia.lastModified());
-
-    }
-
 
     /* getters and setters */
     public String getOriginalFilePath() {
