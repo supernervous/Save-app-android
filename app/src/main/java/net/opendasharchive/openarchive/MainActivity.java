@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -277,93 +280,88 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    /**
-    private void handleLogout() {
-
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.alert_lbl_logout)
-                .setCancelable(true)
-                .setMessage(R.string.alert_logout)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //clear all user prefs
-                        SharedPreferences sharedPrefs = MainActivity.this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-                        sharedPrefs.edit().clear().commit();
-
-                        Account.clearSharedPreferences(MainActivity.this,null);
-                        finish();
-                        Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
-                        firstStartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(firstStartIntent);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setIcon(R.drawable.ic_dialog_alert_holo_light)
-                .show();
-    }*/
 
     private void startNearby ()
     {
-        Intent intent = new Intent(this, NearbyActivity.class);
-        startActivity(intent);
+        if (!askForPermission("android.permission.BLUETOOTH_ADMIN",1)) {
+
+            Intent intent = new Intent(this, NearbyActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void importMedia ()
     {
-        // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager
-        Intent intent;
-        int requestId = Globals.REQUEST_FILE_IMPORT;
-        if (Build.VERSION.SDK_INT >= 19) {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        } else {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        if (!askForPermission("android.permission.READ_EXTERNAL_STORAGE",1)) {
+
+            // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager
+            Intent intent;
+            int requestId = Globals.REQUEST_FILE_IMPORT;
+            if (Build.VERSION.SDK_INT >= 19) {
+                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            } else {
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+            }
+
+            // Filter to only show results that can be "opened", such as a
+            // file (as opposed to a list of contacts or timezones)
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+
+            //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
+            // Apply is async and fine for UI thread. commit() is synchronous
+            //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
+            startActivityForResult(intent, requestId);
+
         }
-
-        // Filter to only show results that can be "opened", such as a
-        // file (as opposed to a list of contacts or timezones)
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-
-        //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
-        // Apply is async and fine for UI thread. commit() is synchronous
-        //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
-        startActivityForResult(intent, requestId);
     }
 
     private void captureMedia (Media.MEDIA_TYPE mediaType)
     {
-        Intent intent = null;
-        int requestId = -1;
 
-        if (mediaType == Media.MEDIA_TYPE.AUDIO) {
-            intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-            requestId = Globals.REQUEST_AUDIO_CAPTURE;
+        if (!askForPermission("android.permission.WRITE_EXTERNAL_STORAGE",1)) {
 
-        } else if (mediaType == Media.MEDIA_TYPE.IMAGE) {
-            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File photoFile;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Log.e(TAG, "Unable to make image file");
-                return;
+            Intent intent = null;
+            int requestId = -1;
+
+            if (mediaType == Media.MEDIA_TYPE.AUDIO) {
+
+                if (!askForPermission("android.permission.RECORD_AUDIO",1)) {
+
+                    intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    requestId = Globals.REQUEST_AUDIO_CAPTURE;
+                }
+
+
+            } else if (mediaType == Media.MEDIA_TYPE.IMAGE) {
+
+                if (!askForPermission("android.permission.CAMERA",1)) {
+
+                    intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File photoFile;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        Log.e(TAG, "Unable to make image file");
+                        return;
+                    }
+
+                    getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                    requestId = Globals.REQUEST_IMAGE_CAPTURE;
+                }
+
+            } else if (mediaType == Media.MEDIA_TYPE.VIDEO) {
+                if (!askForPermission("android.permission.CAMERA",1)) {
+
+                    intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    requestId = Globals.REQUEST_VIDEO_CAPTURE;
+                }
             }
 
-            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-            requestId = Globals.REQUEST_IMAGE_CAPTURE;
-
-        } else if (mediaType == Media.MEDIA_TYPE.VIDEO) {
-            intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            requestId = Globals.REQUEST_VIDEO_CAPTURE;
-        }
-
-        if (null != intent && intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, requestId);
+            if (null != intent && intent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(intent, requestId);
+            }
         }
     }
 
@@ -379,5 +377,27 @@ public class MainActivity extends ActionBarActivity {
         );
 
         return image;
+    }
+
+    private boolean askForPermission(String permission, Integer requestCode) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permission)) {
+
+                //This is called if user has denied the permission before
+                //In this case I am just asking the permission again
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
+
+            } else {
+
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
+            }
+
+            return true;
+        }
+
+        return false;
+
     }
 }
