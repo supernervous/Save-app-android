@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 16
         versionName "0.0.16"
         multiDexEnabled false
