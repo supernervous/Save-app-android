@@ -208,9 +208,11 @@ public class Media extends SugarRecord {
                         try {
                             FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
                             thumbnail = ThumbnailUtils.extractThumbnail(bitMap, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT); // FIXME figure out the real aspect ratio and size needed
-                            thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
-                            thumbnailStream.flush();
-                            thumbnailStream.close();
+                            if (thumbnail != null) {
+                                thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
+                                thumbnailStream.flush();
+                                thumbnailStream.close();
+                            }
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         } catch (IOException e) {

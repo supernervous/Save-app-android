@@ -16,6 +16,12 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.db.Media;
 
+import java.util.List;
+
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
+import io.cleaninsights.sdk.piwik.MeasureHelper;
+import io.cleaninsights.sdk.piwik.Measurer;
+
 public class MediaListFragment extends ListFragment {
 
     public MediaAdapter mMediaAdapter;
@@ -78,6 +84,7 @@ public class MediaListFragment extends ListFragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent reviewMediaIntent = new Intent(getActivity(), ReviewMediaActivity.class);
             reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, getMediaIdByPosition(position));
+            reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(reviewMediaIntent);
         }
     };
@@ -140,8 +147,11 @@ public class MediaListFragment extends ListFragment {
     }
 
     private void initMediaAdapter() {
-        mMediaAdapter = new MediaAdapter(this.getActivity(), R.layout.activity_media_list_row, Media.getAllMediaAsList());
+        List<Media> list = Media.getAllMediaAsList();
+
+        mMediaAdapter = new MediaAdapter(this.getActivity(), R.layout.activity_media_list_row, list);
         setListAdapter(mMediaAdapter);
+
     }
 
     private long getMediaIdByPosition(int position) {
@@ -153,4 +163,5 @@ public class MediaListFragment extends ListFragment {
         return mMediaAdapter.getCount();
 
     }
+
 }

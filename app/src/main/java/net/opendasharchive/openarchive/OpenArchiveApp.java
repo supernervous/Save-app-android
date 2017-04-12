@@ -16,6 +16,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     private boolean mUseTor = false;
 
+    private CleanInsightsApplication cleanInsightsApp;
 
     @Override
     public void onCreate() {
@@ -31,12 +32,17 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     }
 
+    public CleanInsightsApplication getCleanInsightsApp ()
+    {
+        return cleanInsightsApp;
+    }
+
     private void initInsights ()
     {
         CleanInsights cim = CleanInsights.getInstance(this);
 
         //setup a passthrough application for CleanInsights, since we are already a SugarApp
-        CleanInsightsApplication cleanInsightsApplication = new CleanInsightsApplication() {
+        cleanInsightsApp = new CleanInsightsApplication() {
 
             @Override
             public Context getApplicationContext() {
@@ -66,7 +72,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
             }
         };
 
-        cim.initPwiki(cleanInsightsApplication);
+        cim.initPwiki(cleanInsightsApp);
     }
 
     public boolean checkTor ()

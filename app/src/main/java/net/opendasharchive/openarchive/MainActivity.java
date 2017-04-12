@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
+import io.cleaninsights.sdk.piwik.MeasureHelper;
+import io.cleaninsights.sdk.piwik.Measurer;
 import io.scal.secureshareui.model.Account;
 
 
@@ -138,6 +141,11 @@ public class MainActivity extends ActionBarActivity {
         if (fragmentMediaList != null)
             fragmentMediaList.refreshMediaList();
 
+
+        //when the app pauses do a private, randomized-response based tracking of the number of media files
+        MeasureHelper.track().privateEvent("OpeNArchive", "media imrpoted", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
+                .with(getMeasurer());
+
     }
 
     @Override
@@ -204,11 +212,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (resultCode == RESULT_OK) {
+
             if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
                 path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
                 mimeType = "image/jpeg";
                 Log.d(TAG, "onActivityResult, image path:" + path);
-
             }
 
             if (null == path) {
@@ -235,6 +243,8 @@ public class MainActivity extends ActionBarActivity {
 
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
                 reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                 startActivity(reviewMediaIntent);
 
             }
@@ -328,7 +338,20 @@ public class MainActivity extends ActionBarActivity {
 
                 if (!askForPermission("android.permission.RECORD_AUDIO",1)) {
 
-                    intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//                    intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+
+                    intent = new Intent();
+                    intent.setType("audio/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                    Intent intent2 = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+
+                    Intent chooser = new Intent(Intent.ACTION_CHOOSER);
+                    chooser.putExtra(Intent.EXTRA_INTENT, intent);
+                    chooser.putExtra(Intent.EXTRA_TITLE, "title");
+                    Intent[] intentarray= {intent2};
+                    chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS,intentarray);
+
                     requestId = Globals.REQUEST_AUDIO_CAPTURE;
                 }
 
@@ -338,16 +361,19 @@ public class MainActivity extends ActionBarActivity {
                 if (!askForPermission("android.permission.CAMERA",1)) {
 
                     intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
                     File photoFile;
                     try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
+                        photoFile = getOutputMediaFile();
+                    } catch (Exception ex) {
                         Log.e(TAG, "Unable to make image file");
                         return;
                     }
 
                     getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+
+                    Uri photoURI = Uri.fromFile(photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI);
                     requestId = Globals.REQUEST_IMAGE_CAPTURE;
                 }
 
@@ -365,18 +391,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        return image;
+    private static File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "OpenArchive");
+
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
     }
 
     private boolean askForPermission(String permission, Integer requestCode) {
@@ -399,5 +427,10 @@ public class MainActivity extends ActionBarActivity {
 
         return false;
 
+    }
+
+
+    private Measurer getMeasurer() {
+        return ((OpenArchiveApp) getApplication()).getCleanInsightsApp().getMeasurer();
     }
 }
