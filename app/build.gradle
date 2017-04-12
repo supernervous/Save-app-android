@@ -8,8 +8,8 @@ android {
     buildToolsVersion project.ext.buildToolsVersion
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
-        minSdkVersion 10
-        targetSdkVersion 16
+        minSdkVersion 16
+        targetSdkVersion 25
         versionCode 16
         versionName "0.0.16"
         multiDexEnabled false
@@ -36,23 +36,26 @@ android {
             applicationId 'net.opendasharchive.openarchive.release'
         }
     }
+    buildToolsVersion '25.0.0'
 }
 
 dependencies {
     compile 'com.google.code.gson:gson:1.7.2'
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:design:25.0.0'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okio:okio:1.1.0'
     compile 'com.github.satyan:sugar:1.4'
-    compile 'info.guardianproject.netcipher:netcipher:1.2.1'
+    compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
     compile 'net.i2p.android.ext:floatingactionbutton:1.10.1'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile project(":external:stampery")
     compile project(':LibNearbyShare')
     compile 'com.github.paolorotolo:appintro:4.0.0'
+    compile 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
+
 }
 
 apt {

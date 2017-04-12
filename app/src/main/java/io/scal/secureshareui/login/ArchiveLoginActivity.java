@@ -18,7 +18,6 @@ import net.opendasharchive.openarchive.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import info.guardianproject.netcipher.web.WebkitProxy;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.lib.Util;
 
@@ -76,6 +75,7 @@ public class ArchiveLoginActivity extends Activity {
 		mWebview.addJavascriptInterface(new JSInterface(), "htmlout");
 
         //if Orbot is installed and running, then use it!
+		/**
         if (proxyHost != null) {
 
                 try {
@@ -85,7 +85,7 @@ public class ArchiveLoginActivity extends Activity {
                     return;
                 }
 
-        }
+        }**/
 
 
 		mWebview.setWebViewClient(new WebViewClient() {

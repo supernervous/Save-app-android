@@ -1,8 +1,12 @@
 package net.opendasharchive.openarchive;
 
 import android.content.Context;
+import android.content.Intent;
 
 import info.guardianproject.netcipher.proxy.OrbotHelper;
+import info.guardianproject.netcipher.proxy.StatusCallback;
+import io.cleaninsights.sdk.CleanInsights;
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 
 /**
  * Created by josh on 3/6/15.
@@ -16,7 +20,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public void onCreate() {
         super.onCreate();
 
-
+        initInsights ();
         checkTor();
     }
 
@@ -26,10 +30,46 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     }
 
+    private void initInsights ()
+    {
+        CleanInsights cim = CleanInsights.getInstance(this);
+    }
+
     public boolean checkTor ()
     {
-        //TODO move to new NetCipher API
-        mUseTor = false;//OrbotHelper.isOrbotInstalled(this) && OrbotHelper.isOrbotRunning(this);
+        OrbotHelper oh = OrbotHelper.get(this);
+        oh.addStatusCallback(new StatusCallback() {
+            @Override
+            public void onEnabled(Intent intent) {
+                mUseTor = true;
+            }
+
+            @Override
+            public void onStarting() {
+
+            }
+
+            @Override
+            public void onStopping() {
+
+            }
+
+            @Override
+            public void onDisabled() {
+                mUseTor = false;
+            }
+
+            @Override
+            public void onStatusTimeout() {
+
+            }
+
+            @Override
+            public void onNotYetInstalled() {
+                mUseTor = false;
+            }
+        });
+        oh.init();
 
         return mUseTor;
     }
