@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.text.TextUtils;
@@ -27,9 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.stampery.api.Stampery;
-import com.stampery.api.StamperyListener;
-
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.nearby.NearbyActivity;
 import net.opendasharchive.openarchive.util.Utility;
@@ -42,7 +39,7 @@ import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
 
 
-public class ReviewMediaActivity extends ActionBarActivity {
+public class ReviewMediaActivity extends AppCompatActivity {
     private static String TAG = "ReviewMediaActivity";
 
     private Context mContext = this;
@@ -398,24 +395,6 @@ public class ReviewMediaActivity extends ActionBarActivity {
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
 
-    private void stampMedia ()
-    {
-        Stampery sApi = new Stampery();
-        sApi.setListener(new StamperyListener() {
-            @Override
-            public void stampSuccess(String action, String hash) {
-                Log.i("OAStampery","stamp success: " + action + " hash=" + hash);
-            }
-
-            @Override
-            public void stampFailed(String action, Exception e) {
-                Log.w("OAStampery","stamp failed: " + action,e);
-
-            }
-        });
-        sApi.authenticate("nathan@guardianproject.info","ADANiXj2JPHJ");
-        sApi.stamp("OpenArchive URL","mMedia.getServerUrl()");
-    }
 
     private void uploadMedia ()
     {

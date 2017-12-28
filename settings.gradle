@@ -1,5 +1,4 @@
 include ':app', ':ipfs-android', ':LibNearbyShare'
-include ':external:stampery'
 include ':external:ipfs-android'
 
 

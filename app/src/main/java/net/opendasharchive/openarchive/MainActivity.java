@@ -13,7 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,13 +33,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 import io.cleaninsights.sdk.piwik.Measurer;
-import io.scal.secureshareui.model.Account;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -143,7 +141,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         //when the app pauses do a private, randomized-response based tracking of the number of media files
-        MeasureHelper.track().privateEvent("OpeNArchive", "media imrpoted", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
+        MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
                 .with(getMeasurer());
 
     }

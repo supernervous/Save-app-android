@@ -18,7 +18,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <!--
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
      For 4.4 up. Allows us to take permanent permission on File URI Without having
      to show file chooser each time
     -->
@@ -47,7 +49,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="8" />
+            android:value="9" />
 
         <activity
             android:name=".MainActivity"
