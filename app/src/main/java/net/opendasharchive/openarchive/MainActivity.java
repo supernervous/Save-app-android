@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
-        String path = null;
         String mimeType = null;
 
         if (intent != null) {
@@ -203,48 +202,38 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("OA", "security exception accessing URI", se);
                 }
 
-                path = Utility.getRealPathFromURI(this, uri);
             }
 
+            if (resultCode == RESULT_OK) {
 
-        }
+                if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
+                    String path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
+                    mimeType = "image/jpeg";
+                    Log.d(TAG, "onActivityResult, image path:" + path);
+                }
 
-        if (resultCode == RESULT_OK) {
+                if (null == mimeType) {
+                    Log.d(TAG, "onActivityResult: Invalid Media Type");
+                    Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
+                } else {
+                    // create media
+                    Media media = new Media();
+                    media.setOriginalFilePath(uri.toString());
+                    media.setMimeType(mimeType);
+                    media.setCreateDate(new Date());
+                    media.save();
 
-            if(requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
-                path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
-                mimeType = "image/jpeg";
-                Log.d(TAG, "onActivityResult, image path:" + path);
-            }
+                    //need to get fragment and refresh here
+                    if (fragmentMediaList != null)
+                        fragmentMediaList.refreshMediaList();
 
-            if (null == path) {
-                Log.d(TAG, "onActivityResult: Invalid file on import or capture");
-                Toast.makeText(getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
-            } else if (null == mimeType) {
-                Log.d(TAG, "onActivityResult: Invalid Media Type");
-                Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
-            } else {
-                // create media
-                Media media = new Media();
-                media.setOriginalFilePath(path);
-                media.setMimeType(mimeType);
+                    Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
+                    reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                    reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                File fileMedia = new File(path);
-                media.setCreateDate(new Date(fileMedia.lastModified()));
-                media.setUpdateDate(new Date(fileMedia.lastModified()));
+                    startActivity(reviewMediaIntent);
 
-                media.save();
-
-                //need to get fragment and refresh here
-                if (fragmentMediaList != null)
-                    fragmentMediaList.refreshMediaList();
-
-                Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
-                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                startActivity(reviewMediaIntent);
-
+                }
             }
         }
     }

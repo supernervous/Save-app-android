@@ -193,30 +193,40 @@ public class Media extends SugarRecord {
                     thumbnail = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), id, MediaStore.Images.Thumbnails.MINI_KIND, null);
                 } else {
                     if (path.contains("content:/")) {
-                        path = Utility.getRealPathFromURI(context, uri);
-                    }
-                    File originalFile = new File(path);
-                    String fileName = originalFile.getName();
-                    String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                    thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
-                    File thumbnailFile = new File(thumbnailFilePath);
-                    if (thumbnailFile.exists()) {
-                        thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-                    } else {
-                        Bitmap bitMap = BitmapFactory.decodeFile(path);
 
                         try {
-                            FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
-                            thumbnail = ThumbnailUtils.extractThumbnail(bitMap, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT); // FIXME figure out the real aspect ratio and size needed
-                            if (thumbnail != null) {
-                                thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
-                                thumbnailStream.flush();
-                                thumbnailStream.close();
+                            thumbnail = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
+                            
+                        }
+                        catch (IOException ie)
+                        {
+                            ie.printStackTrace();
+                        }
+                    }
+                    else {
+                        File originalFile = new File(path);
+                        String fileName = originalFile.getName();
+                        String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
+                        thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
+                        File thumbnailFile = new File(thumbnailFilePath);
+                        if (thumbnailFile.exists()) {
+                            thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
+                        } else {
+                            Bitmap bitMap = BitmapFactory.decodeFile(path);
+
+                            try {
+                                FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
+                                thumbnail = ThumbnailUtils.extractThumbnail(bitMap, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT); // FIXME figure out the real aspect ratio and size needed
+                                if (thumbnail != null) {
+                                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
+                                    thumbnailStream.flush();
+                                    thumbnailStream.close();
+                                }
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
