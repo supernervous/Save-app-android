@@ -29,7 +29,7 @@ import net.opendasharchive.openarchive.util.Utility;
 public class Media extends SugarRecord {
 
     public String originalFilePath;
-    public String scrubbedFilePath;
+    public String scrubbedFilePath; //not used
     public String mimeType;
     public String thumbnailFilePath;
     public Date createDate;
@@ -61,13 +61,6 @@ public class Media extends SugarRecord {
     }
     public void setOriginalFilePath(String originalFilePath) {
         this.originalFilePath = originalFilePath;
-    }
-
-    public String getScrubbedFilePath() {
-        return this.scrubbedFilePath;
-    }
-    public void setScrubbedFilePath(String scrubbedFilePath) {
-        this.scrubbedFilePath = scrubbedFilePath;
     }
 
     public String getMimeType() {
@@ -196,7 +189,7 @@ public class Media extends SugarRecord {
 
                         try {
                             thumbnail = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
-                            
+
                         }
                         catch (IOException ie)
                         {

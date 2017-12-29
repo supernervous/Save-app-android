@@ -45,10 +45,10 @@ public abstract class SiteController {
 	public static final String VALUE_KEY_PROFILE_URL = "profileUrl";
 	public static final String VALUE_KEY_LOCATION_NAME = "locationName";
 	public static final String VALUE_KEY_MEDIA_PATH = "mediaPath";
-	public static final String VALUE_KEY_USE_TOR = "use_tor";
 	public static final String VALUE_KEY_LICENSE_URL = "licenseUrl";
-	public static final String VALUE_KEY_PUBLISH_TO_STORYMAKER = "publish_to_storymaker"; // TODO generalize this, allow clie
-    
+    public static final String VALUE_KEY_MIME_TYPE = "mimeType";
+
+
     protected static final String ORBOT_HOST = "127.0.0.1";
     protected static final int ORBOT_HTTP_PORT = 8118;
     protected static final int ORBOT_SOCKS_PORT = 9050;
@@ -83,7 +83,7 @@ public abstract class SiteController {
      */
     public abstract void startMetadataActivity(Intent intent);
 
-    public abstract void upload(Account account, HashMap<String, String> valueMap, boolean useTor);
+    public abstract boolean upload(Account account, HashMap<String, String> valueMap, boolean useTor);
 
     public static SiteController getSiteController(String site, Context context, Handler handler, String jobId) {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {

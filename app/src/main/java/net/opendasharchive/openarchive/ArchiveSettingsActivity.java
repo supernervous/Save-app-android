@@ -173,7 +173,7 @@ public class ArchiveSettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPref = context.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
 
         valueMap.put(SiteController.VALUE_KEY_MEDIA_PATH, mMedia.getOriginalFilePath());
-
+        valueMap.put(SiteController.VALUE_KEY_MIME_TYPE, mMedia.getMimeType());
         valueMap.put(SiteController.VALUE_KEY_SLUG, getSlug(mMedia.getTitle()));
         valueMap.put(SiteController.VALUE_KEY_TITLE, mMedia.getTitle());
 

@@ -3,6 +3,7 @@ package io.scal.secureshareui.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -14,10 +15,13 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import io.scal.secureshareui.lib.Util;
@@ -59,14 +63,11 @@ public class ArchiveSiteController extends SiteController {
 	}
 
 	@Override
-	public void upload(Account account, HashMap<String, String> valueMap, boolean useTor) {
+	public boolean upload(Account account, HashMap<String, String> valueMap, boolean useTor) {
 		Log.d(TAG, "Upload file: Entering upload");
         
-		String mediaPath = valueMap.get(VALUE_KEY_MEDIA_PATH);
-        String fileName = new File(mediaPath).getName();//mediaPath.substring(mediaPath.lastIndexOf("/")+1, mediaPath.length());
-
-		if (fileName.endsWith("3gpp"))
-			fileName = fileName.replace("3gpp","3gp");//archive.org only likes 3gp
+		String mediaUri = valueMap.get(VALUE_KEY_MEDIA_PATH);
+		String mimeType = valueMap.get(VALUE_KEY_MIME_TYPE);
 
         String licenseUrl = valueMap.get(VALUE_KEY_LICENSE_URL);
         
@@ -81,13 +82,6 @@ public class ArchiveSiteController extends SiteController {
 		String locationName = valueMap.get(VALUE_KEY_LOCATION_NAME);
 		String body = valueMap.get(VALUE_KEY_BODY);
 
-		File file = new File(mediaPath);
-		if (!file.exists()) {
-			jobFailed(null, 4000473, "Internet Archive upload failed: invalid file");
-			return;
-		}
-		
-		String mediaType = Util.getMediaType(mediaPath);
 
 		OkHttpClient client = new OkHttpClient();
 
@@ -97,18 +91,33 @@ public class ArchiveSiteController extends SiteController {
 		}
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
-		String urlPath = null;
-		String url = null;
+		String urlPath;
+		String url;
 
         String randomString = new Util.RandomString(4).nextString();
         urlPath = slug + "-" + randomString;
-        url = ARCHIVE_API_ENDPOINT  + "/" + urlPath + "/" + fileName;
+
+		try {
+			url = ARCHIVE_API_ENDPOINT  + "/" + urlPath + "/" + URLEncoder.encode(title,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			Log.e(TAG, "Couldn't encode title",e);
+			return false;
+		}
 
 		Log.d(TAG, "uploading to url: " + url);
 
+		InputStream is = null;
+
+		try {
+			is = mContext.getContentResolver().openInputStream(Uri.parse(mediaUri));
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, "Couldn't open stream",e);
+			return false;
+		}
+
 		Request.Builder builder = new Request.Builder()
 				.url(url)
-				.put(RequestBody.create(MEDIA_TYPE, file))
+				.put(RequestBodyUtil.create(MEDIA_TYPE, is))
 				.addHeader("Accept", "*/*")
                 .addHeader("x-amz-auto-make-bucket", "1")
 //                .addHeader("x-archive-meta-collection", "storymaker")
@@ -123,9 +132,9 @@ public class ArchiveSiteController extends SiteController {
 			}
         }
 
-        if (mediaType != null) {
-            builder.addHeader("x-archive-meta-mediatype", mediaType);
-            if(mediaType.contains("audio")) {
+        if (mimeType != null) {
+            builder.addHeader("x-archive-meta-mediatype", mimeType);
+            if(mimeType.contains("audio")) {
                 builder.addHeader("x-archive-meta-collection", "opensource_audio");
             } else {
                 builder.addHeader("x-archive-meta-collection", "opensource_movies");
@@ -166,6 +175,8 @@ public class ArchiveSiteController extends SiteController {
 
 		UploadFileTask uploadFileTask = new UploadFileTask(client, request);
 		uploadFileTask.execute();
+
+		return true;
 	}
 
 	class UploadFileTask extends AsyncTask<String, String, String> {
