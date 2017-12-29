@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
@@ -331,8 +332,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     {
         Intent viewMediaIntent = new Intent();
         viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
-        File file = new File(mMedia.getOriginalFilePath());
-        viewMediaIntent.setDataAndType(Uri.fromFile(file), mMedia.getMimeType().split("/")[0] + "/*");
+        viewMediaIntent.setDataAndType(Uri.parse(mMedia.getOriginalFilePath()), mMedia.getMimeType().split("/")[0] + "/*");
         startActivity(viewMediaIntent);
     }
 

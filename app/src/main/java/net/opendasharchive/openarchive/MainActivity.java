@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mTitle;
 
     private MediaListFragment fragmentMediaList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
             Uri uri = intent.getData();
 
+            if (uri == null &&
+                    requestCode == Globals.REQUEST_IMAGE_CAPTURE)
+                uri = mCameraUri;
+
             if (uri != null) {
                 mimeType = getContentResolver().getType(uri);
 
@@ -313,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private Uri mCameraUri;
+
     private void captureMedia (Media.MEDIA_TYPE mediaType)
     {
 
@@ -359,8 +368,10 @@ public class MainActivity extends AppCompatActivity {
 
                     getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
 
-                    Uri photoURI = Uri.fromFile(photoFile);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI);
+                    mCameraUri = FileProvider.getUriForFile(MainActivity.this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,mCameraUri);
                     requestId = Globals.REQUEST_IMAGE_CAPTURE;
                 }
 
