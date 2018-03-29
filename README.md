@@ -6,7 +6,7 @@ OpenArchive was founded by Natalie Cadranel and developed in partnership with th
 ---
 Credits
 
-Photo by (Patrik Goethe)[https://unsplash.com/patrikgoethe]
+Photo by [Patrik Göthe](https://unsplash.com/@p)
 
 Icons by:
 Share by Alex Podolsky from the Noun Project
