@@ -5,13 +5,14 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import de.greenrobot.event.EventBus;
 import info.guardianproject.nearby.bluetooth.bus.BluetoothCommunicator;
 import info.guardianproject.nearby.bluetooth.bus.ServeurConnectionFail;
 import info.guardianproject.nearby.bluetooth.bus.ServeurConnectionSuccess;

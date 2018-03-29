@@ -8,10 +8,11 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.HashMap;
 
-import de.greenrobot.event.EventBus;
 import info.guardianproject.nearby.NearbyListener;
 import info.guardianproject.nearby.NearbyMedia;
 import info.guardianproject.nearby.Neighbor;

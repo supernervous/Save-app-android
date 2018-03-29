@@ -1,4 +1,2 @@
-include ':app', ':ipfs-android', ':LibNearbyShare'
-include ':external:ipfs-android'
-
+include ':app'
 

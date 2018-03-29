@@ -31,6 +31,7 @@ import net.opendasharchive.openarchive.Globals;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaDeserializer;
+import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,16 +40,6 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-
-import info.guardianproject.nearby.NearbyListener;
-import info.guardianproject.nearby.NearbyMedia;
-import info.guardianproject.nearby.Neighbor;
-import info.guardianproject.nearby.bluetooth.BluetoothReceiver;
-import info.guardianproject.nearby.bluetooth.BluetoothSender;
-import info.guardianproject.nearby.bluetooth.roles.Constants;
-import info.guardianproject.nearby.bluetooth.roles.Utils;
-import info.guardianproject.nearby.nsd.NSDReceiver;
-import info.guardianproject.nearby.nsd.NSDSender;
 
 
 public class NearbyActivity extends FragmentActivity {
@@ -59,10 +50,6 @@ public class NearbyActivity extends FragmentActivity {
     private SwitchCompat mSwitchPairedOnly;
 
     private boolean mIsServer = false;
-
-    private NSDSender mNsdService = null;
-    private BluetoothReceiver mBluetoothClient = null;
-    private BluetoothSender mBluetoothServer = null;
 
     private NearbyListener mNearbyListener = null;
 
@@ -115,9 +102,11 @@ public class NearbyActivity extends FragmentActivity {
             public void transferComplete (Neighbor neighbor, NearbyMedia media) {
                 addMedia(media);
 
+                /**
                 Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
                 message.getData().putInt("progress",100);
                 message.sendToTarget();
+                 **/
             }
 
             @Override
@@ -133,9 +122,11 @@ public class NearbyActivity extends FragmentActivity {
             {
                 int perComplete = (int) ((((float) (total-transferred)) / ((float) total)) * 100f);
 
+                /**
                 Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
                 message.getData().putInt("progress",perComplete);
                 message.sendToTarget();
+                 **/
             }
 
             @Override
@@ -237,11 +228,13 @@ public class NearbyActivity extends FragmentActivity {
 
     private void restartNearby ()
     {
+        /**
 
         new Thread ()
         {
             public void run ()
             {
+
                 if (mBluetoothServer != null)
                     mBluetoothServer.stopSharing();
 
@@ -263,10 +256,12 @@ public class NearbyActivity extends FragmentActivity {
 
             }
         }.start();
+         **/
     }
 
     private void cancelNearby ()
     {
+        /**
         new Thread ()
         {
             public void run ()
@@ -284,6 +279,7 @@ public class NearbyActivity extends FragmentActivity {
 
             }
         }.start();
+         **/
 
     }
 
@@ -315,7 +311,7 @@ public class NearbyActivity extends FragmentActivity {
         File fileMedia = new File(mMedia.getOriginalFilePath());
 
         InputStream is = new FileInputStream(fileMedia);
-        byte[] digest = Utils.getDigest(fileMedia);
+        byte[] digest = Utility.getDigest(fileMedia);
 
         if (mMedia.getMediaHash() == null)
             mMedia.setMediaHash(digest);
@@ -324,12 +320,14 @@ public class NearbyActivity extends FragmentActivity {
         if (TextUtils.isEmpty(title))
             title = fileMedia.getName();
 
-        mBluetoothServer = new BluetoothSender(this);
+
+        //mBluetoothServer = new BluetoothSender(this);
 
         Gson gson = new GsonBuilder()
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
         nearbyMedia.mMetadataJson = gson.toJson(mMedia);
 
+        /**
         if (mBluetoothServer.isNetworkEnabled()) {
             mBluetoothServer.setPairedDevicesOnly(mPairedDevicesOnly);
             mBluetoothServer.setNearbyListener(mNearbyListener);
@@ -337,20 +335,23 @@ public class NearbyActivity extends FragmentActivity {
             mBluetoothServer.setShareFile(fileMedia, digest, title, mMedia.getMimeType(),nearbyMedia.mMetadataJson);
             mBluetoothServer.startSharing();
         }
+        */
 
         nearbyMedia.mTitle = mMedia.getTitle();
         nearbyMedia.mFileMedia = fileMedia;
         nearbyMedia.mMimeType = mMedia.getMimeType();
 
+        /**
         mNsdService = new NSDSender(this);
         mNsdService.setShareFile(nearbyMedia);
         mNsdService.startSharing();
-
+        **/
     }
 
     private void startClient ()
     {
 
+        /**
         mBluetoothClient = new BluetoothReceiver(this);
 
         if (mBluetoothClient.isNetworkEnabled()) {
@@ -362,7 +363,7 @@ public class NearbyActivity extends FragmentActivity {
         NSDReceiver nsdClient = new NSDReceiver(this);
         nsdClient.setListener(mNearbyListener);
         nsdClient.startDiscovery();
-
+        **/
 
 
     }
@@ -413,6 +414,7 @@ public class NearbyActivity extends FragmentActivity {
     {
         @Override
         public void handleMessage(Message message) {
+            /**
             switch (message.what) {
 
                 case Constants.MessageType.DATA_PROGRESS_UPDATE: {
@@ -423,6 +425,7 @@ public class NearbyActivity extends FragmentActivity {
 
 
             }
+             **/
         }
     };
 

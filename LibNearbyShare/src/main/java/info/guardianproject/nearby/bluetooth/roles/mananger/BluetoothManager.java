@@ -10,11 +10,12 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
 import info.guardianproject.nearby.bluetooth.roles.client.BluetoothClient;
 import info.guardianproject.nearby.bluetooth.roles.server.BluetoothServer;
 import info.guardianproject.nearby.bluetooth.bus.BondedDevice;

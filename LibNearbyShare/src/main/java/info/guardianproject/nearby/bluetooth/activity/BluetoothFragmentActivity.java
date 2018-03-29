@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
 import info.guardianproject.nearby.bluetooth.roles.mananger.BluetoothManager;
 import info.guardianproject.nearby.bluetooth.bus.BluetoothCommunicator;
 import info.guardianproject.nearby.bluetooth.bus.BondedDevice;

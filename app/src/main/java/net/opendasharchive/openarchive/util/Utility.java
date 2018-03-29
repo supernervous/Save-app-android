@@ -5,6 +5,13 @@ package net.opendasharchive.openarchive.util;
  */
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 //import info.guardianproject.onionkit.ui.OrbotHelper;
 
@@ -20,6 +27,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.MimeTypeMap;
@@ -79,7 +87,7 @@ public class Utility {
         final boolean isKitKat = Build.VERSION.SDK_INT >= 19;
 
         if (isKitKat)
-            return getPath(context,contentUri);
+            return getPath(context, contentUri);
         else {
             Cursor cursor = null;
             try {
@@ -102,7 +110,7 @@ public class Utility {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        if(webview != null) {
+        if (webview != null) {
             webview.clearHistory();
             webview.clearCache(true);
             webview.clearFormData();
@@ -175,8 +183,7 @@ public class Utility {
      * @return path of the selected image file from gallery
      */
     @TargetApi(19)
-    public static String getPath(final Context context, final Uri uri)
-    {
+    public static String getPath(final Context context, final Uri uri) {
 
         //check here to KITKAT or new version
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
@@ -219,7 +226,7 @@ public class Utility {
                 }
 
                 final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
+                final String[] selectionArgs = new String[]{
                         split[1]
                 };
 
@@ -247,9 +254,9 @@ public class Utility {
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
      *
-     * @param context The context.
-     * @param uri The Uri to query.
-     * @param selection (Optional) Filter used in the query.
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */
@@ -307,4 +314,84 @@ public class Utility {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+
+    private final static String TAG = "android-btxfr/Utils";
+    private final static String DIGEST_ALGO = "SHA1";
+
+    public static byte[] intToByteArray(int a) {
+        byte[] ret = new byte[4];
+        ret[3] = (byte) (a & 0xFF);
+        ret[2] = (byte) ((a >> 8) & 0xFF);
+        ret[1] = (byte) ((a >> 16) & 0xFF);
+        ret[0] = (byte) ((a >> 24) & 0xFF);
+        return ret;
+    }
+
+    public static int byteArrayToInt(byte[] b) {
+        return (b[3] & 0xFF) + ((b[2] & 0xFF) << 8) + ((b[1] & 0xFF) << 16) + ((b[0] & 0xFF) << 24);
+    }
+
+    public static boolean digestMatch(byte[] imageData, byte[] digestData) {
+        return Arrays.equals((imageData), digestData);
+    }
+
+    public static byte[] getDigest(byte[] imageData) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
+            return messageDigest.digest(imageData);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+            throw new UnsupportedOperationException(DIGEST_ALGO + " algorithm not available on this device.");
+        }
+    }
+
+
+    public static boolean checkDigest(byte[] digestBytes, File updateFile) {
+
+
+        byte[] calculatedDigest = getDigest(updateFile);
+        if (calculatedDigest == null) {
+            Log.e(TAG, "calculatedDigest null");
+            return false;
+        }
+
+        return Arrays.equals(calculatedDigest,digestBytes);
+    }
+
+    public static byte[] getDigest(File updateFile) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance(DIGEST_ALGO);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Exception while getting digest", e);
+            return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] sum = digest.digest();
+            return sum;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for " + DIGEST_ALGO, e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception on closing input stream", e);
+            }
+        }
+    }
+
 }

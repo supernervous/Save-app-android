@@ -203,10 +203,18 @@ public class ArchiveSiteController extends SiteController {
 				}
 			} catch (IOException e) {
 				jobFailed(e, 4000002, "Archive upload failed: IOException");
-				try {
-					Log.d(TAG, response.body().string());
-				} catch (IOException e1) {
-				    Log.d(TAG, "exception: " + e1.getLocalizedMessage() + ", stacktrace: " + e1.getStackTrace());
+				if (response.body() != null) {
+					try {
+						Log.d(TAG, response.body().string());
+					} catch (IOException e1) {
+						Log.d(TAG, "exception: " + e1.getLocalizedMessage() + ", stacktrace: " + e1.getStackTrace());
+					}
+				}
+				else
+				{
+
+
+
 				}
 			}
 

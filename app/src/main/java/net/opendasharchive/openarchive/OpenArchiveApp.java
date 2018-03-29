@@ -26,12 +26,6 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         checkTor();
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-
-    }
-
     public CleanInsightsApplication getCleanInsightsApp ()
     {
         return cleanInsightsApp;

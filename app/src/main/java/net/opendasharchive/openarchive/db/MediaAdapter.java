@@ -13,6 +13,10 @@ import android.widget.TextView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 
+import com.github.derlio.waveform.SimpleWaveformView;
+import com.github.derlio.waveform.soundfile.SoundFile;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -42,13 +46,42 @@ public class MediaAdapter extends ArrayAdapter<Media> {
         ImageView ivIcon = (ImageView)rowView.findViewById(R.id.ivIcon);
         TextView tvTitle = (TextView)rowView.findViewById(R.id.tvTitle);
         TextView tvCreateDate = (TextView)rowView.findViewById(R.id.tvCreateDate);
+        SimpleWaveformView tvWave = (SimpleWaveformView)rowView.findViewById(R.id.event_item_sound);
 
         Bitmap bThumb = currentMedia.getThumbnail(mContext);
 
-        if (bThumb != null)
+        if (bThumb != null) {
             ivIcon.setImageBitmap(bThumb);
-        else if (currentMedia.getMimeType().startsWith("audio"))
-            ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.audio_waveform));
+            ivIcon.setVisibility(View.VISIBLE);
+            tvWave.setVisibility(View.GONE);
+        }
+        else if (currentMedia.getMimeType().startsWith("audio")) {
+
+            final File fileSound = new File(currentMedia.getOriginalFilePath());
+            try {
+                final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
+                    int lastProgress = 0;
+
+                    @Override
+                    public boolean reportProgress(double fractionComplete) {
+                        final int progress = (int) (fractionComplete * 100);
+                        if (lastProgress == progress) {
+                            return true;
+                        }
+                        lastProgress = progress;
+
+                        return true;
+                    }
+                });
+                tvWave.setAudioFile(soundFile);
+                tvWave.setVisibility(View.VISIBLE);
+                ivIcon.setVisibility(View.GONE);
+                tvWave.invalidate();
+            } catch (Exception e) {
+            }
+            //ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.audio_waveform));
+
+        }
         else
             ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.no_thumbnail));
 
