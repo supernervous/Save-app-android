@@ -60,8 +60,6 @@ dependencies {
     implementation 'com.github.paolorotolo:appintro:4.1.0'
     implementation 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
- //   implementation project(path: ':LibNearbyShare', configuration: 'default')
-
     compile 'com.github.sabzo:ayanda:-SNAPSHOT'
 }
 
