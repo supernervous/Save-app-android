@@ -304,7 +304,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         if (mMedia.getMimeType().startsWith("image")||mMedia.getMimeType().startsWith("video")) {
 
-            Picasso.get().load(mMedia.getThumbnailUri()).into(ivMedia);
+            Picasso.get().load(mMedia.getThumbnailUri()).fit().centerCrop().into(ivMedia);
         }
         else if (mMedia.getMimeType().startsWith("audio"))
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));

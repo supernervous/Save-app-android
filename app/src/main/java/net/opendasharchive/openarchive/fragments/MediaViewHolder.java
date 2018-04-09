@@ -43,7 +43,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         if (currentMedia.getMimeType().startsWith("image")||currentMedia.getMimeType().startsWith("video")) {
 
-            Picasso.get().load(currentMedia.getThumbnailUri()).into(ivIcon);
+            Picasso.get().load(currentMedia.getThumbnailUri()).fit().centerCrop().into(ivIcon);
             ivIcon.setVisibility(View.VISIBLE);
             tvWave.setVisibility(View.GONE);
 
