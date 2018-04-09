@@ -1,93 +1,71 @@
 package net.opendasharchive.openarchive.db;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import net.opendasharchive.openarchive.Globals;
 import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.ReviewMediaActivity;
+import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
-import com.github.derlio.waveform.SimpleWaveformView;
-import com.github.derlio.waveform.soundfile.SoundFile;
-
-import java.io.File;
 import java.util.List;
 
 /**
  * Created by micahjlucas on 1/20/15.
  */
-public class MediaAdapter extends ArrayAdapter<Media> {
+public class MediaAdapter extends RecyclerView.Adapter {
 
-    Context mContext;
-    int layoutResourceId;
-    List<Media> data;
+    private Context mContext;
+    private int layoutResourceId;
+    private List<Media> data;
+    private RecyclerView recyclerview;
 
-    public MediaAdapter(Context context, int layoutResourceId, List<Media> data) {
-        super(context, layoutResourceId, data);
-
+    public MediaAdapter(Context context, int layoutResourceId, List<Media> data, RecyclerView recyclerView) {
+        super();
         this.layoutResourceId = layoutResourceId;
         this.mContext = context;
         this.data = data;
+        this.recyclerview = recyclerView;
     }
 
     @Override
-    public View getView(int position, View rowView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        rowView = inflater.inflate(layoutResourceId, parent, false);
-
-        Media currentMedia = data.get(position);
-
-        ImageView ivIcon = (ImageView)rowView.findViewById(R.id.ivIcon);
-        TextView tvTitle = (TextView)rowView.findViewById(R.id.tvTitle);
-        TextView tvCreateDate = (TextView)rowView.findViewById(R.id.tvCreateDate);
-        SimpleWaveformView tvWave = (SimpleWaveformView)rowView.findViewById(R.id.event_item_sound);
-
-        Bitmap bThumb = currentMedia.getThumbnail(mContext);
-
-        if (bThumb != null) {
-            ivIcon.setImageBitmap(bThumb);
-            ivIcon.setVisibility(View.VISIBLE);
-            tvWave.setVisibility(View.GONE);
-        }
-        else if (currentMedia.getMimeType().startsWith("audio")) {
-
-            final File fileSound = new File(currentMedia.getOriginalFilePath());
-            try {
-                final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
-                    int lastProgress = 0;
-
-                    @Override
-                    public boolean reportProgress(double fractionComplete) {
-                        final int progress = (int) (fractionComplete * 100);
-                        if (lastProgress == progress) {
-                            return true;
-                        }
-                        lastProgress = progress;
-
-                        return true;
-                    }
-                });
-                tvWave.setAudioFile(soundFile);
-                tvWave.setVisibility(View.VISIBLE);
-                ivIcon.setVisibility(View.GONE);
-                tvWave.invalidate();
-            } catch (Exception e) {
-            }
-            //ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.audio_waveform));
-
-        }
-        else
-            ivIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.no_thumbnail));
-
-        tvTitle.setText(currentMedia.getTitle());
-        tvCreateDate.setText(currentMedia.getFormattedCreateDate());
-
-        return rowView;
+    public int getItemCount() {
+        return data.size();
     }
+
+    @NonNull
+    @Override
+    public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int itemPosition = recyclerview.getChildLayoutPosition(view);
+
+                Intent reviewMediaIntent = new Intent(mContext, ReviewMediaActivity.class);
+                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, data.get(itemPosition).getId());
+                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                mContext.startActivity(reviewMediaIntent);
+            }
+        });
+        return new MediaViewHolder(view, mContext);
+    }
+
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        ((MediaViewHolder) holder).bindData(data.get(position));
+    }
+
+    @Override
+    public int getItemViewType(final int position) {
+        return layoutResourceId;
+    }
+
+
 }

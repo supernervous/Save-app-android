@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="net.opendasharchive.openarchive.MediaListActivity"
-        tools:layout="@android:layout/list_content"
+        tools:layout="@layout/fragment_media_list"
         android:visibility="gone"
         />
     <TextView

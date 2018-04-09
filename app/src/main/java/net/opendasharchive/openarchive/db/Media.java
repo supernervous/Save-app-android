@@ -166,6 +166,16 @@ public class Media extends SugarRecord {
         this.tags = tags;
     }
 
+    public Uri getThumbnailUri ()
+    {
+        if (thumbnailFilePath == null) {
+            return Uri.parse(originalFilePath);
+        }
+        else
+            return Uri.parse(thumbnailFilePath);
+
+    }
+    /**
     public Bitmap getThumbnail(Context context) { // TODO: disk cache, multiple sizes
         Bitmap thumbnail = null;
 
@@ -276,7 +286,7 @@ public class Media extends SugarRecord {
         }
 
         return thumbnail;
-    }
+    }**/
 
     public static List<Media> getAllMediaAsList() {
         return Media.listAll(Media.class,"ID DESC");

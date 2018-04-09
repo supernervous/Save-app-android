@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -44,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
 
-    private MediaListFragment fragmentMediaList;
-
+    private Fragment fragmentMediaList;
 
 
     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_title);
 
-        fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
+        fragmentMediaList = getSupportFragmentManager().findFragmentById(R.id.media_list);
 
         // handle if started from outside app
         handleOutsideMedia(getIntent());
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (fragmentMediaList.getCount() == 0)
+        if (Media.getAllMediaAsList().size() == 0)
         {
             findViewById(R.id.media_list).setVisibility(View.GONE);
             findViewById(R.id.media_hint).setVisibility(View.VISIBLE);
@@ -139,13 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if (fragmentMediaList != null)
-            fragmentMediaList.refreshMediaList();
-
-
         //when the app pauses do a private, randomized-response based tracking of the number of media files
-        MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
-                .with(getMeasurer());
+      //  MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
+        //        .with(getMeasurer());
 
     }
 
@@ -229,10 +225,6 @@ public class MainActivity extends AppCompatActivity {
                     media.setMimeType(mimeType);
                     media.setCreateDate(new Date());
                     media.save();
-
-                    //need to get fragment and refresh here
-                    if (fragmentMediaList != null)
-                        fragmentMediaList.refreshMediaList();
 
                     Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
                     reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());

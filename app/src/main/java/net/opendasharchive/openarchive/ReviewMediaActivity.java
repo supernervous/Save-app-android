@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.squareup.picasso.Picasso;
+
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.nearby.NearbyActivity;
 import net.opendasharchive.openarchive.util.Utility;
@@ -300,10 +302,10 @@ public class ReviewMediaActivity extends AppCompatActivity {
         // display media preview if available
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
 
-        Bitmap bThumb = mMedia.getThumbnail(mContext);
+        if (mMedia.getMimeType().startsWith("image")||mMedia.getMimeType().startsWith("video")) {
 
-        if (bThumb != null)
-            ivMedia.setImageBitmap(bThumb);
+            Picasso.get().load(mMedia.getThumbnailUri()).into(ivMedia);
+        }
         else if (mMedia.getMimeType().startsWith("audio"))
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
         else

@@ -3,6 +3,8 @@ package net.opendasharchive.openarchive.nearby;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +14,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -43,8 +48,31 @@ public class WifiDirectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         createView();
         setListeners();
-        /**
+
         a = new Ayanda(this, null, null, new IWifiDirect() {
+
+            @Override
+            public void onConnectedAsClient(final InetAddress inetAddress) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        final String response = inetAddress.toString();
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(WifiDirectActivity.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        // if (nearbyMedia != null) {
+                        //    client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), nearbyMedia);
+                        // }
+                    }
+                }).start();
+            }
+
             @Override
             public void wifiP2pStateChangedAction(Intent intent) {
 
@@ -77,41 +105,10 @@ public class WifiDirectActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onConnectedAsClient(final Client client, final InetAddress groupOwnerAddress) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        try {
-                                final String response = client
-                                    .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(WifiDirectActivity.this, response, Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        } catch (IOException e) {
-                           e.printStackTrace();
-                        }
-                        try {
-                            final File file = client.getFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        
-
-                       // if (nearbyMedia != null) {
-                        //    client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), nearbyMedia);
-                       // }
-                    }
-                }).start();
-
-            }
         });
         a.wdDiscover();
-        **/
+
     }
 
     /**

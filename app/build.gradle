@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile 'com.google.dagger:dagger:2.0'
+    implementation 'com.google.dagger:dagger:2.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
 }
 
@@ -42,7 +42,7 @@ android {
             applicationId 'net.opendasharchive.openarchive.release'
         }
     }
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
@@ -60,7 +60,8 @@ dependencies {
     implementation 'com.github.paolorotolo:appintro:4.1.0'
     implementation 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
-    compile 'com.github.sabzo:ayanda:-SNAPSHOT'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.sabzo:ayanda:-SNAPSHOT'
 }
 
 /**
