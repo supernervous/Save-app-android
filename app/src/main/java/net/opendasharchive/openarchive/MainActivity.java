@@ -1,8 +1,6 @@
 package net.opendasharchive.openarchive;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -28,14 +26,14 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
 import net.opendasharchive.openarchive.nearby.NearbyActivity;
+import net.opendasharchive.openarchive.onboarding.OAAppIntro;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.cleaninsights.sdk.piwik.MeasureHelper;
 import io.cleaninsights.sdk.piwik.Measurer;
 
 
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
 
-    private Fragment fragmentMediaList;
+    private MediaListFragment fragmentMediaList;
 
 
     @Override
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle(R.string.main_activity_title);
 
-        fragmentMediaList = getSupportFragmentManager().findFragmentById(R.id.media_list);
+        fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
         // handle if started from outside app
         handleOutsideMedia(getIntent());
@@ -235,6 +233,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        fragmentMediaList.refresh();
     }
 
 
@@ -279,11 +279,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startNearby ()
     {
-        if (!askForPermission("android.permission.BLUETOOTH_ADMIN",1)) {
-
-            Intent intent = new Intent(this, NearbyActivity.class);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(this, NearbyActivity.class);
+        startActivity(intent);
     }
 
     private void importMedia ()

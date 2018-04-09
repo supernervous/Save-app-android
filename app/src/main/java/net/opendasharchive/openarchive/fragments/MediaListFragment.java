@@ -1,32 +1,16 @@
 package net.opendasharchive.openarchive.fragments;
 
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import net.opendasharchive.openarchive.Globals;
 import net.opendasharchive.openarchive.db.MediaAdapter;
 import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.db.Media;
-
-import java.util.List;
-
-import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
-import io.cleaninsights.sdk.piwik.MeasureHelper;
-import io.cleaninsights.sdk.piwik.Measurer;
 
 public class MediaListFragment extends Fragment {
 
@@ -39,6 +23,11 @@ public class MediaListFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public MediaListFragment() {
+    }
+
+    public void refresh ()
+    {
+        mMediaAdapter.updateData(Media.getAllMediaAsList());
     }
 
     @Override
@@ -58,15 +47,7 @@ public class MediaListFragment extends Fragment {
     }
 
     /**
-    ListView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent reviewMediaIntent = new Intent(getActivity(), ReviewMediaActivity.class);
-            reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, getMediaIdByPosition(position));
-            reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(reviewMediaIntent);
-        }
-    };
+
 
     ListView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override

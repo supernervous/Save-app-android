@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
@@ -23,21 +21,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.nearby.NearbyActivity;
+import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.util.HashMap;
 
-import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
 

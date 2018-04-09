@@ -27,7 +27,7 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.opendasharchive.openarchive.Globals;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaDeserializer;

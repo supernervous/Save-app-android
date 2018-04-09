@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.onboarding;
 
 
 import android.app.Activity;
@@ -8,7 +8,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
-import net.opendasharchive.openarchive.EulaActivity.OnEulaAgreedTo;
+import net.opendasharchive.openarchive.AboutActivity;
+import net.opendasharchive.openarchive.MainActivity;
+import net.opendasharchive.openarchive.OpenArchiveApp;
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.onboarding.EulaActivity.OnEulaAgreedTo;
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;

@@ -90,7 +90,7 @@
 
         </activity>
         <activity
-            android:name=".FirstStartActivity"
+            android:name=".onboarding.FirstStartActivity"
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait"></activity>
         <activity
@@ -108,11 +108,11 @@
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".FirstStartActivity"
+            android:parentActivityName=".onboarding.FirstStartActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.FirstStartActivity" />
+                android:value="net.opendasharchive.openarchive.onboarding.FirstStartActivity" />
         </activity>
         <activity
             android:name=".MediaListActivity"
@@ -135,7 +135,7 @@
         <activity android:name=".nearby.NearbyActivity"
             android:screenOrientation="portrait"
             ></activity>
-        <activity android:name=".OAAppIntro"
+        <activity android:name=".onboarding.OAAppIntro"
             android:label="App Intro" />
         <provider
             android:name="android.support.v4.content.FileProvider"

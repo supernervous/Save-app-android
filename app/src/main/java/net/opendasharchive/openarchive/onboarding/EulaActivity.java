@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.onboarding;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.R;
 
 import java.io.IOException;
 import java.io.BufferedReader;

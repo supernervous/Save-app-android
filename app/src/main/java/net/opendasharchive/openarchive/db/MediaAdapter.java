@@ -8,8 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.opendasharchive.openarchive.Globals;
-import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
@@ -31,6 +30,12 @@ public class MediaAdapter extends RecyclerView.Adapter {
         this.mContext = context;
         this.data = data;
         this.recyclerview = recyclerView;
+    }
+
+    public void updateData (List<Media> data)
+    {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -66,6 +71,5 @@ public class MediaAdapter extends RecyclerView.Adapter {
     public int getItemViewType(final int position) {
         return layoutResourceId;
     }
-
 
 }

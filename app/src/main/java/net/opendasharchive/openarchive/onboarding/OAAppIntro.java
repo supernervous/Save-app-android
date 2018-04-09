@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.onboarding;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
+
+import net.opendasharchive.openarchive.R;
 
 /**
  * Created by n8fr8 on 8/3/16.
