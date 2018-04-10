@@ -394,4 +394,32 @@ public class Utility {
         }
     }
 
+    public static byte[] getDigest(InputStream is) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance(DIGEST_ALGO);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Exception while getting digest", e);
+            return null;
+        }
+
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] sum = digest.digest();
+            return sum;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for " + DIGEST_ALGO, e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception on closing input stream", e);
+            }
+        }
+    }
 }

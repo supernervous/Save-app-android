@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.nearby.NearbyActivity;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;

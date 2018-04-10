@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.nearby;
+package net.opendasharchive.openarchive;
 
 
 import android.bluetooth.BluetoothDevice;
@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -16,17 +18,21 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.opendasharchive.openarchive.nearby.AyandaClient;
+import net.opendasharchive.openarchive.nearby.AyandaServer;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
@@ -37,9 +43,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import sintulabs.p2p.Ayanda;
+import sintulabs.p2p.IWifiDirect;
+import sintulabs.p2p.NearbyMedia;
+import sintulabs.p2p.Server;
 
 
 public class NearbyActivity extends FragmentActivity {
@@ -47,94 +60,37 @@ public class NearbyActivity extends FragmentActivity {
     private TextView mTvNearbyLog;
     private DonutProgress mProgress;
     private LinearLayout mViewNearbyDevices;
-    private SwitchCompat mSwitchPairedOnly;
 
     private boolean mIsServer = false;
 
-    private NearbyListener mNearbyListener = null;
-
     private Media mMedia = null;
 
-    private boolean mPairedDevicesOnly = false;
+    private Ayanda mAyanda;
+    private List mPeers = new ArrayList();
+    private List mPeerNames = new ArrayList();
+    private ArrayAdapter<String> mPeersAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby);
 
-        mTvNearbyLog = (TextView)findViewById(R.id.tvnearbylog);
-        mViewNearbyDevices = (LinearLayout)findViewById(R.id.nearbydevices);
-        mSwitchPairedOnly = (SwitchCompat)findViewById(R.id.tbPairedDevices);
+        mAyanda = new Ayanda(this, null, null, nearbyWifiDirect);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mTvNearbyLog = findViewById(R.id.tvnearbylog);
+        mViewNearbyDevices = findViewById(R.id.nearbydevices);
 
-        mPairedDevicesOnly = prefs.getBoolean("pairedonly",false);
-        mSwitchPairedOnly.setChecked(mPairedDevicesOnly);
-
-        mSwitchPairedOnly.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mPairedDevicesOnly = isChecked;
-
-                prefs.edit().putBoolean("pairedonly",mPairedDevicesOnly).commit();
-                restartNearby();
-
-
-            }
-        });
-
-        mProgress = (DonutProgress)findViewById(R.id.donut_progress);
+        mProgress = findViewById(R.id.donut_progress);
         mProgress.setMax(100);
 
-        Button btn = (Button)findViewById(R.id.btnCancel);
+        Button btn = findViewById(R.id.btnCancel);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
                 cancelNearby();
-
             }
         });
-
-        mNearbyListener = new NearbyListener() {
-
-            @Override
-            public void transferComplete (Neighbor neighbor, NearbyMedia media) {
-                addMedia(media);
-
-                /**
-                Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
-                message.getData().putInt("progress",100);
-                message.sendToTarget();
-                 **/
-            }
-
-            @Override
-            public void foundNeighbor (Neighbor neighbor)
-            {
-                Snackbar snackbar = Snackbar
-                        .make(findViewById(R.id.main_nearby), "Found " + neighbor.mName, Snackbar.LENGTH_SHORT);
-                snackbar.show();
-            }
-
-            @Override
-            public void transferProgress (Neighbor neighbor, File fileMedia, String title, String mimeType, long transferred, long total)
-            {
-                int perComplete = (int) ((((float) (total-transferred)) / ((float) total)) * 100f);
-
-                /**
-                Message message = Message.obtain(mHandler,Constants.MessageType.DATA_PROGRESS_UPDATE);
-                message.getData().putInt("progress",perComplete);
-                message.sendToTarget();
-                 **/
-            }
-
-            @Override
-            public void noNeighborsFound()
-            {
-
-            }
-        };
 
         mIsServer = getIntent().getBooleanExtra("isServer",false);
 
@@ -155,6 +111,7 @@ public class NearbyActivity extends FragmentActivity {
 
     }
 
+    /**
     private synchronized void addMedia (final NearbyMedia nearbyMedia)
     {
 
@@ -164,8 +121,9 @@ public class NearbyActivity extends FragmentActivity {
             media = new Media();
 
             media.setMimeType(nearbyMedia.mMimeType);
-            media.setCreateDate(new Date(nearbyMedia.mFileMedia.lastModified()));
-            media.setUpdateDate(new Date(nearbyMedia.mFileMedia.lastModified()));
+            media.setCreateDate(new Date());
+            media.setUpdateDate(new Date());
+
             media.setTitle(nearbyMedia.mTitle);
         }
         else
@@ -181,7 +139,7 @@ public class NearbyActivity extends FragmentActivity {
             media.setMediaHash(nearbyMedia.mDigest);
 
         //set the local file path for both
-        media.setOriginalFilePath(nearbyMedia.mFileMedia.getAbsolutePath());
+        media.setOriginalFilePath(nearbyMedia.mUriMedia.toString());
 
         List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
 
@@ -196,7 +154,7 @@ public class NearbyActivity extends FragmentActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(nearbyMedia.mFileMedia), nearbyMedia.mMimeType);
+                    intent.setDataAndType(nearbyMedia.mUriMedia, nearbyMedia.mMimeType);
                     startActivity(intent);
                 }
             });
@@ -215,7 +173,7 @@ public class NearbyActivity extends FragmentActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(nearbyMedia.mFileMedia), nearbyMedia.mMimeType);
+                    intent.setDataAndType(nearbyMedia.mUriMedia, nearbyMedia.mMimeType);
                     startActivity(intent);
                 }
             });
@@ -223,63 +181,16 @@ public class NearbyActivity extends FragmentActivity {
             snackbar.show();
         }
     }
-
+    **/
 
 
     private void restartNearby ()
     {
-        /**
-
-        new Thread ()
-        {
-            public void run ()
-            {
-
-                if (mBluetoothServer != null)
-                    mBluetoothServer.stopSharing();
-
-                if (mBluetoothClient != null)
-                    mBluetoothClient.cancel();
-
-                //now start again
-                if (mIsServer)
-                    try {
-                        startServer();
-
-                    }
-                    catch (IOException ioe)
-                    {
-                        Log.e("Nearby","error starting server",ioe);
-                    }
-                else
-                    startClient();
-
-            }
-        }.start();
-         **/
+        mAyanda.wdDiscover();
     }
 
     private void cancelNearby ()
     {
-        /**
-        new Thread ()
-        {
-            public void run ()
-            {
-                if (mBluetoothServer != null)
-                    mBluetoothServer.stopSharing();
-
-                if (mBluetoothClient != null)
-                    mBluetoothClient.cancel();
-
-                if (mNsdService != null)
-                    mNsdService.stopSharing();
-
-
-
-            }
-        }.start();
-         **/
 
     }
 
@@ -290,6 +201,21 @@ public class NearbyActivity extends FragmentActivity {
 
         Log.d("Nearby",msg);
     }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+        mAyanda.wdRegisterReceivers();
+        restartNearby();
+    }
+
+    /* unregister the broadcast receiver */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAyanda.wdUnregisterReceivers();
+    }
+
 
     @Override
     public void onDestroy() {
@@ -307,64 +233,38 @@ public class NearbyActivity extends FragmentActivity {
         if (currentMediaId >= 0)
             mMedia = Media.findById(Media.class, currentMediaId);
 
-
-        File fileMedia = new File(mMedia.getOriginalFilePath());
-
-        InputStream is = new FileInputStream(fileMedia);
-        byte[] digest = Utility.getDigest(fileMedia);
+        Uri uriMedia =Uri.parse(mMedia.getOriginalFilePath());
+        InputStream is = getContentResolver().openInputStream(uriMedia);
+        byte[] digest = Utility.getDigest(is);
 
         if (mMedia.getMediaHash() == null)
             mMedia.setMediaHash(digest);
 
         String title = mMedia.getTitle();
         if (TextUtils.isEmpty(title))
-            title = fileMedia.getName();
-
-
-        //mBluetoothServer = new BluetoothSender(this);
+            title = uriMedia.getLastPathSegment();
 
         Gson gson = new GsonBuilder()
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
         nearbyMedia.mMetadataJson = gson.toJson(mMedia);
 
-        /**
-        if (mBluetoothServer.isNetworkEnabled()) {
-            mBluetoothServer.setPairedDevicesOnly(mPairedDevicesOnly);
-            mBluetoothServer.setNearbyListener(mNearbyListener);
+        nearbyMedia.mTitle = title;
 
-            mBluetoothServer.setShareFile(fileMedia, digest, title, mMedia.getMimeType(),nearbyMedia.mMetadataJson);
-            mBluetoothServer.startSharing();
-        }
-        */
+        //nearbyMedia.mUriMedia = uriMedia;
 
-        nearbyMedia.mTitle = mMedia.getTitle();
-        nearbyMedia.mFileMedia = fileMedia;
         nearbyMedia.mMimeType = mMedia.getMimeType();
+        mAyanda.wdShareFile(nearbyMedia);
 
-        /**
-        mNsdService = new NSDSender(this);
-        mNsdService.setShareFile(nearbyMedia);
-        mNsdService.startSharing();
-        **/
+        try {
+            int defaultPort = 8080;
+            mAyanda.setServer(new AyandaServer(this, defaultPort));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startClient ()
     {
-
-        /**
-        mBluetoothClient = new BluetoothReceiver(this);
-
-        if (mBluetoothClient.isNetworkEnabled()) {
-            mBluetoothClient.setPairedDevicesOnly(mPairedDevicesOnly);
-            mBluetoothClient.setNearbyListener(mNearbyListener);
-            mBluetoothClient.start();
-        }
-
-        NSDReceiver nsdClient = new NSDReceiver(this);
-        nsdClient.setListener(mNearbyListener);
-        nsdClient.startDiscovery();
-        **/
-
 
     }
 
@@ -388,27 +288,14 @@ public class NearbyActivity extends FragmentActivity {
 
     }
 
-    private void noPairedDevices ()
-    {
-        Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.main_nearby), "You have no paired devices. Add now?", Snackbar.LENGTH_LONG);
-
-        snackbar.setAction("Add", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            openBluetoothSettings();
-            }
-        });
-
-        snackbar.show();
-    }
-
+    /**
     private void openBluetoothSettings ()
     {
         Intent intentOpenBluetoothSettings = new Intent();
         intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
         startActivity(intentOpenBluetoothSettings);
     }
+     **/
 
     private Handler mHandler = new Handler ()
     {
@@ -427,6 +314,84 @@ public class NearbyActivity extends FragmentActivity {
             }
              **/
         }
+    };
+
+    IWifiDirect nearbyWifiDirect = new IWifiDirect () {
+
+        @Override
+        public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AyandaClient client = new AyandaClient(NearbyActivity.this);
+                    try {
+
+                        final String response = client
+                                .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(NearbyActivity.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        final File file = client.getFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    if (mMedia != null) {
+
+                        NearbyMedia nearbyMedia = new NearbyMedia();
+                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), nearbyMedia);
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public void wifiP2pStateChangedAction(Intent intent) {
+
+        }
+
+        @Override
+        public void wifiP2pPeersChangedAction() {
+            mPeers.clear();
+            // TODO fix error when WiFi off
+            mPeers.addAll(mAyanda.wdGetDevicesDiscovered() );
+            mPeerNames.clear();
+            for (int i = 0; i < mPeers.size(); i++) {
+                WifiP2pDevice device = (WifiP2pDevice) mPeers.get(i);
+                mPeersAdapter.add(device.deviceName);
+            }
+        }
+
+        @Override
+        public void wifiP2pConnectionChangedAction(Intent intent) {
+
+        }
+
+        @Override
+        public void wifiP2pThisDeviceChangedAction(Intent intent) {
+
+        }
+
+        @Override
+        public void onConnectedAsServer(Server server) {
+
+
+
+        }
+
+
     };
 
 }

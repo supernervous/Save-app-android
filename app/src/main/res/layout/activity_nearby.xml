@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:id="@+id/main_nearby"
-    tools:context="net.opendasharchive.openarchive.nearby.NearbyActivity">
+    tools:context="net.opendasharchive.openarchive.NearbyActivity">
 
 
     <LinearLayout
@@ -54,24 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/tbPairedDevices"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:textOff="@string/nearby_public"
-            android:textOn="@string/nearby_private"
-            android:checked="false"
-            android:showText="true"
-            android:layout_alignParentLeft="true"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="@string/nearby_paired_only"
-            android:layout_toRightOf="@+id/tbPairedDevices"
-            android:gravity="center_vertical"
-            />
-
 
         <Button
             android:layout_width="wrap_content"
@@ -79,6 +61,7 @@
             android:background="@null"
             android:text="@string/action_cancel"
             android:id="@+id/btnCancel"
+            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
 
