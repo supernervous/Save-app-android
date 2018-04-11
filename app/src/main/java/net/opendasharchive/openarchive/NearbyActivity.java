@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -76,7 +77,6 @@ public class NearbyActivity extends AppCompatActivity {
 
         mProgress = findViewById(R.id.donut_progress);
         mProgress.setMax(100);
-
 
         mIsServer = getIntent().getBooleanExtra("isServer", false);
 
@@ -198,16 +198,14 @@ public class NearbyActivity extends AppCompatActivity {
 
       }
 
-
-
     private void restartNearby() {
-        mAyanda.wdDiscover();
         mAyanda.lanDiscover();
     }
 
     private void cancelNearby() {
 
         mAyanda.lanStopAnnouncement();
+        mAyanda.lanStopDiscovery();
 
         //stop wifi p2p?
     }
@@ -277,7 +275,7 @@ public class NearbyActivity extends AppCompatActivity {
             mAyanda.lanShare(nearbyMedia);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG,"error setting server and sharing file",e);
         }
 
 
@@ -404,12 +402,6 @@ public class NearbyActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    /**
-                    if (mMedia != null) {
-
-                        NearbyMedia nearbyMedia = new NearbyMedia();
-                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), nearbyMedia);
-                    }**/
                 }
             }).start();
         }
@@ -418,6 +410,18 @@ public class NearbyActivity extends AppCompatActivity {
         public void wifiP2pStateChangedAction(Intent intent) {
 
             Log.d(TAG, "wifiP2pStateChangedAction: " + intent.getAction() + ": " + intent.getData());
+
+            String action = intent.getAction();
+            if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
+                int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
+                if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+                    // Wifi P2P is enabled
+                    mAyanda.wdDiscover();
+                } else {
+                    // Wi-Fi P2P is not enabled
+                }
+            }
+
 
         }
 
@@ -433,6 +437,8 @@ public class NearbyActivity extends AppCompatActivity {
 
                     mPeers.put(device.deviceAddress, device.deviceName);
                     addPeerToView("Wifi: " + device.deviceName);
+                    mAyanda.wdConnect(device);
+
                 }
             }
         }
