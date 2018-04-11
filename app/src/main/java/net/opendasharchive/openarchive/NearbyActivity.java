@@ -166,9 +166,12 @@ public class NearbyActivity extends AppCompatActivity {
               //set the local file path for both
               media.setOriginalFilePath(nearbyMedia.mUriMedia.toString());
 
+              //need better way to check original file
               List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
 
           if (results == null || results.isEmpty()) {
+
+              //it is new!
               media.save();
 
               Snackbar snackbar = Snackbar
@@ -188,22 +191,11 @@ public class NearbyActivity extends AppCompatActivity {
           }
           else
           {
-              final Media mediaExisting = results.get(0);
-
               Snackbar snackbar = Snackbar
-              .make(findViewById(R.id.main_nearby), mediaExisting.getTitle(), Snackbar.LENGTH_LONG);
+                      .make(findViewById(R.id.main_nearby), "Duplicate received: " + media.getTitle(), Snackbar.LENGTH_LONG);
 
-              snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
-              @Override public void onClick(View v) {
+          }
 
-              Intent intent = new Intent(Intent.ACTION_VIEW);
-              intent.setDataAndType(nearbyMedia.mUriMedia, nearbyMedia.mMimeType);
-              startActivity(intent);
-              }
-              });
-
-              snackbar.show();
-              }
       }
 
 
@@ -215,6 +207,9 @@ public class NearbyActivity extends AppCompatActivity {
 
     private void cancelNearby() {
 
+        mAyanda.lanStopAnnouncement();
+
+        //stop wifi p2p?
     }
 
     private void log(String msg) {
