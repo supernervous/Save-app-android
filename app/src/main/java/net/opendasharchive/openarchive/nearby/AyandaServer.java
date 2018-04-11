@@ -63,12 +63,7 @@ public class AyandaServer extends NanoHTTPD implements IServer{
                 InputStream is = context.getContentResolver().openInputStream(fileToShare.getMediaUri());
                 Response response = NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, mimeType, is);
                 if (response != null) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "File sent", Toast.LENGTH_LONG).show();
-                        }
-                    });
+
                 }
                 return response;
 

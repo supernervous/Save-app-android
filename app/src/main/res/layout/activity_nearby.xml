@@ -22,8 +22,9 @@
         >
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/donut_progress"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_margin="10dp"
         custom:donut_progress="0"
         custom:donut_max="100"
         android:layout_gravity="center_horizontal"
@@ -39,9 +40,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="200dp"
         android:layout_margin="5dp"
         android:background="#eeeeee"
         android:id="@+id/nearbydevices"
@@ -49,24 +50,5 @@
 </LinearLayout>
 
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:background="@null"
-            android:text="@string/action_cancel"
-            android:id="@+id/btnCancel"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center_vertical"
-
-            />
-
-    </RelativeLayout>
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.nearby;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -24,6 +25,7 @@ import okio.BufferedSink;
 import okio.Okio;
 import sintulabs.p2p.Client;
 import sintulabs.p2p.NearbyMedia;
+import sintulabs.p2p.Utils;
 
 import static android.content.ContentValues.TAG;
 
@@ -128,37 +130,48 @@ public class AyandaClient {
 
     /**
      * Downloads file from specified url
-     * @param url
+     * @param baseUrl
      * @return File objet or null
      * @throws IOException
      */
-    public File getFile(String url) throws IOException {
-        url = buildUrl(url, SERVICE_DOWNLOAD_FILE_PATH);
+    public NearbyMedia getNearbyMedia(String baseUrl) throws IOException {
 
-        Request request = new Request.Builder().url(url).build();
+        NearbyMedia nearbyMedia = null;
+
+        Request request = new Request.Builder().url( buildUrl(baseUrl, SERVICE_DOWNLOAD_FILE_PATH)).build();
         File fileOut = null;
         // Request file from server and store details
         try {
             Response response = mClient.newCall(request).execute();
-            String mimeType = response.header("Content-Type", "text/plain");
 
-            String fileExt = getFileExtension(mimeType);
+            nearbyMedia = new NearbyMedia();
 
-            String title  = new Date().getTime() + "." + fileExt;
+            nearbyMedia.mMimeType = response.header("Content-Type", "text/plain");
 
+            String fileExt = getFileExtension(nearbyMedia.mMimeType);
+
+            String fileName = new Date().getTime() + ',' + fileExt;
+            nearbyMedia.mTitle  = fileName;
             File dirDownloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-            fileOut = new File(dirDownloads, title);
+            fileOut = new File(dirDownloads, fileName);
 
             BufferedSink sink = Okio.buffer(Okio.sink(fileOut));
             sink.writeAll(response.body().source());
             sink.close();
 
+            nearbyMedia.mUriMedia = Uri.fromFile(fileOut);
+            nearbyMedia.mLength = fileOut.length();
+            nearbyMedia.mDigest = Utils.getDigest(fileOut);
+
+            request = new Request.Builder().url( buildUrl(baseUrl, SERVICE_DOWNLOAD_METADATA_PATH)).build();
+            response = mClient.newCall(request).execute();
+            nearbyMedia.mMetadataJson = response.body().string();
+
         } catch (IOException e) {
-            Log.e(TAG, "Unable to connect to url: " + url, e);
+            Log.w(TAG, "Unable to connect to url: " + baseUrl, e);
         }
 
-        return fileOut;
+        return nearbyMedia;
     }
 
     private String getFileExtension(String mimeType) {
