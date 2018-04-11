@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive;
 
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Inet4Address;
@@ -46,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import sintulabs.p2p.Ayanda;
+import sintulabs.p2p.IBluetooth;
 import sintulabs.p2p.ILan;
 import sintulabs.p2p.IWifiDirect;
 import sintulabs.p2p.NearbyMedia;
@@ -210,6 +213,7 @@ public class NearbyActivity extends AppCompatActivity {
 
     private void restartNearby() {
         mAyanda.lanDiscover();
+     //   mAyanda.btDiscover();
     }
 
     private void cancelNearby() {
@@ -288,6 +292,7 @@ public class NearbyActivity extends AppCompatActivity {
             mAyanda.wdShareFile(mNearbyMedia);
             mAyanda.lanShare(mNearbyMedia);
 
+        //    mAyanda.btAnnounce();
 
         } catch (IOException e) {
             Log.e(TAG,"error setting server and sharing file",e);
@@ -390,6 +395,99 @@ public class NearbyActivity extends AppCompatActivity {
 
         }
     };
+
+    /**
+    IBluetooth mNearbyBluetooth = new IBluetooth() {
+
+        private boolean mInTransfer = false;
+        private NearbyMedia mBtNearby = null;
+
+        @Override
+        public void actionDiscoveryStarted(Intent intent) {
+
+        }
+
+        @Override
+        public void actionDiscoveryFinished(Intent intent) {
+
+        }
+
+        @Override
+        public void stateChanged(Intent intent) {
+
+        }
+
+        @Override
+        public void scanModeChange(Intent intent) {
+
+        }
+
+        @Override
+        public void actionFound(Intent intent) {
+
+            HashMap<String,BluetoothDevice> devices = new HashMap<>(mAyanda.btGetDevices());
+
+            for (BluetoothDevice device: devices.values())
+            {
+                if ((!TextUtils.isEmpty(device.getAddress()))
+                        && (!mPeers.containsKey(device.getAddress()))) {
+
+                    mPeers.put(device.getAddress(), device.getName());
+                    addPeerToView("BT: " + device.getName());
+
+                }
+
+                mAyanda.btConnect(device);
+
+            }
+
+        }
+
+        @Override
+        public void dataRead(byte[] bytes, int length) {
+
+            if (!mInTransfer)
+            {
+                //must be the json
+                mInTransfer = true;
+
+                mBtNearby = new NearbyMedia();
+                mBtNearby.mMetadataJson = new String(bytes);
+
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.registerTypeAdapter(Media.class, new MediaDeserializer());
+                gsonBuilder.setDateFormat(DateFormat.FULL, DateFormat.FULL);
+                Gson gson = gsonBuilder.create();
+                Media media = gson.fromJson(mBtNearby.mMetadataJson, Media.class);
+            }
+            else
+            {
+                //now read the file bytes
+            }
+
+        }
+
+        @Override
+        public void connected(BluetoothDevice device) {
+
+            try {
+                //first send opening info
+                mAyanda.btSendData(device, mNearbyMedia.mMetadataJson.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                InputStream is = getContentResolver().openInputStream(mNearbyMedia.mUriMedia);
+
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    };**/
 
     IWifiDirect mNearbyWifiDirect = new IWifiDirect() {
 

@@ -160,15 +160,6 @@ public class AyandaClient {
             sink.writeAll(response.body().source());
             sink.close();
 
-            MediaScannerConnection.scanFile(applicationContext,
-                    new String[] { fileOut.getAbsolutePath() }, null,
-                    new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-                            //....
-                        }
-                    });
-
             nearbyMedia.mUriMedia = Uri.fromFile(fileOut);
             nearbyMedia.mLength = fileOut.length();
             nearbyMedia.mDigest = Utils.getDigest(fileOut);
