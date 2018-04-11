@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.nearby;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -150,7 +151,7 @@ public class AyandaClient {
 
             String fileExt = getFileExtension(nearbyMedia.mMimeType);
 
-            String fileName = new Date().getTime() + ',' + fileExt;
+            String fileName = "oa-" + new Date().getTime() + '.' + fileExt;
             nearbyMedia.mTitle  = fileName;
             File dirDownloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             fileOut = new File(dirDownloads, fileName);
@@ -158,6 +159,15 @@ public class AyandaClient {
             BufferedSink sink = Okio.buffer(Okio.sink(fileOut));
             sink.writeAll(response.body().source());
             sink.close();
+
+            MediaScannerConnection.scanFile(applicationContext,
+                    new String[] { fileOut.getAbsolutePath() }, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+                            //....
+                        }
+                    });
 
             nearbyMedia.mUriMedia = Uri.fromFile(fileOut);
             nearbyMedia.mLength = fileOut.length();

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
@@ -61,11 +63,21 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private final static String BASE_DETAILS_URL = "https://archive.org/details/";
 
+    private static Picasso mPicasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_media);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (mPicasso == null) {
+            VideoRequestHandler videoRequestHandler = new VideoRequestHandler(mContext);
+
+            mPicasso = new Picasso.Builder(mContext)
+                    .addRequestHandler(videoRequestHandler)
+                    .build();
+        }
 
         // instantiate values
         tvTitle = (TextView) findViewById(R.id.tv_title_lbl);
@@ -298,15 +310,18 @@ public class ReviewMediaActivity extends AppCompatActivity {
         // display media preview if available
         ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
 
-        if (mMedia.getMimeType().startsWith("image")||mMedia.getMimeType().startsWith("video")) {
+        if (mMedia.getMimeType().startsWith("image")) {
 
-            Picasso.get().load(mMedia.getThumbnailUri()).fit().centerCrop().into(ivMedia);
+            mPicasso.load(Uri.parse(mMedia.getOriginalFilePath())).fit().centerCrop().into(ivMedia);
+        }
+        else if (mMedia.getMimeType().startsWith("video")) {
+
+            mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.getOriginalFilePath()).fit().centerCrop().into(ivMedia);
         }
         else if (mMedia.getMimeType().startsWith("audio"))
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
         else
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.no_thumbnail));
-
 
         ivMedia.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,7 +345,17 @@ public class ReviewMediaActivity extends AppCompatActivity {
     {
         Intent viewMediaIntent = new Intent();
         viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
-        viewMediaIntent.setDataAndType(Uri.parse(mMedia.getOriginalFilePath()), mMedia.getMimeType().split("/")[0] + "/*");
+
+        Uri sharedFileUri = null;
+
+        String mediaPath = mMedia.getOriginalFilePath();
+        if (mediaPath.startsWith("content:"))
+            sharedFileUri = Uri.parse(mediaPath);
+        else
+            sharedFileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
+                    , new File(mMedia.getOriginalFilePath()));
+
+        viewMediaIntent.setDataAndType(sharedFileUri, mMedia.getMimeType().split("/")[0] + "/*");
         startActivity(viewMediaIntent);
     }
 

@@ -168,11 +168,10 @@ public class Media extends SugarRecord {
 
     public Uri getThumbnailUri ()
     {
-        if (thumbnailFilePath == null) {
-            return Uri.parse(originalFilePath);
-        }
-        else
+        if (thumbnailFilePath != null)
             return Uri.parse(thumbnailFilePath);
+        else
+            return null;
 
     }
     /**

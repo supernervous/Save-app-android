@@ -1,7 +1,11 @@
 package net.opendasharchive.openarchive.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +30,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
     private Context mContext;
 
+    private Picasso mPicasso;
+
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
 
@@ -36,14 +42,48 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         tvCreateDate = itemView.findViewById(R.id.tvCreateDate);
         tvWave = itemView.findViewById(R.id.event_item_sound);
 
+        if (mPicasso == null) {
+            VideoRequestHandler videoRequestHandler = new VideoRequestHandler(mContext);
+
+            mPicasso = new Picasso.Builder(mContext)
+                    .addRequestHandler(videoRequestHandler)
+                    .build();
+        }
     }
 
     public void bindData(final Media currentMedia) {
 
+        String mediaPath = currentMedia.getOriginalFilePath();
 
-        if (currentMedia.getMimeType().startsWith("image")||currentMedia.getMimeType().startsWith("video")) {
+        if (currentMedia.getMimeType().startsWith("image")) {
 
-            Picasso.get().load(currentMedia.getThumbnailUri()).fit().centerCrop().into(ivIcon);
+            mPicasso.load(Uri.parse(currentMedia.getOriginalFilePath())).fit().centerCrop().into(ivIcon);
+            ivIcon.setVisibility(View.VISIBLE);
+            tvWave.setVisibility(View.GONE);
+
+        }
+        else  if (currentMedia.getMimeType().startsWith("video")) {
+
+            if (currentMedia.getThumbnailUri() == null
+                    && mediaPath.startsWith("content")) {
+
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = mContext.getContentResolver().query(Uri.parse(mediaPath), filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String thumbPath = cursor.getString(columnIndex);
+                    currentMedia.setThumbnailFilePath(thumbPath);
+                    currentMedia.save();
+                    cursor.close();
+            }
+
+            if (currentMedia.getThumbnailUri() != null)
+            {
+                mPicasso.load(currentMedia.getThumbnailUri()).fit().centerCrop().into(ivIcon);
+            }
+            else
+                mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
+
             ivIcon.setVisibility(View.VISIBLE);
             tvWave.setVisibility(View.GONE);
 

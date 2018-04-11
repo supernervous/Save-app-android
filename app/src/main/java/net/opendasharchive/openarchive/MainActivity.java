@@ -121,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if (fragmentMediaList != null)
+            fragmentMediaList.refresh();
+
         if (Media.getAllMediaAsList().size() == 0)
         {
             findViewById(R.id.media_list).setVisibility(View.GONE);

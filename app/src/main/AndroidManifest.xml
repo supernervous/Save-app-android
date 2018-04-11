@@ -116,16 +116,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.onboarding.FirstStartActivity" />
         </activity>
-        <activity
-            android:name=".MediaListActivity"
-            android:label="@string/title_media_list"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.MainActivity" />
-        </activity>
+
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"

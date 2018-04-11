@@ -37,6 +37,7 @@ import net.opendasharchive.openarchive.util.Utility;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -64,8 +65,8 @@ public class NearbyActivity extends AppCompatActivity {
     private Media mMedia = null;
     private NearbyMedia mNearbyMedia = null;
 
-
     private Ayanda mAyanda;
+    private AyandaServer mAyandaServer;
     private HashMap<String,String> mPeers = new HashMap();
 
     @Override
@@ -74,7 +75,7 @@ public class NearbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nearby);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAyanda = new Ayanda(this, null, mNearbyWifiLan, nearbyWifiDirect);
+        mAyanda = new Ayanda(this, null, mNearbyWifiLan, mNearbyWifiDirect);
 
         mTvNearbyLog = findViewById(R.id.tvnearbylog);
         mViewNearbyDevices = findViewById(R.id.nearbydevices);
@@ -181,14 +182,19 @@ public class NearbyActivity extends AppCompatActivity {
               Snackbar snackbar = Snackbar
               .make(findViewById(R.id.main_nearby), media.getTitle(), Snackbar.LENGTH_LONG);
 
+              final Long snackMediaId = media.getId();
+
             snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
 
-              @Override public void onClick(View v) {
+                  @Override public void onClick(View v) {
 
-              Intent intent = new Intent(Intent.ACTION_VIEW);
-              intent.setDataAndType(nearbyMedia.mUriMedia, nearbyMedia.mMimeType);
-              startActivity(intent);
-              }
+
+                      Intent reviewMediaIntent = new Intent(NearbyActivity.this, ReviewMediaActivity.class);
+                      reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, snackMediaId);
+                      reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                      startActivity(reviewMediaIntent);
+                  }
               });
 
               snackbar.show();
@@ -207,6 +213,9 @@ public class NearbyActivity extends AppCompatActivity {
     }
 
     private void cancelNearby() {
+
+        if (mAyandaServer != null)
+            mAyandaServer.stop();
 
         mAyanda.lanStopAnnouncement();
         mAyanda.lanStopDiscovery();
@@ -273,7 +282,8 @@ public class NearbyActivity extends AppCompatActivity {
 
         try {
             int defaultPort = 8080;
-            mAyanda.setServer(new AyandaServer(this, defaultPort));
+            mAyandaServer = new AyandaServer(this, defaultPort);
+            mAyanda.setServer(mAyandaServer);
 
             mAyanda.wdShareFile(mNearbyMedia);
             mAyanda.lanShare(mNearbyMedia);
@@ -339,23 +349,34 @@ public class NearbyActivity extends AppCompatActivity {
         @Override
         public void serviceResolved(NsdServiceInfo serviceInfo) {
 
-
              // Connected to desired service, so now make socket connection to peer
              final Ayanda.Device device = new Ayanda.Device(serviceInfo);
+
              new Thread(new Runnable() {
                 @Override public void run() {
                     AyandaClient client = new AyandaClient(NearbyActivity.this);
-                    String host = device.getHost().toString();
+                    String serverHost = null; //device.getHost().getHostName() + ":" + 8080;
+
                     try {
 
-                    final String response = client.get(host + ":" + Integer.toString(8080));
+
+                        InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
+
+                        byte [] addressBytes = hostInet.getAddress();
+
+                       // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
+                        Inet4Address dest4 = (Inet4Address) Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
+                        serverHost = dest4.getHostAddress() + ":" + 8080;
+
+                        final String response = client.get(serverHost);
 
                     } catch (IOException e) {
                         Log.e(TAG,"error LAN get: " + e);
+                        return;
                     }
 
                     try {
-                        final NearbyMedia nMedia = client.getNearbyMedia(host + ":" + Integer.toString(8080));
+                        final NearbyMedia nMedia = client.getNearbyMedia(serverHost);
 
                         if (nMedia != null)
                             addMedia(nMedia);
@@ -370,7 +391,7 @@ public class NearbyActivity extends AppCompatActivity {
         }
     };
 
-    IWifiDirect nearbyWifiDirect = new IWifiDirect() {
+    IWifiDirect mNearbyWifiDirect = new IWifiDirect() {
 
         @Override
         public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
@@ -383,16 +404,13 @@ public class NearbyActivity extends AppCompatActivity {
 
                         final String response = client
                                 .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(NearbyActivity.this, response, Toast.LENGTH_LONG).show();
-                            }
-                        });
+
+                        //couldn't connect
+                        return;
 
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.e(TAG,"nearby added",e);
                     }
 
                     try {
@@ -402,7 +420,7 @@ public class NearbyActivity extends AppCompatActivity {
                             addMedia (nearbyMedia);
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.e(TAG,"nearby added",e);
                     }
 
                     if (mMedia != null)
@@ -425,6 +443,8 @@ public class NearbyActivity extends AppCompatActivity {
                 if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                     // Wifi P2P is enabled
                     mAyanda.wdDiscover();
+                    mNearbyWifiDirect.wifiP2pPeersChangedAction();
+
                 } else {
                     // Wi-Fi P2P is not enabled
                 }
@@ -445,9 +465,11 @@ public class NearbyActivity extends AppCompatActivity {
 
                     mPeers.put(device.deviceAddress, device.deviceName);
                     addPeerToView("Wifi: " + device.deviceName);
-                    mAyanda.wdConnect(device);
 
                 }
+
+                mAyanda.wdConnect(device);
+
             }
         }
 
