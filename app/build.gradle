@@ -61,13 +61,5 @@ dependencies {
     implementation 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-    implementation 'com.github.guardianproject:ayanda:-SNAPSHOT'
+    implementation 'com.github.guardianproject:ayanda:1a41aacbe7'
 }
-
-/**
-apt {
-    arguments {
-        schematicOutPackage 'net.opendasharchive.openarchive.apt'
-    }
-}**/
