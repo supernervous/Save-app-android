@@ -60,7 +60,11 @@ public class NearbyActivity extends AppCompatActivity {
     private DonutProgress mProgress;
     private LinearLayout mViewNearbyDevices;
     private boolean mIsServer = false;
+
     private Media mMedia = null;
+    private NearbyMedia mNearbyMedia = null;
+
+
     private Ayanda mAyanda;
     private HashMap<String,String> mPeers = new HashMap();
 
@@ -240,7 +244,7 @@ public class NearbyActivity extends AppCompatActivity {
 
     private void startServer() throws IOException {
 
-        NearbyMedia nearbyMedia = new NearbyMedia();
+        mNearbyMedia = new NearbyMedia();
 
         long currentMediaId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
 
@@ -248,11 +252,11 @@ public class NearbyActivity extends AppCompatActivity {
             mMedia = Media.findById(Media.class, currentMediaId);
 
         Uri uriMedia = Uri.parse(mMedia.getOriginalFilePath());
-        nearbyMedia.mUriMedia = uriMedia;
+        mNearbyMedia.mUriMedia = uriMedia;
 
         InputStream is = getContentResolver().openInputStream(uriMedia);
         byte[] digest = Utility.getDigest(is);
-        nearbyMedia.mDigest = digest;
+        mNearbyMedia.mDigest = digest;
 
         String title = mMedia.getTitle();
         if (TextUtils.isEmpty(title))
@@ -260,10 +264,10 @@ public class NearbyActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
-        nearbyMedia.mMetadataJson = gson.toJson(mMedia);
+        mNearbyMedia.mMetadataJson = gson.toJson(mMedia);
 
-        nearbyMedia.mTitle = title;
-        nearbyMedia.mMimeType = mMedia.getMimeType();
+        mNearbyMedia.mTitle = title;
+        mNearbyMedia.mMimeType = mMedia.getMimeType();
 
         getSupportActionBar().setTitle("Sharing: " + title);
 
@@ -271,8 +275,9 @@ public class NearbyActivity extends AppCompatActivity {
             int defaultPort = 8080;
             mAyanda.setServer(new AyandaServer(this, defaultPort));
 
-            mAyanda.wdShareFile(nearbyMedia);
-            mAyanda.lanShare(nearbyMedia);
+            mAyanda.wdShareFile(mNearbyMedia);
+            mAyanda.lanShare(mNearbyMedia);
+
 
         } catch (IOException e) {
             Log.e(TAG,"error setting server and sharing file",e);
@@ -370,8 +375,6 @@ public class NearbyActivity extends AppCompatActivity {
         @Override
         public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
 
-            mProgress.setInnerBottomText("Connected as client");
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -400,6 +403,11 @@ public class NearbyActivity extends AppCompatActivity {
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                    }
+
+                    if (mMedia != null)
+                    {
+                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080),mNearbyMedia);
                     }
 
                 }
@@ -457,8 +465,6 @@ public class NearbyActivity extends AppCompatActivity {
 
         @Override
         public void onConnectedAsServer(Server server) {
-
-            mProgress.setInnerBottomText("Connected as server: " + server.toString());
 
         }
 
