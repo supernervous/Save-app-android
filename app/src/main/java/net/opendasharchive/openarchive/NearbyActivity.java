@@ -4,6 +4,7 @@ package net.opendasharchive.openarchive;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +30,11 @@ import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaDeserializer;
+import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.nearby.AyandaClient;
 import net.opendasharchive.openarchive.nearby.AyandaServer;
 import net.opendasharchive.openarchive.util.Globals;
@@ -62,6 +67,7 @@ public class NearbyActivity extends AppCompatActivity {
 
     private TextView mTvNearbyLog;
     private DonutProgress mProgress;
+    private ImageView mThumbnail;
     private LinearLayout mViewNearbyDevices;
     private boolean mIsServer = false;
 
@@ -72,14 +78,25 @@ public class NearbyActivity extends AppCompatActivity {
     private AyandaServer mAyandaServer;
     private HashMap<String,String> mPeers = new HashMap();
 
+    private Picasso mPicasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if (mPicasso == null) {
+            VideoRequestHandler videoRequestHandler = new VideoRequestHandler(this);
+
+            mPicasso = new Picasso.Builder(this)
+                    .addRequestHandler(videoRequestHandler)
+                    .build();
+        }
+
         mAyanda = new Ayanda(this, null, mNearbyWifiLan, mNearbyWifiDirect);
 
+        mThumbnail = findViewById(R.id.thumbnail);
         mTvNearbyLog = findViewById(R.id.tvnearbylog);
         mViewNearbyDevices = findViewById(R.id.nearbydevices);
 
@@ -99,7 +116,7 @@ public class NearbyActivity extends AppCompatActivity {
             mProgress.setInnerBottomText("<<<<<<<<");
 
             getSupportActionBar().setTitle("Receiving...");
-
+            mThumbnail.setVisibility(View.GONE);
         }
 
         askForPermission("android.permission.BLUETOOTH", 1);
@@ -171,11 +188,11 @@ public class NearbyActivity extends AppCompatActivity {
           if (media.getMediaHash() == null)
               media.setMediaHash(nearbyMedia.mDigest);
 
-              //set the local file path for both
-              media.setOriginalFilePath(nearbyMedia.mUriMedia.toString());
+          //set the local file path for both
+          media.setOriginalFilePath(nearbyMedia.mUriMedia.toString());
 
-              //need better way to check original file
-              List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
+          //need better way to check original file
+          List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
 
           if (results == null || results.isEmpty()) {
 
@@ -183,22 +200,22 @@ public class NearbyActivity extends AppCompatActivity {
               media.save();
 
               Snackbar snackbar = Snackbar
-              .make(findViewById(R.id.main_nearby), media.getTitle(), Snackbar.LENGTH_LONG);
+              .make(findViewById(R.id.main_nearby), "Received: " + media.getTitle(), Snackbar.LENGTH_LONG);
 
               final Long snackMediaId = media.getId();
 
-            snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
+                snackbar.setAction(getString(R.string.action_open), new View.OnClickListener() {
 
-                  @Override public void onClick(View v) {
+                      @Override public void onClick(View v) {
 
 
-                      Intent reviewMediaIntent = new Intent(NearbyActivity.this, ReviewMediaActivity.class);
-                      reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, snackMediaId);
-                      reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                          Intent reviewMediaIntent = new Intent(NearbyActivity.this, ReviewMediaActivity.class);
+                          reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, snackMediaId);
+                          reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                      startActivity(reviewMediaIntent);
-                  }
-              });
+                          startActivity(reviewMediaIntent);
+                      }
+                  });
 
               snackbar.show();
           }
@@ -257,12 +274,17 @@ public class NearbyActivity extends AppCompatActivity {
 
     private void startServer() throws IOException {
 
-        mNearbyMedia = new NearbyMedia();
 
         long currentMediaId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
 
         if (currentMediaId >= 0)
             mMedia = Media.findById(Media.class, currentMediaId);
+        else
+            return;
+
+        showThumbnail ();
+
+            mNearbyMedia = new NearbyMedia();
 
         Uri uriMedia = Uri.parse(mMedia.getOriginalFilePath());
         mNearbyMedia.mUriMedia = uriMedia;
@@ -299,6 +321,30 @@ public class NearbyActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void showThumbnail ()
+    {
+        if (mMedia.getMimeType().startsWith("image")) {
+
+            mPicasso.load(Uri.parse(mMedia.getOriginalFilePath())).fit().centerCrop().into(mThumbnail);
+
+
+        }
+        else  if (mMedia.getMimeType().startsWith("video")) {
+
+            if (mMedia.getThumbnailUri() != null)
+            {
+                mPicasso.load(mMedia.getThumbnailUri()).fit().centerCrop().into(mThumbnail);
+            }
+            else
+                mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.getOriginalFilePath()).fit().centerCrop().into(mThumbnail);
+
+
+        }
+        else if (mMedia.getMimeType().startsWith("audio")) {
+            mThumbnail.setImageResource(R.drawable.audio_waveform);
+        }
     }
 
     private void addPeerToView(String peerName) {
@@ -383,7 +429,7 @@ public class NearbyActivity extends AppCompatActivity {
                     try {
                         final NearbyMedia nMedia = client.getNearbyMedia(serverHost);
 
-                        if (nMedia != null)
+                        if (nMedia != null && nMedia.mUriMedia != null)
                             addMedia(nMedia);
 
                     } catch (IOException e) {
@@ -514,7 +560,7 @@ public class NearbyActivity extends AppCompatActivity {
                     try {
                         final NearbyMedia nearbyMedia = client.getNearbyMedia(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
 
-                        if (nearbyMedia != null)
+                        if (nearbyMedia != null && nearbyMedia.mUriMedia != null)
                             addMedia (nearbyMedia);
 
                     } catch (IOException e) {

@@ -108,23 +108,27 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                         protected SoundFile doInBackground(Void... unused) {
                             File fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath));
                             try {
+                                if (fileSound != null) {
+                                    final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
+                                        int lastProgress = 0;
 
-                                final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
-                                    int lastProgress = 0;
-
-                                    @Override
-                                    public boolean reportProgress(double fractionComplete) {
-                                        final int progress = (int) (fractionComplete * 100);
-                                        if (lastProgress == progress) {
+                                        @Override
+                                        public boolean reportProgress(double fractionComplete) {
+                                            final int progress = (int) (fractionComplete * 100);
+                                            if (lastProgress == progress) {
+                                                return true;
+                                            }
+                                            lastProgress = progress;
                                             return true;
                                         }
-                                        lastProgress = progress;
-                                        return true;
-                                    }
-                                });
+                                    });
 
-                                mSoundFileCache.put(mediaPath, soundFile);
-                                return soundFile;
+                                    mSoundFileCache.put(mediaPath, soundFile);
+                                    return soundFile;
+                                }
+                                else
+                                    return null;
+
                             } catch (Exception e) {
                                 Log.e(getClass().getName(), "error loading sound file", e);
                             }
@@ -135,9 +139,11 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                         protected void onPostExecute(SoundFile soundFile) {
                             // Post Code
 
-                            tvWave.setAudioFile(soundFile);
-                            tvWave.setVisibility(View.VISIBLE);
-                            ivIcon.setVisibility(View.GONE);
+                            if (soundFile != null) {
+                                tvWave.setAudioFile(soundFile);
+                                tvWave.setVisibility(View.VISIBLE);
+                                ivIcon.setVisibility(View.GONE);
+                            }
 
                             asyncTask = null;
                         }

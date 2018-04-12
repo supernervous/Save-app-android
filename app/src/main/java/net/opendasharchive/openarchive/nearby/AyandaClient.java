@@ -170,6 +170,7 @@ public class AyandaClient {
 
         } catch (IOException e) {
             Log.w(TAG, "Unable to connect to url: " + baseUrl, e);
+            return null;
         }
 
         return nearbyMedia;
