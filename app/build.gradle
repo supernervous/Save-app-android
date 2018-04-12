@@ -62,4 +62,6 @@ dependencies {
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.guardianproject:ayanda:1a41aacbe7'
+    implementation "com.facebook.fresco:fresco:1.8.1"
+    implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
 }

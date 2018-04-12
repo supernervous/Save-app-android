@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
+
 import net.opendasharchive.openarchive.publish.PublishService;
 
 import info.guardianproject.netcipher.proxy.OrbotHelper;
@@ -28,6 +32,14 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         checkTor();
 
         uploadQueue ();
+
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
+                .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
+                .setResizeAndRotateEnabledForNetwork(true)
+                .setDownsampleEnabled(true)
+                .build();
+
+        Fresco.initialize(this, config);
     }
 
     private void uploadQueue ()

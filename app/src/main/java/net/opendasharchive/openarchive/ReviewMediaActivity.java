@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
@@ -35,6 +36,7 @@ import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -349,20 +351,31 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void showMedia ()
     {
-        Intent viewMediaIntent = new Intent();
-        viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
 
-        Uri sharedFileUri = null;
+        if (mMedia.mimeType.startsWith("image"))
+        {
+            ArrayList<Uri> list = new ArrayList<>();
+            list.add(Uri.parse(mMedia.getOriginalFilePath()));
+            new ImageViewer.Builder(this,list)
+                    .setStartPosition(0)
+                    .show();
+        }
+        else {
+            Intent viewMediaIntent = new Intent();
+            viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
 
-        String mediaPath = mMedia.getOriginalFilePath();
-        if (mediaPath.startsWith("content:"))
-            sharedFileUri = Uri.parse(mediaPath);
-        else
-            sharedFileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
-                    , new File(mMedia.getOriginalFilePath()));
+            Uri sharedFileUri = null;
 
-        viewMediaIntent.setDataAndType(sharedFileUri, mMedia.getMimeType().split("/")[0] + "/*");
-        startActivity(viewMediaIntent);
+            String mediaPath = mMedia.getOriginalFilePath();
+            if (mediaPath.startsWith("content:"))
+                sharedFileUri = Uri.parse(mediaPath);
+            else
+                sharedFileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
+                        , new File(mMedia.getOriginalFilePath()));
+
+            viewMediaIntent.setDataAndType(sharedFileUri, mMedia.getMimeType().split("/")[0] + "/*");
+            startActivity(viewMediaIntent);
+        }
     }
 
     private void uploadMedia ()
