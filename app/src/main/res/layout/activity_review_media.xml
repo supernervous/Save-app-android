@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="net.opendasharchive.openarchive.ReviewMediaActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/item_display"
+
+        >
+    <com.github.derlio.waveform.SimpleWaveformView
+        android:id="@+id/swMedia"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:waveformColor="#999999"
+        app:indicatorColor="#aa0000"
+        android:visibility="gone"
+        android:layout_marginTop="3dp"
+
+        />
     <ImageView
         android:id="@+id/ivMedia"
         android:contentDescription="@string/iv_content_desc"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/no_thumbnail"
         />
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/tblMediaMetadata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ivMedia"
+        android:layout_below="@id/item_display"
         android:shrinkColumns="0"
         android:stretchColumns="1"
         android:padding="3dp"

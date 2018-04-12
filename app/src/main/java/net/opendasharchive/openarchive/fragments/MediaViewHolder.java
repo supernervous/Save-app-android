@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,8 +19,10 @@ import com.squareup.picasso.Picasso;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.util.FileUtils;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class MediaViewHolder extends RecyclerView.ViewHolder {
 
@@ -31,6 +34,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
 
     private Picasso mPicasso;
+    private AsyncTask<Void, Void, SoundFile> asyncTask;
+    public static HashMap<String,SoundFile> mSoundFileCache = new HashMap<>();
 
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
@@ -53,7 +58,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(final Media currentMedia) {
 
-        String mediaPath = currentMedia.getOriginalFilePath();
+        final String mediaPath = currentMedia.getOriginalFilePath();
 
         if (currentMedia.getMimeType().startsWith("image")) {
 
@@ -90,36 +95,64 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         }
         else if (currentMedia.getMimeType().startsWith("audio")) {
 
-            /**
-            final File fileSound = new File(currentMedia.getOriginalFilePath());
-            try {
-                final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
-                    int lastProgress = 0;
+            ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
-                    @Override
-                    public boolean reportProgress(double fractionComplete) {
-                        final int progress = (int) (fractionComplete * 100);
-                        if (lastProgress == progress) {
+            if (mSoundFileCache.get(mediaPath)==null) {
 
-                            return true;
+                if (asyncTask == null) {
+                    asyncTask = new AsyncTask<Void, Void, SoundFile>() {
+                        protected void onPreExecute() {
+                            // Pre Code
                         }
-                        lastProgress = progress;
 
+                        protected SoundFile doInBackground(Void... unused) {
+                            File fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath));
+                            try {
 
-                        return true;
-                    }
-                });
+                                final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
+                                    int lastProgress = 0;
 
-                tvWave.setAudioFile(soundFile);
+                                    @Override
+                                    public boolean reportProgress(double fractionComplete) {
+                                        final int progress = (int) (fractionComplete * 100);
+                                        if (lastProgress == progress) {
+                                            return true;
+                                        }
+                                        lastProgress = progress;
+                                        return true;
+                                    }
+                                });
+
+                                mSoundFileCache.put(mediaPath, soundFile);
+                                return soundFile;
+                            } catch (Exception e) {
+                                Log.e(getClass().getName(), "error loading sound file", e);
+                            }
+
+                            return null;
+                        }
+
+                        protected void onPostExecute(SoundFile soundFile) {
+                            // Post Code
+
+                            tvWave.setAudioFile(soundFile);
+                            tvWave.setVisibility(View.VISIBLE);
+                            ivIcon.setVisibility(View.GONE);
+
+                            asyncTask = null;
+                        }
+                    };
+
+                    asyncTask.execute();
+                }
+            }
+            else
+            {
+                tvWave.setAudioFile(mSoundFileCache.get(mediaPath));
                 tvWave.setVisibility(View.VISIBLE);
                 ivIcon.setVisibility(View.GONE);
+            }
 
-
-            } catch (Exception e) {
-                Log.e(getClass().getName(),"error loading sound file",e);
-            }**/
-
-            ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.audio_waveform));
 
         }
         else

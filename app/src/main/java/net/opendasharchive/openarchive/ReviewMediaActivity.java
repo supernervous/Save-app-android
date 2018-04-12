@@ -25,13 +25,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.derlio.waveform.SimpleWaveformView;
+import com.github.derlio.waveform.soundfile.SoundFile;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
+import net.opendasharchive.openarchive.util.FileUtils;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -59,6 +63,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private TextView tvLicenseUrl;
 
 
+    private SimpleWaveformView swMedia;
+    private ImageView ivMedia;
+
     private SwitchCompat tbDeriv, tbShare, tbComm;
 
     private MenuItem menuShare;
@@ -82,6 +89,11 @@ public class ReviewMediaActivity extends AppCompatActivity {
         }
 
         // instantiate values
+        swMedia = findViewById(R.id.swMedia);
+
+        // display media preview if available
+        ivMedia = (ImageView) findViewById(R.id.ivMedia);
+
         tvTitle = (TextView) findViewById(R.id.tv_title_lbl);
         tvDescription = (TextView) findViewById(R.id.tv_description_lbl);
         tvAuthor = (TextView) findViewById(R.id.tv_author_lbl);
@@ -315,9 +327,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
             return;
         }
 
-        // display media preview if available
-        ImageView ivMedia = (ImageView) findViewById(R.id.ivMedia);
-
         if (mMedia.getMimeType().startsWith("image")) {
 
             mPicasso.load(Uri.parse(mMedia.getOriginalFilePath())).fit().centerCrop().into(ivMedia);
@@ -326,10 +335,25 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
             mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.getOriginalFilePath()).fit().centerCrop().into(ivMedia);
         }
-        else if (mMedia.getMimeType().startsWith("audio"))
+        else if (mMedia.getMimeType().startsWith("audio")) {
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
+
+            SoundFile soundFile = MediaViewHolder.mSoundFileCache.get( mMedia.getOriginalFilePath());
+            if (soundFile != null) {
+                swMedia.setAudioFile(soundFile);
+                swMedia.setVisibility(View.VISIBLE);
+                ivMedia.setVisibility(View.GONE);
+            }
+        }
         else
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.no_thumbnail));
+
+        swMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMedia();
+            }
+        });
 
         ivMedia.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,18 +386,17 @@ public class ReviewMediaActivity extends AppCompatActivity {
         }
         else {
             Intent viewMediaIntent = new Intent();
-            viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+            viewMediaIntent.setAction(Intent.ACTION_VIEW);
 
-            Uri sharedFileUri = null;
+            Uri uriFile = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    FileUtils.getFile(this,Uri.parse(mMedia.getOriginalFilePath())));
 
-            String mediaPath = mMedia.getOriginalFilePath();
-            if (mediaPath.startsWith("content:"))
-                sharedFileUri = Uri.parse(mediaPath);
-            else
-                sharedFileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
-                        , new File(mMedia.getOriginalFilePath()));
+            viewMediaIntent.setDataAndType(uriFile, mMedia.getMimeType());
+            viewMediaIntent.putExtra(Intent.EXTRA_STREAM,uriFile);
+            viewMediaIntent.addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            viewMediaIntent.setDataAndType(sharedFileUri, mMedia.getMimeType().split("/")[0] + "/*");
             startActivity(viewMediaIntent);
         }
     }
