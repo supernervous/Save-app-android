@@ -441,7 +441,16 @@ public class ReviewMediaActivity extends AppCompatActivity {
         sharingIntent.setType(mMedia.getMimeType());
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMedia.getTitle());
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mMedia.getOriginalFilePath())));
+
+        Uri sharedFileUri = null;
+        String mediaPath = mMedia.getOriginalFilePath();
+        if (mediaPath.startsWith("content:"))
+            sharedFileUri = Uri.parse(mediaPath);
+        else
+            sharedFileUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
+                    , new File(mMedia.getOriginalFilePath()));
+
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, sharedFileUri);
 
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
