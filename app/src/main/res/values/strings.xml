@@ -162,4 +162,7 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="action_cancel">Cancel</string>
 
     <string name="action_open">Open</string>
+
+    <string name="channel_name">OpenArchive Uploads</string>
+    <string name="channel_description">Shows status and progress of uploads to remote servers</string>
 </resources>
