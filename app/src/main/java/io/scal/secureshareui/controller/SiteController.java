@@ -20,7 +20,7 @@ import io.scal.secureshareui.model.Account;
 public abstract class SiteController {
     private OnEventListener mPublishEventListener;
     protected Context mContext;
-    protected Handler mHandler;
+    protected SiteControllerListener mListener;
     protected String mJobId; // this is whatever the app wants it to be, we'll pass it back with our callbacks
     public static final int CONTROLLER_REQUEST_CODE = 101;
     public static final int MESSAGE_TYPE_SUCCESS = 23423430;
@@ -67,9 +67,9 @@ public abstract class SiteController {
         public void onRemove(Account account);
     }
 
-    public SiteController(Context context, Handler handler, String jobId) {
+    public SiteController(Context context, SiteControllerListener listener, String jobId) {
         mContext = context;
-        mHandler = handler;
+        mListener = listener;
         mJobId = jobId;
     }
 
@@ -85,9 +85,9 @@ public abstract class SiteController {
 
     public abstract boolean upload(Account account, HashMap<String, String> valueMap, boolean useTor);
 
-    public static SiteController getSiteController(String site, Context context, Handler handler, String jobId) {
+    public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {
-            return new ArchiveSiteController(context, handler, jobId);
+            return new ArchiveSiteController(context, listener, jobId);
         }
         return null;
     }
@@ -140,7 +140,7 @@ public abstract class SiteController {
         data.putString(MESSAGE_KEY_JOB_ID, mJobId);
         data.putString(MESSAGE_KEY_RESULT, result);
         msg.setData(data);
-        mHandler.sendMessage(msg);
+        mListener.success(msg);
     }
 
     public void jobFailed(Exception exception, int errorCode, String errorMessage) {
@@ -152,7 +152,7 @@ public abstract class SiteController {
         data.putString(MESSAGE_KEY_MESSAGE, errorMessage);
         data.putSerializable("exception", (Serializable) exception);
         msg.setData(data);
-        mHandler.sendMessage(msg);
+        mListener.failure(msg);
     }
 
     public void jobProgress(float progress, String message) {
@@ -163,7 +163,7 @@ public abstract class SiteController {
         data.putFloat(MESSAGE_KEY_PROGRESS, progress);
         data.putString(MESSAGE_KEY_MESSAGE, message);
         msg.setData(data);
-        mHandler.sendMessage(msg);
+        mListener.progress(msg);
     }
 
     public static int getAccountIcon(String site, boolean isConnected, boolean areCredentialsValid) {

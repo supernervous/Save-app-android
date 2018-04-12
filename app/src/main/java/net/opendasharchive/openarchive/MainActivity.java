@@ -24,6 +24,7 @@ import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
+import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
@@ -157,13 +158,15 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        /**
-        if (id == R.id.action_logout)
+
+        if (id == R.id.action_settings)
         {
-           // handleLogout();
+            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            startActivity(firstStartIntent);
+
             return true;
         }
-        else **/
+        else
          if (id == R.id.action_about)
         {
            // Intent intent = new Intent(this, OAAppIntro.class);

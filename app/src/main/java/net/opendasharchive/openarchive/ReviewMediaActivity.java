@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -61,7 +62,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private MenuItem menuShare;
     private MenuItem menuPublish;
 
-    private final static String BASE_DETAILS_URL = "https://archive.org/details/";
 
     private static Picasso mPicasso;
 
@@ -130,7 +130,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         if (mMedia.getServerUrl() != null)
         {
-            tvUrl.setText( Html.fromHtml("Your media is available on the Internet Archive at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
+            mMedia.status = Media.STATUS_PUBLISHED;
+
+            tvUrl.setText( Html.fromHtml("Your media is available at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
             tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
             tvUrl.setVisibility(View.VISIBLE);
 
@@ -159,6 +161,10 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 tvTags.setVisibility(View.GONE);
 
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
+        }
+        else if (mMedia.status != Media.STATUS_QUEUED)
+        {
+            mMedia.status = Media.STATUS_LOCAL;
         }
 
         if (menuPublish != null) {
@@ -359,6 +365,28 @@ public class ReviewMediaActivity extends AppCompatActivity {
         startActivity(viewMediaIntent);
     }
 
+    private void uploadMedia ()
+    {
+        Account account = new Account(this, null);
+
+        // if user doesn't have an account
+        if(!account.isAuthenticated()) {
+            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            startActivity(firstStartIntent);
+
+        }
+        else {
+
+            //mark queued
+            mMedia.status = Media.STATUS_QUEUED;
+            saveMedia();
+
+            startService(new Intent(this, PublishService.class));
+        }
+
+
+    }
+
     //share the link to the file on the IA
     private void shareLink ()
     {
@@ -419,53 +447,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
     }
 
 
-    private void uploadMedia ()
-    {
-        Account account = new Account(this, null);
-
-        // if user doesn't have an account
-        if(!account.isAuthenticated()) {
-            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-            startActivity(firstStartIntent);
-
-        }
-        else {
 
 
-            saveMedia();
-
-            ((OpenArchiveApp) getApplication()).checkTor();//refresh the state of Orbot
-            boolean useTor = ((OpenArchiveApp) getApplication()).getUseTor();
-
-            if (useTor) {
-                Toast.makeText(this, R.string.orbot_detected, Toast.LENGTH_SHORT).show();
-            }
-
-            Context context = ReviewMediaActivity.this;
-            SiteController siteController = SiteController.getSiteController("archive", context, mHandler, null);
-            siteController.setUseTor(useTor);
-
-            HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(ReviewMediaActivity.this, mMedia);
-
-            siteController.upload(account, valueMap, useTor);
-            showProgressSpinner();
-        }
-    }
-
-    private void closeProgressSpinner() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            progressDialog = null;
-        }
-    }
-
-    private void showProgressSpinner() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getString(R.string.loading_title));
-        progressDialog.setMessage(getString(R.string.loading_message));
-        progressDialog.show();
-
-    }
 
     @Override
     protected void onResume() {
@@ -475,56 +458,13 @@ public class ReviewMediaActivity extends AppCompatActivity {
         bindMedia();
     }
 
-    public Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle data = msg.getData();
 
-            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
-            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
-
-            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
-            switch (messageType) {
-                case SiteController.MESSAGE_TYPE_SUCCESS:
-                    String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
-                    String resultUrl = getDetailsUrlFromResult(result);
-                    mMedia.setServerUrl(resultUrl);
-                    mMedia.save();
-                    showSuccess();
-                    bindMedia();
-                    closeProgressSpinner();
-                    break;
-                case SiteController.MESSAGE_TYPE_FAILURE:
-                    int errorCode = data.getInt(SiteController.MESSAGE_KEY_CODE);
-                    String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
-                    String error = "Error " + errorCode + ": " + errorMessage;
-                    closeProgressSpinner();
-                    showError(error);
-                    Log.d(TAG, "upload error: " + error);
-                    break;
-                case SiteController.MESSAGE_TYPE_PROGRESS:
-                    String message = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
-                    float progress = data.getFloat(SiteController.MESSAGE_KEY_PROGRESS);
-                    Log.d(TAG, "upload progress: " + progress);
-                    // TODO implement a progress dialog to show this
-                    break;
-            }
-        }
-    };
 
     private void showSuccess ()
     {
         Toast.makeText(this,getString(R.string.upload_success),Toast.LENGTH_SHORT).show();
     }
 
-    // result is formatted like http://s3.us.archive.org/Default-Title-19db/JPEG_20150123_160341_-1724212344_thumbnail.png
-    public String getDetailsUrlFromResult(String result) {
-//        String slug = ArchiveSettingsActivity.getSlug(mMedia.getTitle());
-        String[] splits = result.split("/");
-        String slug = splits[3];
-
-        return BASE_DETAILS_URL + slug;
-    }
 
     public void showError(final String message) {
         runOnUiThread(new Runnable() {

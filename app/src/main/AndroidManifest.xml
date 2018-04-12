@@ -51,7 +51,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="9" />
+            android:value="10" />
 
         <activity
             android:name=".MainActivity"
@@ -130,6 +130,9 @@
             ></activity>
         <activity android:name=".onboarding.OAAppIntro"
             android:label="App Intro" />
+        <service android:name=".publish.PublishService"
+            android:exported="false"
+            />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

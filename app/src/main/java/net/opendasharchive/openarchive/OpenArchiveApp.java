@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import net.opendasharchive.openarchive.publish.PublishService;
+
 import info.guardianproject.netcipher.proxy.OrbotHelper;
 import info.guardianproject.netcipher.proxy.StatusCallback;
 import io.cleaninsights.sdk.CleanInsights;
@@ -24,6 +26,14 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         initInsights ();
         checkTor();
+
+        uploadQueue ();
+    }
+
+    private void uploadQueue ()
+    {
+        startService(new Intent(this, PublishService.class));
+
     }
 
     public CleanInsightsApplication getCleanInsightsApp ()

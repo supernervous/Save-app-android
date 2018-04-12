@@ -23,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.login.ArchiveLoginActivity;
@@ -40,8 +41,8 @@ public class ArchiveSiteController extends SiteController {
 	private static final String ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org";
 	public static final MediaType MEDIA_TYPE = MediaType.parse("");
 
-	public ArchiveSiteController(Context context, Handler handler, String jobId) {
-		super(context, handler, jobId);
+	public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
+		super(context, listener, jobId);
 	}
 
 	@Override
@@ -194,6 +195,12 @@ public class ArchiveSiteController extends SiteController {
 			Log.d(TAG, "Begin Upload");
 
 			try {
+			    int timeout = 60 * 1000 * 2; //2 minute timeout!
+
+				client.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+				client.setWriteTimeout(timeout, TimeUnit.MILLISECONDS);
+                client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
+
 				response = client.newCall(request).execute();
                 Log.d(TAG, "response: " + response + ", body: " + response.body().string());
 				if (!response.isSuccessful()) {

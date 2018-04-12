@@ -125,7 +125,12 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         else
             ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
-        tvTitle.setText(currentMedia.getTitle());
+        if (currentMedia.status == Media.STATUS_QUEUED)
+            tvTitle.setText("Waiting to upload...");
+        else
+            tvTitle.setText(currentMedia.getTitle());
+
+
         tvCreateDate.setText(currentMedia.getFormattedCreateDate());
     }
 }

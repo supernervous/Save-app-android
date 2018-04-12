@@ -45,6 +45,13 @@ public class Media extends SugarRecord {
     public String licenseUrl;
     public byte[] mediaHash;
 
+    public int status;
+
+    public final static int STATUS_PUBLISHED = 3;
+    public final static int STATUS_QUEUED = 2;
+    public final static int STATUS_LOCAL = 1;
+
+
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
     }
