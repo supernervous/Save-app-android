@@ -48,6 +48,7 @@ public class Media extends SugarRecord {
     public int status;
 
     public final static int STATUS_PUBLISHED = 3;
+    public final static int STATUS_UPLOADING = 4;
     public final static int STATUS_QUEUED = 2;
     public final static int STATUS_LOCAL = 1;
 

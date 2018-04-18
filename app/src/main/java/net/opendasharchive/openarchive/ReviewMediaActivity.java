@@ -141,14 +141,24 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         tvLicenseUrl.setText(mMedia.getLicenseUrl());
 
-
         if (mMedia.getServerUrl() != null)
         {
-            mMedia.status = Media.STATUS_PUBLISHED;
 
-            tvUrl.setText( Html.fromHtml("Your media is available at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
-            tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
-            tvUrl.setVisibility(View.VISIBLE);
+            if (mMedia.status == Media.STATUS_PUBLISHED) {
+                mMedia.status = Media.STATUS_PUBLISHED;
+
+                tvUrl.setText(Html.fromHtml("Your media is available at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
+                tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
+                tvUrl.setVisibility(View.VISIBLE);
+            }
+            else if (mMedia.status == Media.STATUS_QUEUED) {
+                tvUrl.setText("Waiting for upload...");
+                tvUrl.setVisibility(View.VISIBLE);
+            }
+            else if (mMedia.status == Media.STATUS_UPLOADING) {
+                tvUrl.setText("Uploading now...");
+                tvUrl.setVisibility(View.VISIBLE);
+            }
 
             tvLicenseUrl.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -176,20 +186,15 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
         }
-        else if (mMedia.status != Media.STATUS_QUEUED)
-        {
-            mMedia.status = Media.STATUS_LOCAL;
-        }
 
         if (menuPublish != null) {
-            if (mMedia.getServerUrl() == null) {
+            if (mMedia.status == Media.STATUS_LOCAL) {
                 menuPublish.setVisible(true);
                 menuShare.setVisible(false);
 
             } else {
                 menuShare.setVisible(true);
                 menuPublish.setVisible(false);
-
             }
         }
 
@@ -416,7 +421,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             //mark queued
             mMedia.status = Media.STATUS_QUEUED;
             saveMedia();
-
+            bindMedia();
             startService(new Intent(this, PublishService.class));
         }
 

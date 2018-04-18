@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
             sharedPref.edit().putBoolean(Globals.PREF_FIRST_TIME_KEY,false).commit();
         }
 
+        //check for any queued uploads and restart
+        ((OpenArchiveApp)getApplication()).uploadQueue();
+
 
     }
 

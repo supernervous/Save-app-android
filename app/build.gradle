@@ -45,15 +45,16 @@ android {
     buildToolsVersion '27.0.3'
 }
 
+def uploadServiceVersion = "3.4.2"
+def netCipherVersion = "2.0.0-alpha1"
+
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:support-v4:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'com.squareup.okhttp:okhttp:2.7.2'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.github.satyan:sugar:1.5'
-    implementation 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
     implementation 'net.i2p.android.ext:floatingactionbutton:1.10.1'
     implementation 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
@@ -64,4 +65,9 @@ dependencies {
     implementation 'com.github.guardianproject:ayanda:1a41aacbe7'
     implementation "com.facebook.fresco:fresco:1.8.1"
     implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
+
+    implementation "net.gotev:uploadservice:${uploadServiceVersion}"
+    implementation "net.gotev:uploadservice-okhttp:${uploadServiceVersion}"
+    implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
+    implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
 }

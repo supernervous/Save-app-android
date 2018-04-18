@@ -165,4 +165,7 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
 
     <string name="channel_name">OpenArchive Uploads</string>
     <string name="channel_description">Shows status and progress of uploads to remote servers</string>
+    <string name="status_waiting">Waiting</string>
+    <string name="status_public">Public</string>
+    <string name="status_uploading">Uploading</string>
 </resources>

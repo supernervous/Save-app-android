@@ -42,7 +42,6 @@ import io.scal.secureshareui.model.Account;
 
 public class PublishService extends Service implements Runnable {
 
-    private final static String BASE_DETAILS_URL = "https://archive.org/details/";
     private final static String CHANNEL_ID = "oa-upload";
 
     private boolean isRunning = false;
@@ -50,7 +49,7 @@ public class PublishService extends Service implements Runnable {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        createNotificationChannel ();
+   //     createNotificationChannel ();
 
         new Thread(this).start();
 
@@ -124,13 +123,14 @@ public class PublishService extends Service implements Runnable {
 
             boolean useTor = ((OpenArchiveApp) getApplication()).getUseTor();
 
-            SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+            ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
             siteController.setUseTor(useTor);
 
             HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
 
-            showUploadNotification(media,0);
-            siteController.upload(account, valueMap, useTor);
+            media.status = Media.STATUS_UPLOADING;
+            media.save();
+            siteController.uploadNew(media, account, valueMap, useTor);
         }
     }
 
@@ -152,13 +152,13 @@ public class PublishService extends Service implements Runnable {
 
             int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
             String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
-            String resultUrl = getDetailsUrlFromResult(result);
+           // String resultUrl = getDetailsUrlFromResult(result);
 
-            uploadMedia.setServerUrl(resultUrl);
+            //uploadMedia.setServerUrl(resultUrl);
             uploadMedia.status = Media.STATUS_PUBLISHED;
             uploadMedia.save();
 
-            showUploadNotification(uploadMedia,100);
+            //showUploadNotification(uploadMedia,100);
         }
 
         @Override
@@ -176,7 +176,7 @@ public class PublishService extends Service implements Runnable {
             // TODO implement a progress dialog to show this
 
             int progress = (int)((100f)*progressF);
-            showUploadNotification(uploadMedia,progress);
+          //  showUploadNotification(uploadMedia,progress);
         }
 
         @Override
@@ -193,18 +193,13 @@ public class PublishService extends Service implements Runnable {
             String error = "Error " + errorCode + ": " + errorMessage;
             //  showError(error);
             // Log.d(TAG, "upload error: " + error);
+
+            uploadMedia.status = Media.STATUS_LOCAL;
+            uploadMedia.save();
         }
     };
 
 
-    // result is formatted like http://s3.us.archive.org/Default-Title-19db/JPEG_20150123_160341_-1724212344_thumbnail.png
-    public String getDetailsUrlFromResult(String result) {
-//        String slug = ArchiveSettingsActivity.getSlug(mMedia.getTitle());
-        String[] splits = result.split("/");
-        String slug = splits[3];
-
-        return BASE_DETAILS_URL + slug;
-    }
 
     private boolean isNetworkAvailable(boolean requireWifi) {
         ConnectivityManager manager =
@@ -223,6 +218,7 @@ public class PublishService extends Service implements Runnable {
         return isAvailable;
     }
 
+    /**
     NotificationManager notificationManager;
 
     private void showUploadNotification (Media media, int progress)
@@ -268,6 +264,7 @@ public class PublishService extends Service implements Runnable {
         }
 
     }
+     **/
 
     public static final int MY_BACKGROUND_JOB = 0;
 
