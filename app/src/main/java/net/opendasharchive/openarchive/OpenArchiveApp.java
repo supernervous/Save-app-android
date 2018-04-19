@@ -11,6 +11,7 @@ import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
 import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.UploadService;
+import net.gotev.uploadservice.okhttp.OkHttpStack;
 import net.opendasharchive.openarchive.publish.PublishService;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
@@ -52,7 +53,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         Logger.setLogLevel(Logger.LogLevel.DEBUG);
 
         //        initInsights ();
-   //     initNetCipher(this);
+         initNetCipher(this);
     }
 
     public void uploadQueue ()
@@ -120,17 +121,22 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         Context appContext = context.getApplicationContext();
 
-        if (!OrbotHelper.get(appContext).init()) {
+        OrbotHelper oh = OrbotHelper.get(appContext);
+
+        if (BuildConfig.DEBUG) {
+            oh.skipOrbotValidation();
+        }
+
+        if (!oh.init()) {
             orbotConnected = false;
-            appContext.startActivity(OrbotHelper.getOrbotInstallIntent(appContext));
-            return;
         }
 
         try {
+
             StrongOkHttpClientBuilder.forMaxSecurity(appContext).build(new StrongBuilder.Callback<OkHttpClient>() {
                 @Override
                 public void onConnected(OkHttpClient okHttpClient) {
-                   // UploadService.HTTP_STACK = new OkHttpStack(okHttpClient);
+                    UploadService.HTTP_STACK = new OkHttpStack(okHttpClient);
                     orbotConnected = true;
                     Log.i("NetCipherClient", "Connection to orbot established!");
                     // from now on, you can create upload requests
