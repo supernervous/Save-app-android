@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive;
 
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,6 +48,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.lizhangqu.coreprogress.ProgressUIListener;
 import sintulabs.p2p.Ayanda;
 import sintulabs.p2p.IBluetooth;
 import sintulabs.p2p.ILan;
@@ -67,7 +70,6 @@ public class NearbyActivity extends AppCompatActivity {
 
     private final static String TAG = "Nearby";
 
-    private TextView mTvNearbyLog;
     private DonutProgress mProgress;
     private ImageView mThumbnail;
     private LinearLayout mViewNearbyDevices;
@@ -99,7 +101,6 @@ public class NearbyActivity extends AppCompatActivity {
         mAyanda = new Ayanda(this, null, mNearbyWifiLan, mNearbyWifiDirect);
 
         mThumbnail = findViewById(R.id.thumbnail);
-        mTvNearbyLog = findViewById(R.id.tvnearbylog);
         mViewNearbyDevices = findViewById(R.id.nearbydevices);
 
         mProgress = findViewById(R.id.donut_progress);
@@ -113,6 +114,8 @@ public class NearbyActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            mProgress.setVisibility(View.GONE);
+
         } else {
             getSupportActionBar().setTitle(R.string.status_receiving);
             mThumbnail.setVisibility(View.GONE);
@@ -196,7 +199,7 @@ public class NearbyActivity extends AppCompatActivity {
 
           if (!TextUtils.isEmpty(media.getServerUrl())) {
               media.status = Media.STATUS_PUBLISHED;
-              results = Media.find(Media.class, "serverUrl = ?", media.serverUrl);
+              results = Media.find(Media.class, "SERVER_URL = ?", media.serverUrl);
           }
           else {
               media.status = Media.STATUS_LOCAL;
@@ -254,9 +257,6 @@ public class NearbyActivity extends AppCompatActivity {
     }
 
     private void log(String msg) {
-        if (mTvNearbyLog != null)
-            mTvNearbyLog.setText(msg);
-
         Log.d("Nearby", msg);
     }
 
@@ -375,6 +375,11 @@ public class NearbyActivity extends AppCompatActivity {
     ILan mNearbyWifiLan = new ILan() {
 
         @Override
+        public String getPublicName () {
+            return getLocalBluetoothName();
+        }
+
+        @Override
         public void deviceListChanged() {
 
             ArrayList<Ayanda.Device> devices = new ArrayList<Ayanda.Device>(mAyanda.lanGetDeviceList());
@@ -399,6 +404,7 @@ public class NearbyActivity extends AppCompatActivity {
         @Override
         public void transferProgress(Neighbor neighbor, File file, String s, String s1, long l, long l1) {
 
+
         }
 
         @Override
@@ -422,13 +428,20 @@ public class NearbyActivity extends AppCompatActivity {
 
                         InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
 
-                        byte [] addressBytes = hostInet.getAddress();
+                        if (!hostInet.isLoopbackAddress()) {
 
-                       // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
-                        Inet4Address dest4 = (Inet4Address) Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
-                        serverHost = dest4.getHostAddress() + ":" + 8080;
+                            byte [] addressBytes = hostInet.getAddress();
 
-                        final String response = client.get(serverHost);
+                            // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
+                            InetAddress dest4 = Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
+
+                            if (dest4 instanceof Inet6Address)
+                                serverHost = "[" + dest4.getHostAddress() + "]:" + device.getPort().intValue();
+                            else
+                                serverHost = dest4.getHostAddress() + ":" + device.getPort().intValue();
+
+                            final String response = client.get(serverHost);
+                        }
 
                     } catch (IOException e) {
                         Log.e(TAG,"error LAN get: " + e);
@@ -436,10 +449,38 @@ public class NearbyActivity extends AppCompatActivity {
                     }
 
                     try {
-                        final NearbyMedia nMedia = client.getNearbyMedia(serverHost);
+                        client.getNearbyMedia(serverHost, new ProgressUIListener() {
 
-                        if (nMedia != null && nMedia.mUriMedia != null)
-                            addMedia(nMedia);
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressStart(long totalBytes) {
+                                super.onUIProgressStart(totalBytes);
+                                Log.d("TAG", "onUIProgressStart:" + totalBytes);
+                            }
+
+                            @Override
+                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
+                                mProgress.setProgress((int)(percent * 100f));
+
+                            }
+
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressFinish() {
+                                super.onUIProgressFinish();
+                                Log.d("TAG", "onUIProgressFinish:");
+                                //  Toast.makeText(getApplicationContext(), "结束上传", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }, new NearbyListener() {
+                            @Override
+                            public void nearbyReceived(NearbyMedia nearbyMedia) {
+
+                                if (nearbyMedia != null && nearbyMedia.mUriMedia != null)
+                                    addMedia(nearbyMedia);
+                            }
+                        });
+
 
                     } catch (IOException e) {
                         Log.e(TAG,"error LAN get: " + e);
@@ -547,16 +588,26 @@ public class NearbyActivity extends AppCompatActivity {
     IWifiDirect mNearbyWifiDirect = new IWifiDirect() {
 
         @Override
+        public String getPublicName () {
+            return getLocalBluetoothName();
+        }
+
+        @Override
         public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
+
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.main_nearby), "Sending: " + mNearbyMedia.getTitle(), Snackbar.LENGTH_LONG);
 
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     AyandaClient client = new AyandaClient(NearbyActivity.this);
+                    int defaultPort = 8080;
+
                     try {
 
                         final String response = client
-                                .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
+                                .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(defaultPort));
 
                         //couldn't connect
                         return;
@@ -566,11 +617,21 @@ public class NearbyActivity extends AppCompatActivity {
                         Log.e(TAG,"nearby added",e);
                     }
 
-                    try {
-                        final NearbyMedia nearbyMedia = client.getNearbyMedia(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080));
+                    try { client.getNearbyMedia(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), new ProgressUIListener() {
+                            @Override
+                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
 
-                        if (nearbyMedia != null && nearbyMedia.mUriMedia != null)
-                            addMedia (nearbyMedia);
+                                mProgress.setProgress((int)(percent * 100f));
+                            }
+                        }, new NearbyListener() {
+                            @Override
+                            public void nearbyReceived(NearbyMedia nearbyMedia) {
+
+                                if (nearbyMedia != null && nearbyMedia.mUriMedia != null)
+                                    addMedia (nearbyMedia);
+                            }
+                        });
+
 
                     } catch (IOException e) {
                         Log.e(TAG,"nearby added",e);
@@ -578,7 +639,28 @@ public class NearbyActivity extends AppCompatActivity {
 
                     if (mMedia != null)
                     {
-                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080),mNearbyMedia);
+                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080),mNearbyMedia, new ProgressUIListener() {
+
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressStart(long totalBytes) {
+                                super.onUIProgressStart(totalBytes);
+                                Log.d("TAG", "onUIProgressStart:" + totalBytes);
+                            }
+
+                            @Override
+                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
+                                mProgress.setProgress((int)(100f*percent));
+                            }
+
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressFinish() {
+                                super.onUIProgressFinish();
+                                Log.d("TAG", "onUIProgressFinish:");
+                            }
+
+                        });
                     }
 
                 }
@@ -645,5 +727,23 @@ public class NearbyActivity extends AppCompatActivity {
 
 
     };
+
+    public interface NearbyListener {
+        public void nearbyReceived (NearbyMedia nearbyMedia);
+    }
+
+    private BluetoothAdapter mBluetoothAdapter;
+
+    private String getLocalBluetoothName(){
+        if(mBluetoothAdapter == null){
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        }
+        String name = mBluetoothAdapter.getName();
+        if(name == null){
+            System.out.println("Name is null!");
+            name = mBluetoothAdapter.getAddress();
+        }
+        return name;
+    }
 
 }

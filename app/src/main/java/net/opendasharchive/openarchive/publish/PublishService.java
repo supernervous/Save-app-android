@@ -123,17 +123,13 @@ public class PublishService extends Service implements Runnable {
         // if user doesn't have an account
         if(account.isAuthenticated()) {
 
-            boolean useTor = ((OpenArchiveApp) getApplication()).getUseTor();
-
             ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
-            siteController.setUseTor(useTor);
-
             HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
 
             media.status = Media.STATUS_UPLOADING;
             media.save();
             notifyMediaUpdated(media);
-            siteController.uploadNew(media, account, valueMap, useTor);
+            siteController.uploadNew(media, account, valueMap);
         }
     }
 

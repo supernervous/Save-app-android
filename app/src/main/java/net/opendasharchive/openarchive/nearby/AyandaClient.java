@@ -8,12 +8,16 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import net.opendasharchive.openarchive.NearbyActivity;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import io.github.lizhangqu.coreprogress.ProgressHelper;
+import io.github.lizhangqu.coreprogress.ProgressUIListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -22,7 +26,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.BufferedSink;
+import okio.BufferedSource;
 import okio.Okio;
 import sintulabs.p2p.Client;
 import sintulabs.p2p.NearbyMedia;
@@ -67,7 +73,7 @@ public class AyandaClient {
         return response.body().string();
     }
 
-    public Boolean uploadFile(String url, NearbyMedia file) {
+    public Boolean uploadFile(String url, NearbyMedia file, ProgressUIListener progressUIListener) {
         try {
             url = buildUrl(url, SERVICE_UPLOAD_FILE_PATH);
 
@@ -93,9 +99,12 @@ public class AyandaClient {
                     .addFormDataPart("fileExt", getFileExtension(file.getmMimeType()))
                     .build();
 
+            //wrap your original request body with progress
+            RequestBody requestBodyProgress = ProgressHelper.withProgress(requestBody, progressUIListener);
+
             Request request = new Request.Builder()
                     .url(url)
-                    .post(requestBody)
+                    .post(requestBodyProgress)
                     .build();
 
             mClient.newCall(request).enqueue(new Callback() {
@@ -135,45 +144,78 @@ public class AyandaClient {
      * @return File objet or null
      * @throws IOException
      */
-    public NearbyMedia getNearbyMedia(String baseUrl) throws IOException {
+    public void getNearbyMedia(final String baseUrl, final ProgressUIListener progressUIListener, final NearbyActivity.NearbyListener nearbyListener) throws IOException {
 
-        NearbyMedia nearbyMedia = null;
 
-        Request request = new Request.Builder().url( buildUrl(baseUrl, SERVICE_DOWNLOAD_FILE_PATH)).build();
-        File fileOut = null;
-        // Request file from server and store details
-        try {
-            Response response = mClient.newCall(request).execute();
+//client
+        OkHttpClient okHttpClient = new OkHttpClient();
+//request builder
+        Request.Builder builder = new Request.Builder();
+        builder.url(buildUrl(baseUrl, SERVICE_DOWNLOAD_FILE_PATH));
+        builder.get();
 
-            nearbyMedia = new NearbyMedia();
+        //call
+        Call call = okHttpClient.newCall(builder.build());
+//enqueue
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("TAG", "=============onFailure===============");
+                e.printStackTrace();
+            }
 
-            nearbyMedia.mMimeType = response.header("Content-Type", "text/plain");
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.e("TAG", "=============onResponse===============");
+                Log.e("TAG", "request headers:" + response.request().headers());
+                Log.e("TAG", "response headers:" + response.headers());
 
-            String fileExt = getFileExtension(nearbyMedia.mMimeType);
+                //your original response body
+                ResponseBody body = response.body();
+                //wrap the original response body with progress
+                ResponseBody responseBody = ProgressHelper.withProgress(body, progressUIListener);
 
-            String fileName = "oa-" + new Date().getTime() + '.' + fileExt;
-            nearbyMedia.mTitle  = fileName;
-            File dirDownloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            fileOut = new File(dirDownloads, fileName);
+                NearbyMedia nearbyMedia = null;
 
-            BufferedSink sink = Okio.buffer(Okio.sink(fileOut));
-            sink.writeAll(response.body().source());
-            sink.close();
 
-            nearbyMedia.mUriMedia = Uri.fromFile(fileOut);
-            nearbyMedia.mLength = fileOut.length();
-            nearbyMedia.mDigest = Utils.getDigest(fileOut);
+                File fileOut = null;
+                // Request file from server and store details
+                try {
 
-            request = new Request.Builder().url( buildUrl(baseUrl, SERVICE_DOWNLOAD_METADATA_PATH)).build();
-            response = mClient.newCall(request).execute();
-            nearbyMedia.mMetadataJson = response.body().string();
+                    nearbyMedia = new NearbyMedia();
 
-        } catch (IOException e) {
-            Log.w(TAG, "Unable to connect to url: " + baseUrl, e);
-            return null;
-        }
+                    nearbyMedia.mMimeType = response.header("Content-Type", "text/plain");
 
-        return nearbyMedia;
+                    String fileExt = getFileExtension(nearbyMedia.mMimeType);
+
+                    String fileName = "oa-" + new Date().getTime() + '.' + fileExt;
+                    nearbyMedia.mTitle  = fileName;
+                    File dirDownloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    fileOut = new File(dirDownloads, fileName);
+
+                    BufferedSink sink = Okio.buffer(Okio.sink(fileOut));
+                    sink.writeAll(response.body().source());
+                    sink.close();
+
+                    nearbyMedia.mUriMedia = Uri.fromFile(fileOut);
+                    nearbyMedia.mLength = fileOut.length();
+                    nearbyMedia.mDigest = Utils.getDigest(fileOut);
+
+                    Request request = new Request.Builder().url( buildUrl(baseUrl, SERVICE_DOWNLOAD_METADATA_PATH)).build();
+                    response = mClient.newCall(request).execute();
+                    nearbyMedia.mMetadataJson = response.body().string();
+
+                    if (nearbyListener != null)
+                        nearbyListener.nearbyReceived(nearbyMedia);
+
+                } catch (IOException e) {
+                    Log.w(TAG, "Unable to connect to url: " + baseUrl, e);
+
+                }
+            }
+        });
+
+
     }
 
     private String getFileExtension(String mimeType) {

@@ -41,6 +41,7 @@ public class AyandaServer extends NanoHTTPD implements IServer{
         this.context = context;
         this.port = port;
         start();
+
     }
 
     @Override
@@ -62,6 +63,7 @@ public class AyandaServer extends NanoHTTPD implements IServer{
                 String mimeType = fileToShare.getmMimeType();
                 InputStream is = context.getContentResolver().openInputStream(fileToShare.getMediaUri());
                 Response response = NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK, mimeType, is);
+
                 if (response != null) {
 
                 }

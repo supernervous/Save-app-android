@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.github.guardianproject:ayanda:1a41aacbe7'
+    implementation 'com.github.guardianproject:ayanda:df79eda0ca'
     implementation "com.facebook.fresco:fresco:1.8.1"
     implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
 
@@ -70,4 +70,5 @@ dependencies {
     implementation "net.gotev:uploadservice-okhttp:${uploadServiceVersion}"
     implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
+    implementation 'io.github.lizhangqu:coreprogress:1.0.2'
 }

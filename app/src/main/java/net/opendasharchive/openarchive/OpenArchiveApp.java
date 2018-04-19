@@ -27,7 +27,6 @@ import okhttp3.OkHttpClient;
  */
 public class OpenArchiveApp extends com.orm.SugarApp {
 
-    private boolean mUseTor = false;
     public static volatile boolean orbotConnected = false;
 
     private CleanInsightsApplication cleanInsightsApp;
@@ -104,15 +103,9 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         cim.initPwiki(cleanInsightsApp);
     }
 
-
-    public void setUseTor (boolean useTor)
-    {
-        mUseTor = useTor;
-    }
-
     public boolean getUseTor ()
     {
-        return mUseTor;
+        return orbotConnected;
     }
 
     public static void initNetCipher(Context context) {
@@ -127,8 +120,8 @@ public class OpenArchiveApp extends com.orm.SugarApp {
             oh.skipOrbotValidation();
         }
 
-        if (!oh.init()) {
-            orbotConnected = false;
+        if (oh.init()) {
+            orbotConnected = true;
         }
 
         try {
