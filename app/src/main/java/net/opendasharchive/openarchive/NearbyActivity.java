@@ -40,6 +40,8 @@ import net.opendasharchive.openarchive.nearby.AyandaServer;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -106,16 +108,13 @@ public class NearbyActivity extends AppCompatActivity {
         mIsServer = getIntent().getBooleanExtra("isServer", false);
 
         if (mIsServer) {
-            mProgress.setInnerBottomText(">>>>>>>>");
             try {
                 startServer();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            mProgress.setInnerBottomText("<<<<<<<<");
-
-            getSupportActionBar().setTitle("Receiving...");
+            getSupportActionBar().setTitle(R.string.status_receiving);
             mThumbnail.setVisibility(View.GONE);
         }
 
@@ -192,7 +191,19 @@ public class NearbyActivity extends AppCompatActivity {
           media.setOriginalFilePath(nearbyMedia.mUriMedia.toString());
 
           //need better way to check original file
-          List<Media> results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
+          List<Media> results = null;
+
+
+          if (!TextUtils.isEmpty(media.getServerUrl())) {
+              media.status = Media.STATUS_PUBLISHED;
+              results = Media.find(Media.class, "serverUrl = ?", media.serverUrl);
+          }
+          else {
+              media.status = Media.STATUS_LOCAL;
+              results = Media.find(Media.class, "title = ? AND author = ?", media.title,media.author);
+
+          }
+
 
           if (results == null || results.isEmpty()) {
 
@@ -200,7 +211,7 @@ public class NearbyActivity extends AppCompatActivity {
               media.save();
 
               Snackbar snackbar = Snackbar
-              .make(findViewById(R.id.main_nearby), "Received: " + media.getTitle(), Snackbar.LENGTH_LONG);
+              .make(findViewById(R.id.main_nearby), getString(R.string.action_received) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
 
               final Long snackMediaId = media.getId();
 
@@ -208,11 +219,9 @@ public class NearbyActivity extends AppCompatActivity {
 
                       @Override public void onClick(View v) {
 
-
                           Intent reviewMediaIntent = new Intent(NearbyActivity.this, ReviewMediaActivity.class);
                           reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, snackMediaId);
                           reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
                           startActivity(reviewMediaIntent);
                       }
                   });
@@ -222,7 +231,7 @@ public class NearbyActivity extends AppCompatActivity {
           else
           {
               Snackbar snackbar = Snackbar
-                      .make(findViewById(R.id.main_nearby), "Duplicate received: " + media.getTitle(), Snackbar.LENGTH_LONG);
+                      .make(findViewById(R.id.main_nearby), getString(R.string.action_duplicate) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
 
           }
 

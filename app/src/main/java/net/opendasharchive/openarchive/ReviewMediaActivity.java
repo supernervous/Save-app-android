@@ -2,15 +2,18 @@ package net.opendasharchive.openarchive;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
@@ -45,6 +48,8 @@ import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
+
+import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 
 
 public class ReviewMediaActivity extends AppCompatActivity {
@@ -141,13 +146,14 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         tvLicenseUrl.setText(mMedia.getLicenseUrl());
 
-        if (mMedia.getServerUrl() != null)
+        if (mMedia.status != Media.STATUS_LOCAL
+                && mMedia.status != Media.STATUS_NEW)
         {
 
             if (mMedia.status == Media.STATUS_PUBLISHED) {
                 mMedia.status = Media.STATUS_PUBLISHED;
 
-                tvUrl.setText(Html.fromHtml("Your media is available at <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
+                tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
                 tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
                 tvUrl.setVisibility(View.VISIBLE);
             }
@@ -249,6 +255,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         setLicense();
 
+        if (mMedia.status == Media.STATUS_NEW)
+            mMedia.status = Media.STATUS_LOCAL;
+
         mMedia.save();
     }
 
@@ -257,8 +266,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
         super.onPause();
         saveMedia();
     }
-
-
 
 
     @Override
@@ -423,6 +430,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             saveMedia();
             bindMedia();
             startService(new Intent(this, PublishService.class));
+
         }
 
 
@@ -506,6 +514,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         init();
         bindMedia();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(INTENT_FILTER_NAME));
     }
 
 
@@ -537,5 +548,27 @@ public class ReviewMediaActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
+
+    // Our handler for received Intents. This will be called whenever an Intent
+// with an action named "custom-event-name" is broadcasted.
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            Log.d("receiver", "Updating media");
+            mMedia = Media.findById(Media.class, mMedia.getId());
+            bindMedia();
+
+        }
+    };
 
 }

@@ -1,13 +1,8 @@
 package net.opendasharchive.openarchive.publish;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.app.job.JobInfo;
-import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
-import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,18 +14,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import net.opendasharchive.openarchive.ArchiveSettingsActivity;
+import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
-import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
-import net.opendasharchive.openarchive.util.Globals;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,16 +32,18 @@ import io.scal.secureshareui.model.Account;
 
 public class PublishService extends Service implements Runnable {
 
-    private final static String CHANNEL_ID = "oa-upload";
-
     private boolean isRunning = false;
+
+    private Thread mUploadThread = null;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-   //     createNotificationChannel ();
-
-        new Thread(this).start();
+        if (mUploadThread == null || (!mUploadThread.isAlive()))
+        {
+            mUploadThread = new Thread(this);
+            mUploadThread.start();
+        }
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -97,15 +89,25 @@ public class PublishService extends Service implements Runnable {
             published = true;
 
             //get all media items that are set into queued state
-            List<Media> results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            List<Media> results = null;
 
-            //iterate through them, and upload one by one
-            for (Media media : results) {
+            while (true) {
 
-                uploadMedia(media);
+                results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+
+                if (results.size() > 0) {
+                    //iterate through them, and upload one by one
+                    for (Media media : results) {
+
+                        uploadMedia(media);
+                    }
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            //show notifications of publish progress
         }
 
         isRunning = false;
@@ -130,6 +132,7 @@ public class PublishService extends Service implements Runnable {
 
             media.status = Media.STATUS_UPLOADING;
             media.save();
+            notifyMediaUpdated(media);
             siteController.uploadNew(media, account, valueMap, useTor);
         }
     }
@@ -158,7 +161,8 @@ public class PublishService extends Service implements Runnable {
             uploadMedia.status = Media.STATUS_PUBLISHED;
             uploadMedia.save();
 
-            //showUploadNotification(uploadMedia,100);
+            notifyMediaUpdated(uploadMedia);
+
         }
 
         @Override
@@ -173,10 +177,6 @@ public class PublishService extends Service implements Runnable {
             String message = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             float progressF = data.getFloat(SiteController.MESSAGE_KEY_PROGRESS);
             //Log.d(TAG, "upload progress: " + progress);
-            // TODO implement a progress dialog to show this
-
-            int progress = (int)((100f)*progressF);
-          //  showUploadNotification(uploadMedia,progress);
         }
 
         @Override
@@ -196,6 +196,9 @@ public class PublishService extends Service implements Runnable {
 
             uploadMedia.status = Media.STATUS_LOCAL;
             uploadMedia.save();
+
+            notifyMediaUpdated(uploadMedia);
+
         }
     };
 
@@ -218,53 +221,16 @@ public class PublishService extends Service implements Runnable {
         return isAvailable;
     }
 
-    /**
-    NotificationManager notificationManager;
-
-    private void showUploadNotification (Media media, int progress)
-    {
-        String label = media.getTitle() + ": " + getString(R.string.uploading_to_internet_archive);
-
-        if (progress == 100)
-            label = media.getTitle() + ": " + getString(R.string.upload_success);
-
-        Intent reviewMediaIntent = new Intent(this,ReviewMediaActivity.class);
-        reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-        reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        final PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0, reviewMediaIntent, 0);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_oa_notify)
-        .setContentTitle(label);
-        mBuilder.setContentIntent(pendingIntent);
-
-        notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder.setProgress(100
-                , progress, false);
-        notificationManager.notify(1, mBuilder.build());
+    // Send an Intent with an action named "custom-event-name". The Intent sent should
+// be received by the ReceiverActivity.
+    private void notifyMediaUpdated(Media media) {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent(MainActivity.INTENT_FILTER_NAME);
+        // You can also include some extra data.
+        intent.putExtra("mediaId", media.getId());
+        intent.putExtra("mediaStatus",media.status);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
-
-    private void createNotificationChannel ()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-            mChannel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = (NotificationManager) getSystemService(
-                    NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-    }
-     **/
 
     public static final int MY_BACKGROUND_JOB = 0;
 

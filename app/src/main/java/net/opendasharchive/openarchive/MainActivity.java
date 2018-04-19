@@ -1,7 +1,9 @@
 package net.opendasharchive.openarchive;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -118,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         //check for any queued uploads and restart
         ((OpenArchiveApp)getApplication()).uploadQueue();
 
-
     }
 
     @Override
@@ -142,11 +144,38 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(INTENT_FILTER_NAME));
+
         //when the app pauses do a private, randomized-response based tracking of the number of media files
       //  MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
         //        .with(getMeasurer());
 
     }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
+    public final static String INTENT_FILTER_NAME = "MEDIA_UPDATED";
+
+    // Our handler for received Intents. This will be called whenever an Intent
+// with an action named "custom-event-name" is broadcasted.
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            Log.d("receiver", "Updating media");
+
+            if (fragmentMediaList != null)
+                fragmentMediaList.refresh();
+
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     media.setOriginalFilePath(uri.toString());
                     media.setMimeType(mimeType);
                     media.setCreateDate(new Date());
+                    media.status = Media.STATUS_LOCAL;
                     media.save();
 
                     Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);

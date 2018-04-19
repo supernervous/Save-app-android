@@ -168,4 +168,8 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="status_waiting">Waiting</string>
     <string name="status_public">Public</string>
     <string name="status_uploading">Uploading</string>
+    <string name="your_media_is_available">Your media is available at</string>
+    <string name="action_received">Received</string>
+    <string name="status_receiving">Receiving...</string>
+    <string name="action_duplicate">Duplicate received</string>
 </resources>
