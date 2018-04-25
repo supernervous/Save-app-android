@@ -36,8 +36,6 @@ import com.squareup.picasso.Picasso;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaDeserializer;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
-import net.opendasharchive.openarchive.nearby.AyandaClient;
-import net.opendasharchive.openarchive.nearby.AyandaServer;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -64,6 +62,9 @@ import sintulabs.p2p.IWifiDirect;
 import sintulabs.p2p.NearbyMedia;
 import sintulabs.p2p.Neighbor;
 import sintulabs.p2p.Server;
+import sintulabs.p2p.impl.AyandaClient;
+import sintulabs.p2p.impl.AyandaListener;
+import sintulabs.p2p.impl.AyandaServer;
 
 
 public class NearbyActivity extends AppCompatActivity {
@@ -80,7 +81,7 @@ public class NearbyActivity extends AppCompatActivity {
 
     private Ayanda mAyanda;
     private AyandaServer mAyandaServer;
-    private HashMap<String,String> mPeers = new HashMap();
+    private HashMap<String,Ayanda.Device> mPeers = new HashMap();
 
     private Picasso mPicasso;
 
@@ -382,14 +383,16 @@ public class NearbyActivity extends AppCompatActivity {
         @Override
         public void deviceListChanged() {
 
-            ArrayList<Ayanda.Device> devices = new ArrayList<Ayanda.Device>(mAyanda.lanGetDeviceList());
+            ArrayList<Ayanda.Device> devices = new ArrayList(mAyanda.lanGetDeviceList());
 
             for (Ayanda.Device device: devices)
             {
+                //check that it has a name, is not us, and hasn't already been seen
                 if ((!TextUtils.isEmpty(device.getName()))
+                        && (!device.getName().equals(getPublicName()))
                         && (!mPeers.containsKey(device.getHost().toString()))) {
 
-                    mPeers.put(device.getHost().toString(), device.getName());
+                    mPeers.put(device.getHost().toString(), device);
                     addPeerToView("LAN: " + device.getName());
                 }
             }
@@ -418,37 +421,73 @@ public class NearbyActivity extends AppCompatActivity {
              // Connected to desired service, so now make socket connection to peer
              final Ayanda.Device device = new Ayanda.Device(serviceInfo);
 
-             new Thread(new Runnable() {
-                @Override public void run() {
-                    AyandaClient client = new AyandaClient(NearbyActivity.this);
-                    String serverHost = null; //device.getHost().getHostName() + ":" + 8080;
+            String serverHost = null; //device.getHost().getHostName() + ":" + 8080;
 
-                    try {
+            try {
 
+                InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
 
-                        InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
+                if (!hostInet.isLoopbackAddress()) {
 
-                        if (!hostInet.isLoopbackAddress()) {
+                    byte [] addressBytes = hostInet.getAddress();
 
-                            byte [] addressBytes = hostInet.getAddress();
+                    // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
+                    InetAddress dest4 = Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
 
-                            // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
-                            InetAddress dest4 = Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
+                    if (dest4 instanceof Inet6Address)
+                        serverHost = "[" + dest4.getHostAddress() + "]:" + device.getPort().intValue();
+                    else
+                        serverHost = dest4.getHostAddress() + ":" + device.getPort().intValue();
 
-                            if (dest4 instanceof Inet6Address)
-                                serverHost = "[" + dest4.getHostAddress() + "]:" + device.getPort().intValue();
-                            else
-                                serverHost = dest4.getHostAddress() + ":" + device.getPort().intValue();
+                    getNearbyMedia(serverHost);
+                }
 
-                            final String response = client.get(serverHost);
-                        }
+            } catch (IOException e) {
+                Log.e(TAG,"error LAN get: " + e);
+                return;
+            }
 
-                    } catch (IOException e) {
-                        Log.e(TAG,"error LAN get: " + e);
-                        return;
+        }
+    };
+
+    private void getNearbyMedia (final String serverHost)
+    {
+        new Thread(new Runnable() {
+            @Override public void run() {
+                AyandaClient client = new AyandaClient(NearbyActivity.this);
+
+                try {
+
+                    //if sharing a file, then do an upload
+                    if (mMedia != null)
+                    {
+                        client.uploadFile(serverHost,mNearbyMedia, new ProgressUIListener() {
+
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressStart(long totalBytes) {
+                                super.onUIProgressStart(totalBytes);
+                                Log.d("TAG", "onUIProgressStart:" + totalBytes);
+                            }
+
+                            @Override
+                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
+                                mProgress.setProgress((int)(100f*percent));
+                            }
+
+                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
+                            @Override
+                            public void onUIProgressFinish() {
+                                super.onUIProgressFinish();
+                                Log.d("TAG", "onUIProgressFinish:");
+                            }
+
+                        });
                     }
+                    else
+                    {
+                        //otherwise, do a download
 
-                    try {
                         client.getNearbyMedia(serverHost, new ProgressUIListener() {
 
                             //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
@@ -472,7 +511,7 @@ public class NearbyActivity extends AppCompatActivity {
                                 //  Toast.makeText(getApplicationContext(), "结束上传", Toast.LENGTH_SHORT).show();
                             }
 
-                        }, new NearbyListener() {
+                        }, new AyandaListener() {
                             @Override
                             public void nearbyReceived(NearbyMedia nearbyMedia) {
 
@@ -481,16 +520,16 @@ public class NearbyActivity extends AppCompatActivity {
                             }
                         });
 
-
-                    } catch (IOException e) {
-                        Log.e(TAG,"error LAN get: " + e);
                     }
-
+                } catch (IOException e) {
+                    Log.e(TAG,"error LAN get: " + e);
                 }
-            }).start();
 
-        }
-    };
+            }
+
+        }).start();
+
+    }
 
     /**
     IBluetooth mNearbyBluetooth = new IBluetooth() {
@@ -596,75 +635,15 @@ public class NearbyActivity extends AppCompatActivity {
         public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
 
             Snackbar snackbar = Snackbar
-                    .make(findViewById(R.id.main_nearby), "Sending: " + mNearbyMedia.getTitle(), Snackbar.LENGTH_LONG);
+                    .make(findViewById(R.id.main_nearby), R.string.status_connecting, Snackbar.LENGTH_LONG);
+            snackbar.show();
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    AyandaClient client = new AyandaClient(NearbyActivity.this);
-                    int defaultPort = 8080;
+            AyandaClient client = new AyandaClient(NearbyActivity.this);
+            int defaultPort = 8080;
 
-                    try {
+            String serverHost = groupOwnerAddress.getHostAddress() + ":" + Integer.toString(defaultPort);
+            getNearbyMedia(serverHost);
 
-                        final String response = client
-                                .get(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(defaultPort));
-
-                        //couldn't connect
-                        return;
-
-
-                    } catch (IOException e) {
-                        Log.e(TAG,"nearby added",e);
-                    }
-
-                    try { client.getNearbyMedia(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080), new ProgressUIListener() {
-                            @Override
-                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
-
-                                mProgress.setProgress((int)(percent * 100f));
-                            }
-                        }, new NearbyListener() {
-                            @Override
-                            public void nearbyReceived(NearbyMedia nearbyMedia) {
-
-                                if (nearbyMedia != null && nearbyMedia.mUriMedia != null)
-                                    addMedia (nearbyMedia);
-                            }
-                        });
-
-
-                    } catch (IOException e) {
-                        Log.e(TAG,"nearby added",e);
-                    }
-
-                    if (mMedia != null)
-                    {
-                        client.uploadFile(groupOwnerAddress.getHostAddress() + ":" + Integer.toString(8080),mNearbyMedia, new ProgressUIListener() {
-
-                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
-                            @Override
-                            public void onUIProgressStart(long totalBytes) {
-                                super.onUIProgressStart(totalBytes);
-                                Log.d("TAG", "onUIProgressStart:" + totalBytes);
-                            }
-
-                            @Override
-                            public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
-                                mProgress.setProgress((int)(100f*percent));
-                            }
-
-                            //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
-                            @Override
-                            public void onUIProgressFinish() {
-                                super.onUIProgressFinish();
-                                Log.d("TAG", "onUIProgressFinish:");
-                            }
-
-                        });
-                    }
-
-                }
-            }).start();
         }
 
         @Override
@@ -691,15 +670,16 @@ public class NearbyActivity extends AppCompatActivity {
         @Override
         public void wifiP2pPeersChangedAction() {
 
-            ArrayList<WifiP2pDevice> devices = new ArrayList<WifiP2pDevice>(mAyanda.wdGetDevicesDiscovered());
+            ArrayList<Ayanda.Device> devices = new ArrayList<>(mAyanda.wdGetDevicesDiscovered());
 
-            for (WifiP2pDevice device: devices)
+            for (Ayanda.Device device: devices)
             {
-                if ((!TextUtils.isEmpty(device.deviceName))
-                        && (!mPeers.containsKey(device.deviceAddress))) {
+                if ((!TextUtils.isEmpty(device.getName()))
+                        && (!device.getName().equals(getPublicName()))
+                        && (!mPeers.containsKey(device.getName()))) {
 
-                    mPeers.put(device.deviceAddress, device.deviceName);
-                    addPeerToView("Wifi: " + device.deviceName);
+                    mPeers.put(device.getName(), device);
+                    addPeerToView("Wifi: " + device.getName());
 
                 }
 
@@ -727,10 +707,6 @@ public class NearbyActivity extends AppCompatActivity {
 
 
     };
-
-    public interface NearbyListener {
-        public void nearbyReceived (NearbyMedia nearbyMedia);
-    }
 
     private BluetoothAdapter mBluetoothAdapter;
 

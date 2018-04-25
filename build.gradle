@@ -24,7 +24,7 @@ allprojects {
         compileSdkVersion=27
         minSdkVersion=15
         targetSdkVersion=27
-        appcompat='com.android.support:appcompat-v7:27.0.2'
+        appcompat='com.android.support:appcompat-v7:27.1.1'
     }
 }
 

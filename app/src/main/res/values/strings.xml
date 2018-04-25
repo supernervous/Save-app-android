@@ -172,4 +172,5 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="action_received">Received</string>
     <string name="status_receiving">Receiving...</string>
     <string name="action_duplicate">Duplicate received</string>
+    <string name="status_connecting">Connecting...</string>
 </resources>
