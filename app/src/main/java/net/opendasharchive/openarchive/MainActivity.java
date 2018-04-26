@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -221,6 +222,13 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
             Uri uri = intent.getData();
 
+// kitkat fixed (broke) content access; to keep the URIs valid over restarts need to persist access permission
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                final int takeFlags = intent.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+                ContentResolver resolver = getContentResolver();
+                resolver.takePersistableUriPermission(uri, takeFlags);
+            }
+
             if (uri == null &&
                     requestCode == Globals.REQUEST_IMAGE_CAPTURE)
                 uri = mCameraUri;
@@ -329,9 +337,14 @@ public class MainActivity extends AppCompatActivity {
             int requestId = Globals.REQUEST_FILE_IMPORT;
             if (Build.VERSION.SDK_INT >= 19) {
                 intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             } else {
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
             }
+
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             // Filter to only show results that can be "opened", such as a
             // file (as opposed to a list of contacts or timezones)

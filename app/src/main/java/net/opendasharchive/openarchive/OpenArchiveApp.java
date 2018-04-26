@@ -21,6 +21,10 @@ import info.guardianproject.netcipher.proxy.StatusCallback;
 import io.cleaninsights.sdk.CleanInsights;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import okhttp3.OkHttpClient;
+import sintulabs.p2p.Ayanda;
+import sintulabs.p2p.IBluetooth;
+import sintulabs.p2p.ILan;
+import sintulabs.p2p.IWifiDirect;
 
 /**
  * Created by josh on 3/6/15.
@@ -30,6 +34,8 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public static volatile boolean orbotConnected = false;
 
     private CleanInsightsApplication cleanInsightsApp;
+
+    private static Ayanda mAyandaInstance;
 
     @Override
     public void onCreate() {
@@ -160,5 +166,12 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         }
     }
 
+    public synchronized Ayanda getAyandaInstance(IBluetooth bt, ILan lan, IWifiDirect wifi) {
 
+        if (mAyandaInstance == null) {
+            mAyandaInstance = new Ayanda(this, bt, lan, wifi);
+        }
+
+        return mAyandaInstance;
+    }
 }

@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,10 +22,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +55,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,14 +73,11 @@ import sintulabs.p2p.impl.AyandaListener;
 import sintulabs.p2p.impl.AyandaServer;
 
 
-public class NearbyActivity extends AppCompatActivity {
+public class NearbyActivity extends AppCompatActivity implements Runnable {
 
     private final static String TAG = "Nearby";
 
-    private DonutProgress mProgress;
-    private ImageView mThumbnail;
     private LinearLayout mViewNearbyDevices;
-    private boolean mIsServer = false;
 
     private Media mMedia = null;
     private NearbyMedia mNearbyMedia = null;
@@ -87,7 +90,9 @@ public class NearbyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_nearby);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -99,15 +104,36 @@ public class NearbyActivity extends AppCompatActivity {
                     .build();
         }
 
-        mAyanda = new Ayanda(this, null, mNearbyWifiLan, mNearbyWifiDirect);
-
-        mThumbnail = findViewById(R.id.thumbnail);
         mViewNearbyDevices = findViewById(R.id.nearbydevices);
 
-        mProgress = findViewById(R.id.donut_progress);
-        mProgress.setMax(100);
+        askForPermission("android.permission.BLUETOOTH", 1);
+        askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
+        askForPermission("android.permission.ACCESS_FINE_LOCATION", 3);
+        askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
+        askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
+        askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
+        askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
 
-        mIsServer = getIntent().getBooleanExtra("isServer", false);
+        new Thread (this).start();
+    }
+
+    public void run ()
+    {
+        mHandlerViews.sendEmptyMessage(1);
+
+    }
+
+    private void startAyanda ()
+    {
+
+        mAyanda = ((OpenArchiveApp)getApplication()).getAyandaInstance( null, mNearbyWifiLan, mNearbyWifiDirect);
+        mAyanda.wdRegisterReceivers();
+
+        mNearbyWifiDirect.wifiP2pPeersChangedAction();
+        mNearbyWifiLan.deviceListChanged();
+
+
+        boolean mIsServer = getIntent().getBooleanExtra("isServer", false);
 
         if (mIsServer) {
             try {
@@ -115,20 +141,12 @@ public class NearbyActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mProgress.setVisibility(View.GONE);
 
         } else {
             getSupportActionBar().setTitle(R.string.status_receiving);
-            mThumbnail.setVisibility(View.GONE);
+
         }
 
-        askForPermission("android.permission.BLUETOOTH", 1);
-        askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
-        askForPermission("android.permission.ACCESS_COARSE_LOCATION", 3);
-        askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
-        askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
-        askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
-        askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
 
     }
 
@@ -166,7 +184,7 @@ public class NearbyActivity extends AppCompatActivity {
 
     }
 
-    
+
       private synchronized void addMedia (final NearbyMedia nearbyMedia)
       {
           Media media = null;
@@ -215,7 +233,7 @@ public class NearbyActivity extends AppCompatActivity {
               media.save();
 
               Snackbar snackbar = Snackbar
-              .make(findViewById(R.id.main_nearby), getString(R.string.action_received) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
+              .make(findViewById(R.id.nearbydevices), getString(R.string.action_received) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
 
               final Long snackMediaId = media.getId();
 
@@ -235,7 +253,7 @@ public class NearbyActivity extends AppCompatActivity {
           else
           {
               Snackbar snackbar = Snackbar
-                      .make(findViewById(R.id.main_nearby), getString(R.string.action_duplicate) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
+                      .make(findViewById(R.id.nearbydevices), getString(R.string.action_duplicate) + ": " + media.getTitle(), Snackbar.LENGTH_LONG);
 
           }
 
@@ -264,15 +282,19 @@ public class NearbyActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mAyanda.wdRegisterReceivers();
-        restartNearby();
+        if (mAyanda != null) {
+            mAyanda.wdRegisterReceivers();
+            restartNearby();
+        }
     }
 
     /* unregister the broadcast receiver */
     @Override
     protected void onPause() {
         super.onPause();
-        mAyanda.wdUnregisterReceivers();
+
+        if (mAyanda != null)
+            mAyanda.wdUnregisterReceivers();
     }
 
     @Override
@@ -291,8 +313,6 @@ public class NearbyActivity extends AppCompatActivity {
             mMedia = Media.findById(Media.class, currentMediaId);
         else
             return;
-
-        showThumbnail ();
 
             mNearbyMedia = new NearbyMedia();
 
@@ -333,41 +353,79 @@ public class NearbyActivity extends AppCompatActivity {
 
     }
 
-    private void showThumbnail ()
-    {
-        if (mMedia.getMimeType().startsWith("image")) {
+    private void addPeerToView(Ayanda.Device newPeer) {
 
-            mPicasso.load(Uri.parse(mMedia.getOriginalFilePath())).fit().centerCrop().into(mThumbnail);
-
-
-        }
-        else  if (mMedia.getMimeType().startsWith("video")) {
-
-            if (mMedia.getThumbnailUri() != null)
-            {
-                mPicasso.load(mMedia.getThumbnailUri()).fit().centerCrop().into(mThumbnail);
-            }
-            else
-                mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.getOriginalFilePath()).fit().centerCrop().into(mThumbnail);
-
-
-        }
-        else if (mMedia.getMimeType().startsWith("audio")) {
-            mThumbnail.setImageResource(R.drawable.audio_waveform);
-        }
+        mHandlerViews.sendEmptyMessage(0);
     }
 
-    private void addPeerToView(String peerName) {
+    Handler mHandlerViews = new Handler() {
 
-        LinearLayout.LayoutParams imParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
-        TextView tv = new TextView(this);
-        tv.setLayoutParams(imParams);
-        tv.setText(peerName);
+            if (msg.what == 0)
+                refreshPeerViews();
+            else if (msg.what == 1)
+                startAyanda();
+        }
+    };
 
-        mViewNearbyDevices.addView(tv, imParams);
 
+    private void refreshPeerViews () {
+
+        ArrayList<View> views = new ArrayList<>();
+
+        Collection<Ayanda.Device> devices = new ArrayList<>(mPeers.values());
+
+        for (final Ayanda.Device device : devices) {
+
+            if (!TextUtils.isEmpty(device.getName())) {
+
+                LinearLayout layoutOuter  =new LinearLayout(this);
+                layoutOuter.setLayoutParams(new LinearLayout.LayoutParams(200, 240));
+                layoutOuter.setOrientation(LinearLayout.VERTICAL);
+                layoutOuter.setPadding(5,5,5,5);
+                layoutOuter.setGravity(LinearLayout.HORIZONTAL);
+
+                LinearLayout.LayoutParams imParams2 =
+                       new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                DonutProgress donutProgress = new DonutProgress(this);
+                donutProgress.setLayoutParams(imParams2);
+                layoutOuter.addView(donutProgress);
+
+                LinearLayout.LayoutParams imParams3 =
+                        new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                TextView tv = new TextView(this);
+
+                String deviceName = device.getName();
+                deviceName = deviceName.replace("Ayanda.","");
+                if (deviceName.length() > 12)
+                    deviceName = deviceName.substring(0,12) + "...";
+
+                tv.setText(deviceName);
+                tv.setLayoutParams(imParams2);
+                layoutOuter.addView(tv);
+
+
+                layoutOuter.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        if (device.getType() == Ayanda.Device.TYPE_WIFI_P2P)
+                            mAyanda.wdConnect(device);
+                        else if (device.getType() == Ayanda.Device.TYPE_WIFI_LAN)
+                            connectToDevice(device);
+                    }
+                });
+
+                views.add(layoutOuter);
+            }
+        }
+
+        populateViews(mViewNearbyDevices, views.toArray(new View[views.size()]), this);
 
     }
 
@@ -393,7 +451,7 @@ public class NearbyActivity extends AppCompatActivity {
                         && (!mPeers.containsKey(device.getHost().toString()))) {
 
                     mPeers.put(device.getHost().toString(), device);
-                    addPeerToView("LAN: " + device.getName());
+                    addPeerToView(device);
                 }
             }
 
@@ -420,35 +478,42 @@ public class NearbyActivity extends AppCompatActivity {
 
              // Connected to desired service, so now make socket connection to peer
              final Ayanda.Device device = new Ayanda.Device(serviceInfo);
+             addPeerToView(device);
 
-            String serverHost = null; //device.getHost().getHostName() + ":" + 8080;
-
-            try {
-
-                InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
-
-                if (!hostInet.isLoopbackAddress()) {
-
-                    byte [] addressBytes = hostInet.getAddress();
-
-                    // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
-                    InetAddress dest4 = Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
-
-                    if (dest4 instanceof Inet6Address)
-                        serverHost = "[" + dest4.getHostAddress() + "]:" + device.getPort().intValue();
-                    else
-                        serverHost = dest4.getHostAddress() + ":" + device.getPort().intValue();
-
-                    getNearbyMedia(serverHost);
-                }
-
-            } catch (IOException e) {
-                Log.e(TAG,"error LAN get: " + e);
-                return;
-            }
 
         }
+
+
     };
+
+    public void connectToDevice (Ayanda.Device device)
+    {
+        String serverHost = null; //device.getHost().getHostName() + ":" + 8080;
+
+        try {
+
+            InetAddress hostInet =InetAddress.getByName(device.getHost().getHostAddress());
+
+            if (!hostInet.isLoopbackAddress()) {
+
+                byte [] addressBytes = hostInet.getAddress();
+
+                // Inet6Address dest6 = Inet6Address.getByAddress(Data.get(position).getHost().GetHostAddress(), addressBytes, NetworkInterface.getByInetAddress(hostInet));
+                InetAddress dest4 = Inet4Address.getByAddress (device.getHost().getHostAddress(), addressBytes);
+
+                if (dest4 instanceof Inet6Address)
+                    serverHost = "[" + dest4.getHostAddress() + "]:" + device.getPort().intValue();
+                else
+                    serverHost = dest4.getHostAddress() + ":" + device.getPort().intValue();
+
+                getNearbyMedia(serverHost);
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG,"error LAN get: " + e);
+            return;
+        }
+    }
 
     private void getNearbyMedia (final String serverHost)
     {
@@ -472,7 +537,7 @@ public class NearbyActivity extends AppCompatActivity {
 
                             @Override
                             public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
-                                mProgress.setProgress((int)(100f*percent));
+
                             }
 
                             //if you don't need this method, don't override this methd. It isn't an abstract method, just an empty method.
@@ -499,7 +564,6 @@ public class NearbyActivity extends AppCompatActivity {
 
                             @Override
                             public void onUIProgressChanged(long numBytes, long totalBytes, float percent, float speed) {
-                                mProgress.setProgress((int)(percent * 100f));
 
                             }
 
@@ -635,7 +699,7 @@ public class NearbyActivity extends AppCompatActivity {
         public void onConnectedAsClient(final InetAddress groupOwnerAddress) {
 
             Snackbar snackbar = Snackbar
-                    .make(findViewById(R.id.main_nearby), R.string.status_connecting, Snackbar.LENGTH_LONG);
+                    .make(findViewById(R.id.nearbydevices), R.string.status_connecting, Snackbar.LENGTH_LONG);
             snackbar.show();
 
             AyandaClient client = new AyandaClient(NearbyActivity.this);
@@ -679,11 +743,10 @@ public class NearbyActivity extends AppCompatActivity {
                         && (!mPeers.containsKey(device.getName()))) {
 
                     mPeers.put(device.getName(), device);
-                    addPeerToView("Wifi: " + device.getName());
+                    addPeerToView(device);
 
                 }
 
-                mAyanda.wdConnect(device);
 
             }
         }
@@ -722,4 +785,63 @@ public class NearbyActivity extends AppCompatActivity {
         return name;
     }
 
+    /**
+     * Copyright 2011 Sherif
+     * Updated by Karim Varela to handle LinearLayouts with other views on either side.
+     * @param linearLayout
+     * @param views : The views to wrap within LinearLayout
+     * @param context
+     * @author Karim Varela
+     **/
+    private void populateViews(LinearLayout linearLayout, View[] views, Context context)
+    {
+
+        // kv : May need to replace 'getSherlockActivity()' with 'this' or 'getActivity()'
+        Display display = getWindowManager().getDefaultDisplay();
+        linearLayout.removeAllViews();
+        int maxWidth = display.getWidth() - 20;
+
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams params;
+        LinearLayout newLL = new LinearLayout(context);
+        newLL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        newLL.setGravity(Gravity.LEFT);
+        newLL.setOrientation(LinearLayout.HORIZONTAL);
+
+        int widthSoFar = 0;
+
+        for (int i = 0; i < views.length; i++)
+        {
+            LinearLayout LL = new LinearLayout(context);
+            LL.setOrientation(LinearLayout.HORIZONTAL);
+            LL.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+            LL.setLayoutParams(new ListView.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            views[i].measure(0, 0);
+            params = new LinearLayout.LayoutParams(views[i].getMeasuredWidth(), LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(5, 0, 5, 0);
+
+            LL.addView(views[i], params);
+            LL.measure(0, 0);
+            widthSoFar += views[i].getMeasuredWidth();
+            if (widthSoFar >= maxWidth)
+            {
+                linearLayout.addView(newLL);
+
+                newLL = new LinearLayout(context);
+                newLL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                newLL.setOrientation(LinearLayout.HORIZONTAL);
+                newLL.setGravity(Gravity.LEFT);
+                params = new LinearLayout.LayoutParams(LL.getMeasuredWidth(), LL.getMeasuredHeight());
+                newLL.addView(LL, params);
+                widthSoFar = LL.getMeasuredWidth();
+            }
+            else
+            {
+                newLL.addView(LL);
+            }
+        }
+        linearLayout.addView(newLL);
+    }
 }
