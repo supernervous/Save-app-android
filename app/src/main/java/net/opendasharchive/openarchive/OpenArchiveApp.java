@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -166,10 +167,10 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         }
     }
 
-    public synchronized Ayanda getAyandaInstance(IBluetooth bt, ILan lan, IWifiDirect wifi) {
+    public synchronized Ayanda getAyandaInstance(Activity context, IBluetooth bt, ILan lan, IWifiDirect wifi) {
 
         if (mAyandaInstance == null) {
-            mAyandaInstance = new Ayanda(this, bt, lan, wifi);
+            mAyandaInstance = new Ayanda(context, bt, lan, wifi);
         }
 
         return mAyandaInstance;
