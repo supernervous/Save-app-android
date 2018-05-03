@@ -5,6 +5,10 @@
         <item name="android:buttonStyle">@style/Button</item>
         <item name="android:textViewStyle">@style/TextView</item>
         <!--<item name="android:spinnerStyle">@style/Spinner</item>-->
+        <item name="alertDialogTheme">
+            @style/Theme.AppCompat.DayNight.Dialog.Alert
+        </item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <!-- Settings Theme to show action bar -->

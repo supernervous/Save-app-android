@@ -97,7 +97,7 @@
         <activity
             android:name=".onboarding.FirstStartActivity"
             android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
@@ -109,7 +109,7 @@
             android:name=".ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme"></activity>
+            android:theme="@style/SettingsTheme"/>
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
@@ -130,8 +130,10 @@
         </activity>
         <activity android:name=".NearbyActivity"
             android:screenOrientation="portrait"
-            ></activity>
+            />
         <activity android:name=".onboarding.OAAppIntro"
+            android:label="App Intro" />
+        <activity android:name=".SettingsActivity"
             android:label="App Intro" />
         <service android:name=".publish.PublishService"
             android:exported="false"
