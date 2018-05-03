@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings)
         {
-            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            Intent firstStartIntent = new Intent(this, SettingsActivity.class);
             startActivity(firstStartIntent);
 
             return true;
@@ -219,65 +219,60 @@ public class MainActivity extends AppCompatActivity {
 
         String mimeType = null;
 
-        if (intent != null) {
-            Uri uri = intent.getData();
+        Uri uri = null;
 
-// kitkat fixed (broke) content access; to keep the URIs valid over restarts need to persist access permission
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                final int takeFlags = intent.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
-                ContentResolver resolver = getContentResolver();
-                resolver.takePersistableUriPermission(uri, takeFlags);
+        if (intent != null)
+            uri = intent.getData();
+
+        if (uri == null &&
+                requestCode == Globals.REQUEST_IMAGE_CAPTURE)
+            uri = mCameraUri;
+
+        if (uri != null) {
+            mimeType = getContentResolver().getType(uri);
+
+            // Will only allow stream-based access to files
+
+            try {
+                if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                    grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+            } catch (SecurityException se) {
+                Log.d("OA", "security exception accessing URI", se);
             }
 
-            if (uri == null &&
-                    requestCode == Globals.REQUEST_IMAGE_CAPTURE)
-                uri = mCameraUri;
+        }
 
-            if (uri != null) {
-                mimeType = getContentResolver().getType(uri);
+        if (resultCode == RESULT_OK) {
 
-                // Will only allow stream-based access to files
-
-                try {
-                    if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                        grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }
-                } catch (SecurityException se) {
-                    Log.d("OA", "security exception accessing URI", se);
-                }
-
+            if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
+                String path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
+                mimeType = "image/jpeg";
+                Log.d(TAG, "onActivityResult, image path:" + path);
             }
 
-            if (resultCode == RESULT_OK) {
+            if (null == mimeType) {
+                Log.d(TAG, "onActivityResult: Invalid Media Type");
+                Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
+            } else {
+                // create media
+                Media media = new Media();
+                media.setOriginalFilePath(uri.toString());
+                media.setMimeType(mimeType);
+                media.setCreateDate(new Date());
+                media.status = Media.STATUS_LOCAL;
+                media.save();
 
-                if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
-                    String path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
-                    mimeType = "image/jpeg";
-                    Log.d(TAG, "onActivityResult, image path:" + path);
-                }
+                Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
+                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                if (null == mimeType) {
-                    Log.d(TAG, "onActivityResult: Invalid Media Type");
-                    Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
-                } else {
-                    // create media
-                    Media media = new Media();
-                    media.setOriginalFilePath(uri.toString());
-                    media.setMimeType(mimeType);
-                    media.setCreateDate(new Date());
-                    media.status = Media.STATUS_LOCAL;
-                    media.save();
+                startActivity(reviewMediaIntent);
 
-                    Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
-                    reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-                    reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    startActivity(reviewMediaIntent);
-
-                }
             }
         }
+
 
         fragmentMediaList.refresh();
     }
