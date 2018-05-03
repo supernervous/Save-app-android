@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaDeserializer;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
 import org.w3c.dom.Text;
@@ -90,7 +91,15 @@ public class NearbyActivity extends AyandaActivity {
 
     @Override
     public Ayanda getAyandaInstance(IBluetooth iBluetooth, ILan iLan, IWifiDirect iWifiDirect) {
-        return ((OpenArchiveApp)getApplication()).getAyandaInstance(this,iBluetooth,iLan,iWifiDirect);
+
+        Ayanda ayanda = ((OpenArchiveApp)getApplication()).getAyandaInstance(this,
+                iBluetooth,
+                iLan,
+                iWifiDirect);
+
+        return ayanda;
+
+
     }
 
       public synchronized void addMedia (final NearbyMedia nearbyMedia)

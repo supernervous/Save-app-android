@@ -14,6 +14,7 @@ import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.okhttp.OkHttpStack;
 import net.opendasharchive.openarchive.publish.PublishService;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
@@ -42,6 +43,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public void onCreate() {
         super.onCreate();
 
+        Prefs.setContext(this);
 
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())

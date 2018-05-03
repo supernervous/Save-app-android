@@ -6,6 +6,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -15,12 +16,15 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import net.opendasharchive.openarchive.ArchiveSettingsActivity;
 import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
+import net.opendasharchive.openarchive.SettingsActivity;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,17 +60,18 @@ public class PublishService extends Service implements Runnable {
 
     private boolean shouldPublish ()
     {
-        boolean requireWifi = false;
-
-        if (isNetworkAvailable(requireWifi))
+        if (Prefs.getUploadWifiOnly())
+        {
+            if ( isNetworkAvailable(true))
+                return true;
+        }
+        else if (isNetworkAvailable(false))
         {
             return true;
         }
-        else
-        {
-            //try again when there is a network
-            scheduleJob(this);
-        }
+
+        //try again when there is a network
+        scheduleJob(this);
 
         return false;
     }
@@ -81,12 +86,12 @@ public class PublishService extends Service implements Runnable {
     private synchronized boolean doPublish ()
     {
         isRunning = true;
-        boolean published = false;
+        boolean publishing = false;
 
         //check if online, and connected to appropriate network type
         if (shouldPublish()) {
 
-            published = true;
+            publishing = true;
 
             //get all media items that are set into queued state
             List<Media> results = null;
@@ -112,7 +117,7 @@ public class PublishService extends Service implements Runnable {
 
         isRunning = false;
 
-        return published;
+        return publishing;
 
     }
 

@@ -86,9 +86,6 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     {
         boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
 
-        if (useTor)
-            Toast.makeText(this, R.string.orbot_detected,Toast.LENGTH_SHORT).show();
-
         Intent loginIntent = new Intent(this, MainActivity.class);
         SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
         siteController.setUseTor(useTor);
@@ -129,7 +126,8 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-//        super.onActivityResult(requestCode, resultCode, intent); // FIXME do we really need to call up to the super?
+        super.onActivityResult(requestCode, resultCode, intent);
+
         if (requestCode == SiteController.CONTROLLER_REQUEST_CODE) {
             if (resultCode == android.app.Activity.RESULT_OK) {
 
