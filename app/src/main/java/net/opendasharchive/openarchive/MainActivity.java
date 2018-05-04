@@ -31,12 +31,17 @@ import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
+import cafe.adriel.androidaudiorecorder.model.AudioChannel;
+import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
+import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import io.cleaninsights.sdk.piwik.Measurer;
 
 
@@ -211,7 +216,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private boolean mediaExists (Uri uri)
+    {
 
+        if (uri.getScheme() == null || uri.getScheme().equals("file"))
+        {
+            return new File(uri.getPath()).exists();
+        }
+
+        return true;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -224,12 +238,27 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null)
             uri = intent.getData();
 
-        if (uri == null &&
-                requestCode == Globals.REQUEST_IMAGE_CAPTURE)
-            uri = mCameraUri;
+        if (uri == null) {
+            if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
+                uri = mCameraUri;
+                mimeType = "image/jpeg";
+                if (!mediaExists(uri))
+                    return;
+            } else if (requestCode == Globals.REQUEST_AUDIO_CAPTURE) {
+                uri = mAudioUri;
+                mimeType = "audio/wav";
+                if (!mediaExists(uri))
+                    return;
+            }
+
+
+        }
+
 
         if (uri != null) {
-            mimeType = getContentResolver().getType(uri);
+
+            if (mimeType == null)
+                mimeType = getContentResolver().getType(uri);
 
             // Will only allow stream-based access to files
 
@@ -246,11 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
 
-            if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
-                String path = this.getSharedPreferences("prefs", Context.MODE_PRIVATE).getString(Globals.EXTRA_FILE_LOCATION, null);
-                mimeType = "image/jpeg";
-                Log.d(TAG, "onActivityResult, image path:" + path);
-            }
+
 
             if (null == mimeType) {
                 Log.d(TAG, "onActivityResult: Invalid Media Type");
@@ -319,8 +344,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void startNearby ()
     {
-        Intent intent = new Intent(this, NearbyActivity.class);
-        startActivity(intent);
+        if (checkNearbyPermissions()) {
+            Intent intent = new Intent(this, NearbyActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void importMedia ()
@@ -368,21 +395,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!askForPermission("android.permission.RECORD_AUDIO",1)) {
 
-//                    intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-
-                    intent = new Intent();
-                    intent.setType("audio/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-
-                    Intent intent2 = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-
-                    Intent chooser = new Intent(Intent.ACTION_CHOOSER);
-                    chooser.putExtra(Intent.EXTRA_INTENT, intent);
-                    chooser.putExtra(Intent.EXTRA_TITLE, "title");
-                    Intent[] intentarray= {intent2};
-                    chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS,intentarray);
-
-                    requestId = Globals.REQUEST_AUDIO_CAPTURE;
+                    startAudioRecorder();
                 }
 
 
@@ -394,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
                     File photoFile;
                     try {
-                        photoFile = getOutputMediaFile();
+                        photoFile = getOutputMediaFile("IMG","jpg");
                     } catch (Exception ex) {
                         Log.e(TAG, "Unable to make image file");
                         return;
@@ -424,9 +437,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static File getOutputMediaFile(){
+    private static File getOutputMediaFile(String prefix, String ext){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "OpenArchive");
+                Environment.DIRECTORY_DOCUMENTS), "OpenArchive");
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){
@@ -436,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
+                prefix + "_"+ timeStamp + "." + ext);
     }
 
     private boolean askForPermission(String permission, Integer requestCode) {
@@ -457,12 +470,76 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        return false;
+        return true;
 
     }
 
 
     private Measurer getMeasurer() {
         return ((OpenArchiveApp) getApplication()).getCleanInsightsApp().getMeasurer();
+    }
+
+    Uri mAudioUri;
+
+    private void startAudioRecorder ()
+    {
+        File fileAudioPath = getOutputMediaFile("AUDIO","wav");
+        mAudioUri = Uri.fromFile(fileAudioPath);
+
+        int color = getResources().getColor(R.color.bright_blue);
+        int requestCode = Globals.REQUEST_AUDIO_CAPTURE;
+        AndroidAudioRecorder.with(this)
+                // Required
+                .setFilePath(fileAudioPath.getAbsolutePath())
+                .setColor(color)
+                .setRequestCode(requestCode)
+
+                // Optional
+                .setSource(AudioSource.MIC)
+                .setChannel(AudioChannel.STEREO)
+                .setSampleRate(AudioSampleRate.HZ_48000)
+                .setAutoStart(false)
+                .setKeepDisplayOn(true)
+
+
+                // Start recording
+                .record();
+    }
+
+    private boolean checkNearbyPermissions ()
+    {
+        boolean allowed = false;
+
+        allowed = askForPermission("android.permission.ACCESS_FINE_LOCATION", 3);
+
+        if (!allowed)
+            return false;
+
+        if (Prefs.getNearbyUseBluetooth()) {
+            allowed = askForPermission("android.permission.BLUETOOTH", 1);
+            if (!allowed)
+                return false;
+
+            allowed = askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
+            if (!allowed)
+                return false;
+        }
+
+        if (Prefs.getNearbyUseWifi()) {
+            allowed = askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
+            if (!allowed)
+                return false;
+            allowed = askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
+            if (!allowed)
+                return false;
+            allowed = askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
+            if (!allowed)
+                return false;
+            allowed = askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
+            if (!allowed)
+                return false;
+        }
+
+        return allowed;
     }
 }

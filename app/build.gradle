@@ -47,14 +47,14 @@ android {
 
 def uploadServiceVersion = "3.4.2"
 def netCipherVersion = "2.0.0-alpha1"
-def ayandaVersion =  "500699f67d"
+def ayandaVersion =  "ebcd00b46d"
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:preference-v7:27.1.1'
-    compile 'com.android.support:preference-v14:27.1.1'
+    implementation 'com.android.support:preference-v14:27.1.1'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okio:okio:1.14.0'
     implementation 'com.github.satyan:sugar:1.5'
@@ -74,4 +74,6 @@ dependencies {
     implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
     implementation 'io.github.lizhangqu:coreprogress:1.0.2'
+
+    implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
 }

@@ -87,7 +87,24 @@ public class NearbyActivity extends AyandaActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setTitle("");
+
+        startAyanda();
+
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                cancelNearby();
+                finish();
+                break;
+        }
+
+        return true;
+    }
+
 
     @Override
     public Ayanda getAyandaInstance(IBluetooth iBluetooth, ILan iLan, IWifiDirect iWifiDirect) {

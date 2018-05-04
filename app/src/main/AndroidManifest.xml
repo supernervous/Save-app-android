@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     -->
@@ -129,7 +130,7 @@
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
         <activity android:name=".NearbyActivity"
-            android:screenOrientation="portrait"
+            android:theme="@style/ayandaDialog"
             />
         <activity android:name=".onboarding.OAAppIntro"
             android:label="App Intro" />
