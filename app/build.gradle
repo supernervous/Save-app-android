@@ -14,8 +14,8 @@ android {
         applicationId "net.opendasharchive.openarchive"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1713
-        versionName "0.0.17-beta-3"
+        versionCode 1714
+        versionName "0.0.17-beta-4"
         multiDexEnabled false
     }
     lintOptions {
