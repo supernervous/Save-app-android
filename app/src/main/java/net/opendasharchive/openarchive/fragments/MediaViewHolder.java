@@ -33,7 +33,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
     private Context mContext;
 
-    private Picasso mPicasso;
+    private static Picasso mPicasso;
     private AsyncTask<Void, Void, SoundFile> asyncTask;
     public static HashMap<String,SoundFile> mSoundFileCache = new HashMap<>();
 
@@ -54,6 +54,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                     .addRequestHandler(videoRequestHandler)
                     .build();
         }
+
     }
 
     public void bindData(final Media currentMedia) {
@@ -69,6 +70,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         }
         else  if (currentMedia.getMimeType().startsWith("video")) {
 
+            mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
+
+            /**
             if (currentMedia.getThumbnailUri() == null
                     && mediaPath.startsWith("content")) {
 
@@ -88,6 +92,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             }
             else
                 mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
+            **/
 
             ivIcon.setVisibility(View.VISIBLE);
             tvWave.setVisibility(View.GONE);
