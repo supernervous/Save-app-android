@@ -11,6 +11,7 @@ public class Prefs {
 
     public final static String PREF_UPLOAD_WIFI_ONLY = "upload_wifi_only";
     public final static String PREF_NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth";
+    public final static String PREF_NEARBY_USE_WIFI = "nearby_use_wifi";
 
     private static SharedPreferences prefs;
 
@@ -44,8 +45,18 @@ public class Prefs {
         return prefs.getBoolean(PREF_NEARBY_USE_BLUETOOTH, false);
     }
 
-    public static void setNearbyUseBluetooth (boolean wifiOnly)
+    public static void setNearbyUseBluetooth (boolean useBluetooth)
     {
-        putBoolean(PREF_NEARBY_USE_BLUETOOTH,wifiOnly);
+        putBoolean(PREF_NEARBY_USE_BLUETOOTH,useBluetooth);
+    }
+
+    public static boolean getNearbyUseWifi ()
+    {
+        return prefs.getBoolean(PREF_NEARBY_USE_WIFI, false);
+    }
+
+    public static void setNearbyUseWifi (boolean useWifi)
+    {
+        putBoolean(PREF_NEARBY_USE_WIFI,useWifi);
     }
 }
