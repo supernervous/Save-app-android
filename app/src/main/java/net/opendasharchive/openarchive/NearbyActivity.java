@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -209,6 +210,20 @@ public class NearbyActivity extends AyandaActivity {
         Uri uriMedia = Uri.parse(mMedia.getOriginalFilePath());
         mNearbyMedia.mUriMedia = uriMedia;
 
+        Cursor returnCursor =
+                getContentResolver().query(uriMedia, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         * move to the first row in the Cursor, get the data,
+         * and display it.
+         */
+       // int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        if (returnCursor.moveToFirst()) {
+            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            mNearbyMedia.mLength = returnCursor.getLong(sizeIndex);
+        }
+        returnCursor.close();
+
         InputStream is = getContentResolver().openInputStream(uriMedia);
         byte[] digest = Utility.getDigest(is);
         mNearbyMedia.mDigest = digest;
@@ -217,12 +232,13 @@ public class NearbyActivity extends AyandaActivity {
         if (TextUtils.isEmpty(title))
             title = uriMedia.getLastPathSegment();
 
+        mNearbyMedia.mTitle = title;
+        mNearbyMedia.mMimeType = mMedia.getMimeType();
+
         Gson gson = new GsonBuilder()
                 .setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
         mNearbyMedia.mMetadataJson = gson.toJson(mMedia);
 
-        mNearbyMedia.mTitle = title;
-        mNearbyMedia.mMimeType = mMedia.getMimeType();
     }
 
 }
