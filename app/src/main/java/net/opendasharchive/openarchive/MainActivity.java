@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -287,6 +289,23 @@ public class MainActivity extends AppCompatActivity {
                 media.setMimeType(mimeType);
                 media.setCreateDate(new Date());
                 media.status = Media.STATUS_LOCAL;
+
+                Cursor returnCursor =
+                        getContentResolver().query(uri, null, null, null, null);
+                /*
+                 * Get the column indexes of the data in the Cursor,
+                 * move to the first row in the Cursor, get the data,
+                 * and display it.
+                 */
+                if (returnCursor != null) {
+                    int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (returnCursor.moveToFirst()) {
+                        //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                        media.setTitle(returnCursor.getString(nameIndex));
+                    }
+                    returnCursor.close();
+                }
+
                 media.save();
 
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
@@ -470,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        return true;
+        return false;
 
     }
 
@@ -510,32 +529,32 @@ public class MainActivity extends AppCompatActivity {
     {
         boolean allowed = false;
 
-        allowed = askForPermission("android.permission.ACCESS_FINE_LOCATION", 3);
+        allowed = !askForPermission("android.permission.ACCESS_FINE_LOCATION", 3);
 
         if (!allowed)
             return false;
 
         if (Prefs.getNearbyUseBluetooth()) {
-            allowed = askForPermission("android.permission.BLUETOOTH", 1);
+            allowed = !askForPermission("android.permission.BLUETOOTH", 1);
             if (!allowed)
                 return false;
 
-            allowed = askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
+            allowed = !askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
             if (!allowed)
                 return false;
         }
 
         if (Prefs.getNearbyUseWifi()) {
-            allowed = askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
+            allowed = !askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
             if (!allowed)
                 return false;
-            allowed = askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
+            allowed = !askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
             if (!allowed)
                 return false;
-            allowed = askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
+            allowed = !askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
             if (!allowed)
                 return false;
-            allowed = askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
+            allowed = !askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
             if (!allowed)
                 return false;
         }
