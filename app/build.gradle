@@ -47,7 +47,7 @@ android {
 
 def uploadServiceVersion = "3.4.2"
 def netCipherVersion = "2.0.0-alpha1"
-def ayandaVersion =  "ebcd00b46d"
+def ayandaVersion =  "f871e8eb94"
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
