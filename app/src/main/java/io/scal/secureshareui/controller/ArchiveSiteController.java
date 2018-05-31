@@ -155,11 +155,14 @@ public class ArchiveSiteController extends SiteController {
                 builder.addHeader("x-archive-meta-mediatype", mimeType);
                 if(mimeType.contains("audio")) {
                     builder.addHeader("x-archive-meta-collection", "opensource_audio");
-                } else {
+                } else if (mimeType.contains("image")) {
+                    builder.addHeader("x-archive-meta-collection", "opensource_media");
+                }
+                else {
                     builder.addHeader("x-archive-meta-collection", "opensource_movies");
                 }
             } else {
-                builder.addHeader("x-archive-meta-collection", "opensource_movies");
+                builder.addHeader("x-archive-meta-collection", "opensource_media");
             }
 
             if (!TextUtils.isEmpty(locationName)) {

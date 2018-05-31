@@ -7,5 +7,12 @@
     <external-path name="files3"
         path="." />
 
+    <files-path
+        name="sdcard"
+        path="/storage/sdcard"/>
+
+    <files-path
+        name="sdcard1"
+        path="/storage/sdcard1"/>
 
 </paths>
