@@ -52,7 +52,6 @@
     <string name="eula_accept">接受</string>
     <string name="eula_refuse">拒绝</string>
     <string name="end_user_license_agreement">使用条款和隐私政策</string>
-    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
     <string name="by_clicking_accept">单击“接受”即表示您同意我们的条款和政策：</string>
     <string name="tos_dialog_title">服务条款</string>
     <string name="tos_dialog_msg">在继续之前，请接受我们的“服务条款”</string>
@@ -93,9 +92,6 @@
     <string name="lbl_continue">继续</string>
     <string name="archive_title">电子邮件确认</string>
     <string name="archive_message">请确认您的电子邮箱并返回以连接您的 Archive 帐户。</string>
-    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
-    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
-    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
     <string name="upload_to_internet_archive">上传到 Internet Archive</string>
     <string name="upload_securely_via_tor">通过 Tor 安全上传</string>
     <string name="lbl_share_prefs">共享首选项</string>
@@ -161,4 +157,4 @@ OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 
 
     <string name="action_cancel">取消</string>
 
-</resources>
+    </resources>

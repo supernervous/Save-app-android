@@ -3,7 +3,9 @@
 
     <!-- Activities -->
     <string name="app_name">آرشیو باز</string>
-    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:\n<a href="#"></a></string>
+    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:
+\\n<a href=\"#\">
+</a></string>
 
     <string name="main_activity_title">آرشیوباز شما</string>
     <string name="title_activity_main">رسانه بگیر</string>
@@ -52,7 +54,6 @@
     <string name="eula_accept">تایید</string>
     <string name="eula_refuse">تکذیب</string>
     <string name="end_user_license_agreement">شرایط استفاده و سیاستهای حریم خصوصی</string>
-    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
     <string name="by_clicking_accept">با کلیک روی تایید با تمام شرایط و سیاستها موافقت میکنید</string>
     <string name="tos_dialog_title">شرایط سرویس</string>
     <string name="tos_dialog_msg">لطفا پیش از جلو رفتن شرایط سرویس را قبول کنید</string>
@@ -93,9 +94,6 @@
     <string name="lbl_continue">ادامه</string>
     <string name="archive_title">تایید ایمیل</string>
     <string name="archive_message">لطفا ایمیل خود را تایید کرده و باز برای ورود به آرشیو باز برگردید</string>
-    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
-    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
-    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
     <string name="upload_to_internet_archive">به آرشیو اینترنت آپلود کن</string>
     <string name="upload_securely_via_tor">با استفاده از تور آپلود امن انجام بده</string>
     <string name="lbl_share_prefs"> مشخصات به اشتراک گذاری</string>
@@ -162,4 +160,4 @@ https://open-archive.net
 
     <string name="action_cancel">لغو</string>
 
-</resources>
+    </resources>

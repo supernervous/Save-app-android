@@ -52,7 +52,6 @@
     <string name="eula_accept">Aceitar </string>
     <string name="eula_refuse">Recusar </string>
     <string name="end_user_license_agreement">Termos de Utilização e Política de Privacidade </string>
-    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
     <string name="by_clicking_accept">Ao clicar em \'Aceitar\' concorda com os nossos termos e políticas: </string>
     <string name="tos_dialog_title">Termos de Serviço </string>
     <string name="tos_dialog_msg">Por favor, Aceite os nossos Termos de Serviço antes de continuar</string>
@@ -93,9 +92,6 @@
     <string name="lbl_continue">Continuar</string>
     <string name="archive_title">E-mail de Confirmação</string>
     <string name="archive_message">Por favor, confirme o seu e-mail e volte para ligar a sua conta Archive. </string>
-    <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
-    <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
-    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
     <string name="upload_to_internet_archive">Transferir para o Internet Archive</string>
     <string name="upload_securely_via_tor">Transferir em Segurança via Tor</string>
     <string name="lbl_share_prefs">Partilhar Preferências </string>
@@ -161,4 +157,4 @@ OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal
 
     <string name="action_cancel">Cancelar</string>
 
-</resources>
+    </resources>
