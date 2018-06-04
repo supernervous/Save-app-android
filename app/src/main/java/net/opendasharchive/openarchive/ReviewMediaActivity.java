@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +58,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private Context mContext = this;
     private Media mMedia;
+    private long currentMediaId;
     private ProgressDialog progressDialog = null;
 
     private TextView tvTitle;
@@ -240,6 +242,10 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void saveMedia ()
     {
+        //if deleted
+        if (mMedia == null)
+            return;
+
         if (tvTitle.getText().length() > 0)
             mMedia.setTitle(tvTitle.getText().toString());
         else
@@ -312,9 +318,12 @@ public class ReviewMediaActivity extends AppCompatActivity {
             case R.id.menu_item_share_torrent:
                 shareTorrentLink();
                 break;
-           // case R.id.menu_item_stamp:
-            //    stampMedia();
-             //   break;
+
+            case R.id.menu_delete:
+                deleteMedia();
+
+                break;
+
             default:
                 break;
         }
@@ -325,7 +334,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         // get intent extras
-        long currentMediaId = intent.getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
+        currentMediaId = intent.getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1);
 
         // get default metadata sharing values
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
@@ -571,4 +580,27 @@ public class ReviewMediaActivity extends AppCompatActivity {
         }
     };
 
+    private void deleteMedia ()
+    {
+        new AlertDialog.Builder(ReviewMediaActivity.this)
+            .setTitle(R.string.alert_delete_media)
+            .setMessage(R.string.alert_lbl_delete_media)
+            .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //do nothing
+            }
+        })
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    boolean success =  Media.findById(Media.class, currentMediaId).delete();
+                    Log.d("OAMedia","Item deleted: " + success);
+                    mMedia = null;
+                    finish();
+
+                }
+            }).create().show();
+    }
 }

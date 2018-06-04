@@ -144,6 +144,7 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="menu_take_video">Take Video</string>
     <string name="menu_record_audio">Record Audio</string>
     <string name="menu_nearby_rec">Nearby Receive</string>
+    <string name="menu_delete">Delete Media</string>
 
     <string name="hint_title">Title</string>
     <string name="hint_description">Description</string>

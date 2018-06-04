@@ -46,37 +46,5 @@ public class MediaListFragment extends Fragment {
         return rootView;
     }
 
-    /**
-
-
-    ListView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-            new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.alert_lbl_delete_media)
-                    .setCancelable(true)
-                    .setMessage(R.string.alert_delete_media)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Media.deleteMediaById(getMediaIdByPosition(position));
-                            initMediaAdapter();
-                            mMediaAdapter.notifyDataSetChanged();
-                            Toast.makeText(getActivity(), R.string.alert_media_deleted, Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {}
-                    })
-                    .setIcon(R.drawable.ic_dialog_alert_holo_light)
-                    .show();
-
-            return true;
-        }
-    };**/
-
-
-
-
 
 }

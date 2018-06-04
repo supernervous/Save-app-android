@@ -29,9 +29,7 @@ import net.opendasharchive.openarchive.util.Utility;
 public class Media extends SugarRecord {
 
     public String originalFilePath;
-    public String scrubbedFilePath; //not used
     public String mimeType;
-    public String thumbnailFilePath;
     public Date createDate;
     public Date updateDate;
     public String serverUrl;
@@ -58,9 +56,6 @@ public class Media extends SugarRecord {
         AUDIO, IMAGE, VIDEO, FILE;
     }
 
-    public final static int THUMBNAIL_WIDTH = 320;
-    public final static int THUMBNAIL_HEIGHT = 240;
-
     //left public ONLY for Sugar ORM
     public Media() {};
 
@@ -78,13 +73,6 @@ public class Media extends SugarRecord {
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
-    }
-
-    public String getThumbnailFilePath() {
-        return thumbnailFilePath;
-    }
-    public void setThumbnailFilePath(String thumbnailFilePath) {
-        this.thumbnailFilePath = thumbnailFilePath;
     }
 
     public Date getCreateDate() {
@@ -175,143 +163,17 @@ public class Media extends SugarRecord {
         this.tags = tags;
     }
 
-    public Uri getThumbnailUri ()
-    {
-        if (thumbnailFilePath != null)
-            return Uri.parse(thumbnailFilePath);
-        else
-            return null;
-
-    }
-    /**
-    public Bitmap getThumbnail(Context context) { // TODO: disk cache, multiple sizes
-        Bitmap thumbnail = null;
-
-        if (thumbnailFilePath == null) {
-            String path = originalFilePath;
-            Uri uri = Uri.parse(path);
-            String lastSegment = uri.getLastPathSegment();
-            boolean isDocumentProviderUri = path.contains("content:/") && (lastSegment.contains(":"));
-
-            if (this.mimeType.startsWith("audio")) {
-                thumbnail = null;//new BitmapDrawable(context.getResources().getDrawable(R.drawable.audio_waveform));
-            } else if (this.mimeType.startsWith("image")) {
-                if (isDocumentProviderUri) {
-                    // path of form : content://com.android.providers.media.documents/document/video:183
-                    // An Android Document Provider URI. Thumbnail already generated
-                    // TODO Because we need Context we can't yet override this behavior at MediaFile#getThumbnail
-                    long id = Long.parseLong(Uri.parse(path).getLastPathSegment().split(":")[1]);
-                    thumbnail = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-                } else {
-                    if (path.contains("content:/")) {
-
-                        try {
-                            thumbnail = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
-
-                        }
-                        catch (IOException ie)
-                        {
-                            ie.printStackTrace();
-                        }
-                    }
-                    else {
-                        File originalFile = new File(path);
-                        String fileName = originalFile.getName();
-                        String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                        thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
-                        File thumbnailFile = new File(thumbnailFilePath);
-                        if (thumbnailFile.exists()) {
-                            thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-                        } else {
-                            Bitmap bitMap = BitmapFactory.decodeFile(path);
-
-                            try {
-                                FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
-                                thumbnail = ThumbnailUtils.extractThumbnail(bitMap, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT); // FIXME figure out the real aspect ratio and size needed
-                                if (thumbnail != null) {
-                                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable
-                                    thumbnailStream.flush();
-                                    thumbnailStream.close();
-                                }
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            } else if (this.mimeType.startsWith("video")) {
-                // path of form : content://com.android.providers.media.documents/document/video:183
-                if (isDocumentProviderUri) {
-                    // An Android Document Provider URI. Thumbnail already generated
-
-                    long id = 0;
-                    id = Long.parseLong(lastSegment.split(":")[1]);
-                    return MediaStore.Video.Thumbnails.getThumbnail(context.getContentResolver(), id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-                } else {
-                    // Regular old File path
-                    try {
-                        //Log.d(" *** TESTING *** ", "CREATING NEW THUMBNAIL FILE FOR " + path);
-
-                        // FIXME should not be stored in the source location, but a cache dir in our app folder on the sd or internal cache if there is no SD
-                        // FIXME need to check datestamp on original file to check if our thumbnail is up to date
-                        // FIXME this should be run from a background thread as it does disk access
-                        if (path.contains("content:/")) {
-                            path = Utility.getRealPathFromURI(context, uri);
-                        }
-                        File originalFile = new File(path);
-                        String fileName = originalFile.getName();
-                        String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                        thumbnailFilePath = path.substring(0, path.lastIndexOf(File.separator) + 1) + tokens[0] + "_thumbnail.jpg";
-                        File thumbnailFile = new File(thumbnailFilePath);
-                        if (thumbnailFile.exists()) {
-                            thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-                        } else {
-                            FileOutputStream thumbnailStream = new FileOutputStream(thumbnailFile);
-
-                            thumbnail = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
-                            if (thumbnail != null) {
-                                thumbnail.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailStream); // FIXME make compression level configurable... for thumbnails??!
-                                thumbnailStream.flush();
-                                thumbnailStream.close();
-                            }
-                        }
-                    } catch (IOException ioe) {
-                        return null;
-                    }
-
-                }
-            }  else {
-                Log.e(this.getClass().getName(), "can't create thumbnail file for " + path + ", unsupported medium");
-                thumbnail = null;// BitmapFactory.decodeResource(context.getResources(), R.drawable.no_thumbnail);
-            }
-
-            // save new thumbnail path
-            this.save();
-        } else {
-            thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-        }
-
-        return thumbnail;
-    }**/
-
     public static List<Media> getAllMediaAsList() {
         return Media.listAll(Media.class,"ID DESC");
-    }
-
-    public static Media[] getAllMediaAsArray() {
-        List mediaList = getAllMediaAsList();
-        return (Media[]) mediaList.toArray(new Media[mediaList.size()]);
     }
 
     public static Media getMediaById(long mediaId) {
         return Media.findById(Media.class, mediaId);
     }
 
-    public static void deleteMediaById(long mediaId) {
+    public static boolean deleteMediaById(long mediaId) {
         Media media = Media.findById(Media.class, mediaId);
-        media.delete();
+        return media.delete();
     }
 }
 

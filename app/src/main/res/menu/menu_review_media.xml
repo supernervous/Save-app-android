@@ -40,4 +40,6 @@
         android:icon="@drawable/ic_nearby_white_24dp"
         />
 
+    <item android:id="@+id/menu_delete" android:title="@string/menu_delete"/>
+
 </menu>
