@@ -273,8 +273,44 @@ public class ArchiveSiteController extends SiteController {
 
     }
 
+    @Override
+    public boolean delete(Account account, String mediaUrl) {
+        Log.d(TAG, "Upload file: Entering upload");
+
+        /**
+         *
+         o DELETE normally deletes a single file, additionally all the
+         derivatives and originals related to a file can be
+         automatically deleted by specifying a header with the DELETE
+         like so:
+         x-archive-cascade-delete:1
+         */
+
+        OkHttpClient client = new OkHttpClient();
+
+        // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
+
+
+        Log.d(TAG, "deleting url media item: " + mediaUrl);
+
+
+        Request.Builder builder = new Request.Builder()
+                .delete()
+                .url(mediaUrl)
+                .addHeader("Accept", "*/*")
+                .addHeader("x-archive-cascade-delete", "1")
+                .addHeader("authorization", "LOW " + account.getUserName() + ":" + account.getCredentials());
+
+        Request request = builder.build();
+
+        ArchiveServerTask deleteFileTask = new ArchiveServerTask(client, request);
+        deleteFileTask.execute();
+
+        return true;
+    }
+
 	@Override
-	public boolean upload(Account account, HashMap<String, String> valueMap, boolean useTor) {
+	public boolean upload(Account account, HashMap<String, String> valueMap) {
 		Log.d(TAG, "Upload file: Entering upload");
         
 		String mediaUri = valueMap.get(VALUE_KEY_MEDIA_PATH);
@@ -295,11 +331,6 @@ public class ArchiveSiteController extends SiteController {
 
 
 		OkHttpClient client = new OkHttpClient();
-
-		if (useTor) {
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ORBOT_HOST, ORBOT_HTTP_PORT));
-			//client.setProxy(proxy);
-		}
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
 		String urlPath;
@@ -388,18 +419,18 @@ public class ArchiveSiteController extends SiteController {
 		
 		Request request = builder.build();
 
-		UploadFileTask uploadFileTask = new UploadFileTask(client, request);
+        ArchiveServerTask uploadFileTask = new ArchiveServerTask(client, request);
 		uploadFileTask.execute();
 
 		return true;
 	}
 
-	class UploadFileTask extends AsyncTask<String, String, String> {
+	class ArchiveServerTask extends AsyncTask<String, String, String> {
 		private OkHttpClient client;
 		private Request request;
 		private Response response;
 
-		public UploadFileTask(OkHttpClient client, Request request) {
+		public ArchiveServerTask(OkHttpClient client, Request request) {
 			this.client = client;
 			this.request = request;
 		}

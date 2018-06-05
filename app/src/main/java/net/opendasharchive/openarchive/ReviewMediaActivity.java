@@ -582,7 +582,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void deleteMedia ()
     {
-        new AlertDialog.Builder(ReviewMediaActivity.this)
+        AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this)
             .setTitle(R.string.alert_delete_media)
             .setMessage(R.string.alert_lbl_delete_media)
             .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -591,16 +591,44 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 //do nothing
             }
         })
-            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+
+            .setPositiveButton(R.string.delete_local, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    boolean success =  Media.findById(Media.class, currentMediaId).delete();
-                    Log.d("OAMedia","Item deleted: " + success);
-                    mMedia = null;
+                    deleteLocal ();
                     finish();
 
                 }
-            }).create().show();
+            });
+
+        if (mMedia.getServerUrl() != null)
+        {
+            build.setNeutralButton(R.string.delete_remote,new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    deleteRemoteAndLocal();
+                    finish();
+                }
+            });
+        }
+
+        build.create().show();
+    }
+
+    private void deleteRemoteAndLocal ()
+    {
+        mMedia.status = Media.STATUS_DELETED;
+        mMedia.save();
+
+        //start upload queue, which will also handle the deletes
+        ((OpenArchiveApp)getApplication()).uploadQueue();
+    }
+
+    private void deleteLocal ()
+    {
+        boolean success =  Media.findById(Media.class, currentMediaId).delete();
+        Log.d("OAMedia","Item deleted: " + success);
+        mMedia = null;
     }
 }

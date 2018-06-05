@@ -96,21 +96,19 @@ public class PublishService extends Service implements Runnable {
             //get all media items that are set into queued state
             List<Media> results = null;
 
-            while (true) {
+            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
 
-                results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            //iterate through them, and upload one by one
+            for (Media media : results) {
+                uploadMedia(media);
+            }
 
-                if (results.size() > 0) {
-                    //iterate through them, and upload one by one
-                    for (Media media : results) {
+            results = Media.find(Media.class, "status = ?", Media.STATUS_DELETED + "");
 
-                        uploadMedia(media);
-                    }
-                }
-                else
-                {
-                    break;
-                }
+            //iterate through them, and upload one by one
+            for (Media media : results) {
+
+                deleteMedia(media);
             }
 
         }
@@ -135,6 +133,25 @@ public class PublishService extends Service implements Runnable {
             media.save();
             notifyMediaUpdated(media);
             siteController.uploadNew(media, account, valueMap);
+            media.status = Media.STATUS_PUBLISHED;
+            media.save();
+            notifyMediaUpdated(media);
+        }
+    }
+
+    private void deleteMedia (Media media)
+    {
+        Account account = new Account(this, null);
+
+        // if user doesn't have an account
+        if(account.isAuthenticated()) {
+            ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new DeleteListener(media), null);
+
+            if (media.getServerUrl() != null) {
+                siteController.delete(account, media.getServerUrl());
+            }
+
+            media.delete();
         }
     }
 
@@ -156,7 +173,7 @@ public class PublishService extends Service implements Runnable {
 
             int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
             String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
-           // String resultUrl = getDetailsUrlFromResult(result);
+            // String resultUrl = getDetailsUrlFromResult(result);
 
             //uploadMedia.setServerUrl(resultUrl);
             uploadMedia.status = Media.STATUS_PUBLISHED;
@@ -199,6 +216,68 @@ public class PublishService extends Service implements Runnable {
             uploadMedia.save();
 
             notifyMediaUpdated(uploadMedia);
+
+        }
+    };
+
+    public class DeleteListener implements SiteControllerListener {
+
+        private Media deleteMedia;
+
+        public DeleteListener (Media media)
+        {
+            deleteMedia = media;
+        }
+
+        @Override
+        public void success(Message msg) {
+            Bundle data = msg.getData();
+
+            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
+            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
+
+            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
+            String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
+           // String resultUrl = getDetailsUrlFromResult(result);
+
+            deleteMedia.delete();
+            notifyMediaUpdated(deleteMedia);
+
+        }
+
+        @Override
+        public void progress(Message msg) {
+            Bundle data = msg.getData();
+
+            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
+            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
+
+            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
+
+            String message = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
+            float progressF = data.getFloat(SiteController.MESSAGE_KEY_PROGRESS);
+            //Log.d(TAG, "upload progress: " + progress);
+        }
+
+        @Override
+        public void failure(Message msg) {
+            Bundle data = msg.getData();
+
+            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
+            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
+
+            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
+
+            int errorCode = data.getInt(SiteController.MESSAGE_KEY_CODE);
+            String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
+            String error = "Error " + errorCode + ": " + errorMessage;
+            //  showError(error);
+            // Log.d(TAG, "upload error: " + error);
+
+            deleteMedia.status = Media.STATUS_DELETED;
+            deleteMedia.save();
+
+            notifyMediaUpdated(deleteMedia);
 
         }
     };

@@ -170,4 +170,7 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="status_public">Public</string>
     <string name="status_uploading">Uploading</string>
     <string name="your_media_is_available">Your media is available at</string>
+
+    <string name="delete_local">Delete on device</string>
+    <string name="delete_remote">Delete on device and the web</string>
 </resources>

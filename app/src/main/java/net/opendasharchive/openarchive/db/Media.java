@@ -45,12 +45,15 @@ public class Media extends SugarRecord {
 
     public int status;
 
+    public final static int STATUS_DELETED = 6;
+    public final static int STATUS_ARCHIVED = 5;
     public final static int STATUS_PUBLISHED = 3;
     public final static int STATUS_UPLOADING = 4;
     public final static int STATUS_QUEUED = 2;
     public final static int STATUS_LOCAL = 1;
     public final static int STATUS_NEW = 0;
 
+    private final static String[] WHERE_NOT_DELETED = {STATUS_DELETED+""};
 
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
@@ -164,7 +167,8 @@ public class Media extends SugarRecord {
     }
 
     public static List<Media> getAllMediaAsList() {
-        return Media.listAll(Media.class,"ID DESC");
+        return Media.find(Media.class,"status != ?",WHERE_NOT_DELETED,null,"ID DESC",null);
+       // return Media.listAll(Media.class,);
     }
 
     public static Media getMediaById(long mediaId) {
