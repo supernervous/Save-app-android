@@ -141,7 +141,6 @@ https://open-archive.net
     <string name="menu_take_video">ویدیو بگیر</string>
     <string name="menu_record_audio">صدا ضبط کن</string>
     <string name="menu_nearby_rec">گرفتن در نزدیکی</string>
-
     <string name="hint_title">عنوان</string>
     <string name="hint_description">توضیحات</string>
     <string name="hint_author">نویسنده</string>

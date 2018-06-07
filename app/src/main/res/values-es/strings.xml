@@ -139,6 +139,7 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="menu_take_video">Grabar un vídeo</string>
     <string name="menu_record_audio">Grabar audio</string>
     <string name="menu_nearby_rec">Recibir cercanos</string>
+    <string name="menu_delete">Eliminar Multimedia</string>
 
     <string name="hint_title">Título</string>
     <string name="hint_description">Descripción</string>
@@ -156,4 +157,15 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
 
     <string name="action_cancel">Cancelar</string>
 
-    </resources>
+    <string name="action_open">Abrir</string>
+
+    <string name="channel_name">Publicaciones en OpenArchive</string>
+    <string name="channel_description">Muestra el estatus y progreso de las publicaciones en servidores remotos</string>
+    <string name="status_waiting">Esperando</string>
+    <string name="status_public">Público</string>
+    <string name="status_uploading">Subiendo</string>
+    <string name="your_media_is_available">Tu multimedia está disponible en</string>
+
+    <string name="delete_local">Eliminar del dispositivo</string>
+    <string name="delete_remote">Eliminar del dispositivo y la red</string>
+</resources>

@@ -140,7 +140,6 @@ OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal
     <string name="menu_take_video">Fazer vídeo</string>
     <string name="menu_record_audio">Gravar Áudio</string>
     <string name="menu_nearby_rec">Receber nas proximidades</string>
-
     <string name="hint_title">Título</string>
     <string name="hint_description">Descrição</string>
     <string name="hint_author">Autor</string>
