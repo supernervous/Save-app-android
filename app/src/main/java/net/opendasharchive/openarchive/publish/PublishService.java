@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import net.opendasharchive.openarchive.SettingsActivity;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.Prefs;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -94,16 +96,14 @@ public class PublishService extends Service implements Runnable {
             publishing = true;
 
             //get all media items that are set into queued state
-            List<Media> results = null;
-
-            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            List<Media> results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
 
             //iterate through them, and upload one by one
             for (Media media : results) {
                 uploadMedia(media);
             }
 
-            results = Media.find(Media.class, "status = ?", Media.STATUS_DELETED + "");
+            results = Media.find(Media.class, "status = ?", Media.STATUS_DELETE_REMOTE + "");
 
             //iterate through them, and upload one by one
             for (Media media : results) {
@@ -133,9 +133,9 @@ public class PublishService extends Service implements Runnable {
             media.save();
             notifyMediaUpdated(media);
             siteController.uploadNew(media, account, valueMap);
-            media.status = Media.STATUS_PUBLISHED;
-            media.save();
-            notifyMediaUpdated(media);
+           // media.status = Media.STATUS_PUBLISHED;
+           // media.save();
+           // notifyMediaUpdated(media);
         }
     }
 
@@ -148,7 +148,10 @@ public class PublishService extends Service implements Runnable {
             ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new DeleteListener(media), null);
 
             if (media.getServerUrl() != null) {
-                siteController.delete(account, media.getServerUrl());
+                String bucketName = Uri.parse(media.getServerUrl()).getLastPathSegment();
+                String fileName = ArchiveSiteController.getTitleFileName(media);
+                if (fileName != null)
+                    siteController.delete(account, bucketName, fileName);
             }
 
             media.delete();
@@ -178,7 +181,6 @@ public class PublishService extends Service implements Runnable {
             //uploadMedia.setServerUrl(resultUrl);
             uploadMedia.status = Media.STATUS_PUBLISHED;
             uploadMedia.save();
-
             notifyMediaUpdated(uploadMedia);
 
         }
@@ -274,8 +276,6 @@ public class PublishService extends Service implements Runnable {
             //  showError(error);
             // Log.d(TAG, "upload error: " + error);
 
-            deleteMedia.status = Media.STATUS_DELETED;
-            deleteMedia.save();
 
             notifyMediaUpdated(deleteMedia);
 

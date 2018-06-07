@@ -98,33 +98,11 @@ public class ArchiveSiteController extends SiteController {
 
             String uploadBasePath;
             String uploadPath;
-            String ext;
 
             String randomString = new Util.RandomString(4).nextString();
             uploadBasePath = slug + "-" + randomString;
-            ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
 
-            if (TextUtils.isEmpty(ext))
-            {
-                if (mimeType.startsWith("image"))
-                    ext = "jpg";
-                else if (mimeType.startsWith("video"))
-                    ext = "mp4";
-                else if (mimeType.startsWith("video"))
-                    ext = "m4a";
-                else
-                    ext = "txt";
-
-            }
-
-            try {
-                uploadPath = "/" + uploadBasePath + "/" + URLEncoder.encode(title,"UTF-8") + '.' + ext;
-
-
-            } catch (UnsupportedEncodingException e) {
-                Log.e(TAG, "Couldn't encode title",e);
-                return null;
-            }
+             uploadPath = "/" + uploadBasePath + "/" + getTitleFileName(media);
 
             media.setServerUrl(ARCHIVE_DETAILS_ENDPOINT + uploadBasePath);
 
@@ -273,8 +251,35 @@ public class ArchiveSiteController extends SiteController {
 
     }
 
+    public static String getTitleFileName (Media media) {
+        String filename = null;
+
+        String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.getMimeType());
+
+        if (TextUtils.isEmpty(ext))
+        {
+            if (media.getMimeType().startsWith("image"))
+                ext = "jpg";
+            else if (media.getMimeType().startsWith("video"))
+                ext = "mp4";
+            else if (media.getMimeType().startsWith("video"))
+                ext = "m4a";
+            else
+                ext = "txt";
+
+        }
+
+        try {
+            filename = URLEncoder.encode(media.getTitle(),"UTF-8") + '.' + ext;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return filename;
+    }
+
     @Override
-    public boolean delete(Account account, String mediaUrl) {
+    public boolean delete(Account account, String title, String mediaFile) {
         Log.d(TAG, "Upload file: Entering upload");
 
         /**
@@ -290,6 +295,14 @@ public class ArchiveSiteController extends SiteController {
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
 
+        String mediaUrl = null;
+
+        try {
+            mediaUrl = ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(title,"UTF-8") + '/' + mediaFile;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         Log.d(TAG, "deleting url media item: " + mediaUrl);
 

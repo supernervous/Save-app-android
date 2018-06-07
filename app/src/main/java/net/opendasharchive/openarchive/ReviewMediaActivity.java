@@ -153,8 +153,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
         {
 
             if (mMedia.status == Media.STATUS_PUBLISHED) {
-                mMedia.status = Media.STATUS_PUBLISHED;
-
                 tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
                 tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
                 tvUrl.setVisibility(View.VISIBLE);
@@ -618,7 +616,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void deleteRemoteAndLocal ()
     {
-        mMedia.status = Media.STATUS_DELETED;
+        mMedia.status = Media.STATUS_DELETE_REMOTE;
         mMedia.save();
 
         //start upload queue, which will also handle the deletes

@@ -84,7 +84,7 @@ public abstract class SiteController {
     public abstract void startMetadataActivity(Intent intent);
 
     public abstract boolean upload(Account account, HashMap<String, String> valueMap);
-    public abstract boolean delete(Account account, String mediaId);
+    public abstract boolean delete(Account account, String bucketName, String mediaFile);
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {
