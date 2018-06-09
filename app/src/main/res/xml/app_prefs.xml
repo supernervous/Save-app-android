@@ -2,40 +2,40 @@
     xmlns:asp="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.preference.PreferenceCategory
-        android:title="Networking">
+        android:title="@string/prefs_networking_title">
 
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="use_tor"
-            android:title="Enable Onion Routing"
-            android:summary="If possible, use the Tor network"
+            android:title="@string/prefs_use_tor_title"
+            android:summary="@string/prefs_use_tor_summary"
             android:defaultValue="false" />
 
         <android.support.v7.preference.CheckBoxPreference
             android:key="upload_wifi_only"
-            android:title="Upload on Wifi Only"
-            android:summary="Wait until on Wifi to upload media"
+            android:title="@string/prefs_upload_wifi_only_title"
+            android:summary="@string/prefs_upload_wifi_only_summary"
             android:defaultValue="false"/>
 
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
-        android:title="Nearby">
+        android:title="@string/prefs_nearby_title">
 
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="nearby_use_bluetooth"
-            android:title="Bluetooth"
-            android:summary="Use Bluetooth for nearby sharing"
+            android:title="@string/prefs_bt_title"
+            android:summary="@string/prefs_bt_summary"
             android:defaultValue="true" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="nearby_use_wifi"
-            android:title="Wifi Peer-to-Peer"
-            android:summary="Use Wifi Peer-to-Peer for nearby sharing"
+            android:title="@string/prefs_wifi_title"
+            android:summary="@string/prefs_wifi_summary"
             android:defaultValue="true" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="nearby_use_lan"
-            android:title="Wifi Hotspots"
-            android:summary="Use Wifi Hotspots for nearby sharing"
+            android:title="@string/prefs_lan_title"
+            android:summary="@string/prefs_lan_summary"
             android:defaultValue="true" />
 
     </android.support.v7.preference.PreferenceCategory>

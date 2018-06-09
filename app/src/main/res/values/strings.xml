@@ -173,4 +173,20 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
 
     <string name="delete_local">Delete local entry</string>
     <string name="delete_remote">Delete from web</string>
+
+    <string name="prefs_networking_title">Networking</string>
+    <string name="prefs_use_tor_title">Enable Onion Routing</string>
+    <string name="prefs_use_tor_summary">If Orbot is installed, use the Tor network</string>
+    <string name="prefs_upload_wifi_only_title">Upload on Wifi Only</string>
+    <string name="prefs_upload_wifi_only_summary">Wait until on Wifi to upload media</string>
+    <string name="prefs_nearby_title">Nearby</string>
+
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="prefs_bt_summary">Use Bluetooth for nearby sharing</string>
+
+    <string name="prefs_wifi_title">Wifi Peer-to-Peer</string>
+    <string name="prefs_wifi_summary">Use Wifi Peer-to-Peer for nearby sharing</string>
+
+    <string name="prefs_lan_title">Wifi Hotspot</string>
+    <string name="prefs_lan_summary">Use Wifi Hotspot for nearby sharing</string>
 </resources>
