@@ -189,4 +189,20 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
 
     <string name="prefs_lan_title">Wifi Hotspot</string>
     <string name="prefs_lan_summary">Use Wifi Hotspot for nearby sharing</string>
+
+    <string name="menu_share">Share</string>
+
+    <!-- Strings for nearby sharing -->
+    <string name="bt_not_supported">Bluetooth not supported</string>
+    <string name="bt_not_enabled">Bluetooth not enabled</string>
+    <string name="bt_enabled">Bluetooth enabled</string>
+
+    <string name="action_received">Received</string>
+    <string name="status_receiving">Receiving...</string>
+    <string name="action_duplicate">Duplicate received</string>
+    <string name="status_connecting">Connecting...</string>
+    <string name="status_connected">Connected!</string>
+    <string name="looking_for_nearby_devices">Looking for nearby devices...</string>
+    <string name="tap_to_connect">Tap to connect</string>
+
 </resources>
