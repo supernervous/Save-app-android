@@ -166,6 +166,6 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="status_uploading">Subiendo</string>
     <string name="your_media_is_available">Tu multimedia está disponible en</string>
 
-    <string name="delete_local">Eliminar del dispositivo</string>
-    <string name="delete_remote">Eliminar del dispositivo y la red</string>
+    <string name="delete_local">Eliminar archivo local</string>
+    <string name="delete_remote">Eliminar el archivo de Internet</string>
 </resources>
