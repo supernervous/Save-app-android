@@ -280,7 +280,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         menuShare = menu.findItem(R.id.menu_item_share);
         menuPublish = menu.findItem(R.id.menu_item_publish);
 
-        if (mMedia.getServerUrl() == null)
+        if (mMedia.status != Media.STATUS_PUBLISHED)
             menuPublish.setVisible(true);
         else
             menuShare.setVisible(true);

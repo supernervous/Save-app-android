@@ -262,7 +262,7 @@ public class ArchiveSiteController extends SiteController {
                 ext = "jpg";
             else if (media.getMimeType().startsWith("video"))
                 ext = "mp4";
-            else if (media.getMimeType().startsWith("video"))
+            else if (media.getMimeType().startsWith("audio"))
                 ext = "m4a";
             else
                 ext = "txt";
