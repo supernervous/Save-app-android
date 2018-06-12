@@ -168,4 +168,30 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
 
     <string name="delete_local">Eliminar archivo local</string>
     <string name="delete_remote">Eliminar el archivo de Internet</string>
-</resources>
+
+    <string name="prefs_networking_title">Conectando</string>
+    <string name="prefs_use_tor_title">Habilitar enrutamiento cebolla</string>
+    <string name="prefs_use_tor_summary">Si Orbot esta instalado, usar la red de Tor</string>
+    <string name="prefs_upload_wifi_only_title">Subir unicamente en modo Wifi</string>
+    <string name="prefs_upload_wifi_only_summary">Esperar hasta que este en conectado al Wifi para subir multimedia</string>
+    <string name="prefs_nearby_title">Cercanos</string>
+
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="prefs_bt_summary">Usar Bluetooth para compartir con cercanos</string>
+
+    <string name="prefs_wifi_title">Wifi Peer-to-Peer</string>
+    <string name="prefs_wifi_summary">Use Wifi Peer-to-Peer para compartir con cercanos</string>
+
+    <string name="prefs_lan_title">Punto de acceso Wifi</string>
+    <string name="prefs_lan_summary">Usar un punto de acceso Wifi para compartir con cercanos</string>
+
+    <string name="menu_share">Compartir</string>
+
+    <!-- Strings for nearby sharing -->
+    <string name="bt_not_supported">Bluetooth no es soportado</string>
+    <string name="bt_not_enabled">El Bluetooth no esta activado</string>
+    <string name="bt_enabled">Bluetooth activado</string>
+
+    <string name="action_received">Recibido</string>
+    <string name="status_receiving">Recibiendo...</string>
+    </resources>
