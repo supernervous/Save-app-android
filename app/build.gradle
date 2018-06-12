@@ -14,8 +14,8 @@ android {
         applicationId "net.opendasharchive.openarchive"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1716
-        versionName "0.0.17-beta-6"
+        versionCode 1717
+        versionName "0.0.17-beta-7"
         archivesBaseName = "OpenArchive-$versionName"
         multiDexEnabled false
     }
