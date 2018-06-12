@@ -41,6 +41,9 @@ public class ArchiveSiteController extends SiteController {
 
 	public static final String SITE_NAME = "Internet Archive";
 	public static final String SITE_KEY = "archive";
+
+	public static final String THUMBNAIL_PATH = "__ia_thumb.jpg";
+
 	private static final String TAG = "ArchiveSiteController";
     static {
         METADATA_REQUEST_CODE = 1022783271;
@@ -231,7 +234,7 @@ public class ArchiveSiteController extends SiteController {
                 ext = "jpg";
             else if (mimeType.startsWith("video"))
                 ext = "mp4";
-            else if (mimeType.startsWith("video"))
+            else if (mimeType.startsWith("audio"))
                 ext = "m4a";
             else
                 ext = "txt";
@@ -312,6 +315,7 @@ public class ArchiveSiteController extends SiteController {
                 .url(mediaUrl)
                 .addHeader("Accept", "*/*")
                 .addHeader("x-archive-cascade-delete", "1")
+                .addHeader("x-archive-keep-old-version", "0")
                 .addHeader("authorization", "LOW " + account.getUserName() + ":" + account.getCredentials());
 
         Request request = builder.build();

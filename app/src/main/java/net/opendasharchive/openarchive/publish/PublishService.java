@@ -152,6 +152,8 @@ public class PublishService extends Service implements Runnable {
                 String fileName = ArchiveSiteController.getTitleFileName(media);
                 if (fileName != null)
                     siteController.delete(account, bucketName, fileName);
+
+                siteController.delete(account, bucketName, ArchiveSiteController.THUMBNAIL_PATH);
             }
 
             media.delete();
