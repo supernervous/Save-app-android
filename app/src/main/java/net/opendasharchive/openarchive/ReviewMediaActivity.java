@@ -21,11 +21,15 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -580,9 +584,51 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void deleteMedia ()
     {
+        final Switch swDeleteLocal = new Switch(this);
+        final Switch swDeleteRemote = new Switch(this);
+
+        LinearLayout linearLayoutGroup = new LinearLayout(this);
+        linearLayoutGroup.setOrientation(LinearLayout.VERTICAL);
+        linearLayoutGroup.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        swDeleteLocal.setTextOn(getString(R.string.answer_yes));
+        swDeleteLocal.setTextOff(getString(R.string.answer_no));
+
+        TextView tvLocal = new TextView(this);
+        tvLocal.setText(R.string.delete_local);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        linearLayout.addView(tvLocal);
+        linearLayout.addView(swDeleteLocal);
+
+        linearLayoutGroup.addView(linearLayout);
+
+        if (mMedia.getServerUrl() != null)
+        {
+            swDeleteRemote.setTextOn(getString(R.string.answer_yes));
+            swDeleteRemote.setTextOff(getString(R.string.answer_no));
+
+            TextView tvRemote = new TextView(this);
+            tvRemote.setText(R.string.delete_remote);
+
+            LinearLayout linearLayoutRemote = new LinearLayout(this);
+            linearLayoutRemote.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayoutRemote.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            linearLayoutRemote.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            linearLayoutRemote.addView(tvRemote);
+            linearLayoutRemote.addView(swDeleteRemote);
+            linearLayoutGroup.addView(linearLayoutRemote);
+
+        }
+
         AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this)
-            .setTitle(R.string.alert_delete_media)
-            .setMessage(R.string.alert_lbl_delete_media)
+            .setTitle(R.string.menu_delete)
+            .setMessage(R.string.alert_delete_media).setView(linearLayoutGroup)
             .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -590,43 +636,38 @@ public class ReviewMediaActivity extends AppCompatActivity {
             }
         })
 
-            .setPositiveButton(R.string.delete_local, new DialogInterface.OnClickListener() {
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    deleteLocal ();
+                    deleteMedia (swDeleteLocal.isChecked(),swDeleteRemote.isChecked());
                     finish();
 
                 }
             });
 
-        if (mMedia.getServerUrl() != null)
-        {
-            build.setNeutralButton(R.string.delete_remote,new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    deleteRemoteAndLocal();
-                    finish();
-                }
-            });
-        }
 
         build.create().show();
     }
 
     private void deleteRemoteAndLocal ()
     {
-        mMedia.status = Media.STATUS_DELETE_REMOTE;
-        mMedia.save();
 
-        //start upload queue, which will also handle the deletes
-        ((OpenArchiveApp)getApplication()).uploadQueue();
     }
 
-    private void deleteLocal ()
+    private void deleteMedia (boolean deleteLocalFile, boolean deleteRemoteFile)
     {
-        boolean success =  Media.findById(Media.class, currentMediaId).delete();
-        Log.d("OAMedia","Item deleted: " + success);
-        mMedia = null;
+        if (deleteRemoteFile)
+        {
+            mMedia.status = Media.STATUS_DELETE_REMOTE;
+            mMedia.save();
+            //start upload queue, which will also handle the deletes
+            ((OpenArchiveApp)getApplication()).uploadQueue();
+        }
+        else {
+            boolean success = Media.findById(Media.class, currentMediaId).delete();
+            Log.d("OAMedia", "Item deleted: " + success);
+            mMedia = null;
+        }
     }
 }

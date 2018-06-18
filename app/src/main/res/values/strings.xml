@@ -31,9 +31,8 @@
     <string name="alert_lbl_logout">Logout?</string>
     <string name="alert_logout">Logging out will remove all your settings but still keep your uploads.</string>
 
-    <string name="alert_lbl_delete_media">Delete Media?</string>
-    <string name="alert_media_deleted">Media successfully deleted</string>
-    <string name="alert_delete_media">This media will be permanently erased.</string>
+    <string name="alert_media_deleted">Media successfully removed</string>
+    <string name="alert_delete_media">This media listing will be removed from the OpenArchive app</string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -171,8 +170,8 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="status_uploading">Uploading</string>
     <string name="your_media_is_available">Your media is available at</string>
 
-    <string name="delete_local">Delete local entry</string>
-    <string name="delete_remote">Delete from web</string>
+    <string name="delete_local">Also, delete local file?</string>
+    <string name="delete_remote">Also, delete from the web?</string>
 
     <string name="prefs_networking_title">Networking</string>
     <string name="prefs_use_tor_title">Enable Onion Routing</string>
