@@ -1,8 +1,10 @@
 package net.opendasharchive.openarchive;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -236,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
             mi.setVisible(false);
         }
 
-
         return true;
     }
 
@@ -272,11 +273,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout ()
     {
-        Account account = new Account(this, null);
-        account.setAuthenticated(false);
-        account.setCredentials("");
-        Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-        startActivity(firstStartIntent);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.alert_lbl_logout)
+                .setMessage(R.string.alert_logout)
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //nothing
+                    }
+                })
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Account account = new Account(MainActivity.this, null);
+                        account.setAuthenticated(false);
+                        account.setCredentials("");
+                        account.saveToSharedPrefs(MainActivity.this, null);
+
+                        Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
+                        startActivity(firstStartIntent);
+                    }
+                }).create().show();
+
+
 
     }
 
