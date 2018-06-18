@@ -18,8 +18,8 @@ import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
 
 /**
- * Prompt the user to view & agree to the StoryMaker TOS / EULA
- * and present the choice to create a StoryMaker Account.
+ * Prompt the user to view & agree to the  TOS / EULA
+ * and present the choice to create a Account.
  * <p/>
  * Should be launched as the start of a new Task, because
  * when this Activity finishes without starting another,
@@ -86,7 +86,6 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     {
         boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
 
-        Intent loginIntent = new Intent(this, MainActivity.class);
         SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
         siteController.setUseTor(useTor);
         siteController.setOnEventListener(mAuthEventListener);
@@ -97,11 +96,6 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     private void doSignUp ()
     {
         boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
-
-        if (useTor)
-            Toast.makeText(this, R.string.orbot_detected,Toast.LENGTH_SHORT).show();
-
-        Intent loginIntent = new Intent(this, MainActivity.class);
         SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
         siteController.setUseTor(useTor);
         siteController.setOnEventListener(mAuthEventListener);
@@ -152,10 +146,5 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         }
     }
 
-    public void showAbout(View v)
-    {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-    }
 }
 
