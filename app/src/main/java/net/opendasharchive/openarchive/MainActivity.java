@@ -9,11 +9,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -23,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
@@ -37,6 +40,7 @@ import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -46,6 +50,8 @@ import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import io.cleaninsights.sdk.piwik.Measurer;
 import io.scal.secureshareui.model.Account;
+
+import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -68,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.main_activity_title);
 
         fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
-
-        // handle if started from outside app
-        handleOutsideMedia(getIntent());
 
         final FloatingActionsMenu fabMenu = (FloatingActionsMenu) findViewById(R.id.floating_menu);
         FloatingActionButton fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_import);
@@ -155,6 +158,40 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
+
+
+        if (getIntent() != null) {
+
+            final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), "...", Snackbar.LENGTH_INDEFINITE);
+            Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
+            snack_view.addView(new ProgressBar(this));
+            // The Very Basic
+            new AsyncTask<Void, Void, Media>() {
+                protected void onPreExecute() {
+                    bar.show();
+
+                }
+                protected Media doInBackground(Void... unused) {
+                    return handleOutsideMedia(getIntent());
+                }
+                protected void onPostExecute(Media media) {
+                    // Post Code
+                    if (media != null) {
+                        Intent reviewMediaIntent = new Intent(MainActivity.this, ReviewMediaActivity.class);
+                        reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                        startActivity(reviewMediaIntent);
+                    }
+
+                    bar.dismiss();
+
+                    setIntent(null);
+                }
+            }.execute();
+
+
+
+            // handle if started from outside app
+        }
 
         //when the app pauses do a private, randomized-response based tracking of the number of media files
       //  MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
@@ -334,7 +371,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void handleOutsideMedia(Intent intent) {
+    private Media handleOutsideMedia(Intent intent) {
+
+        Media media = null;
 
         if (intent != null && intent.getAction()!= null
           && intent.getAction().equals(Intent.ACTION_SEND)) {
@@ -343,24 +382,35 @@ public class MainActivity extends AppCompatActivity {
 
             Uri uri = intent.getData();
 
+
             if (uri == null)
             {
                 if (Build.VERSION.SDK_INT >= 16 && intent.getClipData() != null && intent.getClipData().getItemCount() > 0) {
                     uri = intent.getClipData().getItemAt(0).getUri();
                 }
                 else {
-                    return;
+                    return null;
                 }
             }
 
-            // create media
-            Media media = new Media();
+            String title = Utility.getUriDisplayName(this,uri);
+            File fileImport = getOutputMediaFile(title);
+            try {
+                boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
+                if (!imported)
+                    return null;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
 
-            media.setOriginalFilePath(uri.toString());
+            // create media
+            media = new Media();
+            media.status = Media.STATUS_LOCAL;
+            media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
             media.setMimeType(type);
 
 
-            String title = Utility.getUriDisplayName(this,uri);
             if (title != null)
                 media.setTitle(title);
 
@@ -369,10 +419,10 @@ public class MainActivity extends AppCompatActivity {
 
             media.save();
 
-            Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
-            reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-            startActivity(reviewMediaIntent);
+
         }
+
+        return media;
     }
 
 
@@ -471,20 +521,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static File getOutputMediaFile(String prefix, String ext){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), "OpenArchive");
 
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
-                return null;
-            }
-        }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
-                prefix + "_"+ timeStamp + "." + ext);
-    }
 
     private boolean askForPermission(String permission, Integer requestCode) {
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
