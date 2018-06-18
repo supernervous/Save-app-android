@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -67,43 +68,6 @@ public class Utility {
 
         return result;
     }
-
-    public static String getRealPathFromURI(Context context, Uri contentUri) {
-        if (contentUri == null) {
-            return null;
-        }
-
-        // work-around to handle normal paths
-        if (contentUri.toString().startsWith(File.separator)) {
-            return contentUri.toString();
-        }
-
-        // work-around to handle normal paths
-        if (contentUri.getScheme().equals("file")) {
-            return contentUri.toString().split("file://")[1];
-        }
-
-        //check here to KITKAT or new version
-        final boolean isKitKat = Build.VERSION.SDK_INT >= 19;
-
-        if (isKitKat)
-            return getPath(context, contentUri);
-        else {
-            Cursor cursor = null;
-            try {
-                String[] proj = {MediaStore.MediaColumns.DATA};
-                cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow(proj[0]);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-        }
-    }
-
 
     public static void clearWebviewAndCookies(WebView webview, Activity activity) {
         CookieSyncManager.createInstance(activity);
@@ -175,80 +139,7 @@ public class Utility {
         });
     }
 
-    /**
-     * Method for return file path of Gallery image
-     *
-     * @param context
-     * @param uri
-     * @return path of the selected image file from gallery
-     */
-    @TargetApi(19)
-    public static String getPath(final Context context, final Uri uri) {
 
-        //check here to KITKAT or new version
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-            }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
-
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                return getDataColumn(context, contentUri, null, null);
-            }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[]{
-                        split[1]
-                };
-
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        }
-        // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
-
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-        return null;
-    }
 
     /**
      * Get the value of the data column for this Uri. This is useful for
@@ -421,5 +312,28 @@ public class Utility {
                 Log.e(TAG, "Exception on closing input stream", e);
             }
         }
+    }
+
+    public static String getUriDisplayName (Context context, Uri uri)
+    {
+        String result = null;
+
+        Cursor returnCursor =
+                context.getContentResolver().query(uri, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         * move to the first row in the Cursor, get the data,
+         * and display it.
+         */
+        if (returnCursor != null) {
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            if (returnCursor.moveToFirst()) {
+                //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                result = (returnCursor.getString(nameIndex));
+            }
+            returnCursor.close();
+        }
+
+        return result;
     }
 }

@@ -45,6 +45,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import io.cleaninsights.sdk.piwik.Measurer;
+import io.scal.secureshareui.model.Account;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -187,8 +188,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.main, menu);
-            return true;
+
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem mi = menu.findItem(R.id.action_logout);
+        Account account = new Account(this, null);
+
+        // if user doesn't have an account
+        if(!account.isAuthenticated()) {
+            mi.setVisible(false);
+        }
+
+
+        return true;
     }
 
     @Override
@@ -206,16 +218,29 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         }
-        else
-         if (id == R.id.action_about)
+        else if (id == R.id.action_about)
         {
            // Intent intent = new Intent(this, OAAppIntro.class);
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_logout)
+        {
+            logout();
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout ()
+    {
+        Account account = new Account(this, null);
+        account.setAuthenticated(false);
+        account.setCredentials("");
+        Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+        startActivity(firstStartIntent);
+
     }
 
     private boolean mediaExists (Uri uri)
@@ -290,22 +315,9 @@ public class MainActivity extends AppCompatActivity {
                 media.setCreateDate(new Date());
                 media.status = Media.STATUS_LOCAL;
 
-                Cursor returnCursor =
-                        getContentResolver().query(uri, null, null, null, null);
-                /*
-                 * Get the column indexes of the data in the Cursor,
-                 * move to the first row in the Cursor, get the data,
-                 * and display it.
-                 */
-                if (returnCursor != null) {
-                    int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (returnCursor.moveToFirst()) {
-                        //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                        media.setTitle(returnCursor.getString(nameIndex));
-                    }
-                    returnCursor.close();
-                }
-
+                String title = Utility.getUriDisplayName(this,uri);
+                if (title != null)
+                    media.setTitle(title);
                 media.save();
 
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
@@ -341,16 +353,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String path = Utility.getRealPathFromURI(this, uri);
             // create media
             Media media = new Media();
 
-            media.setOriginalFilePath(path);
+            media.setOriginalFilePath(uri.toString());
             media.setMimeType(type);
 
-            File fileMedia = new File(path);
-            media.setCreateDate(new Date(fileMedia.lastModified()));
-            media.setUpdateDate(new Date(fileMedia.lastModified()));
+
+            String title = Utility.getUriDisplayName(this,uri);
+            if (title != null)
+                media.setTitle(title);
+
+            media.setCreateDate(new Date());
+            media.setUpdateDate(new Date());
 
             media.save();
 
