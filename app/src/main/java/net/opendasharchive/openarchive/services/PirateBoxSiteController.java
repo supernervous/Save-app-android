@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.text.TextUtils;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.InputStreamRequestBody;
@@ -108,28 +109,30 @@ public class PirateBoxSiteController extends SiteController {
             try {
                 if (media.getMediaHash() != null) {
                     String mediaHash = new String(media.getMediaHash());
-                    File fileProofDir = ProofMode.getProofDir(mediaHash);
-                    if (fileProofDir != null && fileProofDir.exists()) {
-                        File[] filesProof = fileProofDir.listFiles();
-                        for (File fileProof : filesProof) {
-                            requestBody = new MultipartBody.Builder()
-                                    .setType(MultipartBody.FORM)
-                                    .addFormDataPart("upfile", fileProof.getName(),
-                                            RequestBody.create(MediaType.parse("text/plain"), fileProof))
-                                    .build();
+                    if (!TextUtils.isEmpty(mediaHash)) {
+                        File fileProofDir = ProofMode.getProofDir(mediaHash);
+                        if (fileProofDir != null && fileProofDir.exists()) {
+                            File[] filesProof = fileProofDir.listFiles();
+                            for (File fileProof : filesProof) {
+                                requestBody = new MultipartBody.Builder()
+                                        .setType(MultipartBody.FORM)
+                                        .addFormDataPart("upfile", fileProof.getName(),
+                                                RequestBody.create(MediaType.parse("text/plain"), fileProof))
+                                        .build();
 
-                            request = new Request.Builder()
-                                    .url(UPLOAD_ENDPOINT)
-                                    .post(requestBody)
-                                    .build();
+                                request = new Request.Builder()
+                                        .url(UPLOAD_ENDPOINT)
+                                        .post(requestBody)
+                                        .build();
 
-                            response = client.newCall(request).execute();
-                            if (response.isSuccessful()) {
+                                response = client.newCall(request).execute();
+                                if (response.isSuccessful()) {
+
+                                }
 
                             }
 
                         }
-
                     }
                 }
             }
