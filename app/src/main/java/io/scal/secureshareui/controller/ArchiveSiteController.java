@@ -327,120 +327,14 @@ public class ArchiveSiteController extends SiteController {
     }
 
 	@Override
-	public boolean upload(Account account, HashMap<String, String> valueMap) {
-		Log.d(TAG, "Upload file: Entering upload");
-        
-		String mediaUri = valueMap.get(VALUE_KEY_MEDIA_PATH);
-		String mimeType = valueMap.get(VALUE_KEY_MIME_TYPE);
+	public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
 
-        String licenseUrl = valueMap.get(VALUE_KEY_LICENSE_URL);
-        
-		// TODO this should make sure we arn't accidentally using one of archive.org's metadata fields by accident
-        String title = valueMap.get(VALUE_KEY_TITLE);
-        String slug = valueMap.get(VALUE_KEY_SLUG);
-		String tags = valueMap.get(VALUE_KEY_TAGS);
-		//always want to include these two tags
-		//tags += "presssecure,storymaker";
-		String author = valueMap.get(VALUE_KEY_AUTHOR);
-		String profileUrl = valueMap.get(VALUE_KEY_PROFILE_URL);
-		String locationName = valueMap.get(VALUE_KEY_LOCATION_NAME);
-		String body = valueMap.get(VALUE_KEY_BODY);
+	    //do nothing for now
+        String result = uploadNew(media, account, valueMap);
 
-
-		OkHttpClient client = new OkHttpClient();
-
-        // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
-		String urlPath;
-		String url;
-
-        String randomString = new Util.RandomString(4).nextString();
-        urlPath = slug + "-" + randomString;
-
-		try {
-			url = ARCHIVE_API_ENDPOINT  + "/" + urlPath + "/" + URLEncoder.encode(title,"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			Log.e(TAG, "Couldn't encode title",e);
-			return false;
-		}
-
-		Log.d(TAG, "uploading to url: " + url);
-
-		InputStream is = null;
-
-		try {
-			is = mContext.getContentResolver().openInputStream(Uri.parse(mediaUri));
-		} catch (FileNotFoundException e) {
-			Log.e(TAG, "Couldn't open stream",e);
-			return false;
-		}
-
-		Request.Builder builder = new Request.Builder()
-				.url(url)
-				//.put(RequestBodyUtil.create(MediaType.parse(""),is))
-				.addHeader("Accept", "*/*")
-                .addHeader("x-amz-auto-make-bucket", "1")
-//                .addHeader("x-archive-meta-collection", "storymaker")
-//				.addHeader("x-archive-meta-sponsor", "Sponsor 998")
-				.addHeader("x-archive-meta-language", "eng") // FIXME pull meta language from story
-				.addHeader("authorization", "LOW " + account.getUserName() + ":" + account.getCredentials());
-
-		if(!TextUtils.isEmpty(author)) {
-			builder.addHeader("x-archive-meta-author", author);		
-			if (profileUrl != null) {
-				builder.addHeader("x-archive-meta-authorurl", profileUrl);
-			}
-        }
-
-        if (mimeType != null) {
-            builder.addHeader("x-archive-meta-mediatype", mimeType);
-            if(mimeType.contains("audio")) {
-                builder.addHeader("x-archive-meta-collection", "opensource_audio");
-            } else  if(mimeType.contains("video")) {
-                builder.addHeader("x-archive-meta-collection", "opensource_movies");
-            }
-            else
-            {
-                builder.addHeader("x-archive-meta-collection", "opensource");
-            }
-        } else {
-            builder.addHeader("x-archive-meta-collection", "opensource");
-		}
-
-		if (!TextUtils.isEmpty(locationName)) {
-			builder.addHeader("x-archive-meta-location", locationName);
-		}
-
-		if (!TextUtils.isEmpty(tags)) {
-            String keywords = tags.replace(',', ';').replaceAll(" ", "");
-            builder.addHeader("x-archive-meta-subject", keywords);
-        }
-
-		if (!TextUtils.isEmpty(body)) {
-            builder.addHeader("x-archive-meta-description", body);
-        }
-
-		if (!TextUtils.isEmpty(title)) {
-            builder.addHeader("x-archive-meta-title", title);
-        }
-
-		if (!TextUtils.isEmpty(licenseUrl)) {
-            builder.addHeader("x-archive-meta-licenseurl", licenseUrl);
-        }
-
-		/*
-		For uploads which need to be available ASAP in the content
-  management system, an interactive user's upload for example,
-  one can request interactive queue priority:
-		 */
-		builder.addHeader("x-archive-interactive-priority","1");
-		
-		Request request = builder.build();
-
-        ArchiveServerTask uploadFileTask = new ArchiveServerTask(client, request);
-		uploadFileTask.execute();
-
-		return true;
+		return (result != null);
 	}
+
 
 	class ArchiveServerTask extends AsyncTask<String, String, String> {
 		private OkHttpClient client;

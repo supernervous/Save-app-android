@@ -17,7 +17,7 @@ android {
         versionCode 1720
         versionName "0.0.17-RC-1"
         archivesBaseName = "OpenArchive-$versionName"
-        multiDexEnabled false
+        multiDexEnabled true
     }
     lintOptions {
         abortOnError false
@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.github.derlio.waveform:library:1.0.3@aar'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.github.guardianproject:ayanda:${ayandaVersion}"
-    implementation "com.facebook.fresco:fresco:1.8.1"
+    implementation "com.facebook.fresco:fresco:1.9.0"
     implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
 
     implementation "net.gotev:uploadservice:${uploadServiceVersion}"
@@ -77,4 +77,12 @@ dependencies {
     implementation 'io.github.lizhangqu:coreprogress:1.0.2'
 
     implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
+
+    //from here: https://github.com/guardianproject/proofmode
+    implementation 'org.witness:android-libproofmode:0.0.3'
+    implementation 'com.eternitywall:opentimestamps:0.1.14.1'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+
 }

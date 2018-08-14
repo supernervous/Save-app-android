@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -15,6 +16,8 @@ import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.okhttp.OkHttpStack;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Prefs;
+
+import org.witness.proofmode.ProofMode;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
@@ -40,6 +43,13 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     private static Ayanda mAyandaInstance;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+
+    @Override
     public void onCreate() {
         super.onCreate();
 
@@ -62,6 +72,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         //        initInsights ();
          initNetCipher(this);
+
     }
 
     public void uploadQueue ()

@@ -16,6 +16,9 @@ allprojects {
         google()
         maven { url 'https://jitpack.io' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }
+
+
     }
     project.ext {
         // these are common variables used in */build.gradle

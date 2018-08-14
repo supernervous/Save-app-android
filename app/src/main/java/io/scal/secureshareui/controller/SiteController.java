@@ -10,6 +10,8 @@ import android.os.Message;
 import android.webkit.MimeTypeMap;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 
 import java.io.File;
 import java.io.Serializable;
@@ -83,13 +85,16 @@ public abstract class SiteController {
      */
     public abstract void startMetadataActivity(Intent intent);
 
-    public abstract boolean upload(Account account, HashMap<String, String> valueMap);
+    public abstract boolean upload(Account account, Media media, HashMap<String, String> valueMap);
     public abstract boolean delete(Account account, String bucketName, String mediaFile);
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {
             return new ArchiveSiteController(context, listener, jobId);
         }
+        else if (site.equalsIgnoreCase(PirateBoxSiteController.SITE_KEY)) {
+           return new PirateBoxSiteController(context,listener,jobId);
+       }
         return null;
     }
 

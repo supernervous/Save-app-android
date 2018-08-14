@@ -43,6 +43,7 @@ import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
+import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.util.FileUtils;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
@@ -286,8 +287,11 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         if (mMedia.status != Media.STATUS_PUBLISHED)
             menuPublish.setVisible(true);
-        else
+        else {
             menuShare.setVisible(true);
+            menuPublish.setVisible(true);
+            menuPublish.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
 
         return true;
     }
@@ -428,22 +432,30 @@ public class ReviewMediaActivity extends AppCompatActivity {
     {
         Account account = new Account(this, null);
 
-        // if user doesn't have an account
-        if(!account.isAuthenticated()) {
-            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-            startActivity(firstStartIntent);
-
-        }
-        else {
-
+        if (PirateBoxSiteController.isPirateBox(this))
+        {
             //mark queued
             mMedia.status = Media.STATUS_QUEUED;
             saveMedia();
             bindMedia();
             startService(new Intent(this, PublishService.class));
-
         }
+        else {
+            // if user doesn't have an account
+            if (!account.isAuthenticated()) {
+                Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+                startActivity(firstStartIntent);
 
+            } else {
+
+                //mark queued
+                mMedia.status = Media.STATUS_QUEUED;
+                saveMedia();
+                bindMedia();
+                startService(new Intent(this, PublishService.class));
+
+            }
+        }
 
     }
 

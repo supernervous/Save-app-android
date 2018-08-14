@@ -25,6 +25,7 @@ import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.SettingsActivity;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
@@ -123,19 +124,32 @@ public class PublishService extends Service implements Runnable {
     {
         Account account = new Account(this, null);
 
-        // if user doesn't have an account
-        if(account.isAuthenticated()) {
-
-            ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+        if (PirateBoxSiteController.isPirateBox(this))
+        {
+            PirateBoxSiteController siteController = (PirateBoxSiteController) SiteController.getSiteController(PirateBoxSiteController.SITE_KEY, this, new UploaderListener(media), null);
             HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
 
             media.status = Media.STATUS_UPLOADING;
             media.save();
             notifyMediaUpdated(media);
-            siteController.uploadNew(media, account, valueMap);
-           // media.status = Media.STATUS_PUBLISHED;
-           // media.save();
-           // notifyMediaUpdated(media);
+            siteController.upload(account, media, valueMap);
+        }
+        else {
+
+            // if user doesn't have an account
+            if (account.isAuthenticated()) {
+
+                ArchiveSiteController siteController = (ArchiveSiteController) SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+                HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
+
+                media.status = Media.STATUS_UPLOADING;
+                media.save();
+                notifyMediaUpdated(media);
+                siteController.uploadNew(media, account, valueMap);
+                // media.status = Media.STATUS_PUBLISHED;
+                // media.save();
+                // notifyMediaUpdated(media);
+            }
         }
     }
 

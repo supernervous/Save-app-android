@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,9 +39,12 @@ import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
+import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
+
+import org.witness.proofmode.ProofMode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -371,15 +376,27 @@ public class MainActivity extends AppCompatActivity {
                 media.setCreateDate(new Date());
                 media.status = Media.STATUS_LOCAL;
 
-                String title = Utility.getUriDisplayName(this,uri);
+                String title = Utility.getUriDisplayName(this, uri);
                 if (title != null)
                     media.setTitle(title);
                 media.save();
 
+                //if not offline, then try to notarize
+                if (!PirateBoxSiteController.isPirateBox(this)) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    prefs.edit().putBoolean("autoNotarize", false).commit();
+                }
+
+                String hash = ProofMode.generateProof(this, uri);
+                if (!TextUtils.isEmpty(hash))
+                {
+                    media.setMediaHash(hash.getBytes());
+                    media.save();
+                }
+
                 Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
                 reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
                 reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
                 startActivity(reviewMediaIntent);
 
             }
