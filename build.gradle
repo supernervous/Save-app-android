@@ -5,10 +5,19 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
+
+
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-v4:27.1.0'
+    }
+}
+
 
 allprojects {
     repositories {
@@ -23,12 +32,10 @@ allprojects {
     project.ext {
         // these are common variables used in */build.gradle
         // these are common variables used in */build.gradle
-        buildToolsVersion="27.0.3"
-        compileSdkVersion=27
-        minSdkVersion=15
-        targetSdkVersion=27
-        appcompat='com.android.support:appcompat-v7:27.1.1'
+        buildToolsVersion="28.0.3"
+        compileSdkVersion=28
+        minSdkVersion=16
+        targetSdkVersion=28
+        appcompat='com.android.support:appcompat-v7:27.1.0'
     }
 }
-
-

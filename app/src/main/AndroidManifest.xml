@@ -4,12 +4,6 @@
     package="net.opendasharchive.openarchive"
     android:installLocation="auto">
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="27"
-        tools:overrideLibrary="com.github.paolorotolo.appintro"
-        />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
