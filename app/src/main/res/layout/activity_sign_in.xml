@@ -9,12 +9,10 @@
 
 
 
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:layout_marginTop="30dp"
         android:layout_below="@id/title"
         android:src="@drawable/oalogonew" />
 
@@ -35,7 +33,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:onClick="onSignUpButtonClick"
         android:text="@string/sign_up_btn"
         android:textSize="14dp"
@@ -43,6 +41,15 @@
         />
 
 
+    <Button
+        android:id="@+id/btnSignInPrivate"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp"
+        android:onClick="onSignInPrivateButtonClick"
+        android:text="@string/sign_in_private_btn"
+        android:textSize="22dp" />
 
 
 </LinearLayout>

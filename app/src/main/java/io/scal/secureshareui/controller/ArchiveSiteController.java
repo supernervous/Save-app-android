@@ -78,8 +78,8 @@ public class ArchiveSiteController extends SiteController {
 		// FIXME not a safe cast, context might be a service
 	}
 
-
-    public String uploadNew(final Media media, Account account, HashMap<String, String> valueMap) {
+    @Override
+    public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) {
         try {
             // starting from 3.1+, you can also use content:// URI string instead of absolute file
             String mediaUri = valueMap.get(VALUE_KEY_MEDIA_PATH);
@@ -209,13 +209,13 @@ public class ArchiveSiteController extends SiteController {
 
             String uploadId = builder.startUpload();
 
-            return uploadId;
+            return uploadId != null;
 
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
 
-        return null;
+        return false;
     }
 
     private String getArchiveUploadEndpoint (String title, String slug, String mimeType)
@@ -326,6 +326,7 @@ public class ArchiveSiteController extends SiteController {
         return true;
     }
 
+    /**
 	@Override
 	public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
 
@@ -333,7 +334,7 @@ public class ArchiveSiteController extends SiteController {
         String result = uploadNew(media, account, valueMap);
 
 		return (result != null);
-	}
+	}**/
 
 
 	class ArchiveServerTask extends AsyncTask<String, String, String> {

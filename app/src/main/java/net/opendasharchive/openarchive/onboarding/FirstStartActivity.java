@@ -78,6 +78,12 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         }
     }
 
+    public void onSignInPrivateButtonClick (View v) {
+
+        startActivity(new Intent(this,LoginActivity.class));
+        finish();
+    }
+
     public void onSignUpButtonClick(View v) {
             doSignUp();
     }

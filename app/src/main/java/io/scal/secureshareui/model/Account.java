@@ -38,6 +38,7 @@ public class Account {
         authenticated = settings.getBoolean("is_authenticated", false);
         data = settings.getString("data", null);
         userName = settings.getString("user_name", null);
+        site = settings.getString("site", null);
     }
 
     public void saveToSharedPrefs(Context context, String prefsName) {
@@ -52,6 +53,7 @@ public class Account {
         editor.putBoolean("is_authenticated", authenticated);
         editor.putString("data", data);
         editor.putString("user_name", userName);
+        editor.putString("site", site);
         editor.commit();
     }
 

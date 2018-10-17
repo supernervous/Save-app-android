@@ -40,6 +40,7 @@ import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
@@ -56,6 +57,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import io.cleaninsights.sdk.piwik.Measurer;
+import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.model.Account;
 
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
@@ -236,12 +238,12 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem mi = menu.findItem(R.id.action_logout);
-        Account account = new Account(this, null);
 
-        // if user doesn't have an account
-        if(!account.isAuthenticated()) {
-            mi.setVisible(false);
-        }
+        Account account1 = new Account(this, ArchiveSiteController.SITE_NAME);
+        Account account2 = new Account(this, WebDAVSiteController.SITE_NAME);
+
+
+        mi.setVisible(account1.isAuthenticated()||account2.isAuthenticated());
 
         return true;
     }
@@ -290,10 +292,17 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Account account = new Account(MainActivity.this, null);
+                        Account account = new Account(MainActivity.this, ArchiveSiteController.SITE_NAME);
                         account.setAuthenticated(false);
+                        account.setUserName("");
                         account.setCredentials("");
-                        account.saveToSharedPrefs(MainActivity.this, null);
+                        account.saveToSharedPrefs(MainActivity.this, ArchiveSiteController.SITE_NAME);
+
+                        account = new Account(MainActivity.this, WebDAVSiteController.SITE_NAME);
+                        account.setAuthenticated(false);
+                        account.setUserName("");
+                        account.setCredentials("");
+                        account.saveToSharedPrefs(MainActivity.this, WebDAVSiteController.SITE_NAME);
 
                         Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
                         startActivity(firstStartIntent);

@@ -12,6 +12,7 @@ import android.webkit.MimeTypeMap;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.services.WebDAVSiteController;
 
 import java.io.File;
 import java.io.Serializable;
@@ -92,6 +93,10 @@ public abstract class SiteController {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {
             return new ArchiveSiteController(context, listener, jobId);
         }
+        else if (site.equals(WebDAVSiteController.SITE_KEY))
+       {
+           return new WebDAVSiteController(context,listener,jobId);
+       }
         else if (site.equalsIgnoreCase(PirateBoxSiteController.SITE_KEY)) {
            return new PirateBoxSiteController(context,listener,jobId);
        }

@@ -6,38 +6,36 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!--
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
-    -->
+    <!--     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" /> -->
+
 
     <!-- Required to sign in or register with archive.org -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".OpenArchiveApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        >
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="net.opendasharchive.openarchive.db" />
@@ -64,12 +62,16 @@
             <!-- filter for sending text or images; accepts SEND action and audio/photo/video data -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:pathPattern=".*\\.mp3" />
                 <data android:pathPattern=".*\\.wav" />
                 <data android:pathPattern=".*\\.3gp" />
@@ -77,25 +79,24 @@
                 <data android:pathPattern=".*\\.m4a" />
                 <data android:pathPattern=".*\\.jpg" />
                 <data android:pathPattern=".*\\.png" />
-
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:pathPattern=".*\\.mp3" />
                 <data android:pathPattern=".*\\.wav" />
                 <data android:pathPattern=".*\\.3gp" />
             </intent-filter>
-
-
         </activity>
         <activity
             android:name=".onboarding.FirstStartActivity"
             android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
@@ -107,7 +108,7 @@
             android:name=".ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme"/>
+            android:theme="@style/SettingsTheme" />
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
@@ -117,7 +118,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.onboarding.FirstStartActivity" />
         </activity>
-
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
@@ -126,17 +126,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
-        <activity android:name=".NearbyActivity"
-            android:theme="@style/ayandaDialog"
-            />
-        <activity android:name=".onboarding.OAAppIntro"
+        <activity
+            android:name=".NearbyActivity"
+            android:theme="@style/ayandaDialog" />
+        <activity
+            android:name=".onboarding.OAAppIntro"
             android:label="App Intro" />
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="App Intro" />
-        <service android:name=".publish.PublishService"
-            android:exported="false"
-            />
-        <service android:name=".publish.PublishJobService"
+
+        <service
+            android:name=".publish.PublishService"
+            android:exported="false" />
+        <service
+            android:name=".publish.PublishJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
@@ -146,8 +150,12 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity
+            android:name=".onboarding.LoginActivity"
+            android:label="@string/title_activity_login"></activity>
     </application>
 
 </manifest>

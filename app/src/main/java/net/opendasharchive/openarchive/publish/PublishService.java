@@ -25,7 +25,9 @@ import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.SettingsActivity;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
@@ -122,10 +124,11 @@ public class PublishService extends Service implements Runnable {
 
     private void uploadMedia (Media media)
     {
-        Account account = new Account(this, null);
 
         if (PirateBoxSiteController.isPirateBox(this))
         {
+            Account account = new Account(this, PirateBoxSiteController.SITE_NAME);
+
             PirateBoxSiteController siteController = (PirateBoxSiteController) SiteController.getSiteController(PirateBoxSiteController.SITE_KEY, this, new UploaderListener(media), null);
             HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
 
@@ -136,20 +139,32 @@ public class PublishService extends Service implements Runnable {
         }
         else {
 
-            // if user doesn't have an account
-            if (account.isAuthenticated()) {
+            SiteController sc = null;
 
-                ArchiveSiteController siteController = (ArchiveSiteController) SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
-                HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
+            HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
+            media.status = Media.STATUS_UPLOADING;
+            media.save();
+            notifyMediaUpdated(media);
 
-                media.status = Media.STATUS_UPLOADING;
-                media.save();
-                notifyMediaUpdated(media);
-                siteController.uploadNew(media, account, valueMap);
-                // media.status = Media.STATUS_PUBLISHED;
-                // media.save();
-                // notifyMediaUpdated(media);
+            Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+
+            if (account != null && account.getSite() != null)
+            {
+
+                //webdav
+                sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
+
             }
+            else {
+                account = new Account(this, ArchiveSiteController.SITE_NAME);
+
+                sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+
+            }
+
+            sc.upload(account, media, valueMap);
+
+
         }
     }
 

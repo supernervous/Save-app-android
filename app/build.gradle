@@ -84,8 +84,10 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    implementation project (':sardine-android')
+
     //adding web dav support: https://github.com/thegrizzlylabs/sardine-android
-    implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.2'
+   // implementation 'com.thegrizzlylabs.sardine-android:sardine-android:0.2'
 
 
 }

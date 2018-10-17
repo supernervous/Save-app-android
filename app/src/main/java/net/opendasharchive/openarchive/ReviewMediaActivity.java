@@ -44,6 +44,7 @@ import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.FileUtils;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
@@ -52,6 +53,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
 
@@ -430,7 +432,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void uploadMedia ()
     {
-        Account account = new Account(this, null);
+        
+        Account accountWebDAV = new Account(this, WebDAVSiteController.SITE_NAME);
+        Account accountArchive = new Account(this, ArchiveSiteController.SITE_NAME);
 
         if (PirateBoxSiteController.isPirateBox(this))
         {
@@ -442,11 +446,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         }
         else {
             // if user doesn't have an account
-            if (!account.isAuthenticated()) {
-                Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-                startActivity(firstStartIntent);
-
-            } else {
+            if (accountWebDAV.isAuthenticated() || accountArchive.isAuthenticated()) {
 
                 //mark queued
                 mMedia.status = Media.STATUS_QUEUED;
@@ -454,6 +454,10 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 bindMedia();
                 startService(new Intent(this, PublishService.class));
 
+            }
+            else {
+                Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+                startActivity(firstStartIntent);
             }
         }
 
