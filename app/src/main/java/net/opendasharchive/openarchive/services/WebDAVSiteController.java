@@ -88,7 +88,8 @@ public class WebDAVSiteController extends SiteController {
             if (!sardine.exists(basePath))
                 sardine.createDirectory(basePath);
 
-            basePath += getUploadFileName(media.getTitle(),media.getMimeType());
+            String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
+            basePath += fileName;
 
             if (sardine.exists(basePath)) {
                 basePath += "-" + new Date().getTime();
@@ -97,7 +98,7 @@ public class WebDAVSiteController extends SiteController {
             else
                 sardine.createDirectory(basePath);
 
-            url = basePath + '/' + getUploadFileName(media.getTitle(),media.getMimeType());
+            url = basePath + '/' + fileName;
 
             sardine.put(mContext.getContentResolver(), url, mediaUri, media.getMimeType(),false);
 
@@ -105,7 +106,7 @@ public class WebDAVSiteController extends SiteController {
 
             jobSucceeded(url);
 
-            uploadMetadata (media, basePath);
+            uploadMetadata (media, basePath, fileName);
             uploadProof(media, basePath);
 
             return true;
@@ -118,15 +119,15 @@ public class WebDAVSiteController extends SiteController {
     }
 
 
-    private boolean uploadMetadata (Media media, String basePath)
+    private boolean uploadMetadata (Media media, String basePath, String fileName)
     {
-        String urlMeta = basePath + '/' + media.getTitle() + "-metadata.json";
+        String urlMeta = basePath + '/' + fileName + ".metadata.json";
         Gson gson = new Gson();
         String json = gson.toJson(media,Media.class);
 
         try {
 
-            File fileMetaData = new File(mContext.getFilesDir(),media.getTitle() + "-" + media.getId()+"-metadata.json");
+            File fileMetaData = new File(mContext.getFilesDir(),fileName+".metadata.json");
             FileOutputStream fos = new FileOutputStream(fileMetaData);
             fos.write(json.getBytes());
             fos.flush();
