@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.DavResource;
@@ -22,12 +23,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
+import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.model.Account;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -84,7 +88,7 @@ public class WebDAVSiteController extends SiteController {
             if (!sardine.exists(basePath))
                 sardine.createDirectory(basePath);
 
-            basePath += media.getTitle();
+            basePath += getUploadFileName(media.getTitle(),media.getMimeType());
 
             if (sardine.exists(basePath)) {
                 basePath += "-" + new Date().getTime();
@@ -93,7 +97,7 @@ public class WebDAVSiteController extends SiteController {
             else
                 sardine.createDirectory(basePath);
 
-            url = basePath + '/' + media.getTitle();
+            url = basePath + '/' + getUploadFileName(media.getTitle(),media.getMimeType());
 
             sardine.put(mContext.getContentResolver(), url, mediaUri, media.getMimeType(),false);
 
@@ -122,7 +126,7 @@ public class WebDAVSiteController extends SiteController {
 
         try {
 
-            File fileMetaData = new File(mContext.getFilesDir(),media.getId()+"-metadata.json");
+            File fileMetaData = new File(mContext.getFilesDir(),media.getTitle() + "-" + media.getId()+"-metadata.json");
             FileOutputStream fos = new FileOutputStream(fileMetaData);
             fos.write(json.getBytes());
             fos.flush();
@@ -196,5 +200,40 @@ public class WebDAVSiteController extends SiteController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private String getUploadFileName (String title, String mimeType)
+    {
+        StringBuffer result = new StringBuffer();
+        String ext;
+
+        String randomString = new Util.RandomString(4).nextString();
+        result.append(randomString).append('-');
+        ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+
+        if (TextUtils.isEmpty(ext))
+        {
+            if (mimeType.startsWith("image"))
+                ext = "jpg";
+            else if (mimeType.startsWith("video"))
+                ext = "mp4";
+            else if (mimeType.startsWith("audio"))
+                ext = "m4a";
+            else
+                ext = "txt";
+
+        }
+
+        try {
+            result.append(URLEncoder.encode(title,"UTF-8"));
+            result.append('.').append(ext);
+
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "Couldn't encode title",e);
+            return null;
+        }
+
+        return result.toString();
+
     }
 }
