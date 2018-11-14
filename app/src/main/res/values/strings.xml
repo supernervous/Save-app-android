@@ -221,4 +221,5 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     </string>
 
     <string name="sign_in_private_btn">Use Private Server (WebDAV)</string>
+    <string name="importing_media">Importing media...</string>
 </resources>

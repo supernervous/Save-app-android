@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (getIntent() != null) {
 
-            final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), "...", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
             Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
             snack_view.addView(new ProgressBar(this));
             // The Very Basic
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
             } else {
 
-                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), "...", Snackbar.LENGTH_INDEFINITE);
+                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
