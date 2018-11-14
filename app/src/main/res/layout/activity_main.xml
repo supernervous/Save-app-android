@@ -35,7 +35,7 @@
     tools:layout="@android:layout/list_content"/>
     -->
 
-<net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
+<net.i2p.android.ext.floatingactionbutton.FloatingActionButton
 android:id="@+id/floating_menu"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
@@ -45,7 +45,10 @@ android:layout_alignParentBottom="true"
 android:layout_margin="16dp"
     fab:fab_labelStyle="@style/menu_labels_style"
     fab:fab_labelsPosition="left"
-    >
+    fab:fab_icon="@drawable/baseline_add_white_24"
+    fab:fab_colorPressed="@color/bright_blue"
+    />
+    <!--
 
 <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
     android:layout_width="wrap_content"
@@ -97,7 +100,6 @@ android:layout_margin="16dp"
         fab:fab_icon="@drawable/ic_nearby_black_24dp"
         android:id="@+id/floating_menu_nearby"
         />
-
-</net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>
+-->
 
     </RelativeLayout>

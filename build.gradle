@@ -1,11 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -21,13 +21,11 @@ configurations.all {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        jcenter()
         maven { url 'https://jitpack.io' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }
-
-
     }
     project.ext {
         // these are common variables used in */build.gradle
