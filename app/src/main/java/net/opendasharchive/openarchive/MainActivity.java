@@ -341,35 +341,33 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onActivityResult: Invalid Media Type");
                 Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
             } else {
-                // create media
-                Media media = new Media();
-                media.setOriginalFilePath(uri.toString());
-                media.setMimeType(mimeType);
-                media.setCreateDate(new Date());
-                media.status = Media.STATUS_LOCAL;
 
-                String title = Utility.getUriDisplayName(this, uri);
-                if (title != null)
-                    media.setTitle(title);
-                media.save();
+                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), "...", Snackbar.LENGTH_INDEFINITE);
+                Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
+                snack_view.addView(new ProgressBar(this));
 
-                //if not offline, then try to notarize
-                if (!PirateBoxSiteController.isPirateBox(this)) {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                    prefs.edit().putBoolean("autoNotarize", false).commit();
-                }
+                new AsyncTask<String, Void, Media>() {
+                    protected void onPreExecute() {
+                        bar.show();
 
-                String hash = ProofMode.generateProof(this, uri);
-                if (!TextUtils.isEmpty(hash))
-                {
-                    media.setMediaHash(hash.getBytes());
-                    media.save();
-                }
+                    }
+                    protected Media doInBackground(String... params) {
+                        return  importMedia(Uri.parse(params[0]), params[1]);
+                    }
+                    protected void onPostExecute(Media media) {
+                        // Post Code
+                        if (media != null) {
+                            Intent reviewMediaIntent = new Intent(MainActivity.this, ReviewMediaActivity.class);
+                            reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                            reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(reviewMediaIntent);
+                        }
 
-                Intent reviewMediaIntent = new Intent(this, ReviewMediaActivity.class);
-                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(reviewMediaIntent);
+                        bar.dismiss();
+
+                        setIntent(null);
+                    }
+                }.execute(uri.toString(),mimeType);
 
             }
         }
@@ -378,6 +376,46 @@ public class MainActivity extends AppCompatActivity {
         fragmentMediaList.refresh();
     }
 
+    private Media importMedia (Uri uri, String mimeType)
+    {
+        String title = Utility.getUriDisplayName(this,uri);
+        File fileImport = getOutputMediaFile(title);
+        try {
+            boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
+            if (!imported)
+                return null;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // create media
+        Media media = new Media();
+        media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
+        media.setMimeType(mimeType);
+        media.setCreateDate(new Date());
+        media.status = Media.STATUS_LOCAL;
+
+        if (title != null)
+            media.setTitle(title);
+        media.save();
+
+        //if not offline, then try to notarize
+        if (!PirateBoxSiteController.isPirateBox(this)) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putBoolean("autoNotarize", false).commit();
+        }
+
+        String hash = ProofMode.generateProof(this, uri);
+        if (!TextUtils.isEmpty(hash))
+        {
+            media.setMediaHash(hash.getBytes());
+            media.save();
+        }
+
+
+        return media;
+    }
 
     private Media handleOutsideMedia(Intent intent) {
 
@@ -386,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null && intent.getAction()!= null
           && intent.getAction().equals(Intent.ACTION_SEND)) {
 
-            String type = intent.getType();
+            String mimeType = intent.getType();
 
             Uri uri = intent.getData();
 
@@ -401,32 +439,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            String title = Utility.getUriDisplayName(this,uri);
-            File fileImport = getOutputMediaFile(title);
-            try {
-                boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
-                if (!imported)
-                    return null;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
 
-            // create media
-            media = new Media();
-            media.status = Media.STATUS_LOCAL;
-            media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
-            media.setMimeType(type);
-
-
-            if (title != null)
-                media.setTitle(title);
-
-            media.setCreateDate(new Date());
-            media.setUpdateDate(new Date());
-
-            media.save();
-
+            media = importMedia(uri, mimeType);
 
         }
 
