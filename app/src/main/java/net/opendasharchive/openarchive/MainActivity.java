@@ -84,49 +84,12 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
 
-        final FloatingActionsMenu fabMenu = (FloatingActionsMenu) findViewById(R.id.floating_menu);
-        FloatingActionButton fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_import);
-        fabAction.setOnClickListener(new View.OnClickListener() {
+        final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
+        fabMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.collapse();
+
                 importMedia();
-            }
-        });
-
-        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_camera);
-        fabAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.collapse();
-                captureMedia(Media.MEDIA_TYPE.IMAGE);
-            }
-        });
-
-        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_video);
-        fabAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.collapse();
-                captureMedia(Media.MEDIA_TYPE.VIDEO);
-            }
-        });
-
-        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_audio);
-        fabAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.collapse();
-                captureMedia(Media.MEDIA_TYPE.AUDIO);
-            }
-        });
-
-        fabAction = (FloatingActionButton) findViewById(R.id.floating_menu_nearby);
-        fabAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabMenu.collapse();
-                startNearby();
             }
         });
 
