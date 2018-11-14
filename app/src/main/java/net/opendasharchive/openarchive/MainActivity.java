@@ -32,6 +32,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.coursion.freakycoder.mediapicker.galleries.Gallery;
+
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
@@ -45,11 +47,14 @@ import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.w3c.dom.Text;
 import org.witness.proofmode.ProofMode;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
@@ -237,6 +242,10 @@ public class MainActivity extends AppCompatActivity {
         {
             logout();
         }
+        else if (id == R.id.action_nearby)
+        {
+            startNearby();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -288,9 +297,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
+        // Check which request we're responding to
+        if (requestCode == Globals.REQUEST_FILE_IMPORT) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK && data != null) {
+                final ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+
+                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
+                Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
+                snack_view.addView(new ProgressBar(this));
+
+                for (String result : selectionResult)
+                {
+
+                    String mimeType = Utility.getMediaType(result);
+
+                    new AsyncTask<String, Void, Media>() {
+                        protected void onPreExecute() {
+                            bar.show();
+                        }
+                        protected Media doInBackground(String... params) {
+                            return  importMedia(new File(params[0]), params[1]);
+                        }
+                        protected void onPostExecute(Media media) {
+                            // Post Code
+                            if (media != null && selectionResult.size() == 1) {
+                                Intent reviewMediaIntent = new Intent(MainActivity.this, ReviewMediaActivity.class);
+                                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
+                                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                startActivity(reviewMediaIntent);
+                            }
+
+                            bar.dismiss();
+
+                            fragmentMediaList.refresh();
+
+                        }
+                    }.execute(result,mimeType);
+
+                }
+            }
+        }
+
+        /**
         String mimeType = null;
 
         Uri uri = null;
@@ -371,9 +423,51 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        **/
 
 
-        fragmentMediaList.refresh();
+    }
+
+    private Media importMedia (File fileSource, String mimeType)
+    {
+        String title = fileSource.getName();
+        File fileImport = getOutputMediaFile(title);
+        try {
+            boolean imported = Utility.writeStreamToFile(new FileInputStream(fileSource),fileImport);
+            if (!imported)
+                return null;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // create media
+        Media media = new Media();
+        media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
+        media.setMimeType(mimeType);
+        media.setCreateDate(new Date(fileSource.lastModified()));
+        media.setUpdateDate(media.getCreateDate());
+        media.status = Media.STATUS_LOCAL;
+        
+        if (title != null)
+            media.setTitle(title);
+        media.save();
+
+        //if not offline, then try to notarize
+        if (!PirateBoxSiteController.isPirateBox(this)) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            prefs.edit().putBoolean("autoNotarize", false).commit();
+        }
+
+        String hash = ProofMode.generateProof(this, Uri.fromFile(fileSource));
+        if (!TextUtils.isEmpty(hash))
+        {
+            media.setMediaHash(hash.getBytes());
+            media.save();
+        }
+
+
+        return media;
     }
 
     private Media importMedia (Uri uri, String mimeType)
@@ -460,6 +554,15 @@ public class MainActivity extends AppCompatActivity {
     {
         if (!askForPermission("android.permission.READ_EXTERNAL_STORAGE",1)) {
 
+            Intent intent = new Intent(this,Gallery.class);
+
+// Set the title for toolbar
+            intent.putExtra("title", "Select media");
+// Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
+            intent.putExtra("mode", 1);
+            startActivityForResult(intent, Globals.REQUEST_FILE_IMPORT);
+
+            /**
             // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager
             Intent intent;
             int requestId = Globals.REQUEST_FILE_IMPORT;
@@ -477,12 +580,13 @@ public class MainActivity extends AppCompatActivity {
             // Filter to only show results that can be "opened", such as a
             // file (as opposed to a list of contacts or timezones)
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
+            //intent.setType("");
 
             //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
             // Apply is async and fine for UI thread. commit() is synchronous
             //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
             startActivityForResult(intent, requestId);
+            **/
 
         }
     }

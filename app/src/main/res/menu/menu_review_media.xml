@@ -6,7 +6,7 @@
 
     <item android:id="@+id/menu_item_publish" android:title="@string/menu_item_publish"
         android:orderInCategory="100"
-        app:showAsAction="always|collapseActionView"
+        app:showAsAction="ifRoom|collapseActionView"
         android:visible="false"
         android:icon="@drawable/ic_cloud_upload_white_36dp"
         />
