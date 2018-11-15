@@ -20,8 +20,6 @@ public class OAAppIntro extends AppIntro {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().hide();
-
         setFadeAnimation();
 
         // Instead of fragments, you can also use our default slide
