@@ -6,7 +6,7 @@
     <color name="black">#000000</color>
     <color name="transparent_black">#33333333</color>
     <color name="storymaker_blue">#27aae1</color>
-    <color name="bright_blue">#00b0ff</color>
+    <color name="bright_blue">#b0e7ff</color>
 
 
     <color name="extra_light_grey">#ffbebebe</color>
@@ -32,5 +32,9 @@
     <color name="intro1bg">#34c5ff</color>
     <color name="intro2bg">#34c5ff</color>
     <color name="intro3bg">#34c5ff</color>
+
+    <color name="colorPrimary">#b0e7ff</color>
+    <color name="colorPrimaryDark">#36a9c6</color>
+
 
 </resources>
