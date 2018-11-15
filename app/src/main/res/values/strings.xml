@@ -183,6 +183,11 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="prefs_upload_wifi_only_summary">Wait until on Wifi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>
 
+    <string name="prefs_data_title">Metadata</string>
+    <string name="prefs_use_proofmode_title">Enable ProofMode</string>
+    <string name="prefs_use_proofmode_summary">Capture extra metadata and notarize all media</string>
+
+
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="prefs_bt_summary">Use Bluetooth for nearby sharing</string>
 
