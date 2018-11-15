@@ -47,7 +47,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="11" />
+            android:value="13" />
 
         <activity
             android:name=".MainActivity"

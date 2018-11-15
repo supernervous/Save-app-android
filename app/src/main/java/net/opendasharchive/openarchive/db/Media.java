@@ -45,6 +45,8 @@ public class Media extends SugarRecord {
 
     public int status;
 
+    public long projectId;
+
     public final static int STATUS_ERROR = 9;
     public final static int STATUS_DELETE_LOCAL = 6;
     public final static int STATUS_DELETE_REMOTE = 7;
