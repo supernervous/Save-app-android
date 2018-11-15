@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -22,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
@@ -94,10 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -439,6 +440,9 @@ public class MainActivity extends AppCompatActivity {
     {
         String title = fileSource.getName();
         File fileImport = getOutputMediaFile(title);
+        boolean success = fileImport.getParentFile().mkdirs();
+        Log.d(TAG,"create parent folders, success=" + success);
+
         try {
             boolean imported = Utility.writeStreamToFile(new FileInputStream(fileSource),fileImport);
             if (!imported)
@@ -466,12 +470,13 @@ public class MainActivity extends AppCompatActivity {
             prefs.edit().putBoolean("autoNotarize", false).commit();
         }
 
+        /**
         String hash = ProofMode.generateProof(this, Uri.fromFile(fileSource));
         if (!TextUtils.isEmpty(hash))
         {
             media.setMediaHash(hash.getBytes());
             media.save();
-        }
+        }**/
 
 
         return media;
@@ -559,7 +564,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void importMedia ()
     {
-        if (!askForPermission("android.permission.READ_EXTERNAL_STORAGE",1)) {
+        if (!askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE,1)) {
 
             Intent intent = new Intent(this,Gallery.class);
 
@@ -675,6 +680,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case 1:
+                askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 2);
+                break;
+            case 2:
+                break;
+        }
 
     }
 
