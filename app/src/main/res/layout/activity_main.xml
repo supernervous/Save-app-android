@@ -88,6 +88,9 @@ android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true" />
+        android:fitsSystemWindows="true"
+        app:menu="@menu/drawer_view"
+        app:headerLayout="@layout/nav_header"
+        />
 
 </android.support.v4.widget.DrawerLayout>

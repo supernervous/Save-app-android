@@ -18,6 +18,8 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -75,7 +77,6 @@ import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
 
     private MediaListFragment fragmentMediaList;
@@ -99,6 +100,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                mDrawerLayout.closeDrawers();
+                return onOptionsItemSelected(menuItem);
+            }
+        });
 
         setTitle(R.string.main_activity_title);
 
@@ -215,21 +224,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem mi = menu.findItem(R.id.action_logout);
-
-        Account account1 = new Account(this, ArchiveSiteController.SITE_NAME);
-        Account account2 = new Account(this, WebDAVSiteController.SITE_NAME);
-
-
-        mi.setVisible(account1.isAuthenticated()||account2.isAuthenticated());
-
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
