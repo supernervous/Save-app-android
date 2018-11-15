@@ -23,7 +23,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaListFragment fragmentMediaList;
 
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
         //otherwise go right into this app;
 
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_drawer);
+
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
         setTitle(R.string.main_activity_title);
 
         fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
@@ -223,28 +238,26 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        switch (item.getItemId()) {
 
-        if (id == R.id.action_settings)
-        {
-            Intent firstStartIntent = new Intent(this, SettingsActivity.class);
-            startActivity(firstStartIntent);
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                Intent firstStartIntent = new Intent(this, SettingsActivity.class);
+                startActivity(firstStartIntent);
+                return true;
+            case R.id.action_about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_logout:
+                logout();
+                return true;
+            case R.id.action_nearby:
+                startNearby();
+                return true;
 
-            return true;
-        }
-        else if (id == R.id.action_about)
-        {
-           // Intent intent = new Intent(this, OAAppIntro.class);
-            Intent intent = new Intent(this, AboutActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        else if (id == R.id.action_logout)
-        {
-            logout();
-        }
-        else if (id == R.id.action_nearby)
-        {
-            startNearby();
         }
 
         return super.onOptionsItemSelected(item);
@@ -448,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
         media.setCreateDate(new Date(fileSource.lastModified()));
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
-        
+
         if (title != null)
             media.setTitle(title);
         media.save();

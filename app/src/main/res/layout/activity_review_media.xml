@@ -8,7 +8,15 @@
     android:layout_height="match_parent"
     tools:context="net.opendasharchive.openarchive.ReviewMediaActivity">
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -99,7 +107,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="hey yo"
+                android:text=""
                 android:textSize="16sp"
                 android:textAllCaps="true"
                 android:padding="16dp"/>
@@ -107,7 +115,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="one tow three"
+                android:text=""
                 android:padding="16dp"
                 android:textSize="16sp"/>
         </LinearLayout>
