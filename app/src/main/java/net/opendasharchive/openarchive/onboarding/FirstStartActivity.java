@@ -84,6 +84,10 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         finish();
     }
 
+    public void onSetupNearbyButtonClick (View v) {
+
+    }
+
     public void onSignUpButtonClick(View v) {
             doSignUp();
     }
