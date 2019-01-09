@@ -48,6 +48,7 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
@@ -246,8 +247,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.action_logout:
-                logout();
+            case R.id.action_add_space:
+                setupSpace();
                 return true;
             case R.id.action_nearby:
                 startNearby();
@@ -258,6 +259,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setupSpace ()
+    {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    /**
     private void logout ()
     {
         new AlertDialog.Builder(this)
@@ -291,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    }
+    }**/
 
     private boolean mediaExists (Uri uri)
     {
