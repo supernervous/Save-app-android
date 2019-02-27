@@ -1,78 +1,60 @@
 package net.opendasharchive.openarchive;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.coursion.freakycoder.mediapicker.galleries.Gallery;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
-import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.fragments.NavigationDrawerFragment;
-import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
-import org.w3c.dom.Text;
 import org.witness.proofmode.ProofMode;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
-import cafe.adriel.androidaudiorecorder.model.AudioChannel;
-import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
-import cafe.adriel.androidaudiorecorder.model.AudioSource;
 import io.cleaninsights.sdk.piwik.Measurer;
-import io.scal.secureshareui.controller.ArchiveSiteController;
-import io.scal.secureshareui.model.Account;
 
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
@@ -82,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private CharSequence mTitle;
 
-    private MediaListFragment fragmentMediaList;
+    private MediaListFragment mCurrentMediaList;
 
-    private DrawerLayout mDrawerLayout;
+    private ViewPager mPager;
+    private MediaProjectPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,23 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-
-        ((NavigationView)findViewById(R.id.nav_view)).setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                mDrawerLayout.closeDrawers();
-                return onOptionsItemSelected(menuItem);
-            }
-        });
 
         setTitle(R.string.main_activity_title);
 
-        fragmentMediaList = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.media_list);
+        mPager = findViewById(R.id.pager);
+        mPagerAdapter = new MediaProjectPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
 
         final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
         fabMenu.setOnClickListener(new View.OnClickListener() {
@@ -138,13 +110,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initTabs ()
+    {
+
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (fragmentMediaList != null)
-            fragmentMediaList.refresh();
+      //  if (fragmentMediaList != null)
+        //    fragmentMediaList.refresh();
 
+        /**
         if (Media.getAllMediaAsList().size() == 0)
         {
             findViewById(R.id.media_list).setVisibility(View.GONE);
@@ -157,15 +136,14 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.media_list).setVisibility(View.VISIBLE);
             findViewById(R.id.media_hint).setVisibility(View.GONE);
 
-        }
+        }**/
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
 
+        if (getIntent() != null && getIntent().getData() != null) {
 
-        if (getIntent() != null) {
-
-            final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
+            final Snackbar bar = Snackbar.make(mPager, getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
             Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
             snack_view.addView(new ProgressBar(this));
             // The Very Basic
@@ -220,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             Log.d("receiver", "Updating media");
 
-            if (fragmentMediaList != null)
-                fragmentMediaList.refresh();
+            if (mCurrentMediaList != null)
+                mCurrentMediaList.refresh();
 
         }
     };
@@ -237,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
                 Intent firstStartIntent = new Intent(this, SettingsActivity.class);
@@ -322,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data != null) {
                 final ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
 
-                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
+                final Snackbar bar = Snackbar.make(mCurrentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
@@ -349,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
                             bar.dismiss();
 
-                            fragmentMediaList.refresh();
+                            mCurrentMediaList.refresh();
 
                         }
                     }.execute(result,mimeType);
@@ -577,95 +554,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this,Gallery.class);
 
 // Set the title for toolbar
-            intent.putExtra("title", "Select media");
+            intent.putExtra("title", getString(R.string.menu_import_media));
 // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
             intent.putExtra("mode", 1);
             startActivityForResult(intent, Globals.REQUEST_FILE_IMPORT);
 
-            /**
-            // ACTION_OPEN_DOCUMENT is the new API 19 action for the Android file manager
-            Intent intent;
-            int requestId = Globals.REQUEST_FILE_IMPORT;
-            if (Build.VERSION.SDK_INT >= 19) {
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            } else {
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
-            }
-
-            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            // Filter to only show results that can be "opened", such as a
-            // file (as opposed to a list of contacts or timezones)
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            //intent.setType("");
-
-            //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
-            // Apply is async and fine for UI thread. commit() is synchronous
-            //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
-            startActivityForResult(intent, requestId);
-            **/
-
         }
     }
-
-    private Uri mCameraUri;
-
-    private void captureMedia (Media.MEDIA_TYPE mediaType)
-    {
-
-        if (!askForPermission("android.permission.WRITE_EXTERNAL_STORAGE",1)) {
-
-            Intent intent = null;
-            int requestId = -1;
-
-            if (mediaType == Media.MEDIA_TYPE.AUDIO) {
-
-                if (!askForPermission("android.permission.RECORD_AUDIO",1)) {
-
-                    startAudioRecorder();
-                }
-
-
-            } else if (mediaType == Media.MEDIA_TYPE.IMAGE) {
-
-                if (!askForPermission("android.permission.CAMERA",1)) {
-
-                    intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                    File photoFile;
-                    try {
-                        photoFile = getOutputMediaFile("IMG","jpg");
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Unable to make image file");
-                        return;
-                    }
-
-                    getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Globals.EXTRA_FILE_LOCATION, photoFile.getAbsolutePath()).apply();
-
-                    mCameraUri = FileProvider.getUriForFile(MainActivity.this,
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            photoFile);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT,mCameraUri);
-                    requestId = Globals.REQUEST_IMAGE_CAPTURE;
-                }
-
-            } else if (mediaType == Media.MEDIA_TYPE.VIDEO) {
-                if (!askForPermission("android.permission.CAMERA",1)) {
-
-                    intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                    requestId = Globals.REQUEST_VIDEO_CAPTURE;
-                }
-            }
-
-            if (null != intent && intent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(intent, requestId);
-            }
-        }
-    }
-
 
 
 
@@ -710,32 +605,7 @@ public class MainActivity extends AppCompatActivity {
         return ((OpenArchiveApp) getApplication()).getCleanInsightsApp().getMeasurer();
     }
 
-    Uri mAudioUri;
 
-    private void startAudioRecorder ()
-    {
-        File fileAudioPath = getOutputMediaFile("AUDIO","wav");
-        mAudioUri = Uri.fromFile(fileAudioPath);
-
-        int color = getResources().getColor(R.color.bright_blue);
-        int requestCode = Globals.REQUEST_AUDIO_CAPTURE;
-        AndroidAudioRecorder.with(this)
-                // Required
-                .setFilePath(fileAudioPath.getAbsolutePath())
-                .setColor(color)
-                .setRequestCode(requestCode)
-
-                // Optional
-                .setSource(AudioSource.MIC)
-                .setChannel(AudioChannel.STEREO)
-                .setSampleRate(AudioSampleRate.HZ_48000)
-                .setAutoStart(false)
-                .setKeepDisplayOn(true)
-
-
-                // Start recording
-                .record();
-    }
 
     private boolean checkNearbyPermissions ()
     {
@@ -773,4 +643,33 @@ public class MainActivity extends AppCompatActivity {
 
         return allowed;
     }
+
+    // Since this is an object collection, use a FragmentStatePagerAdapter,
+// and NOT a FragmentPagerAdapter.
+    public class MediaProjectPagerAdapter extends FragmentStatePagerAdapter {
+        public MediaProjectPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            Fragment fragment = new MediaListFragment();
+            Bundle args = new Bundle();
+            // Our object is just an integer :-P
+           // args.putInt(MediaListFragment.ARG_OBJECT, i + 1);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "Project " + (position + 1);
+        }
+    }
+
 }

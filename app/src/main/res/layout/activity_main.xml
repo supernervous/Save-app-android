@@ -30,7 +30,23 @@
     android:layout_height="wrap_content"
             android:layout_marginTop="?attr/actionBarSize"
             >
+            <android.support.v4.view.ViewPager
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                <android.support.v4.view.PagerTitleStrip
+                    android:id="@+id/pager_title_strip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:background="#33b5e5"
+                    android:textColor="#fff"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
 
+            </android.support.v4.view.ViewPager>
+<!--
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/media_list"
@@ -49,19 +65,7 @@
         android:text="@string/media_hint"
         android:layout_margin="60dp"
         />
-
-    <!--
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_main"
-    android:name="net.opendasharchive.openarchive.FragmentMain"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="0dp"
-    android:layout_marginRight="0dp"
-    tools:context="net.opendasharchive.openarchive.MainActivity"
-    tools:layout="@android:layout/list_content"/>
-    -->
+-->
 
 <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
 android:id="@+id/floating_menu"
@@ -83,6 +87,7 @@ android:layout_margin="16dp"
 
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+<!--
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -92,5 +97,5 @@ android:layout_margin="16dp"
         app:menu="@menu/drawer_view"
         app:headerLayout="@layout/nav_header"
         />
-
+-->
 </android.support.v4.widget.DrawerLayout>

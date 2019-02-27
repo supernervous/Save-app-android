@@ -5,7 +5,7 @@
     <string name="app_name">OpenArchive</string>
     <string name="app_subtext">An Internet Archive Powered Project\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">OA</string>
+    <string name="main_activity_title">OASave</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_settings">Settings</string>

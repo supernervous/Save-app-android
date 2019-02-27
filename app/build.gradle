@@ -17,7 +17,7 @@ android {
         versionCode 1802
         versionName "0.0.18-alpha-2"
         archivesBaseName = "OpenArchive-$versionName"
-        multiDexEnabled true
+        multiDexEnabled true//
     }
     lintOptions {
         abortOnError false
@@ -76,7 +76,7 @@ dependencies {
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
     implementation 'io.github.lizhangqu:coreprogress:1.0.2'
 
-    implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
+  //  implementation 'com.github.adrielcafe:AndroidAudioRecorder:0.3.0'
 
     //from here: https://github.com/guardianproject/proofmode
     implementation 'org.witness:android-libproofmode:0.0.3'
