@@ -23,15 +23,11 @@
                 android:title="Share Link" />
             <item android:id="@+id/menu_item_share_media"
                 android:title="Share Media" />
-            <item android:id="@+id/menu_item_share_torrent"
-                android:title="Share Torrent" />
-            <!--
-            <item android:id="@+id/menu_item_stamp"
-                android:title="Stamp Media" />
-                -->
         </menu>
 
     </item>
+
+    <!--
 
     <item android:id="@+id/menu_item_nearby" android:title="@string/menu_item_nearby"
         android:orderInCategory="100"
@@ -39,6 +35,7 @@
         android:visible="true"
         android:icon="@drawable/ic_nearby_white_24dp"
         />
+-->
 
     <item android:id="@+id/menu_delete" android:title="@string/menu_delete"/>
 

@@ -18,6 +18,9 @@ public class MediaListFragment extends Fragment {
     protected RecyclerView mRecyclerView;
 
     private static final String TAG = "RecyclerViewFragment";
+
+    private long mProjectId = -1;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -25,9 +28,16 @@ public class MediaListFragment extends Fragment {
     public MediaListFragment() {
     }
 
+    public void setProjectId (long projectId)
+    {
+        mProjectId = projectId;
+    }
+
     public void refresh ()
     {
-        mMediaAdapter.updateData(Media.getAllMediaAsList());
+        if (mMediaAdapter != null)
+            mMediaAdapter.updateData(Media.getMediaByProject(mProjectId));
+
     }
 
     @Override
@@ -40,7 +50,8 @@ public class MediaListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,Media.getAllMediaAsList(), mRecyclerView );
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,Media.getMediaByProject(mProjectId), mRecyclerView );
+
         mRecyclerView.setAdapter(mMediaAdapter);
 
         return rootView;

@@ -322,17 +322,14 @@ public class ReviewMediaActivity extends AppCompatActivity {
             case R.id.menu_item_publish:
                 uploadMedia();
                 break;
-            case R.id.menu_item_nearby:
-                startNearby();
-                break;
+          //  case R.id.menu_item_nearby:
+            //    startNearby();
+              //  break;
             case R.id.menu_item_share_link:
                 shareLink();
                 break;
             case R.id.menu_item_share_media:
                 shareMedia();
-                break;
-            case R.id.menu_item_share_torrent:
-                shareTorrentLink();
                 break;
 
             case R.id.menu_delete:

@@ -35,6 +35,7 @@
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
+
                 <android.support.v4.view.PagerTitleStrip
                     android:id="@+id/pager_title_strip"
                     android:layout_width="match_parent"
@@ -94,7 +95,7 @@ android:layout_margin="16dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/drawer_view"
+        app:menu="@menu/menu_main"
         app:headerLayout="@layout/nav_header"
         />
 -->

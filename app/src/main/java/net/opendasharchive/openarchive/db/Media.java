@@ -175,6 +175,12 @@ public class Media extends SugarRecord {
        // return Media.listAll(Media.class,);
     }
 
+    public static List<Media> getMediaByProject(long projectId) {
+        String[] values = {projectId+""};
+        return Media.find(Media.class,"PROJECT_ID = ?",values,null,"ID DESC",null);
+    }
+
+
     public static Media getMediaById(long mediaId) {
         return Media.findById(Media.class, mediaId);
     }
@@ -182,6 +188,16 @@ public class Media extends SugarRecord {
     public static boolean deleteMediaById(long mediaId) {
         Media media = Media.findById(Media.class, mediaId);
         return media.delete();
+    }
+
+    public void setProjectId (long projectId)
+    {
+        this.projectId = projectId;
+    }
+
+    public long getProjectId ()
+    {
+        return this.projectId;
     }
 }
 

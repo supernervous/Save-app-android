@@ -33,8 +33,8 @@
     <color name="intro2bg">#34c5ff</color>
     <color name="intro3bg">#34c5ff</color>
 
-    <color name="colorPrimary">#b0e7ff</color>
-    <color name="colorPrimaryDark">#36a9c6</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#BDBDBD</color>
 
 
 </resources>

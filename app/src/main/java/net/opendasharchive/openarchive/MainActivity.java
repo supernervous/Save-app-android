@@ -30,6 +30,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -38,6 +39,8 @@ import com.coursion.freakycoder.mediapicker.galleries.Gallery;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
@@ -61,13 +64,9 @@ import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-    private CharSequence mTitle;
-
-    private MediaListFragment mCurrentMediaList;
-
+    private static final String TAG = "OASAVE:Main";
     private ViewPager mPager;
-    private MediaProjectPagerAdapter mPagerAdapter;
+    private ProjectAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.avatar_default);
 
         setTitle(R.string.main_activity_title);
 
         mPager = findViewById(R.id.pager);
-        mPagerAdapter = new MediaProjectPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new ProjectAdapter(getSupportFragmentManager());
+        mPagerAdapter.updateData(Project.getAllAsList());
         mPager.setAdapter(mPagerAdapter);
 
         final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
@@ -92,7 +94,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                importMedia();
+                if (mPagerAdapter.getCount() > 0)
+                    importMedia();
+                else {
+                    startNewProject();
+                    refreshProjects();
+                }
             }
         });
 
@@ -110,9 +117,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initTabs ()
+    private void startNewProject ()
     {
+        int projectIdx = mPagerAdapter.getCount()+1;
+        createProject("Project " + projectIdx);
+        refreshProjects();
+    }
+    private void createProject (String description)
+    {
+        Project project = new Project ();
+        project.created = new Date();
+        project.description = description;
+        project.save();
+    }
 
+    private void refreshProjects ()
+    {
+        mPagerAdapter = new ProjectAdapter(getSupportFragmentManager());
+        mPagerAdapter.updateData(Project.getAllAsList());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(0);
+    }
+
+    private void refreshCurrentProject ()
+    {
+        if (mPagerAdapter.getCount() > 0) {
+            MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
+            if (frag != null)
+                frag.refresh();
+        }
 
     }
 
@@ -120,23 +153,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-      //  if (fragmentMediaList != null)
-        //    fragmentMediaList.refresh();
-
-        /**
-        if (Media.getAllMediaAsList().size() == 0)
-        {
-            findViewById(R.id.media_list).setVisibility(View.GONE);
-            findViewById(R.id.media_hint).setVisibility(View.VISIBLE);
-
-
-        }
-        else
-        {
-            findViewById(R.id.media_list).setVisibility(View.VISIBLE);
-            findViewById(R.id.media_hint).setVisibility(View.GONE);
-
-        }**/
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
@@ -174,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
             // handle if started from outside app
         }
 
+        refreshCurrentProject();
+
         //when the app pauses do a private, randomized-response based tracking of the number of media files
       //  MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
         //        .with(getMeasurer());
@@ -198,12 +216,17 @@ public class MainActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             Log.d("receiver", "Updating media");
 
-            if (mCurrentMediaList != null)
-                mCurrentMediaList.refresh();
+           refreshCurrentProject ();
 
         }
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,9 +247,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.action_add_space:
-                setupSpace();
+            case R.id.action_new_project:
+                startNewProject();
                 return true;
+          //  case R.id.action_add_space:
+            //    setupSpace();
+              //  return true;
             case R.id.action_nearby:
                 startNearby();
                 return true;
@@ -299,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data != null) {
                 final ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
 
-                final Snackbar bar = Snackbar.make(mCurrentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
+                final Snackbar bar = Snackbar.make(mPager, R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
@@ -316,17 +342,10 @@ public class MainActivity extends AppCompatActivity {
                             return  importMedia(new File(params[0]), params[1]);
                         }
                         protected void onPostExecute(Media media) {
-                            // Post Code
-                            if (media != null && selectionResult.size() == 1) {
-                                Intent reviewMediaIntent = new Intent(MainActivity.this, ReviewMediaActivity.class);
-                                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-                                reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                startActivity(reviewMediaIntent);
-                            }
 
                             bar.dismiss();
 
-                            mCurrentMediaList.refresh();
+                            refreshCurrentProject();
 
                         }
                     }.execute(result,mimeType);
@@ -335,88 +354,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        /**
-        String mimeType = null;
 
-        Uri uri = null;
-
-        if (intent != null)
-            uri = intent.getData();
-
-        if (uri == null) {
-            if (requestCode == Globals.REQUEST_IMAGE_CAPTURE) {
-                uri = mCameraUri;
-                mimeType = "image/jpeg";
-                if (!mediaExists(uri))
-                    return;
-            } else if (requestCode == Globals.REQUEST_AUDIO_CAPTURE) {
-                uri = mAudioUri;
-                mimeType = "audio/wav";
-                if (!mediaExists(uri))
-                    return;
-            }
-
-
-        }
-
-
-        if (uri != null) {
-
-            if (mimeType == null)
-                mimeType = getContentResolver().getType(uri);
-
-            // Will only allow stream-based access to files
-
-            try {
-                if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                    grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
-            } catch (SecurityException se) {
-                Log.d("OA", "security exception accessing URI", se);
-            }
-
-        }
-
-        if (resultCode == RESULT_OK) {
-
-
-
-            if (null == mimeType) {
-                Log.d(TAG, "onActivityResult: Invalid Media Type");
-                Toast.makeText(getApplicationContext(), R.string.error_invalid_media_type, Toast.LENGTH_SHORT).show();
-            } else {
-
-                final Snackbar bar = Snackbar.make(fragmentMediaList.getView(), R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
-                Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
-                snack_view.addView(new ProgressBar(this));
-
-                new AsyncTask<String, Void, Media>() {
-                    protected void onPreExecute() {
-                        bar.show();
-
-                    }
-                    protected Media doInBackground(String... params) {
-                        return  importMedia(Uri.parse(params[0]), params[1]);
-                    }
-                    protected void onPostExecute(Media media) {
-                        // Post Code
-                        if (media != null) {
-                            Intent reviewMediaIntent = new Intent(MainActivity.this, ReviewMediaActivity.class);
-                            reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.getId());
-                            reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            startActivity(reviewMediaIntent);
-                        }
-
-                        bar.dismiss();
-
-                        setIntent(null);
-                    }
-                }.execute(uri.toString(),mimeType);
-
-            }
-        }
-        **/
 
 
     }
@@ -445,9 +383,16 @@ public class MainActivity extends AppCompatActivity {
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
 
+
+        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
+
+        media.projectId = project.getId();
+
         if (title != null)
             media.setTitle(title);
         media.save();
+
+
 
         //if not offline, then try to notarize
         if (!PirateBoxSiteController.isPirateBox(this)) {
@@ -644,32 +589,6 @@ public class MainActivity extends AppCompatActivity {
         return allowed;
     }
 
-    // Since this is an object collection, use a FragmentStatePagerAdapter,
-// and NOT a FragmentPagerAdapter.
-    public class MediaProjectPagerAdapter extends FragmentStatePagerAdapter {
-        public MediaProjectPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
 
-        @Override
-        public Fragment getItem(int i) {
-            Fragment fragment = new MediaListFragment();
-            Bundle args = new Bundle();
-            // Our object is just an integer :-P
-           // args.putInt(MediaListFragment.ARG_OBJECT, i + 1);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Project " + (position + 1);
-        }
-    }
 
 }

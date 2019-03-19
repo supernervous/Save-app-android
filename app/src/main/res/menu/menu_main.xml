@@ -7,21 +7,15 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_emo_basic"/>
 
+    <item android:id="@+id/action_new_project" android:title="@string/action_new_project"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_emo_basic"/>
+
     <item android:id="@+id/action_settings"
         android:title="@string/drawer_settings"
         android:icon="@drawable/ic_action_settings"
         android:orderInCategory="100"
         />
-
-    <item android:id="@+id/action_nearby" android:title="@string/menu_nearby_rec"
-        android:orderInCategory="100"
-        android:icon="@drawable/nearbyshare"
-       />
-
-
-    <item android:id="@+id/action_add_space" android:title="New Space"
-        android:orderInCategory="100"
-       />
 
     <item android:id="@+id/action_about" android:title="@string/drawer_about"
         android:orderInCategory="100"
