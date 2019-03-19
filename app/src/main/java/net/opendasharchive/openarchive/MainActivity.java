@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new ProjectAdapter(getSupportFragmentManager());
         mPagerAdapter.updateData(Project.getAllAsList());
         mPager.setAdapter(mPagerAdapter);
+
 
         final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
         fabMenu.setOnClickListener(new View.OnClickListener() {
@@ -267,42 +269,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
-
-    /**
-    private void logout ()
-    {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.alert_lbl_logout)
-                .setMessage(R.string.alert_logout)
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //nothing
-                    }
-                })
-                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Account account = new Account(MainActivity.this, ArchiveSiteController.SITE_NAME);
-                        account.setAuthenticated(false);
-                        account.setUserName("");
-                        account.setCredentials("");
-                        account.saveToSharedPrefs(MainActivity.this, ArchiveSiteController.SITE_NAME);
-
-                        account = new Account(MainActivity.this, WebDAVSiteController.SITE_NAME);
-                        account.setAuthenticated(false);
-                        account.setUserName("");
-                        account.setCredentials("");
-                        account.saveToSharedPrefs(MainActivity.this, WebDAVSiteController.SITE_NAME);
-
-                        Intent firstStartIntent = new Intent(MainActivity.this, FirstStartActivity.class);
-                        startActivity(firstStartIntent);
-                    }
-                }).create().show();
-
-
-
-    }**/
 
     private boolean mediaExists (Uri uri)
     {
