@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Activities -->
-    <string name="app_name">OpenArchive </string>
+    <string name="app_name">SAVE</string>
     <string name="app_subtext">Projeto Patrocinado pelo Internet Archive\n<a href="#">saber mais</a> </string>
 
     <string name="main_activity_title">O seu OpenArchive</string>

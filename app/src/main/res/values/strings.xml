@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">OA:SAVE</string>
+    <string name="app_name">SAVE</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
 
     <string name="main_activity_title">SAVE</string>
@@ -214,7 +214,7 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="tap_to_connect">Tap to connect</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
-    <string name="prompt_server">Server (https://)</string>
+    <string name="prompt_server">WebDAV/NextCloud Server</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -231,6 +231,8 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
 
     <string name="setup_nearby">Nearby</string>
     <string name="title_activity_space_settings">Your Space</string>
+    <string name="onboarding_intro">Are you read to SAVE the world?</string>
+    <string name="title_welcome">Welcome</string>
 
     <!-- Strings related to Settings -->
 

@@ -25,7 +25,7 @@ public class OAAppIntro extends AppIntro {
 
         // Instead of fragments, you can also use our default slide
         // Just set a title, description, background and image. AppIntro will do the rest.
-        addSlide(AppIntroFragment.newInstance("Welcome", "Are you read to SAVE the world?", R.drawable.oafeature, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.title_welcome), getString(R.string.onboarding_intro), R.drawable.oafeature, getResources().getColor(R.color.oablue)));
 
         // OPTIONAL METHODS
         // Override bar/separator color.

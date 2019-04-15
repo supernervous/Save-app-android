@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Activities -->
-    <string name="app_name">OpenArchive</string>
+    <string name="app_name">SAVE</string>
     <string name="app_subtext">Internet Archive 支持的项目\n<a href="#">了解更多</a></string>
 
     <string name="main_activity_title">您的 OpenArchive</string>

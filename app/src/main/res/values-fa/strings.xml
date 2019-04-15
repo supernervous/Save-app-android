@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Activities -->
-    <string name="app_name">آرشیو باز</string>
+    <string name="app_name">SAVE</string>
     <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:<a href='#'></a></string>
 
     <string name="main_activity_title">آرشیوباز شما</string>
