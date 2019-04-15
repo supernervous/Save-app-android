@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.opendasharchive.openarchive.ReviewMediaActivity;
+import net.opendasharchive.openarchive.fragments.MediaGridFragment;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.util.Globals;
@@ -33,7 +34,7 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        MediaListFragment fragment = new MediaListFragment();
+        MediaListFragment fragment = new MediaGridFragment();
         fragment.setProjectId(getProject(i).getId());
         Bundle args = new Bundle();
         fragment.setArguments(args);

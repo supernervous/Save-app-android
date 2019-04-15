@@ -2,42 +2,27 @@ package net.opendasharchive.openarchive.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.opendasharchive.openarchive.db.MediaAdapter;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaAdapter;
 
-public class MediaListFragment extends Fragment {
+public class MediaGridFragment extends MediaListFragment {
 
-    protected MediaAdapter mMediaAdapter;
-    protected RecyclerView mRecyclerView;
-
-    protected static final String TAG = "RecyclerViewFragment";
-
-    protected long mProjectId = -1;
+    private int numberOfColumns = 3;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public MediaListFragment() {
-    }
-
-    public void setProjectId (long projectId)
-    {
-        mProjectId = projectId;
-    }
-
-    public void refresh ()
-    {
-        if (mMediaAdapter != null)
-            mMediaAdapter.updateData(Media.getMediaByProject(mProjectId));
-
+    public MediaGridFragment() {
+        super();
     }
 
     @Override
@@ -46,11 +31,12 @@ public class MediaListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_media_list, container, false);
         rootView.setTag(TAG);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setHasFixedSize(true);
+        GridLayoutManager lMan = new GridLayoutManager(getActivity(), numberOfColumns);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,Media.getMediaByProject(mProjectId), mRecyclerView );
+        mRecyclerView = rootView.findViewById(R.id.recyclerview);
+        mRecyclerView.setLayoutManager(lMan);
+
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,Media.getMediaByProject(mProjectId), mRecyclerView );
 
         mRecyclerView.setAdapter(mMediaAdapter);
 

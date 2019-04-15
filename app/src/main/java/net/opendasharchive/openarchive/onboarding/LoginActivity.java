@@ -138,6 +138,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
+        if (!server.toLowerCase().startsWith("http"))
+        {
+            //auto add nextcloud defaults
+            server = "https://" + server + "/remote.php/webdav/";
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.

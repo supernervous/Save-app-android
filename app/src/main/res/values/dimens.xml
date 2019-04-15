@@ -10,4 +10,5 @@
     <dimen name="navigation_drawer_width">240dp</dimen>
 
     <dimen name="alert_def_padding">18dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

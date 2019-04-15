@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.onboarding;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,9 +25,7 @@ public class OAAppIntro extends AppIntro {
 
         // Instead of fragments, you can also use our default slide
         // Just set a title, description, background and image. AppIntro will do the rest.
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro1_title), getString(R.string.intro1_desc), R.drawable.oafeature, getResources().getColor(R.color.intro1bg)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro2_title), getString(R.string.intro2_desc), R.drawable.ialogo512, getResources().getColor(R.color.intro2bg)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.intro3_title), getString(R.string.intro3_desc), R.drawable.ic_nearby_white_24dp, getResources().getColor(R.color.intro3bg)));
+        addSlide(AppIntroFragment.newInstance("Welcome", "Are you read to SAVE the world?", R.drawable.oafeature, getResources().getColor(R.color.oablue)));
 
         // OPTIONAL METHODS
         // Override bar/separator color.
@@ -53,6 +52,7 @@ public class OAAppIntro extends AppIntro {
 
 
         finish();
+        startActivity(new Intent(this,FirstStartActivity.class));
     }
 
     @Override

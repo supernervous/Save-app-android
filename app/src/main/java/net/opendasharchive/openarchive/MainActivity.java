@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(Globals.PREF_FIRST_TIME_KEY,true))
+        boolean showIntro = true;// sharedPref.getBoolean(Globals.PREF_FIRST_TIME_KEY,true);
+        if (showIntro)
         {
             Intent intent = new Intent(this, OAAppIntro.class);
             startActivity(intent);
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
+                showSpaceSettings();
                 return true;
             case R.id.action_settings:
                 Intent firstStartIntent = new Intent(this, SettingsActivity.class);
@@ -264,9 +266,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupSpace ()
+    private void showSpaceSettings ()
     {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, SpaceSettingsActivity.class);
         startActivity(intent);
     }
 
