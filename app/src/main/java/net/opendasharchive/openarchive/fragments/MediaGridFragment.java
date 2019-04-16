@@ -1,10 +1,6 @@
 package net.opendasharchive.openarchive.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +8,12 @@ import android.view.ViewGroup;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
+import net.opendasharchive.openarchive.db.MediaSection;
+
+import java.util.List;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class MediaGridFragment extends MediaListFragment {
 
@@ -36,9 +38,19 @@ public class MediaGridFragment extends MediaListFragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(lMan);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,Media.getMediaByProject(mProjectId), mRecyclerView );
+        SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
 
-        mRecyclerView.setAdapter(mMediaAdapter);
+        List<Media> mediaList = Media.getMediaByProjectAndStatus(mProjectId,"=",Media.STATUS_LOCAL);
+        String title = "Waiting for upload";
+        MediaSection section = new MediaSection(getContext(),mRecyclerView,R.layout.activity_media_list_square,title,mediaList);
+        sectionAdapter.addSection(section);
+
+        mediaList = Media.getMediaByProjectAndStatus(mProjectId,"=",Media.STATUS_PUBLISHED);
+        title = "Uploaded";
+        section = new MediaSection(getContext(),mRecyclerView,R.layout.activity_media_list_square,title,mediaList);
+        sectionAdapter.addSection(section);
+
+        mRecyclerView.setAdapter(sectionAdapter);
 
         return rootView;
     }

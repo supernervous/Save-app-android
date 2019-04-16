@@ -10,15 +10,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -55,6 +46,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.model.Account;
@@ -94,8 +92,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_media);
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -397,16 +393,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
         });
     }
 
-    private void startNearby ()
-    {
-        Intent intent = new Intent(this, NearbyActivity.class);
-        intent.putExtra("isServer",true);
-
-        intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, mMedia.getId());
-
-        startActivity(intent);
-    }
-
     private void showMedia ()
     {
 
@@ -441,6 +427,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         Account accountWebDAV = new Account(this, WebDAVSiteController.SITE_NAME);
         Account accountArchive = new Account(this, ArchiveSiteController.SITE_NAME);
 
+        /**
         if (PirateBoxSiteController.isPirateBox(this))
         {
             //mark queued
@@ -450,21 +437,22 @@ public class ReviewMediaActivity extends AppCompatActivity {
             startService(new Intent(this, PublishService.class));
         }
         else {
-            // if user doesn't have an account
-            if (accountWebDAV.isAuthenticated() || accountArchive.isAuthenticated()) {
+         **/
+        // if user doesn't have an account
+        if (accountWebDAV.isAuthenticated() || accountArchive.isAuthenticated()) {
 
-                //mark queued
-                mMedia.status = Media.STATUS_QUEUED;
-                saveMedia();
-                bindMedia();
-                startService(new Intent(this, PublishService.class));
+            //mark queued
+            mMedia.status = Media.STATUS_QUEUED;
+            saveMedia();
+            bindMedia();
+            startService(new Intent(this, PublishService.class));
 
-            }
-            else {
-                Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
-                startActivity(firstStartIntent);
-            }
         }
+        else {
+            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            startActivity(firstStartIntent);
+        }
+      //  }
 
     }
 

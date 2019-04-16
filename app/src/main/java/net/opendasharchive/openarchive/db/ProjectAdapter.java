@@ -1,25 +1,15 @@
 package net.opendasharchive.openarchive.db;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaGridFragment;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
-import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter;
 
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * Created by micahjlucas on 1/20/15.

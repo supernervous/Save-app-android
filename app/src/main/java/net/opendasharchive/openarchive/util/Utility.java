@@ -34,7 +34,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -43,6 +42,8 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import net.opendasharchive.openarchive.db.Media;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class Utility {
 

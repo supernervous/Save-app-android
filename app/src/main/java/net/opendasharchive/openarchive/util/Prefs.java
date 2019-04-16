@@ -3,9 +3,8 @@ package net.opendasharchive.openarchive.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
 
-import java.util.Locale;
+import androidx.preference.PreferenceManager;
 
 public class Prefs {
 

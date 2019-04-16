@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
@@ -15,6 +14,7 @@ import net.opendasharchive.openarchive.util.Globals;
 
 import java.util.HashMap;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.scal.secureshareui.controller.SiteController;
 
 

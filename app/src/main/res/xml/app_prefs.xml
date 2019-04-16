@@ -29,27 +29,6 @@
             android:defaultValue="false"/>
 
     </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="@string/prefs_nearby_title">
 
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="nearby_use_bluetooth"
-            android:title="@string/prefs_bt_title"
-            android:summary="@string/prefs_bt_summary"
-            android:defaultValue="true" />
-
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="nearby_use_wifi"
-            android:title="@string/prefs_wifi_title"
-            android:summary="@string/prefs_wifi_summary"
-            android:defaultValue="true" />
-
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="nearby_use_lan"
-            android:title="@string/prefs_lan_title"
-            android:summary="@string/prefs_lan_summary"
-            android:defaultValue="true" />
-
-    </android.support.v7.preference.PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

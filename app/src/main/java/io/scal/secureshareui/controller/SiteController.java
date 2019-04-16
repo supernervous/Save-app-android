@@ -51,10 +51,6 @@ public abstract class SiteController {
 	public static final String VALUE_KEY_LICENSE_URL = "licenseUrl";
     public static final String VALUE_KEY_MIME_TYPE = "mimeType";
 
-
-    protected static final String ORBOT_HOST = "127.0.0.1";
-    protected static final int ORBOT_HTTP_PORT = 8118;
-    protected static final int ORBOT_SOCKS_PORT = 9050;
     
     public static int METADATA_REQUEST_CODE = 24153;
 
@@ -97,9 +93,10 @@ public abstract class SiteController {
        {
            return new WebDAVSiteController(context,listener,jobId);
        }
+       /**
         else if (site.equalsIgnoreCase(PirateBoxSiteController.SITE_KEY)) {
            return new PirateBoxSiteController(context,listener,jobId);
-       }
+       }**/
         return null;
     }
 

@@ -161,6 +161,7 @@ public class PirateBoxSiteController extends SiteController {
         return false;
     }
 
+    /**
     public static boolean isPirateBox (Context context)
     {
         WifiManager wifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
@@ -173,5 +174,5 @@ public class PirateBoxSiteController extends SiteController {
         }
 
         return false;
-    }
+    }**/
 }

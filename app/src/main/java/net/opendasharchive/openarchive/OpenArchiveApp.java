@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -19,6 +18,7 @@ import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.ProofMode;
 
+import androidx.multidex.MultiDex;
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
 import info.guardianproject.netcipher.proxy.OrbotHelper;
@@ -26,10 +26,6 @@ import info.guardianproject.netcipher.proxy.StatusCallback;
 import io.cleaninsights.sdk.CleanInsights;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import okhttp3.OkHttpClient;
-import sintulabs.p2p.Ayanda;
-import sintulabs.p2p.IBluetooth;
-import sintulabs.p2p.ILan;
-import sintulabs.p2p.IWifiDirect;
 
 /**
  * Created by josh on 3/6/15.
@@ -39,8 +35,6 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public static volatile boolean orbotConnected = false;
 
     private CleanInsightsApplication cleanInsightsApp;
-
-    private static Ayanda mAyandaInstance;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -180,12 +174,5 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         }
     }
 
-    public synchronized Ayanda getAyandaInstance(Activity context, IBluetooth bt, ILan lan, IWifiDirect wifi) {
 
-        if (mAyandaInstance == null) {
-            mAyandaInstance = new Ayanda(context, bt, lan, wifi);
-        }
-
-        return mAyandaInstance;
-    }
 }

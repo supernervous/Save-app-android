@@ -80,7 +80,7 @@
             >
 
 
-            <android.support.v7.widget.SwitchCompat
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/tb_cc_deriv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -110,7 +110,7 @@
             >
 
 
-            <android.support.v7.widget.SwitchCompat
+            <androidx.appcompat.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textOff="@string/answer_no"
@@ -141,7 +141,7 @@
             >
 
 
-            <android.support.v7.widget.SwitchCompat
+            <androidx.appcompat.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textOff="@string/answer_no"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context="net.opendasharchive.openarchive.ReviewMediaActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -16,7 +16,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://scgethemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -90,35 +90,6 @@
 </RelativeLayout>
 </ScrollView>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/bottom_sheet_nearby"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:clipToPadding="true"
-        android:visibility="gone"
-        android:background="@android:color/holo_blue_bright"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text=""
-                android:textSize="16sp"
-                android:textAllCaps="true"
-                android:padding="16dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text=""
-                android:padding="16dp"
-                android:textSize="16sp"/>
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

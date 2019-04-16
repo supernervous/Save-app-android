@@ -2,8 +2,6 @@ package net.opendasharchive.openarchive.db;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,9 @@ import net.opendasharchive.openarchive.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by micahjlucas on 1/20/15.

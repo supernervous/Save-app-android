@@ -12,23 +12,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerTitleStrip;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -37,13 +20,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.coursion.freakycoder.mediapicker.galleries.Gallery;
+import com.google.android.material.snackbar.Snackbar;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.util.Globals;
@@ -58,6 +41,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.PagerTabStrip;
+import androidx.viewpager.widget.ViewPager;
 import io.cleaninsights.sdk.piwik.Measurer;
 
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
@@ -72,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         //otherwise go right into this app;
 
@@ -106,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-        boolean showIntro = true;// sharedPref.getBoolean(Globals.PREF_FIRST_TIME_KEY,true);
+        boolean showIntro = sharedPref.getBoolean(Globals.PREF_FIRST_TIME_KEY,true);
         if (showIntro)
         {
             Intent intent = new Intent(this, OAAppIntro.class);
@@ -126,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         createProject("Project " + projectIdx);
         refreshProjects();
     }
+
     private void createProject (String description)
     {
         Project project = new Project ();
@@ -254,12 +244,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_new_project:
                 startNewProject();
                 return true;
-          //  case R.id.action_add_space:
-            //    setupSpace();
-              //  return true;
-            case R.id.action_nearby:
-                startNearby();
-                return true;
+
 
         }
 
@@ -361,12 +346,12 @@ public class MainActivity extends AppCompatActivity {
         media.save();
 
 
-
         //if not offline, then try to notarize
-        if (!PirateBoxSiteController.isPirateBox(this)) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putBoolean("autoNotarize", false).commit();
-        }
+
+        //if (!PirateBoxSiteController.isPirateBox(this)) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean("autoNotarize", false).commit();
+    //}
 
         /**
         String hash = ProofMode.generateProof(this, Uri.fromFile(fileSource));
@@ -405,10 +390,10 @@ public class MainActivity extends AppCompatActivity {
         media.save();
 
         //if not offline, then try to notarize
-        if (!PirateBoxSiteController.isPirateBox(this)) {
+        //if (!PirateBoxSiteController.isPirateBox(this)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             prefs.edit().putBoolean("autoNotarize", false).commit();
-        }
+        //}
 
         String hash = ProofMode.generateProof(this, uri);
         if (!TextUtils.isEmpty(hash))
@@ -452,13 +437,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void startNearby ()
-    {
-        if (checkNearbyPermissions()) {
-            Intent intent = new Intent(this, NearbyActivity.class);
-            startActivity(intent);
-        }
-    }
 
     private void importMedia ()
     {

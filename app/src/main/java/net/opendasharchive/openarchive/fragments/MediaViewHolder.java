@@ -1,13 +1,8 @@
 package net.opendasharchive.openarchive.fragments;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,8 +19,11 @@ import net.opendasharchive.openarchive.util.FileUtils;
 import java.io.File;
 import java.util.HashMap;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 public class MediaViewHolder extends RecyclerView.ViewHolder {
 
+    private View mView;
     private ImageView ivIcon;
     private TextView tvTitle;
     private TextView tvCreateDate;
@@ -40,6 +38,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
 
+        mView= itemView;
         mContext = context;
 
         ivIcon = itemView.findViewById(R.id.ivIcon);
@@ -60,6 +59,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     public void bindData(final Media currentMedia) {
 
         final String mediaPath = currentMedia.getOriginalFilePath();
+
+        mView.setTag(currentMedia.getId());
 
         if (currentMedia.getMimeType().startsWith("image")) {
 

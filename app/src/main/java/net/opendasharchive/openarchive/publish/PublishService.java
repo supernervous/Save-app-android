@@ -15,9 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import net.opendasharchive.openarchive.ArchiveSettingsActivity;
@@ -34,6 +31,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
@@ -125,6 +124,7 @@ public class PublishService extends Service implements Runnable {
     private void uploadMedia (Media media)
     {
 
+        /**
         if (PirateBoxSiteController.isPirateBox(this))
         {
             Account account = new Account(this, PirateBoxSiteController.SITE_NAME);
@@ -137,7 +137,7 @@ public class PublishService extends Service implements Runnable {
             notifyMediaUpdated(media);
             siteController.upload(account, media, valueMap);
         }
-        else {
+        else {**/
 
             SiteController sc = null;
 
@@ -165,7 +165,7 @@ public class PublishService extends Service implements Runnable {
             sc.upload(account, media, valueMap);
 
 
-        }
+     //   }
     }
 
     private void deleteMedia (Media media)
