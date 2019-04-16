@@ -73,6 +73,15 @@ public class WebDAVSiteController extends SiteController {
 
     }
 
+    private void listFolders (String url) throws IOException {
+        List<DavResource> listFiles = sardine.list(url);
+
+        for (DavResource resource : listFiles)
+        {
+            Log.d(TAG, "resource: " + resource.getName() + ":" + resource.getPath());
+        }
+    }
+
     @Override
     public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
 
@@ -80,39 +89,48 @@ public class WebDAVSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
-        String basePath = server + "files/" + account.getUserName() + "/" + mContext.getString(R.string.app_name) + "/";
-        String url = basePath;
+        String folderName = media.getServerUrl();
+
+        String basePath = server;// + "files/" + account.getUserName();
+        StringBuffer workingUrl = new StringBuffer();
+
+        workingUrl.append(basePath);
+
+        if (!TextUtils.isEmpty(media.getServerUrl())) {
+            workingUrl.append('/');
+            workingUrl.append(media.getServerUrl());
+        }
+
+        String finalMediaPath = null;
 
         try {
+
+            //listFolders(basePath);
 
             if (!sardine.exists(basePath))
                 sardine.createDirectory(basePath);
 
+            if (!sardine.exists(workingUrl.toString()))
+                sardine.createDirectory(workingUrl.toString());
+
             String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
-            basePath += fileName;
+            workingUrl.append('/').append(fileName);
 
-            if (sardine.exists(basePath)) {
-                basePath += "-" + new Date().getTime();
-                sardine.createDirectory(basePath);
-            }
-            else
-                sardine.createDirectory(basePath);
+            finalMediaPath = workingUrl.toString();
 
-            url = basePath + '/' + fileName;
+            sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(),false);
 
-            sardine.put(mContext.getContentResolver(), url, mediaUri, media.getMimeType(),false);
+            media.setServerUrl(finalMediaPath);
 
-            media.setServerUrl(url);
-
-            jobSucceeded(url);
+            jobSucceeded(finalMediaPath);
 
             uploadMetadata (media, basePath, fileName);
             uploadProof(media, basePath);
 
             return true;
         } catch (IOException e) {
-            Log.e(TAG, "Failed primary media upload: " + url,e);
-            jobFailed(e,-1,url);
+            Log.e(TAG, "Failed primary media upload: " + workingUrl,e);
+            jobFailed(e,-1,finalMediaPath);
             return false;
         }
 
@@ -237,4 +255,5 @@ public class WebDAVSiteController extends SiteController {
         return result.toString();
 
     }
+
 }
