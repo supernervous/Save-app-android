@@ -108,11 +108,10 @@
     <string name="lbl_enter_value">Tap to enter a value.</string>
     <string name="title_activity_about">About OpenArchive</string>
 
-    <string name="about_body">OpenArchive is a free, open-source mobile application dedicated to maintaining the privacy, provenance, and preservation of your media. It enables you to add metadata and Creative Commons licensing to your audiovisual media and then send it to the Internet Archive over Tor; offering more agency over your media, while protecting civil liberties, and increasing interoperability for those who want to find, reuse and remix it in the future.\n\n
-OpenArchive is developed in partnership with the Internet Archive, StoryMaker, Scal.io, and Guardian Project. The project was founded by Natalie Cadranel with generous support from the Knight Foundation\'s Prototype Fund.\n\nLearn more at <a href="https://open-archive.net">https://open-archive.net</a>
+    <string name="about_body">This is the SAVE app from OpenArchive.
     </string>
 
-    <string name="upload_success">Your media is now available on the Internet Archive!</string>
+    <string name="upload_success">Your media is now SAVED!</string>
 
     <string name="share_using">Share archive link via</string>
     <string name="share_text">shared via OpenArchive at</string>
@@ -241,6 +240,11 @@ OpenArchive is developed in partnership with the Internet Archive, StoryMaker, S
     <string name="header_new_project">New Project</string>
     <string name="action_browse_projects">Browse Projects</string>
     <string name="title_activity_upload_manager">UploadManagerActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_plus">+</string>
+    <string name="create_a_new_project">Create a new project</string>
 
     <!-- Strings related to Settings -->
 

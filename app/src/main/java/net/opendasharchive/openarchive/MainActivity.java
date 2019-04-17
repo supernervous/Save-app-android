@@ -29,6 +29,7 @@ import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
@@ -41,6 +42,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -50,6 +52,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.PagerTabStrip;
 import androidx.viewpager.widget.ViewPager;
 import io.cleaninsights.sdk.piwik.Measurer;
+import io.scal.secureshareui.model.Account;
 
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
@@ -76,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.main_activity_title);
 
         mPager = findViewById(R.id.pager);
-        mPagerAdapter = new ProjectAdapter(getSupportFragmentManager());
-        mPagerAdapter.updateData(Project.getAllAsList());
+        mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
+        List<Project> listProjects = Project.getAllAsList();
+        mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
 
         final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
@@ -93,30 +97,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-        boolean showIntro = sharedPref.getBoolean(Globals.PREF_FIRST_TIME_KEY,true);
-        if (showIntro)
+        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+
+        if (account == null || TextUtils.isEmpty(account.getSite()))
         {
             Intent intent = new Intent(this, OAAppIntro.class);
             startActivity(intent);
-
-            sharedPref.edit().putBoolean(Globals.PREF_FIRST_TIME_KEY,false).commit();
         }
+
+
+        if (listProjects.size() > 0)
+            mPager.setCurrentItem(1);
+        else
+            mPager.setCurrentItem(0);
+
 
         //check for any queued uploads and restart
         ((OpenArchiveApp)getApplication()).uploadQueue();
+
 
     }
 
     private final static int REQUEST_NEW_PROJECT_NAME = 1001;
 
-    private void promptNewProject ()
+    public void promptNewProject ()
     {
         startActivityForResult(new Intent(this,NewProjectActivity.class),REQUEST_NEW_PROJECT_NAME);
 
     }
 
-
+    public void onNewProjectClicked (View view)
+    {
+        promptNewProject();
+    }
     
     private void startNewProject (String name)
     {
@@ -134,15 +147,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshProjects ()
     {
-        mPagerAdapter = new ProjectAdapter(getSupportFragmentManager());
-        mPagerAdapter.updateData(Project.getAllAsList());
+        List<Project> listProjects = Project.getAllAsList();
+        mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
+        mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
-        mPager.setCurrentItem(0);
+
+        if (listProjects.size() > 0)
+            mPager.setCurrentItem(1);
+        else
+            mPager.setCurrentItem(0);
+
+
     }
 
     private void refreshCurrentProject ()
     {
-        if (mPagerAdapter.getCount() > 0) {
+        if (mPager.getCurrentItem() > 0) {
             MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
             if (frag != null)
                 frag.refresh();
@@ -250,9 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 return true;**/
-            case R.id.action_new_project:
-                promptNewProject();
-                return true;
+
             case R.id.menu_upload_manager:
                 startActivity(new Intent(this,UploadManagerActivity.class));
                 return true;
