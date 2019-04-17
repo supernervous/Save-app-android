@@ -1,6 +1,0 @@
-[submodule "external/SecureShareLib"]
-	path = external/SecureShareLib
-	url = https://github.com/OpenArchive/SecureShareLib.git
-[submodule "external/NetCipher"]
-	path = external/NetCipher
-	url = https://github.com/OpenArchive/NetCipher.git
