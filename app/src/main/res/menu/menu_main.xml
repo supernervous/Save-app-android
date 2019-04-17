@@ -3,14 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
-    <item android:id="@+id/action_accounts" android:title="@string/drawer_accounts"
+
+
+    <item android:id="@+id/menu_upload_manager" android:title="@string/menu_item_publish"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_emo_basic"/>
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/baseline_cloud_upload_black_24"
+        />
 
     <item android:id="@+id/action_new_project" android:title="@string/action_new_project"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_emo_basic"/>
 
+    <!--
     <item android:id="@+id/action_settings"
         android:title="@string/drawer_settings"
         android:icon="@drawable/ic_action_settings"
@@ -20,6 +25,6 @@
     <item android:id="@+id/action_about" android:title="@string/drawer_about"
         android:orderInCategory="100"
         />
-
+-->
 
 </menu>

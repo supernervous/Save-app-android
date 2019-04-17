@@ -28,6 +28,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     private TextView tvTitle;
     private TextView tvCreateDate;
     private SimpleWaveformView tvWave;
+    private ImageView ivStatus;
 
     private Context mContext;
 
@@ -45,6 +46,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         tvTitle = itemView.findViewById(R.id.tvTitle);
         tvCreateDate = itemView.findViewById(R.id.tvCreateDate);
         tvWave = itemView.findViewById(R.id.event_item_sound);
+        ivStatus = itemView.findViewById(R.id.ivStatus);
 
         if (mPicasso == null) {
             VideoRequestHandler videoRequestHandler = new VideoRequestHandler(mContext);
@@ -171,13 +173,22 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
         StringBuffer sbTitle = new StringBuffer();
+        ivStatus.setVisibility(View.VISIBLE);
+        ivStatus.setImageResource(R.drawable.ic_info_black_24dp);
 
-        if (currentMedia.status == Media.STATUS_QUEUED)
+        if (currentMedia.status == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
-        else if (currentMedia.status == Media.STATUS_PUBLISHED)
+        }
+        else if (currentMedia.status == Media.STATUS_PUBLISHED) {
             sbTitle.append(mContext.getString(R.string.status_public));
-        else if (currentMedia.status == Media.STATUS_UPLOADING)
+            ivStatus.setVisibility(View.VISIBLE);
+            ivStatus.setImageResource(R.drawable.ic_check_white_48dp);
+        }
+        else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
+            ivStatus.setVisibility(View.VISIBLE);
+            ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
+        }
 
         if (sbTitle.length() > 0)
             sbTitle.append(": ");

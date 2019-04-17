@@ -4,6 +4,7 @@ package net.opendasharchive.openarchive.db;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.TextView;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.ReviewMediaActivity;
@@ -33,6 +34,9 @@ public class MediaSection extends StatelessSection {
         mMediaList = mediaList;
         mContext = context;
         mRecyclerView = recyclerView;
+
+        setHasHeader(true);
+
     }
 
     @Override
@@ -64,6 +68,17 @@ public class MediaSection extends StatelessSection {
 
     }
 
+    @Override
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+        return new HeaderViewHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+        HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+
+        headerHolder.tvTitle.setText(mTitle);
+    }
 
     public void updateData (List<Media> mediaList)
     {
@@ -71,4 +86,14 @@ public class MediaSection extends StatelessSection {
         notify();
     }
 
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView tvTitle;
+
+        HeaderViewHolder(View view) {
+            super(view);
+
+            tvTitle = view.findViewById(R.id.tvSectionTitle);
+        }
+    }
 }

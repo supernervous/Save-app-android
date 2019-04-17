@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/ivGroup"
+        android:orientation="vertical"
+        >
+    <ImageView android:id="@+id/ivIcon"
+               android:layout_width="80dp"
+               android:layout_height="80dp"
+               android:scaleType="centerCrop"
+               android:layout_marginTop="3dp"
+                android:src="@drawable/no_thumbnail"
+        />
+
+    <com.github.derlio.waveform.SimpleWaveformView
+        android:id="@+id/event_item_sound"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:waveformColor="#999999"
+        app:indicatorColor="#aa0000"
+        android:visibility="gone"
+        android:layout_marginTop="3dp"
+
+        />
+    </LinearLayout>
+
+    <TextView android:id="@+id/tvTitle"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_toRightOf="@+id/ivGroup"
+              android:layout_marginLeft="16dp"
+              tools:text="This is the title"
+              android:singleLine="true"/>
+
+    <TextView android:id="@+id/tvCreateDate"
+        android:layout_below="@+id/tvTitle"
+        android:layout_toRightOf="@+id/ivGroup"
+
+        android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:singleLine="true"
+        tools:text="This is the date"
+        android:layout_marginLeft="16dp"
+
+
+        />
+
+    <ImageView android:id="@+id/ivStatus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_check_white_48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:tint="@color/oablue"
+        android:visibility="gone"
+        />
+</RelativeLayout>
+

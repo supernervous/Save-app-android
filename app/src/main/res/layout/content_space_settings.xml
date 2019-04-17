@@ -39,7 +39,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profile"
+        android:text="@string/header_profile"
         android:textSize="24dp"
         android:textStyle="bold"
         />
@@ -50,7 +50,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Projects"
+        android:text="@string/header_projects"
         android:textSize="24dp"
         android:textStyle="bold"
         />
@@ -61,7 +61,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Info"
+        android:text="@string/header_info"
         android:textSize="24dp"
         android:textStyle="bold"
         />
@@ -71,7 +71,7 @@
         android:id="@+id/btnDatAUse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Data Use"
+        android:text="@string/action_data_use"
         android:textSize="22dp"
         />
 
@@ -83,7 +83,7 @@
         android:id="@+id/btnPrivacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Privacy"
+        android:text="@string/action_privacy"
         android:textSize="22dp"
         />
 
@@ -96,7 +96,7 @@
         android:id="@+id/btnAcount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="About"
+        android:text="@string/action_about"
         android:textSize="22dp"
         />
 

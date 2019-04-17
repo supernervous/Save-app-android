@@ -33,6 +33,7 @@ import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.w3c.dom.Text;
 import org.witness.proofmode.ProofMode;
 
 import java.io.File;
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter.updateData(Project.getAllAsList());
         mPager.setAdapter(mPagerAdapter);
 
-
         final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
         fabMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mPagerAdapter.getCount() > 0)
                     importMedia();
                 else {
-                    startNewProject();
-                    refreshProjects();
+                    promptNewProject();
                 }
             }
         });
@@ -109,10 +108,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startNewProject ()
+    private final static int REQUEST_NEW_PROJECT_NAME = 1001;
+
+    private void promptNewProject ()
     {
-        int projectIdx = mPagerAdapter.getCount()+1;
-        createProject("Project " + projectIdx);
+        startActivityForResult(new Intent(this,NewProjectActivity.class),REQUEST_NEW_PROJECT_NAME);
+
+    }
+
+
+    
+    private void startNewProject (String name)
+    {
+        createProject(name);
         refreshProjects();
     }
 
@@ -233,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 showSpaceSettings();
                 return true;
+                /**
             case R.id.action_settings:
                 Intent firstStartIntent = new Intent(this, SettingsActivity.class);
                 startActivity(firstStartIntent);
@@ -240,9 +249,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_about:
                 Intent intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
-                return true;
+                return true;**/
             case R.id.action_new_project:
-                startNewProject();
+                promptNewProject();
+                return true;
+            case R.id.menu_upload_manager:
+                startActivity(new Intent(this,UploadManagerActivity.class));
                 return true;
 
 
@@ -269,14 +281,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
         // Check which request we're responding to
         if (requestCode == Globals.REQUEST_FILE_IMPORT) {
             // Make sure the request was successful
-            if (resultCode == RESULT_OK && data != null) {
-                final ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+            if (resultCode == RESULT_OK && resultData != null) {
+                final ArrayList<String> selectionResult = resultData.getStringArrayListExtra("result");
 
                 final Snackbar bar = Snackbar.make(mPager, R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
@@ -304,6 +316,15 @@ public class MainActivity extends AppCompatActivity {
                     }.execute(result,mimeType);
 
                 }
+            }
+        }
+        else if (requestCode == REQUEST_NEW_PROJECT_NAME)
+        {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK && resultData != null) {
+                String newProjectName = resultData.getStringExtra("projectName");
+                if (!TextUtils.isEmpty(newProjectName))
+                    startNewProject(newProjectName);
             }
         }
 

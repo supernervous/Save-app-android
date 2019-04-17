@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_tags_lbl"
             android:layout_centerVertical="true"
-            android:visibility="gone"
             android:hint="@string/hint_tags" />
+
 
     <EditText
         android:id="@+id/tv_cc_license"
@@ -71,6 +71,7 @@
         android:orientation="vertical"
         android:id="@+id/groupLicenseChooser"
         android:padding="8dp"
+        android:visibility="gone"
         >
 
 

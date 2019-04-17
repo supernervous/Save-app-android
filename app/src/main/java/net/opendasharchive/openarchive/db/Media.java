@@ -175,6 +175,11 @@ public class Media extends SugarRecord {
        // return Media.listAll(Media.class,);
     }
 
+    public static List<Media> getMediaByStatus(long status) {
+        String[] values = {status+""};
+        return Media.find(Media.class,"status = ?",values,null,"STATUS, ID DESC",null);
+    }
+
     public static List<Media> getMediaByProject(long projectId) {
         String[] values = {projectId+""};
         return Media.find(Media.class,"PROJECT_ID = ?",values,null,"STATUS, ID DESC",null);

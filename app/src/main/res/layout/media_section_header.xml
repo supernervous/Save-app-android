@@ -16,13 +16,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/grey"
         android:textStyle="bold"
-        tools:text="Title test text"/>
+        tools:text="This is a section"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"/>
 </RelativeLayout>

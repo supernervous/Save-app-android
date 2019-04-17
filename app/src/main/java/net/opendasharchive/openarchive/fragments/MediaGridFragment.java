@@ -38,19 +38,8 @@ public class MediaGridFragment extends MediaListFragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(lMan);
 
-        SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
-
-        List<Media> mediaList = Media.getMediaByProjectAndStatus(mProjectId,"=",Media.STATUS_LOCAL);
-        String title = "Waiting for upload";
-        MediaSection section = new MediaSection(getContext(),mRecyclerView,R.layout.activity_media_list_square,title,mediaList);
-        sectionAdapter.addSection(section);
-
-        mediaList = Media.getMediaByProjectAndStatus(mProjectId,"=",Media.STATUS_PUBLISHED);
-        title = "Uploaded";
-        section = new MediaSection(getContext(),mRecyclerView,R.layout.activity_media_list_square,title,mediaList);
-        sectionAdapter.addSection(section);
-
-        mRecyclerView.setAdapter(sectionAdapter);
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,Media.getMediaByProject(mProjectId), mRecyclerView );
+        mRecyclerView.setAdapter(mMediaAdapter);
 
         return rootView;
     }

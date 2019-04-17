@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="net.opendasharchive.openarchive.SpaceSettingsActivity">
+    tools:context="net.opendasharchive.openarchive.UploadManagerActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,8 +16,8 @@
         android:background="?attr/colorPrimary"
         />
 
-    <include layout="@layout/content_space_settings" />
-
+    <include layout="@layout/content_upload_manager" />
 
 
 </LinearLayout>
+

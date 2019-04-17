@@ -593,51 +593,11 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void deleteMedia ()
     {
-        final Switch swDeleteLocal = new Switch(this);
-        final Switch swDeleteRemote = new Switch(this);
 
-        LinearLayout linearLayoutGroup = new LinearLayout(this);
-        linearLayoutGroup.setOrientation(LinearLayout.VERTICAL);
-        linearLayoutGroup.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        swDeleteLocal.setTextOn(getString(R.string.answer_yes));
-        swDeleteLocal.setTextOff(getString(R.string.answer_no));
-
-        TextView tvLocal = new TextView(this);
-        tvLocal.setText(R.string.delete_local);
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        linearLayout.addView(tvLocal);
-        linearLayout.addView(swDeleteLocal);
-
-        linearLayoutGroup.addView(linearLayout);
-
-        if (mMedia.getServerUrl() != null)
-        {
-            swDeleteRemote.setTextOn(getString(R.string.answer_yes));
-            swDeleteRemote.setTextOff(getString(R.string.answer_no));
-
-            TextView tvRemote = new TextView(this);
-            tvRemote.setText(R.string.delete_remote);
-
-            LinearLayout linearLayoutRemote = new LinearLayout(this);
-            linearLayoutRemote.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayoutRemote.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            linearLayoutRemote.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            linearLayoutRemote.addView(tvRemote);
-            linearLayoutRemote.addView(swDeleteRemote);
-            linearLayoutGroup.addView(linearLayoutRemote);
-
-        }
 
         AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this)
             .setTitle(R.string.menu_delete)
-            .setMessage(R.string.alert_delete_media).setView(linearLayoutGroup)
+            .setMessage(R.string.alert_delete_media)
             .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -649,7 +609,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    deleteMedia (swDeleteLocal.isChecked(),swDeleteRemote.isChecked());
+                    deleteMedia (false, false);
                     finish();
 
                 }

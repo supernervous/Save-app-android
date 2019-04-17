@@ -58,6 +58,16 @@
         android:singleLine="true"
         android:visibility="gone"
         />
-
+    <ImageView android:id="@+id/ivStatus"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="100dp"
+        android:src="@drawable/ic_check_white_48dp"
+        android:padding="0dp"
+        android:gravity="bottom|right"
+        android:tint="@color/oablue"
+        android:visibility="gone"
+        />
 </RelativeLayout>
 

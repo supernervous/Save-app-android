@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context="net.opendasharchive.openarchive.SpaceSettingsActivity">
+    tools:context="net.opendasharchive.openarchive.NewProjectActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,8 +14,8 @@
         android:background="?attr/colorPrimary"
         />
 
-    <include layout="@layout/content_space_settings" />
+    <include layout="@layout/content_new_project" />
 
 
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
