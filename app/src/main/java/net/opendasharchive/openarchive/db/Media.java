@@ -47,17 +47,20 @@ public class Media extends SugarRecord {
 
     public long projectId;
 
-    public final static int STATUS_ERROR = 9;
-    public final static int STATUS_DELETE_LOCAL = 6;
+    public long contentLength;
+
+    //public final static int STATUS_ERROR = 9;
+    //public final static int STATUS_DELETE_LOCAL = 6;
     public final static int STATUS_DELETE_REMOTE = 7;
-    public final static int STATUS_ARCHIVED = 5;
-    public final static int STATUS_PUBLISHED = 3;
+    //public final static int STATUS_ARCHIVED = 5;
+    public final static int STATUS_UPLOADED = 5;
     public final static int STATUS_UPLOADING = 4;
+    public final static int STATUS_PUBLISHED = 3;
     public final static int STATUS_QUEUED = 2;
     public final static int STATUS_LOCAL = 1;
     public final static int STATUS_NEW = 0;
 
-    private final static String[] WHERE_NOT_DELETED = {STATUS_PUBLISHED+""};
+    private final static String[] WHERE_NOT_DELETED = {STATUS_UPLOADED+""};
 
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
@@ -177,7 +180,23 @@ public class Media extends SugarRecord {
 
     public static List<Media> getMediaByStatus(long status) {
         String[] values = {status+""};
-        return Media.find(Media.class,"status = ?",values,null,"STATUS, ID DESC",null);
+        return Media.find(Media.class,"status = ?",values,null,"STATUS DESC",null);
+    }
+
+    public static List<Media> getMediaByStatus(long[] statuses) {
+        String[] values = new String[statuses.length];
+        int idx = 0;
+        for (long status: statuses)
+            values[idx++] = status + "";
+
+        StringBuffer sbWhere = new StringBuffer();
+        for (int i = 0; i < values.length; i++) {
+            sbWhere.append("status = ?");
+            if (i + 1 < values.length)
+                sbWhere.append(" OR ");
+        }
+
+        return Media.find(Media.class,sbWhere.toString(),values,null,"STATUS DESC",null);
     }
 
     public static List<Media> getMediaByProject(long projectId) {
@@ -208,6 +227,16 @@ public class Media extends SugarRecord {
     public long getProjectId ()
     {
         return this.projectId;
+    }
+
+    public void setContentLength (long contentLength)
+    {
+        this.contentLength = contentLength;
+    }
+
+    public long getContentLength ()
+    {
+        return this.contentLength;
     }
 }
 

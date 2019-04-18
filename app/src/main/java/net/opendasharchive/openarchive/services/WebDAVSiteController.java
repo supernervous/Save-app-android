@@ -38,6 +38,8 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import static com.orm.util.Collection.list;
+
 public class WebDAVSiteController extends SiteController {
 
     private Sardine sardine;
@@ -91,45 +93,44 @@ public class WebDAVSiteController extends SiteController {
 
         String folderName = media.getServerUrl();
 
-        String basePath = server;// + "files/" + account.getUserName();
-        StringBuffer workingUrl = new StringBuffer();
+        String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
 
-        workingUrl.append(basePath);
+        String projectFolderPath = server + '/' + folderName;
 
-        if (!TextUtils.isEmpty(media.getServerUrl())) {
-            workingUrl.append('/');
-            workingUrl.append(media.getServerUrl());
-        }
 
         String finalMediaPath = null;
 
         try {
+            if (!sardine.exists(projectFolderPath))
+                sardine.createDirectory(projectFolderPath);
 
-            //listFolders(basePath);
+            projectFolderPath += '/' + fileName;
+            if (!sardine.exists(projectFolderPath))
+                sardine.createDirectory(projectFolderPath);
 
-            if (!sardine.exists(basePath))
-                sardine.createDirectory(basePath);
+            finalMediaPath = projectFolderPath + '/' + fileName;
 
-            if (!sardine.exists(workingUrl.toString()))
-                sardine.createDirectory(workingUrl.toString());
+            if (!sardine.exists(finalMediaPath)) {
+                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(), false);
 
-            String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
-            workingUrl.append('/').append(fileName);
+                media.setServerUrl(finalMediaPath);
 
-            finalMediaPath = workingUrl.toString();
+                jobSucceeded(finalMediaPath);
 
-            sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(),false);
+                uploadMetadata (media, projectFolderPath, fileName);
+                uploadProof(media, projectFolderPath);
 
-            media.setServerUrl(finalMediaPath);
+            }
+            else
+            {
+                media.setServerUrl(finalMediaPath);
+                jobSucceeded(finalMediaPath);
 
-            jobSucceeded(finalMediaPath);
-
-            uploadMetadata (media, basePath, fileName);
-            uploadProof(media, basePath);
+            }
 
             return true;
         } catch (IOException e) {
-            Log.e(TAG, "Failed primary media upload: " + workingUrl,e);
+            Log.e(TAG, "Failed primary media upload: " + finalMediaPath,e);
             jobFailed(e,-1,finalMediaPath);
             return false;
         }
@@ -226,8 +227,8 @@ public class WebDAVSiteController extends SiteController {
         StringBuffer result = new StringBuffer();
         String ext;
 
-        String randomString = new Util.RandomString(4).nextString();
-        result.append(randomString).append('-');
+    //    String randomString = new Util.RandomString(4).nextString();
+     //   result.append(randomString).append('-');
         ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
 
         if (TextUtils.isEmpty(ext))
@@ -245,7 +246,9 @@ public class WebDAVSiteController extends SiteController {
 
         try {
             result.append(URLEncoder.encode(title,"UTF-8"));
-            result.append('.').append(ext);
+
+            if (!title.endsWith(ext))
+                result.append('.').append(ext);
 
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "Couldn't encode title",e);

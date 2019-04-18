@@ -17,6 +17,9 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -173,21 +176,30 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
         StringBuffer sbTitle = new StringBuffer();
-        ivStatus.setVisibility(View.VISIBLE);
-        ivStatus.setImageResource(R.drawable.ic_info_black_24dp);
+
+        if (ivStatus != null) {
+            ivStatus.setVisibility(View.VISIBLE);
+            ivStatus.setImageResource(R.drawable.ic_info_black_24dp);
+        }
 
         if (currentMedia.status == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
-        }
-        else if (currentMedia.status == Media.STATUS_PUBLISHED) {
+            if (ivStatus != null) {
+                ivStatus.setVisibility(View.VISIBLE);
+                ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
+            }
+        } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
             sbTitle.append(mContext.getString(R.string.status_public));
-            ivStatus.setVisibility(View.VISIBLE);
-            ivStatus.setImageResource(R.drawable.ic_check_white_48dp);
-        }
-        else if (currentMedia.status == Media.STATUS_UPLOADING) {
+            if (ivStatus != null) {
+                ivStatus.setVisibility(View.VISIBLE);
+                ivStatus.setImageResource(R.drawable.ic_check_white_48dp);
+            }
+        } else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
-            ivStatus.setVisibility(View.VISIBLE);
-            ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
+            if (ivStatus != null) {
+                ivStatus.setVisibility(View.VISIBLE);
+                ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
+            }
         }
 
         if (sbTitle.length() > 0)
@@ -196,6 +208,38 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         sbTitle.append(currentMedia.getTitle());
         tvTitle.setText(sbTitle.toString());
 
-        tvCreateDate.setText(currentMedia.getFormattedCreateDate());
+        File fileMedia = new File(Uri.parse(currentMedia.getOriginalFilePath()).getPath());
+
+        if (fileMedia.exists())
+        {
+            tvCreateDate.setText(readableFileSize(fileMedia.length()));
+        }
+        else {
+
+            if (currentMedia.contentLength == -1)
+            {
+                try {
+                    InputStream is = mContext.getContentResolver().openInputStream(Uri.parse(currentMedia.getOriginalFilePath()));
+                    currentMedia.contentLength = is.available();
+                    currentMedia.save();
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            if (currentMedia.contentLength > 0)
+                tvCreateDate.setText(readableFileSize(currentMedia.contentLength));
+            else
+                tvCreateDate.setText(currentMedia.getFormattedCreateDate());
+        }
+    }
+
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }

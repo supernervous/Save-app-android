@@ -1,0 +1,1 @@
+alter table MEDIA add CONTENT_LENGTH INTEGER;

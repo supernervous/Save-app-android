@@ -22,6 +22,7 @@ import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.SettingsActivity;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
 import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
@@ -98,11 +99,23 @@ public class PublishService extends Service implements Runnable {
             publishing = true;
 
             //get all media items that are set into queued state
-            List<Media> results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            List<Media> results = null;
 
-            //iterate through them, and upload one by one
-            for (Media media : results) {
-                uploadMedia(media);
+            //do 3 loops through
+            for (int i = 0; i < 3; i++) {
+                results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+
+                if (results.size() > 0) {
+                    //iterate through them, and upload one by one
+                    for (Media media : results) {
+                        uploadMedia(media);
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                    }
+                }
             }
 
             results = Media.find(Media.class, "status = ?", Media.STATUS_DELETE_REMOTE + "");
@@ -141,7 +154,10 @@ public class PublishService extends Service implements Runnable {
 
             SiteController sc = null;
 
+            Project project = Project.getById(media.projectId);
+
             HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
+            media.serverUrl = project.description;
             media.status = Media.STATUS_UPLOADING;
             media.save();
             notifyMediaUpdated(media);
@@ -210,7 +226,7 @@ public class PublishService extends Service implements Runnable {
             // String resultUrl = getDetailsUrlFromResult(result);
 
             //uploadMedia.setServerUrl(resultUrl);
-            uploadMedia.status = Media.STATUS_PUBLISHED;
+            uploadMedia.status = Media.STATUS_UPLOADED;
             uploadMedia.save();
             notifyMediaUpdated(uploadMedia);
 

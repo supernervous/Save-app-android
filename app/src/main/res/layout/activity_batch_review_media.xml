@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="net.opendasharchive.openarchive.UploadManagerActivity"
+    android:theme="@style/AppMediaTheme"
+    >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        />
+
+        <fragment
+            android:id="@+id/fragUploadManager"
+            class="net.opendasharchive.openarchive.fragments.MediaReviewListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+</LinearLayout>
+

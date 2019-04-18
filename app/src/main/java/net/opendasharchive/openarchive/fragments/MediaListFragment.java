@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
@@ -18,17 +19,25 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MediaListFragment extends Fragment {
 
     protected RecyclerView mRecyclerView;
+    protected TextView mActionUpload;
     MediaAdapter mMediaAdapter;
     protected static final String TAG = "RecyclerViewFragment";
 
     protected long mProjectId = -1;
     protected long mStatus = Media.STATUS_UPLOADING;
+    protected long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED};
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public MediaListFragment() {
+    }
+
+    public List<Media> getMediaList ()
+    {
+        return mMediaAdapter.getMediaList();
     }
 
     public void setStatus (long status) {
@@ -48,7 +57,7 @@ public class MediaListFragment extends Fragment {
 
             if (mProjectId == -1)
             {
-                listMedia = Media.getMediaByStatus(mStatus);
+                listMedia = Media.getMediaByStatus(mStatuses);
 
             }
             else
@@ -72,16 +81,33 @@ public class MediaListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
 
+        mActionUpload = rootView.findViewById(R.id.action_upload);
+
         List<Media> listMedia = null;
 
         if (mProjectId == -1)
         {
-            listMedia = Media.getMediaByStatus(mStatus);
+            listMedia = Media.getMediaByStatus(mStatuses);
 
         }
         else
         {
             listMedia = Media.getMediaByProject(mProjectId);
+
+            for (Media media : listMedia)
+            {
+                if (media.status == Media.STATUS_LOCAL)
+                {
+                    mActionUpload.setVisibility(View.VISIBLE);
+                    mActionUpload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+                    break;
+                }
+            }
         }
 
         mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short,listMedia, mRecyclerView );

@@ -65,7 +65,10 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         Logger.setLogLevel(Logger.LogLevel.DEBUG);
 
         //        initInsights ();
-         initNetCipher(this);
+
+
+        if (Prefs.getUseTor())
+            initNetCipher(this);
 
     }
 

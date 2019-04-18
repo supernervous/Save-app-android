@@ -1,34 +1,34 @@
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:asp="http://schemas.android.com/apk/res-auto">
 
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="@string/prefs_data_title">
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:key="use_proofmode"
             android:title="@string/prefs_use_proofmode_title"
             android:summary="@string/prefs_use_proofmode_summary"
             android:defaultValue="false" />
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="@string/prefs_networking_title">
 
-        <android.support.v7.preference.SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:key="use_tor"
             android:title="@string/prefs_use_tor_title"
             android:summary="@string/prefs_use_tor_summary"
             android:defaultValue="false" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <androidx.preference.CheckBoxPreference
             android:key="upload_wifi_only"
             android:title="@string/prefs_upload_wifi_only_title"
             android:summary="@string/prefs_upload_wifi_only_summary"
             android:defaultValue="false"/>
 
-    </android.support.v7.preference.PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

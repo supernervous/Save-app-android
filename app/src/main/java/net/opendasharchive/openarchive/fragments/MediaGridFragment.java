@@ -1,10 +1,12 @@
 package net.opendasharchive.openarchive.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.opendasharchive.openarchive.BatchMediaReviewActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
@@ -38,11 +40,68 @@ public class MediaGridFragment extends MediaListFragment {
         mRecyclerView = rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(lMan);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,Media.getMediaByProject(mProjectId), mRecyclerView );
+        mActionUpload = rootView.findViewById(R.id.action_upload);
+
+        List<Media> listMedia = Media.getMediaByProject(mProjectId);
+
+        for (Media media : listMedia)
+        {
+            if (media.status == Media.STATUS_LOCAL)
+            {
+                mActionUpload.setVisibility(View.VISIBLE);
+                mActionUpload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getActivity(), BatchMediaReviewActivity.class));
+                    }
+                });
+                break;
+            }
+        }
+
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,listMedia, mRecyclerView );
         mRecyclerView.setAdapter(mMediaAdapter);
 
         return rootView;
     }
 
+    public void refresh ()
+    {
+        if (mMediaAdapter != null)
+        {
+            List<Media> listMedia = null;
+
+            if (mProjectId == -1)
+            {
+                listMedia = Media.getMediaByStatus(mStatuses);
+
+            }
+            else
+            {
+                listMedia = Media.getMediaByProject(mProjectId);
+            }
+
+            mActionUpload.setVisibility(View.GONE);
+
+            for (Media media : listMedia)
+            {
+                if (media.status == Media.STATUS_LOCAL)
+                {
+                    mActionUpload.setVisibility(View.VISIBLE);
+                    mActionUpload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getActivity(), BatchMediaReviewActivity.class));
+                        }
+                    });
+                    break;
+                }
+            }
+
+            mMediaAdapter.updateData(listMedia);
+
+        }
+
+    }
 
 }

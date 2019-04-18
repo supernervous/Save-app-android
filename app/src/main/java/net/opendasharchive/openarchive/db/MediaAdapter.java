@@ -33,6 +33,11 @@ public class MediaAdapter extends RecyclerView.Adapter {
         this.recyclerview = recyclerView;
     }
 
+    public List<Media> getMediaList ()
+    {
+        return data;
+    }
+
     public void updateData (List<Media> data)
     {
         this.data = data;

@@ -43,19 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initValues ()
         {
-            /**
-            Account account = new Account(getActivity(), null);
-            ((EditTextPreference)findPreference("archive_username")).setText(account.getUserName());
 
-            if (!account.isAuthenticated()) {
-                findPreference("archive_username").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        getActivity().startActivity(new Intent(getActivity(), FirstStartActivity.class));
-                        return true;
-                    }
-                });
-            }**/
         }
 
 

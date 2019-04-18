@@ -11,6 +11,9 @@ public class Prefs {
     public final static String PREF_UPLOAD_WIFI_ONLY = "upload_wifi_only";
     public final static String PREF_NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth";
     public final static String PREF_NEARBY_USE_WIFI = "nearby_use_wifi";
+    public final static String PREF_USE_TOR = "use_tor";
+    public final static String PREF_USE_PROOFMODE = "use_proofmode";
+
 
     private static SharedPreferences prefs;
 
@@ -57,5 +60,15 @@ public class Prefs {
     public static void setNearbyUseWifi (boolean useWifi)
     {
         putBoolean(PREF_NEARBY_USE_WIFI,useWifi);
+    }
+
+    public static boolean getUseTor ()
+    {
+        return prefs.getBoolean(PREF_USE_TOR, false);
+    }
+
+    public static void setUseTor (boolean useTor)
+    {
+        putBoolean(PREF_USE_TOR,useTor);
     }
 }

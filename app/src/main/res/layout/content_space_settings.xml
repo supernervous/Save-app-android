@@ -16,6 +16,7 @@
         android:layout_gravity="center_horizontal"
         />
     <TextView
+        android:id="@+id/txtSpaceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SPACE NAME"
@@ -25,6 +26,7 @@
         />
 
     <TextView
+        android:id="@+id/txtSpaceUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="foo@foo.org"
@@ -42,6 +44,7 @@
         android:text="@string/header_profile"
         android:textSize="24dp"
         android:textStyle="bold"
+        android:id="@+id/btnProfile"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,7 +71,7 @@
 
 
     <TextView
-        android:id="@+id/btnDatAUse"
+        android:id="@+id/btnDataUse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/action_data_use"

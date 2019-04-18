@@ -163,7 +163,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 && mMedia.status != Media.STATUS_NEW)
         {
 
-            if (mMedia.status == Media.STATUS_PUBLISHED) {
+            if (mMedia.status == Media.STATUS_UPLOADED||mMedia.status == Media.STATUS_PUBLISHED) {
                 tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
                 tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
                 tvUrl.setVisibility(View.VISIBLE);
@@ -289,9 +289,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_review_media, menu);
 
         menuShare = menu.findItem(R.id.menu_item_share);
-        menuPublish = menu.findItem(R.id.menu_item_publish);
+        menuPublish = menu.findItem(R.id.menu_upload);
 
-        if (mMedia.status != Media.STATUS_PUBLISHED)
+        if (mMedia.status != Media.STATUS_UPLOADED)
             menuPublish.setVisible(true);
         else {
             menuShare.setVisible(true);
@@ -315,7 +315,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_item_publish:
+            case R.id.menu_upload:
                 uploadMedia();
                 break;
           //  case R.id.menu_item_nearby:
