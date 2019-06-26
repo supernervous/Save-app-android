@@ -248,6 +248,8 @@
 
     <string name="title_activity_batch_media_review">Review</string>
     <string name="action_upload">Upload</string>
+    <string name="action_preview">Preview</string>
+
     <!-- Strings related to Settings -->
 
 
