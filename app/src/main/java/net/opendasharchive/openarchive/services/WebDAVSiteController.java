@@ -118,17 +118,9 @@ public class WebDAVSiteController extends SiteController {
             finalMediaPath = projectFolderPath + '/' + fileName;
 
             if (!sardine.exists(finalMediaPath)) {
-                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(), false, new SardineListener() {
+                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
                     @Override
                     public void transferred(long bytes) {
-
-                        /**
-                        float perc = 0;
-
-                        if (media.contentLength > 0)
-                            perc = ((float)bytes) / ((float)media.contentLength) * 100f;
-                         **/
-
                         jobProgress(bytes,"uploading");
                     }
                 });
@@ -171,24 +163,14 @@ public class WebDAVSiteController extends SiteController {
             fos.write(json.getBytes());
             fos.flush();
             fos.close();
-            sardine.put(urlMeta, fileMetaData, "text/plain", false, new SardineListener() {
-                @Override
-                public void transferred(long bytes) {
-
-                }
-            });
+            sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
             String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
             File fileProofDir = ProofMode.getProofDir(metaMediaHash);
             if (fileProofDir != null && fileProofDir.exists()) {
                 File[] filesProof = fileProofDir.listFiles();
                 for (File fileProof : filesProof) {
-                    sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false, new SardineListener() {
-                        @Override
-                        public void transferred(long bytes) {
-
-                        }
-                    });
+                    sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false, null);
                 }
 
             }

@@ -49,6 +49,13 @@ public class MediaListFragment extends Fragment {
         mProjectId = projectId;
     }
 
+    public void updateItem (long mediaId, long progress)
+    {
+        mMediaAdapter.updateItem(mediaId, progress);
+
+    }
+
+
     public void refresh ()
     {
         if (mMediaAdapter != null)

@@ -44,29 +44,14 @@ public class BatchMediaReviewActivity extends AppCompatActivity {
         super.onResume();
 
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter(INTENT_FILTER_NAME));
     }
 
     @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
+    public void onPause() {
+       
+        super.onPause();
     }
 
-    // Our handler for received Intents. This will be called whenever an Intent
-// with an action named "custom-event-name" is broadcasted.
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            Log.d("receiver", "Updating media");
-
-            mFrag.refresh();
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

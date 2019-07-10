@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
 import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 
 
@@ -43,12 +47,14 @@ public class UploadManagerActivity extends AppCompatActivity {
                 new IntentFilter(INTENT_FILTER_NAME));
     }
 
+
     @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
+    protected void onPause() {
+        super.onPause();
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
     }
+
 
     // Our handler for received Intents. This will be called whenever an Intent
 // with an action named "custom-event-name" is broadcasted.
@@ -59,7 +65,21 @@ public class UploadManagerActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             Log.d("receiver", "Updating media");
 
-            mFrag.refresh();
+            int status = intent.getIntExtra(MESSAGE_KEY_STATUS,-1);
+            if (status == (Media.STATUS_UPLOADED))
+                mFrag.refresh();
+            else if (status == (Media.STATUS_UPLOADING))
+            {
+                long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID,-1);
+                long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS,-1);
+
+                if (mediaId != -1)
+                {
+                    mFrag.updateItem(mediaId, progress);
+                }
+
+            }
+
         }
     };
 

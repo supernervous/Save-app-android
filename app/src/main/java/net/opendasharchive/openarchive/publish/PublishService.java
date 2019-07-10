@@ -39,6 +39,10 @@ import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
 import io.scal.secureshareui.model.Account;
 
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
+
 public class PublishService extends Service implements Runnable {
 
     private boolean isRunning = false;
@@ -247,17 +251,15 @@ public class PublishService extends Service implements Runnable {
         public void progress(Message msg) {
             Bundle data = msg.getData();
 
-            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
-            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
-
-            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
-
-            String message = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
-            //Log.d(TAG, "upload progress: " + progress);
-
             uploadMedia.progress = (int)contentLengthUploaded;
-            uploadMedia.save();
+
+            if (uploadMedia.status != Media.STATUS_UPLOADING)
+            {
+                uploadMedia.status = Media.STATUS_UPLOADING;
+                uploadMedia.save();
+            }
+
             notifyMediaUpdated(uploadMedia);
         }
 
@@ -369,10 +371,9 @@ public class PublishService extends Service implements Runnable {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent(MainActivity.INTENT_FILTER_NAME);
         // You can also include some extra data.
-        intent.putExtra("mediaId", media.getId());
-        intent.putExtra("mediaStatus",media.status);
-        intent.putExtra("mediaProgress",media.progress);
-
+        intent.putExtra(MESSAGE_KEY_MEDIA_ID, media.getId());
+        intent.putExtra(MESSAGE_KEY_STATUS,media.status);
+        intent.putExtra(MESSAGE_KEY_PROGRESS,media.progress);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

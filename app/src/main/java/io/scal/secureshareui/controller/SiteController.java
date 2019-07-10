@@ -39,6 +39,8 @@ public abstract class SiteController {
     public static final String EXTRAS_KEY_DATA = "data";
     public static final String EXTRAS_KEY_USERNAME = "username";
     public static final String EXTRAS_KEY_CREDENTIALS = "credentials";
+    public static final String MESSAGE_KEY_STATUS = "status";
+    public static final String MESSAGE_KEY_MEDIA_ID = "mediaId";
 
     public static final String VALUE_KEY_TITLE = "title";
     public static final String VALUE_KEY_SLUG = "slug";

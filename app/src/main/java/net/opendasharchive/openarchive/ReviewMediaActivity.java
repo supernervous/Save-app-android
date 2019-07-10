@@ -446,7 +446,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             saveMedia();
             bindMedia();
             startService(new Intent(this, PublishService.class));
-
+            finish();
         }
         else {
             Intent firstStartIntent = new Intent(this, FirstStartActivity.class);

@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.zhihu.android:matisse:0.5.2-beta3'
 
     //adding web dav support: https://github.com/thegrizzlylabs/sardine-android'
-    implementation 'com.github.guardianproject:sardine-android:de51a9cea6'
+    implementation 'com.github.guardianproject:sardine-android:d452d34008'
 
     //header recyclerview
     implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:2.0.0'

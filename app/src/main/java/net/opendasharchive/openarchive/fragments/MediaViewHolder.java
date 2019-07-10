@@ -177,7 +177,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
              float perc = 0;
 
              if (currentMedia.contentLength > 0)
-                perc = ((float)currentMedia.progress) / ((float)currentMedia.contentLength) * 100f;
+                perc = (int)(((float)currentMedia.progress) / ((float)currentMedia.contentLength) * 100f);
 
              sbTitle.append(" ").append(perc + "%");
 

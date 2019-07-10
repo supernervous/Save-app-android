@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -64,8 +65,9 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         Logger.setLogLevel(Logger.LogLevel.DEBUG);
 
-        //        initInsights ();
-
+        //disable proofmode GPS dat tracking by default
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean("trackLocation",false);
 
         if (Prefs.getUseTor())
             initNetCipher(this);

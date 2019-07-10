@@ -60,6 +60,9 @@ import androidx.viewpager.widget.ViewPager;
 import io.cleaninsights.sdk.piwik.Measurer;
 import io.scal.secureshareui.model.Account;
 
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
 import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
@@ -200,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -242,17 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
         refreshCurrentProject();
 
-        //when the app pauses do a private, randomized-response based tracking of the number of media files
-      //  MeasureHelper.track().privateEvent("OpeNArchive", "media imported", Integer.valueOf(fragmentMediaList.getCount()).floatValue(), getMeasurer())
-        //        .with(getMeasurer());
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        // Unregister since the activity is about to be closed.
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        super.onDestroy();
     }
 
     public final static String INTENT_FILTER_NAME = "MEDIA_UPDATED";
@@ -265,9 +265,26 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             Log.d("receiver", "Updating media");
+            long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID,-1);
+            long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS,-1);
 
-           refreshCurrentProject ();
+            int status = intent.getIntExtra(MESSAGE_KEY_STATUS,-1);
+            if (status == Media.STATUS_UPLOADED) {
+                if (mPager.getCurrentItem() > 0) {
+                    MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
+                    if (frag != null)
+                        frag.refresh();
+                }
+            }
+            else if (status == (Media.STATUS_UPLOADING))
+            {
+                if (mediaId != -1 && mPager.getCurrentItem() > 0) {
+                    MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
+                    if (frag != null)
+                        frag.updateItem(mediaId, progress);
+                }
 
+            }
         }
     };
 
@@ -398,9 +415,17 @@ public class MainActivity extends AppCompatActivity {
         Media media = new Media();
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
-        media.setCreateDate(new Date(fileSource.lastModified()));
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
+
+        Date createDate = new Date();
+        if (fileSource.exists()) {
+            createDate = new Date(fileSource.lastModified());
+            media.contentLength = fileSource.length();
+        }
+        else
+            media.contentLength = fileImport.length();
+        media.setCreateDate(createDate);
 
         Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
 
@@ -438,6 +463,8 @@ public class MainActivity extends AppCompatActivity {
             createDate = new Date(fileSource.lastModified());
             media.contentLength = fileSource.length();
         }
+        else
+            media.contentLength = fileImport.length();
 
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
@@ -504,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
 
             Matisse.from(MainActivity.this)
                     .choose(MimeType.ofAll())
-                    .countable(false)
+                    .countable(true)
                     .maxSelectable(100)
               //      .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
               //      .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))

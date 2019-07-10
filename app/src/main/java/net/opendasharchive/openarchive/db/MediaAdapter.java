@@ -38,6 +38,23 @@ public class MediaAdapter extends RecyclerView.Adapter {
         return data;
     }
 
+    public boolean updateItem (long mediaId, long progress)
+    {
+        for (int i = 0; i < data.size(); i++)
+        {
+            Media item = data.get(i);
+            if (item.getId() == mediaId)
+            {
+                item.status = Media.STATUS_UPLOADING;
+                item.progress = progress;
+                notifyItemChanged(i);
+               return true;
+            }
+        }
+
+        return false;
+    }
+
     public void updateData (List<Media> data)
     {
         this.data = data;
