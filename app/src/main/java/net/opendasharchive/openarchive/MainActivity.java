@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private ProjectAdapter mPagerAdapter;
 
+    private FloatingActionButton mFab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
 
-        final FloatingActionButton fabMenu = (FloatingActionButton) findViewById(R.id.floating_menu);
-        fabMenu.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.floating_menu);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -94,6 +96,26 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     promptNewProject();
                 }
+            }
+        });
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0)
+                    mFab.setVisibility(View.GONE);
+                else
+                    mFab.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
