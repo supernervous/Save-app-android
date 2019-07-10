@@ -252,5 +252,7 @@
 
     <!-- Strings related to Settings -->
 
+    <string name="button_sure_default">Add</string>
+    <string name="button_sure">Add(%1$d)</string>
 
 </resources>

@@ -96,7 +96,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.arrow_back);
+     //   actionbar.setHomeAsUpIndicator(R.drawable.arrow_back);
 
         if (mPicasso == null) {
             VideoRequestHandler videoRequestHandler = new VideoRequestHandler(mContext);

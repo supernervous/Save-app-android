@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,10 +18,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Gallery;
 import android.widget.ProgressBar;
 
-import com.coursion.freakycoder.mediapicker.galleries.Gallery;
 import com.google.android.material.snackbar.Snackbar;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.engine.impl.PicassoEngine;
+import com.zhihu.matisse.filter.Filter;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.db.Media;
@@ -54,6 +60,7 @@ import androidx.viewpager.widget.ViewPager;
 import io.cleaninsights.sdk.piwik.Measurer;
 import io.scal.secureshareui.model.Account;
 
+import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
 
@@ -322,30 +329,32 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
         // Check which request we're responding to
-        if (requestCode == Globals.REQUEST_FILE_IMPORT) {
+        if (requestCode == REQUEST_FILE_IMPORT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK && resultData != null) {
-                final ArrayList<String> selectionResult = resultData.getStringArrayListExtra("result");
+
+                final List<Uri> mSelected = Matisse.obtainResult(resultData);
+                Log.d("Matisse", "mSelected: " + mSelected);
 
                 final Snackbar bar = Snackbar.make(mPager, R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
-                Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
+                Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
-                for (String result : selectionResult)
-                {
+                for (Uri result : mSelected) {
 
-                    String mimeType = Utility.getMediaType(result);
-
-                    new AsyncTask<String, Void, Media>() {
+                    new AsyncTask<Uri, Void, Media>() {
                         protected void onPreExecute() {
                             bar.show();
                         }
-                        protected Media doInBackground(String... params) {
-                            return  importMedia(new File(params[0]), params[1]);
+
+                        protected Media doInBackground(Uri... params) {
+                            return importMedia(params[0]);
                         }
+
                         protected void onPostExecute(Media media) {
 
                             bar.dismiss();
@@ -353,13 +362,11 @@ public class MainActivity extends AppCompatActivity {
                             refreshCurrentProject();
 
                         }
-                    }.execute(result,mimeType);
+                    }.execute(result);
 
                 }
             }
-        }
-        else if (requestCode == REQUEST_NEW_PROJECT_NAME)
-        {
+        } else if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK && resultData != null) {
                 String newProjectName = resultData.getStringExtra("projectName");
@@ -367,8 +374,6 @@ public class MainActivity extends AppCompatActivity {
                     startNewProject(newProjectName);
             }
         }
-
-
 
 
     }
@@ -397,7 +402,6 @@ public class MainActivity extends AppCompatActivity {
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
 
-
         Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
 
         media.projectId = project.getId();
@@ -407,28 +411,14 @@ public class MainActivity extends AppCompatActivity {
         media.save();
 
 
-        //if not offline, then try to notarize
-
-        //if (!PirateBoxSiteController.isPirateBox(this)) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putBoolean("autoNotarize", false).commit();
-    //}
-
-        /**
-        String hash = ProofMode.generateProof(this, Uri.fromFile(fileSource));
-        if (!TextUtils.isEmpty(hash))
-        {
-            media.setMediaHash(hash.getBytes());
-            media.save();
-        }**/
-
-
         return media;
     }
 
-    private Media importMedia (Uri uri, String mimeType)
+    private Media importMedia (Uri uri)
     {
         String title = Utility.getUriDisplayName(this,uri);
+        String mimeType = Utility.getMimeType(this,uri);
+
         File fileImport = getOutputMediaFile(title);
         try {
             boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
@@ -439,30 +429,26 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        File fileSource = new File(uri.getPath());
+        Date createDate = new Date();
+        if (fileSource.exists())
+            createDate = new Date(fileSource.lastModified());
+
         // create media
         Media media = new Media();
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
-        media.setCreateDate(new Date());
+        media.setCreateDate(createDate);
+        media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
+
+        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
+
+        media.projectId = project.getId();
 
         if (title != null)
             media.setTitle(title);
         media.save();
-
-        //if not offline, then try to notarize
-        //if (!PirateBoxSiteController.isPirateBox(this)) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putBoolean("autoNotarize", false).commit();
-        //}
-
-        String hash = ProofMode.generateProof(this, uri);
-        if (!TextUtils.isEmpty(hash))
-        {
-            media.setMediaHash(hash.getBytes());
-            media.save();
-        }
-
 
         return media;
     }
@@ -490,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            media = importMedia(uri, mimeType);
+            media = importMedia(uri);
 
         }
 
@@ -503,14 +489,26 @@ public class MainActivity extends AppCompatActivity {
     {
         if (!askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE,1)) {
 
-            Intent intent = new Intent(this,Gallery.class);
+            /**
+            Intent intent = new Intent(this, Gallery.class);
 
 // Set the title for toolbar
             intent.putExtra("title", getString(R.string.menu_import_media));
 // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
             intent.putExtra("mode", 1);
             startActivityForResult(intent, Globals.REQUEST_FILE_IMPORT);
+            **/
 
+            Matisse.from(MainActivity.this)
+                    .choose(MimeType.ofAll())
+                    .countable(false)
+                    .maxSelectable(100)
+              //      .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+              //      .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                    .thumbnailScale(0.85f)
+                    .imageEngine(new PicassoEngine())
+                    .forResult(REQUEST_FILE_IMPORT);
         }
     }
 
@@ -552,49 +550,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    private Measurer getMeasurer() {
-        return ((OpenArchiveApp) getApplication()).getCleanInsightsApp().getMeasurer();
-    }
-
-
-
-    private boolean checkNearbyPermissions ()
-    {
-        boolean allowed = false;
-
-        allowed = !askForPermission("android.permission.ACCESS_FINE_LOCATION", 3);
-
-        if (!allowed)
-            return false;
-
-        if (Prefs.getNearbyUseBluetooth()) {
-            allowed = !askForPermission("android.permission.BLUETOOTH", 1);
-            if (!allowed)
-                return false;
-
-            allowed = !askForPermission("android.permission.BLUETOOTH_ADMIN", 2);
-            if (!allowed)
-                return false;
-        }
-
-        if (Prefs.getNearbyUseWifi()) {
-            allowed = !askForPermission("android.permission.ACCESS_WIFI_STATE", 4);
-            if (!allowed)
-                return false;
-            allowed = !askForPermission("android.permission.CHANGE_WIFI_STATE", 5);
-            if (!allowed)
-                return false;
-            allowed = !askForPermission("android.permission.ACCESS_NETWORK_STATE", 6);
-            if (!allowed)
-                return false;
-            allowed = !askForPermission("android.permission.CHANGE_NETWORK_STATE", 7);
-            if (!allowed)
-                return false;
-        }
-
-        return allowed;
-    }
 
 
 

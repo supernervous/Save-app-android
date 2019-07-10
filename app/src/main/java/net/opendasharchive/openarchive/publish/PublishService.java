@@ -156,29 +156,33 @@ public class PublishService extends Service implements Runnable {
 
             Project project = Project.getById(media.projectId);
 
-            HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
-            media.serverUrl = project.description;
-            media.status = Media.STATUS_UPLOADING;
-            media.save();
-            notifyMediaUpdated(media);
+            if (project != null) {
+                HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
+                media.serverUrl = project.description;
+                media.status = Media.STATUS_UPLOADING;
+                media.save();
+                notifyMediaUpdated(media);
 
-            Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+                Account account = new Account(this, WebDAVSiteController.SITE_NAME);
 
-            if (account != null && account.getSite() != null)
+                if (account != null && account.getSite() != null) {
+
+                    //webdav
+                    sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
+
+                } else {
+                    account = new Account(this, ArchiveSiteController.SITE_NAME);
+
+                    sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+
+                }
+
+                sc.upload(account, media, valueMap);
+            }
+            else
             {
-
-                //webdav
-                sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
-
+                media.delete();
             }
-            else {
-                account = new Account(this, ArchiveSiteController.SITE_NAME);
-
-                sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
-
-            }
-
-            sc.upload(account, media, valueMap);
 
 
      //   }

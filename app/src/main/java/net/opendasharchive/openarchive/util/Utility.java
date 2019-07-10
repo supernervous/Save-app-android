@@ -322,6 +322,13 @@ public class Utility {
         }
     }
 
+    public static String getMimeType (Context context, Uri uri)
+    {
+        ContentResolver cR = context.getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return cR.getType((uri));
+    }
+
     public static String getUriDisplayName (Context context, Uri uri)
     {
         String result = null;

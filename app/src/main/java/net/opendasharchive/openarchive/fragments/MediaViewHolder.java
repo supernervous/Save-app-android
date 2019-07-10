@@ -192,7 +192,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             sbTitle.append(mContext.getString(R.string.status_public));
             if (ivStatus != null) {
                 ivStatus.setVisibility(View.VISIBLE);
-                ivStatus.setImageResource(R.drawable.ic_check_white_48dp);
+                ivStatus.setImageResource(R.drawable.baseline_check_circle_outline_white_48);
             }
         } else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
