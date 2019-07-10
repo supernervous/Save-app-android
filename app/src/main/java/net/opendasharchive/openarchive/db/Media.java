@@ -48,6 +48,7 @@ public class Media extends SugarRecord {
     public long projectId;
 
     public long contentLength;
+    public long progress;
 
     //public final static int STATUS_ERROR = 9;
     //public final static int STATUS_DELETE_LOCAL = 6;
@@ -238,6 +239,16 @@ public class Media extends SugarRecord {
     {
         return this.contentLength;
     }
+
+    public long getProgress() {
+        return progress;
+    }
+
+    public void setProgress(long progress) {
+        this.progress = progress;
+    }
+
+
 }
 
 /**

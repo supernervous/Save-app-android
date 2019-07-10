@@ -10,6 +10,7 @@ import android.webkit.MimeTypeMap;
 import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
+import com.thegrizzlylabs.sardineandroid.SardineListener;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
 import net.opendasharchive.openarchive.R;
@@ -85,7 +86,7 @@ public class WebDAVSiteController extends SiteController {
     }
 
     @Override
-    public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
+    public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) {
 
         startAuthentication(account);
 
@@ -97,6 +98,12 @@ public class WebDAVSiteController extends SiteController {
 
         String projectFolderPath = server + '/' + folderName;
 
+        if (media.contentLength == 0)
+        {
+            File fileMedia = new File(mediaUri.getPath());
+            if (fileMedia.exists())
+                media.contentLength = fileMedia.length();
+        }
 
         String finalMediaPath = null;
 
@@ -111,7 +118,20 @@ public class WebDAVSiteController extends SiteController {
             finalMediaPath = projectFolderPath + '/' + fileName;
 
             if (!sardine.exists(finalMediaPath)) {
-                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(), false);
+                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getMimeType(), false, new SardineListener() {
+                    @Override
+                    public void transferred(long bytes) {
+
+                        /**
+                        float perc = 0;
+
+                        if (media.contentLength > 0)
+                            perc = ((float)bytes) / ((float)media.contentLength) * 100f;
+                         **/
+
+                        jobProgress(bytes,"uploading");
+                    }
+                });
 
                 media.setServerUrl(finalMediaPath);
 
@@ -130,7 +150,7 @@ public class WebDAVSiteController extends SiteController {
 
             return true;
         } catch (IOException e) {
-            Log.e(TAG, "Failed primary media upload: " + finalMediaPath,e);
+            Log.w(TAG, "Failed primary media upload: " + finalMediaPath + ": " + e.getMessage());
             jobFailed(e,-1,finalMediaPath);
             return false;
         }
@@ -138,27 +158,37 @@ public class WebDAVSiteController extends SiteController {
     }
 
 
-    private boolean uploadMetadata (Media media, String basePath, String fileName)
+    private boolean uploadMetadata (final Media media, String basePath, String fileName)
     {
-        String urlMeta = basePath + '/' + fileName + ".metadata.json";
+        String urlMeta = basePath + '/' + fileName + ".meta.json";
         Gson gson = new Gson();
         String json = gson.toJson(media,Media.class);
 
         try {
 
-            File fileMetaData = new File(mContext.getFilesDir(),fileName+".metadata.json");
+            File fileMetaData = new File(mContext.getFilesDir(),fileName+".meta.json");
             FileOutputStream fos = new FileOutputStream(fileMetaData);
             fos.write(json.getBytes());
             fos.flush();
             fos.close();
-            sardine.put(urlMeta, fileMetaData, "text/plain", false);
+            sardine.put(urlMeta, fileMetaData, "text/plain", false, new SardineListener() {
+                @Override
+                public void transferred(long bytes) {
+
+                }
+            });
 
             String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
             File fileProofDir = ProofMode.getProofDir(metaMediaHash);
             if (fileProofDir != null && fileProofDir.exists()) {
                 File[] filesProof = fileProofDir.listFiles();
                 for (File fileProof : filesProof) {
-                    sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false);
+                    sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false, new SardineListener() {
+                        @Override
+                        public void transferred(long bytes) {
+
+                        }
+                    });
                 }
 
             }
@@ -191,7 +221,12 @@ public class WebDAVSiteController extends SiteController {
                         File[] filesProof = fileProofDir.listFiles();
                         for (File fileProof : filesProof) {
                             lastUrl = basePath + fileProof.getName();
-                            sardine.put(lastUrl, fileProof, "text/plain", false);
+                            sardine.put(lastUrl, fileProof, "text/plain", false, new SardineListener() {
+                                @Override
+                                public void transferred(long bytes) {
+
+                                }
+                            });
                         }
 
                     }

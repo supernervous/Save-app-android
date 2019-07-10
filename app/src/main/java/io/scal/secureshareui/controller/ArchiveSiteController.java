@@ -178,7 +178,7 @@ public class ArchiveSiteController extends SiteController {
                                       @Override
                                       public void onProgress(Context context, UploadInfo uploadInfo) {
                                           // your code here
-                                          jobProgress((((float)uploadInfo.getProgressPercent())/100f),uploadInfo.toString());
+                                          //jobProgress((((float)uploadInfo.getProgressPercent())/100f),uploadInfo.toString());
                                       }
 
                                       @Override

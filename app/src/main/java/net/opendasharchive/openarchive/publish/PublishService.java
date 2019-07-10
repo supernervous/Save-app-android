@@ -46,6 +46,11 @@ public class PublishService extends Service implements Runnable {
     private Thread mUploadThread = null;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (mUploadThread == null || (!mUploadThread.isAlive()))
@@ -85,6 +90,8 @@ public class PublishService extends Service implements Runnable {
     {
         if (!isRunning)
             doPublish();
+
+        stopSelf();
 
     }
 
@@ -246,8 +253,12 @@ public class PublishService extends Service implements Runnable {
             int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
 
             String message = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
-            float progressF = data.getFloat(SiteController.MESSAGE_KEY_PROGRESS);
+            long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
             //Log.d(TAG, "upload progress: " + progress);
+
+            uploadMedia.progress = (int)contentLengthUploaded;
+            uploadMedia.save();
+            notifyMediaUpdated(uploadMedia);
         }
 
         @Override
@@ -360,6 +371,8 @@ public class PublishService extends Service implements Runnable {
         // You can also include some extra data.
         intent.putExtra("mediaId", media.getId());
         intent.putExtra("mediaStatus",media.status);
+        intent.putExtra("mediaProgress",media.progress);
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

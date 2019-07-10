@@ -77,29 +77,6 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         else  if (currentMedia.getMimeType().startsWith("video")) {
 
             mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
-
-            /**
-            if (currentMedia.getThumbnailUri() == null
-                    && mediaPath.startsWith("content")) {
-
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = mContext.getContentResolver().query(Uri.parse(mediaPath), filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String thumbPath = cursor.getString(columnIndex);
-                    currentMedia.setThumbnailFilePath(thumbPath);
-                    currentMedia.save();
-                    cursor.close();
-            }
-
-            if (currentMedia.getThumbnailUri() != null)
-            {
-                mPicasso.load(currentMedia.getThumbnailUri()).fit().centerCrop().into(ivIcon);
-            }
-            else
-                mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
-            **/
-
             ivIcon.setVisibility(View.VISIBLE);
             tvWave.setVisibility(View.GONE);
 
@@ -196,6 +173,14 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             }
         } else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
+
+             float perc = 0;
+
+             if (currentMedia.contentLength > 0)
+                perc = ((float)currentMedia.progress) / ((float)currentMedia.contentLength) * 100f;
+
+             sbTitle.append(" ").append(perc + "%");
+
             if (ivStatus != null) {
                 ivStatus.setVisibility(View.VISIBLE);
                 ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);

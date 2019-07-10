@@ -163,12 +163,12 @@ public abstract class SiteController {
         mListener.failure(msg);
     }
 
-    public void jobProgress(float progress, String message) {
+    public void jobProgress(long contentLengthUploaded, String message) {
         Message msg = new Message();
         Bundle data = new Bundle();
         data.putInt(MESSAGE_KEY_TYPE, MESSAGE_TYPE_PROGRESS);
         data.putString(MESSAGE_KEY_JOB_ID, mJobId);
-        data.putFloat(MESSAGE_KEY_PROGRESS, progress);
+        data.putLong(MESSAGE_KEY_PROGRESS, contentLengthUploaded);
         data.putString(MESSAGE_KEY_MESSAGE, message);
         msg.setData(data);
         mListener.progress(msg);

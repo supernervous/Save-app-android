@@ -429,13 +429,16 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        File fileSource = new File(uri.getPath());
-        Date createDate = new Date();
-        if (fileSource.exists())
-            createDate = new Date(fileSource.lastModified());
-
         // create media
         Media media = new Media();
+
+        File fileSource = new File(uri.getPath());
+        Date createDate = new Date();
+        if (fileSource.exists()) {
+            createDate = new Date(fileSource.lastModified());
+            media.contentLength = fileSource.length();
+        }
+
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
         media.setCreateDate(createDate);
