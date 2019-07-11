@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,6 +43,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     private AsyncTask<Void, Void, SoundFile> asyncTask;
     public static HashMap<String,SoundFile> mSoundFileCache = new HashMap<>();
 
+    public boolean doImageFade = true;
+    private String lastMediaPath = null;
+
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
 
@@ -68,94 +72,140 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(final Media currentMedia) {
 
-        final String mediaPath = currentMedia.getOriginalFilePath();
-
         mView.setTag(currentMedia.getId());
 
-        if (currentMedia.getMimeType().startsWith("image")) {
+        final String mediaPath = currentMedia.getOriginalFilePath();
 
-            mPicasso.load(Uri.parse(currentMedia.getOriginalFilePath())).fit().centerCrop().into(ivIcon);
-            ivIcon.setVisibility(View.VISIBLE);
-            tvWave.setVisibility(View.GONE);
+        if (lastMediaPath == null || (!lastMediaPath.equals(mediaPath)))
+        {
+            if (currentMedia.getMimeType().startsWith("image")) {
 
-        }
-        else  if (currentMedia.getMimeType().startsWith("video")) {
+                mPicasso.load(Uri.parse(currentMedia.getOriginalFilePath())).fit().centerCrop().into(ivIcon);
+                ivIcon.setVisibility(View.VISIBLE);
+                tvWave.setVisibility(View.GONE);
 
-            mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
-            ivIcon.setVisibility(View.VISIBLE);
-            tvWave.setVisibility(View.GONE);
+            } else if (currentMedia.getMimeType().startsWith("video")) {
 
-        }
-        else if (currentMedia.getMimeType().startsWith("audio")) {
+                mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
+                ivIcon.setVisibility(View.VISIBLE);
+                tvWave.setVisibility(View.GONE);
 
-            ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
+            } else if (currentMedia.getMimeType().startsWith("audio")) {
 
-            if (mSoundFileCache.get(mediaPath)==null) {
+                ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
-                if (asyncTask == null) {
-                    asyncTask = new AsyncTask<Void, Void, SoundFile>() {
-                        protected void onPreExecute() {
-                            // Pre Code
-                        }
+                if (mSoundFileCache.get(mediaPath) == null) {
 
-                        protected SoundFile doInBackground(Void... unused) {
-                            File fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath));
-                            try {
-                                if (fileSound != null) {
-                                    final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
-                                        int lastProgress = 0;
+                    if (asyncTask == null) {
+                        asyncTask = new AsyncTask<Void, Void, SoundFile>() {
+                            protected void onPreExecute() {
+                                // Pre Code
+                            }
 
-                                        @Override
-                                        public boolean reportProgress(double fractionComplete) {
-                                            final int progress = (int) (fractionComplete * 100);
-                                            if (lastProgress == progress) {
+                            protected SoundFile doInBackground(Void... unused) {
+                                File fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath));
+                                try {
+                                    if (fileSound != null) {
+                                        final SoundFile soundFile = SoundFile.create(fileSound.getPath(), new SoundFile.ProgressListener() {
+                                            int lastProgress = 0;
+
+                                            @Override
+                                            public boolean reportProgress(double fractionComplete) {
+                                                final int progress = (int) (fractionComplete * 100);
+                                                if (lastProgress == progress) {
+                                                    return true;
+                                                }
+                                                lastProgress = progress;
                                                 return true;
                                             }
-                                            lastProgress = progress;
-                                            return true;
-                                        }
-                                    });
+                                        });
 
-                                    mSoundFileCache.put(mediaPath, soundFile);
-                                    return soundFile;
+                                        mSoundFileCache.put(mediaPath, soundFile);
+                                        return soundFile;
+                                    } else
+                                        return null;
+
+                                } catch (Exception e) {
+                                    Log.e(getClass().getName(), "error loading sound file", e);
                                 }
-                                else
-                                    return null;
 
-                            } catch (Exception e) {
-                                Log.e(getClass().getName(), "error loading sound file", e);
+                                return null;
                             }
 
-                            return null;
-                        }
+                            protected void onPostExecute(SoundFile soundFile) {
+                                // Post Code
 
-                        protected void onPostExecute(SoundFile soundFile) {
-                            // Post Code
+                                if (soundFile != null) {
+                                    tvWave.setAudioFile(soundFile);
+                                    tvWave.setVisibility(View.VISIBLE);
+                                    ivIcon.setVisibility(View.GONE);
+                                }
 
-                            if (soundFile != null) {
-                                tvWave.setAudioFile(soundFile);
-                                tvWave.setVisibility(View.VISIBLE);
-                                ivIcon.setVisibility(View.GONE);
+                                asyncTask = null;
                             }
+                        };
 
-                            asyncTask = null;
-                        }
-                    };
-
-                    asyncTask.execute();
+                        asyncTask.execute();
+                    }
+                } else {
+                    tvWave.setAudioFile(mSoundFileCache.get(mediaPath));
+                    tvWave.setVisibility(View.VISIBLE);
+                    ivIcon.setVisibility(View.GONE);
                 }
+
+            } else
+                ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
+
+            if (currentMedia.status == Media.STATUS_QUEUED) {
+
+                if (doImageFade)
+                    ivIcon.setAlpha(0.5f);
+
+            } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
+                if (doImageFade)
+                    ivIcon.setAlpha(1f);
+
+            } else if (currentMedia.status == Media.STATUS_UPLOADING) {
+
+                if (doImageFade)
+                    ivIcon.setAlpha(0.5f);
             }
             else
             {
-                tvWave.setAudioFile(mSoundFileCache.get(mediaPath));
-                tvWave.setVisibility(View.VISIBLE);
-                ivIcon.setVisibility(View.GONE);
+                if (doImageFade)
+                    ivIcon.setAlpha(0.5f);
+
             }
 
+            File fileMedia = new File(Uri.parse(currentMedia.getOriginalFilePath()).getPath());
 
+            if (fileMedia.exists())
+            {
+                tvCreateDate.setText(readableFileSize(fileMedia.length()));
+            }
+            else {
+
+                if (currentMedia.contentLength == -1)
+                {
+                    try {
+                        InputStream is = mContext.getContentResolver().openInputStream(Uri.parse(currentMedia.getOriginalFilePath()));
+                        currentMedia.contentLength = is.available();
+                        currentMedia.save();
+                        is.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                if (currentMedia.contentLength > 0)
+                    tvCreateDate.setText(readableFileSize(currentMedia.contentLength));
+                else
+                    tvCreateDate.setText(currentMedia.getFormattedCreateDate());
+            }
         }
-        else
-            ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
+
+        lastMediaPath = mediaPath;
 
         StringBuffer sbTitle = new StringBuffer();
 
@@ -163,7 +213,6 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         if (currentMedia.status == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
 
-            ivIcon.setAlpha(0.5f);
 
             if (progressBar != null)
             {
@@ -178,12 +227,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
             sbTitle.append(mContext.getString(R.string.status_public));
 
-            ivIcon.setAlpha(1f);
-
         } else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
 
-            ivIcon.setAlpha(0.5f);
 
              int perc = 0;
 
@@ -192,22 +238,14 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
              if (progressBar != null)
              {
-
                  progressBar.setVisibility(View.VISIBLE);
                  tvProgress.setVisibility(View.VISIBLE);
-
                  progressBar.setProgress(perc);
                  tvProgress.setText(perc + "%");
              }
              else {
                  sbTitle.append(" ").append(perc + "%");
              }
-        }
-        else
-        {
-
-            ivIcon.setAlpha(0.5f);
-
         }
 
         if (sbTitle.length() > 0)
@@ -216,32 +254,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         sbTitle.append(currentMedia.getTitle());
         tvTitle.setText(sbTitle.toString());
 
-        File fileMedia = new File(Uri.parse(currentMedia.getOriginalFilePath()).getPath());
 
-        if (fileMedia.exists())
-        {
-            tvCreateDate.setText(readableFileSize(fileMedia.length()));
-        }
-        else {
-
-            if (currentMedia.contentLength == -1)
-            {
-                try {
-                    InputStream is = mContext.getContentResolver().openInputStream(Uri.parse(currentMedia.getOriginalFilePath()));
-                    currentMedia.contentLength = is.available();
-                    currentMedia.save();
-                    is.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            if (currentMedia.contentLength > 0)
-                tvCreateDate.setText(readableFileSize(currentMedia.contentLength));
-            else
-                tvCreateDate.setText(currentMedia.getFormattedCreateDate());
-        }
     }
 
     public static String readableFileSize(long size) {

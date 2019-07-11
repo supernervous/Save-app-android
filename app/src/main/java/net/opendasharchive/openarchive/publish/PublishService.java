@@ -124,6 +124,7 @@ public class PublishService extends Service implements Runnable {
                     //iterate through them, and upload one by one
                     for (Media media : results) {
                         media.uploadDate = datePublish;
+                        media.progress = 0; //should we reset this?
                         uploadMedia(media);
                     }
                 }
@@ -246,15 +247,17 @@ public class PublishService extends Service implements Runnable {
             Bundle data = msg.getData();
 
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
-            uploadMedia.progress = (int)contentLengthUploaded;
 
-            if (uploadMedia.status != Media.STATUS_UPLOADING)
-            {
-                uploadMedia.status = Media.STATUS_UPLOADING;
-                uploadMedia.save();
+            if (uploadMedia.progress < contentLengthUploaded) {
+                uploadMedia.progress = (int) contentLengthUploaded;
+
+                if (uploadMedia.status != Media.STATUS_UPLOADING) {
+                    uploadMedia.status = Media.STATUS_UPLOADING;
+                    uploadMedia.save();
+                }
+
+                notifyMediaUpdated(uploadMedia);
             }
-
-            notifyMediaUpdated(uploadMedia);
         }
 
         @Override

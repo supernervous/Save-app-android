@@ -24,6 +24,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
     private int layoutResourceId;
     private List<Media> data;
     private RecyclerView recyclerview;
+    private boolean doImageFade = true;
 
     public MediaAdapter(Context context, int layoutResourceId, List<Media> data, RecyclerView recyclerView) {
         super();
@@ -31,6 +32,11 @@ public class MediaAdapter extends RecyclerView.Adapter {
         this.mContext = context;
         this.data = data;
         this.recyclerview = recyclerView;
+    }
+
+    public void setDoImageFade (boolean doImageFade)
+    {
+        this.doImageFade = doImageFade;
     }
 
     public List<Media> getMediaList ()
@@ -82,7 +88,10 @@ public class MediaAdapter extends RecyclerView.Adapter {
                 mContext.startActivity(reviewMediaIntent);
             }
         });
-        return new MediaViewHolder(view, mContext);
+        MediaViewHolder mvh = new MediaViewHolder(view, mContext);
+        mvh.doImageFade = doImageFade;
+
+        return mvh;
     }
 
     @Override
