@@ -32,6 +32,9 @@ public class Media extends SugarRecord {
     public String mimeType;
     public Date createDate;
     public Date updateDate;
+
+
+    public Date uploadDate;
     public String serverUrl;
 
     public String title;
@@ -248,6 +251,13 @@ public class Media extends SugarRecord {
         this.progress = progress;
     }
 
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
 }
 

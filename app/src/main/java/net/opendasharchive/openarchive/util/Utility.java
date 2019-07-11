@@ -394,9 +394,9 @@ public class Utility {
                 prefix + "_"+ timeStamp + "." + ext);
     }
 
-    public static File getOutputMediaFile(String fileName){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), "OpenArchive");
+    public static File getOutputMediaFile(Context context, String fileName){
+
+        File mediaStorageDir = context.getCacheDir();
 
         if (!mediaStorageDir.exists()){
             if (!mediaStorageDir.mkdirs()){
@@ -405,7 +405,7 @@ public class Utility {
         }
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
+        return new File(mediaStorageDir,
                 timeStamp + "." + fileName);
     }
 

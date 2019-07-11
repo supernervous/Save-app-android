@@ -121,7 +121,7 @@ public class WebDAVSiteController extends SiteController {
                 sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
                     @Override
                     public void transferred(long bytes) {
-                        jobProgress(bytes,"uploading");
+                        jobProgress(bytes,null);
                     }
                 });
 
@@ -203,12 +203,7 @@ public class WebDAVSiteController extends SiteController {
                         File[] filesProof = fileProofDir.listFiles();
                         for (File fileProof : filesProof) {
                             lastUrl = basePath + fileProof.getName();
-                            sardine.put(lastUrl, fileProof, "text/plain", false, new SardineListener() {
-                                @Override
-                                public void transferred(long bytes) {
-
-                                }
-                            });
+                            sardine.put(lastUrl, fileProof, "text/plain", false, null);
                         }
 
                     }

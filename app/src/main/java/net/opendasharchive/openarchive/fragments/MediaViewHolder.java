@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.derlio.waveform.SimpleWaveformView;
@@ -31,7 +32,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     private TextView tvTitle;
     private TextView tvCreateDate;
     private SimpleWaveformView tvWave;
-    private ImageView ivStatus;
+
+    private ProgressBar progressBar;
+    private TextView tvProgress;
 
     private Context mContext;
 
@@ -49,7 +52,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         tvTitle = itemView.findViewById(R.id.tvTitle);
         tvCreateDate = itemView.findViewById(R.id.tvCreateDate);
         tvWave = itemView.findViewById(R.id.event_item_sound);
-        ivStatus = itemView.findViewById(R.id.ivStatus);
+
+        tvProgress = itemView.findViewById(R.id.txtProgress);
+        progressBar = itemView.findViewById(R.id.progressBar);
 
         if (mPicasso == null) {
             VideoRequestHandler videoRequestHandler = new VideoRequestHandler(mContext);
@@ -154,37 +159,55 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         StringBuffer sbTitle = new StringBuffer();
 
-        if (ivStatus != null) {
-            ivStatus.setVisibility(View.VISIBLE);
-            ivStatus.setImageResource(R.drawable.ic_info_black_24dp);
-        }
 
         if (currentMedia.status == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
-            if (ivStatus != null) {
-                ivStatus.setVisibility(View.VISIBLE);
-                ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
+
+            ivIcon.setAlpha(0.5f);
+
+            if (progressBar != null)
+            {
+
+
+                progressBar.setVisibility(View.VISIBLE);
+                tvProgress.setVisibility(View.VISIBLE);
+
+                progressBar.setProgress(0);
+                tvProgress.setText(0 + "%");
             }
         } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
             sbTitle.append(mContext.getString(R.string.status_public));
-            if (ivStatus != null) {
-                ivStatus.setVisibility(View.VISIBLE);
-                ivStatus.setImageResource(R.drawable.baseline_check_circle_outline_white_48);
-            }
+
+            ivIcon.setAlpha(1f);
+
         } else if (currentMedia.status == Media.STATUS_UPLOADING) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
 
-             float perc = 0;
+            ivIcon.setAlpha(0.5f);
+
+             int perc = 0;
 
              if (currentMedia.contentLength > 0)
                 perc = (int)(((float)currentMedia.progress) / ((float)currentMedia.contentLength) * 100f);
 
-             sbTitle.append(" ").append(perc + "%");
+             if (progressBar != null)
+             {
 
-            if (ivStatus != null) {
-                ivStatus.setVisibility(View.VISIBLE);
-                ivStatus.setImageResource(R.drawable.ic_cloud_upload_white_36dp);
-            }
+                 progressBar.setVisibility(View.VISIBLE);
+                 tvProgress.setVisibility(View.VISIBLE);
+
+                 progressBar.setProgress(perc);
+                 tvProgress.setText(perc + "%");
+             }
+             else {
+                 sbTitle.append(" ").append(perc + "%");
+             }
+        }
+        else
+        {
+
+            ivIcon.setAlpha(0.5f);
+
         }
 
         if (sbTitle.length() > 0)

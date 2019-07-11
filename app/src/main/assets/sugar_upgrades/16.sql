@@ -1,0 +1,1 @@
+alter table MEDIA add UPLOAD_DATE NUMERIC;

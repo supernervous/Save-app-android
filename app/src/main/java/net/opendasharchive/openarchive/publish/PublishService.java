@@ -29,6 +29,7 @@ import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -112,6 +113,9 @@ public class PublishService extends Service implements Runnable {
             //get all media items that are set into queued state
             List<Media> results = null;
 
+
+            Date datePublish = new Date();
+
             //do 3 loops through
             for (int i = 0; i < 3; i++) {
                 results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
@@ -119,12 +123,8 @@ public class PublishService extends Service implements Runnable {
                 if (results.size() > 0) {
                     //iterate through them, and upload one by one
                     for (Media media : results) {
+                        media.uploadDate = datePublish;
                         uploadMedia(media);
-                    }
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
                     }
                 }
             }
@@ -231,16 +231,10 @@ public class PublishService extends Service implements Runnable {
 
         @Override
         public void success(Message msg) {
-            Bundle data = msg.getData();
 
-            String jobIdString = data.getString(SiteController.MESSAGE_KEY_JOB_ID);
-            int jobId = (jobIdString != null) ? Integer.parseInt(jobIdString) : -1;
+            uploadMedia.progress = uploadMedia.contentLength;
+            notifyMediaUpdated(uploadMedia);
 
-            int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
-            String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
-            // String resultUrl = getDetailsUrlFromResult(result);
-
-            //uploadMedia.setServerUrl(resultUrl);
             uploadMedia.status = Media.STATUS_UPLOADED;
             uploadMedia.save();
             notifyMediaUpdated(uploadMedia);

@@ -71,7 +71,6 @@ dependencies {
     implementation "net.gotev:uploadservice-okhttp:${uploadServiceVersion}"
     implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
-    implementation 'io.github.lizhangqu:coreprogress:1.0.2'
 
     //from here: https://github.com/guardianproject/proofmode
     implementation 'org.witness:android-libproofmode:0.0.3'

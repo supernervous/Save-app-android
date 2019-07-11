@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
     private Media importMedia (File fileSource, String mimeType)
     {
         String title = fileSource.getName();
-        File fileImport = getOutputMediaFile(title);
+        File fileImport = getOutputMediaFile(this, title);
         boolean success = fileImport.getParentFile().mkdirs();
         Log.d(TAG,"create parent folders, success=" + success);
 
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
         String title = Utility.getUriDisplayName(this,uri);
         String mimeType = Utility.getMimeType(this,uri);
 
-        File fileImport = getOutputMediaFile(title);
+        File fileImport = getOutputMediaFile(this, title);
         try {
             boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
             if (!imported)

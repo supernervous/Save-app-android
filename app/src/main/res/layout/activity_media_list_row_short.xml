@@ -6,11 +6,44 @@
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivStatusGroup"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="10"
+            android:progressDrawable="@drawable/circle_progressbar"
+            android:secondaryProgress="0" />
+
+
+        <TextView
+            android:id="@+id/txtProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="0%"
+            />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:id="@+id/ivGroup"
         android:orientation="vertical"
+        android:layout_toRightOf="@+id/ivStatusGroup"
+
         >
     <ImageView android:id="@+id/ivIcon"
                android:layout_width="80dp"
@@ -53,14 +86,6 @@
 
         />
 
-    <ImageView android:id="@+id/ivStatus"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:tint="@color/oablue"
-        android:visibility="gone"
-        android:src="@drawable/baseline_check_circle_outline_white_48"
-        />
+
 </RelativeLayout>
 
