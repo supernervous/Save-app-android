@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MediaReviewListFragment extends MediaListFragment {
 
-    protected TextView mActionUpload;
-
     protected long mStatus = Media.STATUS_LOCAL;
     protected long[] mStatuses = {Media.STATUS_LOCAL};
 
@@ -50,20 +48,24 @@ public class MediaReviewListFragment extends MediaListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_media_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_media_list_simple, container, false);
         rootView.setTag(TAG);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setHasFixedSize(true);
+        mMediaContainer = rootView.findViewById(R.id.mediacontainer);
 
-        mActionUpload = rootView.findViewById(R.id.action_upload);
+        RecyclerView rView = new RecyclerView(getContext());
+        rView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rView.setHasFixedSize(true);
+
+        rView = rootView.findViewById(R.id.recyclerview);
+        rView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rView.setHasFixedSize(true);
 
         List<Media> listMedia = Media.getMediaByStatus(mStatuses);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,listMedia, mRecyclerView );
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,listMedia, rView );
         mMediaAdapter.setDoImageFade(false);
-        mRecyclerView.setAdapter(mMediaAdapter);
+        rView.setAdapter(mMediaAdapter);
 
         return rootView;
     }

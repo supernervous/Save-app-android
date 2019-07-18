@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.opendasharchive.openarchive.R;
@@ -18,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MediaListFragment extends Fragment {
 
-    protected RecyclerView mRecyclerView;
-    protected TextView mActionUpload;
+
+    protected LinearLayout mMediaContainer;
     MediaAdapter mMediaAdapter;
     protected static final String TAG = "RecyclerViewFragment";
 
@@ -51,7 +52,8 @@ public class MediaListFragment extends Fragment {
 
     public void updateItem (long mediaId, long progress)
     {
-        mMediaAdapter.updateItem(mediaId, progress);
+        if (mMediaAdapter != null)
+            mMediaAdapter.updateItem(mediaId, progress);
 
     }
 
@@ -84,11 +86,14 @@ public class MediaListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_media_list, container, false);
         rootView.setTag(TAG);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setHasFixedSize(true);
+        mMediaContainer = rootView.findViewById(R.id.mediacontainer);
 
-        mActionUpload = rootView.findViewById(R.id.action_upload);
+        //mRecyclerView = rootView.findViewById(R.id.recyclerview);
+        RecyclerView rView = new RecyclerView(getContext());
+        rView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rView.setHasFixedSize(true);
+
+        mMediaContainer.addView(rView);
 
         List<Media> listMedia = null;
 
@@ -105,20 +110,14 @@ public class MediaListFragment extends Fragment {
             {
                 if (media.status == Media.STATUS_LOCAL)
                 {
-                    mActionUpload.setVisibility(View.VISIBLE);
-                    mActionUpload.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
 
-                        }
-                    });
                     break;
                 }
             }
         }
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short,listMedia, mRecyclerView );
-        mRecyclerView.setAdapter(mMediaAdapter);
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short,listMedia, rView );
+        rView.setAdapter(mMediaAdapter);
 
         return rootView;
     }

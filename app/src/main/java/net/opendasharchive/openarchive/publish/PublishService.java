@@ -1,5 +1,8 @@
 package net.opendasharchive.openarchive.publish;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -20,7 +23,9 @@ import android.util.Log;
 import net.opendasharchive.openarchive.ArchiveSettingsActivity;
 import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.OpenArchiveApp;
+import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.SettingsActivity;
+import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
@@ -34,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
@@ -53,6 +59,11 @@ public class PublishService extends Service implements Runnable {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+        if (Build.VERSION.SDK_INT >= 26)
+            createNotificationChannel();
+
     }
 
     @Override
@@ -113,19 +124,21 @@ public class PublishService extends Service implements Runnable {
             //get all media items that are set into queued state
             List<Media> results = null;
 
-
             Date datePublish = new Date();
 
-            //do 3 loops through
-            for (int i = 0; i < 3; i++) {
-                results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
 
-                if (results.size() > 0) {
-                    //iterate through them, and upload one by one
-                    for (Media media : results) {
-                        media.uploadDate = datePublish;
-                        media.progress = 0; //should we reset this?
-                        uploadMedia(media);
+            if (results.size() > 0) {
+                //iterate through them, and upload one by one
+                for (Media media : results) {
+                    media.uploadDate = datePublish;
+                    media.progress = 0; //should we reset this?
+                    uploadMedia(media);
+                    Collection coll = Collection.findById(Collection.class,media.collectionId);
+                    if (coll != null)
+                    {
+                        coll.uploadDate = datePublish;
+                        coll.save();
                     }
                 }
             }
@@ -391,5 +404,30 @@ public class PublishService extends Service implements Runnable {
             js.schedule(job);
         }
     }
+
+    private final static String NOTIFICATION_CHANNEL_ID = "oasave_channel_1";
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotificationChannel ()
+    {
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// The id of the channel
+
+// The user-visible name of the channel.
+        CharSequence name = getString(R.string.app_name);
+// The user-visible description of the channel.
+        String description = getString(R.string.app_subtext);
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+// Configure the notification channel.
+        mChannel.setDescription(description);
+        mChannel.enableLights(false);
+        mChannel.enableVibration(false);
+        mChannel.setShowBadge(false);
+        mChannel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+        mNotificationManager.createNotificationChannel(mChannel);
+    }
+
 
 }

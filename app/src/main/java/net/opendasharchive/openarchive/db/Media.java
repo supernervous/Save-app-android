@@ -50,6 +50,8 @@ public class Media extends SugarRecord {
 
     public long projectId;
 
+    public long collectionId;
+
     public long contentLength;
     public long progress;
 
@@ -203,9 +205,19 @@ public class Media extends SugarRecord {
         return Media.find(Media.class,sbWhere.toString(),values,null,"STATUS DESC",null);
     }
 
+    public static List<Media> getMediaByProjectAndCollection(long projectId, long collectionId) {
+        String[] values = {projectId+"",collectionId+""};
+        return Media.find(Media.class,"PROJECT_ID = ? AND COLLECTION_ID = ?",values,null,"STATUS, ID DESC",null);
+    }
+
     public static List<Media> getMediaByProject(long projectId) {
         String[] values = {projectId+""};
         return Media.find(Media.class,"PROJECT_ID = ?",values,null,"STATUS, ID DESC",null);
+    }
+
+    public static List<Media> getMediaByProjectAndUploadDate(long projectId, long uploadDate) {
+        String[] values = {projectId+"",uploadDate+""};
+        return Media.find(Media.class,"PROJECT_ID = ? AND UPLOAD_DATE = ?",values,null,"STATUS, ID DESC",null);
     }
 
     public static List<Media> getMediaByProjectAndStatus(long projectId, String statusMatch, long status) {

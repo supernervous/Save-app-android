@@ -29,6 +29,7 @@ import com.zhihu.matisse.engine.impl.PicassoEngine;
 import com.zhihu.matisse.filter.Filter;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
+import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     private ProjectAdapter mPagerAdapter;
 
     private FloatingActionButton mFab;
+
+    private Collection mCollNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
     private Media importMedia (File fileSource, String mimeType)
     {
         String title = fileSource.getName();
@@ -437,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         return media;
-    }
+    }**/
 
     private Media importMedia (Uri uri)
     {
@@ -453,9 +457,21 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
 
         // create media
         Media media = new Media();
+
+        if (mCollNew == null || mCollNew.uploadDate != null)
+        {
+            mCollNew = new Collection();
+            mCollNew.projectId = project.getId();
+            mCollNew.save();
+        }
+
+
+
+        media.collectionId = mCollNew.getId();
 
         File fileSource = new File(uri.getPath());
         Date createDate = new Date();
@@ -472,7 +488,6 @@ public class MainActivity extends AppCompatActivity {
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
 
-        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
 
         media.projectId = project.getId();
 
