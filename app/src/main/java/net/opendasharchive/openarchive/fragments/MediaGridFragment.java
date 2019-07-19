@@ -160,6 +160,7 @@ public class MediaGridFragment extends MediaListFragment {
                         startActivity(new Intent(getActivity(), BatchMediaReviewActivity.class));
                     }
                 });
+                break;
 
             }
             else if (media.status == Media.STATUS_QUEUED || media.status == Media.STATUS_UPLOADING)
@@ -171,6 +172,7 @@ public class MediaGridFragment extends MediaListFragment {
                     holder.sectionTimestamp.setText(listMedia.get(0).uploadDate.toString());
 
                 holder.action.setVisibility(View.GONE);
+                break;
             }
             else
             {

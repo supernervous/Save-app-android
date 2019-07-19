@@ -5,28 +5,30 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Gallery;
 import android.widget.ProgressBar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
-import com.zhihu.matisse.filter.Filter;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.db.Collection;
@@ -35,30 +37,15 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
-import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Globals;
-import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
-import org.w3c.dom.Text;
-import org.witness.proofmode.ProofMode;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.PagerTabStrip;
-import androidx.viewpager.widget.ViewPager;
-import io.cleaninsights.sdk.piwik.Measurer;
 import io.scal.secureshareui.model.Account;
 
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
@@ -462,19 +449,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+
         Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
 
         // create media
         Media media = new Media();
 
-        if (mCollNew == null || mCollNew.uploadDate != null)
+        if (mCollNew == null)
         {
             mCollNew = new Collection();
             mCollNew.projectId = project.getId();
             mCollNew.save();
         }
+        else
+        {
+            mCollNew = Collection.findById(Collection.class,mCollNew.getId());
 
-
+            if (mCollNew.getUploadDate() != null)
+            {
+                mCollNew = new Collection();
+                mCollNew.projectId = project.getId();
+                mCollNew.save();
+            }
+        }
 
         media.collectionId = mCollNew.getId();
 
