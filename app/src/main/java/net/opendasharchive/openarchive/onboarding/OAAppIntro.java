@@ -26,6 +26,11 @@ public class OAAppIntro extends AppIntro {
         // Instead of fragments, you can also use our default slide
         // Just set a title, description, background and image. AppIntro will do the rest.
         addSlide(AppIntroFragment.newInstance(getString(R.string.title_welcome), getString(R.string.onboarding_intro), R.drawable.oafeature, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance("Save to a safe place.", "Connect to a secure server or the internet archive to upload photos and videos from your phone.", R.drawable.onboarding2, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance("Stay organized.", "Organize your media into projects.", R.drawable.onboarding4, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance("Store the facts.", "Capture notes, location and people with each piece of media.", R.drawable.onboarding3, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance("Ensure authenticity.", "Include your credentials while Save adds extra metadata to help with chain of custody and verification workflows.", R.drawable.onboarding1, getResources().getColor(R.color.oablue)));
+
 
         // OPTIONAL METHODS
         // Override bar/separator color.
