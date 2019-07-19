@@ -92,11 +92,12 @@ public class WebDAVSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
-        String folderName = media.getServerUrl();
+        String basePath = media.getServerUrl();
 
+        String folderName = media.updateDate.toString();
         String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
 
-        String projectFolderPath = server + '/' + folderName;
+        String projectFolderPath = server + '/' + basePath;
 
         if (media.contentLength == 0)
         {
@@ -111,7 +112,7 @@ public class WebDAVSiteController extends SiteController {
             if (!sardine.exists(projectFolderPath))
                 sardine.createDirectory(projectFolderPath);
 
-            projectFolderPath += '/' + fileName;
+            projectFolderPath += '/' + folderName;
             if (!sardine.exists(projectFolderPath))
                 sardine.createDirectory(projectFolderPath);
 
@@ -126,7 +127,7 @@ public class WebDAVSiteController extends SiteController {
                 });
 
                 media.setServerUrl(finalMediaPath);
-
+                media.save();
                 jobSucceeded(finalMediaPath);
 
                 uploadMetadata (media, projectFolderPath, fileName);
@@ -136,6 +137,7 @@ public class WebDAVSiteController extends SiteController {
             else
             {
                 media.setServerUrl(finalMediaPath);
+                media.save();
                 jobSucceeded(finalMediaPath);
 
             }

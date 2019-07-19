@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Collection mCollNew;
 
+    private int lastTab = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (mPagerAdapter.getCount() > 0)
+                if (mPagerAdapter.getCount() > 1 && lastTab > 0)
                     importMedia();
                 else {
                     promptNewProject();
@@ -120,10 +122,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                lastTab = position;
+                /**
                 if (position == 0)
                     mFab.setVisibility(View.GONE);
                 else
                     mFab.setVisibility(View.VISIBLE);
+                 **/
             }
 
             @Override

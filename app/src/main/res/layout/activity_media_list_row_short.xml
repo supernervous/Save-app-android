@@ -23,7 +23,9 @@
             android:max="100"
             android:progress="10"
             android:progressDrawable="@drawable/circle_progressbar"
-            android:secondaryProgress="0" />
+            android:secondaryProgress="0"
+            android:padding="10dp"
+            />
 
 
         <TextView

@@ -76,6 +76,17 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         final String mediaPath = currentMedia.getOriginalFilePath();
 
+        if (currentMedia.status == Media.STATUS_PUBLISHED || currentMedia.status == Media.STATUS_UPLOADED) {
+            ivIcon.setAlpha(1f);
+        }
+        else
+        {
+            if (doImageFade)
+                ivIcon.setAlpha(0.5f);
+            else
+                ivIcon.setAlpha(1f);
+        }
+
         if (lastMediaPath == null || (!lastMediaPath.equals(mediaPath)))
         {
             if (currentMedia.getMimeType().startsWith("image")) {
@@ -156,26 +167,6 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             } else
                 ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
 
-            if (currentMedia.status == Media.STATUS_QUEUED) {
-
-                if (doImageFade)
-                    ivIcon.setAlpha(0.5f);
-
-            } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
-                if (doImageFade)
-                    ivIcon.setAlpha(1f);
-
-            } else if (currentMedia.status == Media.STATUS_UPLOADING) {
-
-                if (doImageFade)
-                    ivIcon.setAlpha(0.5f);
-            }
-            else
-            {
-                if (doImageFade)
-                    ivIcon.setAlpha(0.5f);
-
-            }
 
             File fileMedia = new File(Uri.parse(currentMedia.getOriginalFilePath()).getPath());
 
@@ -216,20 +207,15 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
             if (progressBar != null)
             {
-
-
                 progressBar.setVisibility(View.VISIBLE);
                 tvProgress.setVisibility(View.VISIBLE);
 
                 progressBar.setProgress(0);
                 tvProgress.setText(0 + "%");
             }
-        } else if (currentMedia.status == Media.STATUS_UPLOADED||currentMedia.status == Media.STATUS_PUBLISHED) {
-            sbTitle.append(mContext.getString(R.string.status_public));
 
-        } else if (currentMedia.status == Media.STATUS_UPLOADING) {
+        } else if (currentMedia.status == Media.STATUS_UPLOADING || currentMedia.status == Media.STATUS_UPLOADED) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
-
 
              int perc = 0;
 
@@ -253,7 +239,6 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         sbTitle.append(currentMedia.getTitle());
         tvTitle.setText(sbTitle.toString());
-
 
     }
 

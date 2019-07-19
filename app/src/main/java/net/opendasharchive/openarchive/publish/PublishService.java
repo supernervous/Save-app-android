@@ -203,6 +203,8 @@ public class PublishService extends Service implements Runnable {
                 }
 
                 sc.upload(account, media, valueMap);
+
+                media.save();
             }
             else
             {
@@ -261,16 +263,15 @@ public class PublishService extends Service implements Runnable {
 
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
 
-            if (uploadMedia.progress < contentLengthUploaded) {
-                uploadMedia.progress = (int) contentLengthUploaded;
+            uploadMedia.progress = contentLengthUploaded;
 
-                if (uploadMedia.status != Media.STATUS_UPLOADING) {
-                    uploadMedia.status = Media.STATUS_UPLOADING;
-                    uploadMedia.save();
-                }
-
-                notifyMediaUpdated(uploadMedia);
+            if (uploadMedia.status != Media.STATUS_UPLOADING) {
+                uploadMedia.status = Media.STATUS_UPLOADING;
+                uploadMedia.save();
             }
+
+            notifyMediaUpdated(uploadMedia);
+
         }
 
         @Override

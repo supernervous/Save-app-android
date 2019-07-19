@@ -117,6 +117,7 @@ public class MediaListFragment extends Fragment {
         }
 
         mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short,listMedia, rView );
+        mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);
 
         return rootView;
