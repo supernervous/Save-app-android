@@ -1,1 +1,0 @@
-alter table MEDIA add COLLECTION_ID NUMERIC;
