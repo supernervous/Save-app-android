@@ -17,6 +17,11 @@ import net.gotev.uploadservice.okhttp.OkHttpStack;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Prefs;
 
+import org.acra.ACRA;
+import org.acra.annotation.AcraCore;
+import org.acra.config.CoreConfigurationBuilder;
+import org.acra.config.MailSenderConfigurationBuilder;
+import org.acra.data.StringFormat;
 import org.witness.proofmode.ProofMode;
 
 import androidx.multidex.MultiDex;
@@ -31,6 +36,7 @@ import okhttp3.OkHttpClient;
 /**
  * Created by josh on 3/6/15.
  */
+@AcraCore(buildConfigClass = BuildConfig.class)
 public class OpenArchiveApp extends com.orm.SugarApp {
 
     public static volatile boolean orbotConnected = false;
@@ -71,6 +77,13 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         if (Prefs.getUseTor())
             initNetCipher(this);
+
+        CoreConfigurationBuilder builder = new CoreConfigurationBuilder(this);
+        builder.setBuildConfigClass(BuildConfig.class).setReportFormat(StringFormat.JSON);
+        builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class).setMailTo("support@guardianproject.info");
+
+        // The following line triggers the initialization of ACRA
+        ACRA.init(this, builder);
 
     }
 
