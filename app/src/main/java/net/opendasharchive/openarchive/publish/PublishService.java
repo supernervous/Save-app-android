@@ -133,6 +133,7 @@ public class PublishService extends Service implements Runnable {
                 for (Media media : results) {
                     media.uploadDate = datePublish;
                     media.progress = 0; //should we reset this?
+                    media.status = Media.STATUS_UPLOADING;
                     uploadMedia(media);
                     Collection coll = Collection.findById(Collection.class,media.collectionId);
                     if (coll != null)
@@ -140,6 +141,7 @@ public class PublishService extends Service implements Runnable {
                         coll.uploadDate = datePublish;
                         coll.save();
                     }
+                    media.save();
                 }
             }
 
@@ -204,7 +206,6 @@ public class PublishService extends Service implements Runnable {
 
                 sc.upload(account, media, valueMap);
 
-                media.save();
             }
             else
             {
@@ -250,7 +251,6 @@ public class PublishService extends Service implements Runnable {
 
             uploadMedia.progress = uploadMedia.contentLength;
             notifyMediaUpdated(uploadMedia);
-
             uploadMedia.status = Media.STATUS_UPLOADED;
             uploadMedia.save();
             notifyMediaUpdated(uploadMedia);
@@ -260,15 +260,11 @@ public class PublishService extends Service implements Runnable {
         @Override
         public void progress(Message msg) {
             Bundle data = msg.getData();
-
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
 
-            uploadMedia.progress = contentLengthUploaded;
+            Log.d("OAPublish",uploadMedia.getId() + " uploaded: " + contentLengthUploaded + "/" + uploadMedia.contentLength );
 
-            if (uploadMedia.status != Media.STATUS_UPLOADING) {
-                uploadMedia.status = Media.STATUS_UPLOADING;
-                uploadMedia.save();
-            }
+            uploadMedia.progress = contentLengthUploaded;
 
             notifyMediaUpdated(uploadMedia);
 

@@ -120,14 +120,22 @@ public class WebDAVSiteController extends SiteController {
 
             if (!sardine.exists(finalMediaPath)) {
                 sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
+
+                    long lastBytes = 0;
+
                     @Override
                     public void transferred(long bytes) {
-                        jobProgress(bytes,null);
+
+                        if (bytes > lastBytes) {
+                            jobProgress(bytes, null);
+                            lastBytes = bytes;
+                        }
+
+
                     }
                 });
 
                 media.setServerUrl(finalMediaPath);
-                media.save();
                 jobSucceeded(finalMediaPath);
 
                 uploadMetadata (media, projectFolderPath, fileName);
@@ -137,7 +145,6 @@ public class WebDAVSiteController extends SiteController {
             else
             {
                 media.setServerUrl(finalMediaPath);
-                media.save();
                 jobSucceeded(finalMediaPath);
 
             }

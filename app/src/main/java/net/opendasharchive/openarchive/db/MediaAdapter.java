@@ -51,6 +51,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
             Media item = data.get(i);
             if (item.getId() == mediaId)
             {
+                item.status = Media.STATUS_UPLOADING;
                 item.progress = progress;
                 notifyItemChanged(i);
 
