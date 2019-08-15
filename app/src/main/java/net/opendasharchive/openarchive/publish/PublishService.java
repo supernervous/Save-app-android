@@ -34,6 +34,7 @@ import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -134,14 +135,22 @@ public class PublishService extends Service implements Runnable {
                     media.uploadDate = datePublish;
                     media.progress = 0; //should we reset this?
                     media.status = Media.STATUS_UPLOADING;
-                    uploadMedia(media);
-                    Collection coll = Collection.findById(Collection.class,media.collectionId);
-                    if (coll != null)
-                    {
-                        coll.uploadDate = datePublish;
-                        coll.save();
+
+                    try {
+                        uploadMedia(media);
+                        Collection coll = Collection.findById(Collection.class, media.collectionId);
+                        if (coll != null) {
+                            coll.uploadDate = datePublish;
+                            coll.save();
+                        }
+                        media.save();
                     }
-                    media.save();
+                    catch (IOException ioe)
+                    {
+                        Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(),ioe);
+                        media.status = Media.STATUS_QUEUED;
+                        media.save();
+                    }
                 }
             }
 
@@ -161,7 +170,7 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private void uploadMedia (Media media)
+    private void uploadMedia (Media media) throws IOException
     {
 
         /**

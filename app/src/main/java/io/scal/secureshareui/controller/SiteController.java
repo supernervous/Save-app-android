@@ -15,6 +15,7 @@ import net.opendasharchive.openarchive.services.PirateBoxSiteController;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -84,7 +85,7 @@ public abstract class SiteController {
      */
     public abstract void startMetadataActivity(Intent intent);
 
-    public abstract boolean upload(Account account, Media media, HashMap<String, String> valueMap);
+    public abstract boolean upload(Account account, Media media, HashMap<String, String> valueMap) throws IOException;
     public abstract boolean delete(Account account, String bucketName, String mediaFile);
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {

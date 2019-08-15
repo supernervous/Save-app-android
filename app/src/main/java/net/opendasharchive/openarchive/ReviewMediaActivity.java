@@ -405,6 +405,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
                     .show();
         }
         else {
+            /**
             Intent viewMediaIntent = new Intent();
             viewMediaIntent.setAction(Intent.ACTION_VIEW);
 
@@ -418,6 +419,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             startActivity(viewMediaIntent);
+             **/
         }
     }
 
