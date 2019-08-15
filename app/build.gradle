@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'testdroid'
+
 
 dependencies {
     implementation 'com.google.dagger:dagger:2.0'
@@ -11,6 +11,11 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    dexOptions {
+        javaMaxHeapSize "3g"
+        preDexLibraries true
+    }
+
     signingConfigs {
     }
     compileSdkVersion project.ext.compileSdkVersion
@@ -109,11 +114,12 @@ configurations {
     all*.exclude group: 'com.google.guava', module: 'listenablefuture'
 }
 
+/**
 testdroid {
     username '$bbusername'
     password '$bbpassword'
     deviceGroup 'gpdevices'
     mode "FULL_RUN"
     projectName "OASave"
-}
+}**/
 
