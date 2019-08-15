@@ -15,4 +15,8 @@
         name="sdcard1"
         path="/storage/sdcard1"/>
 
+    <files-path
+        name="internal"
+        path="/data/data"/>
+
 </paths>
