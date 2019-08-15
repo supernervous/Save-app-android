@@ -28,6 +28,12 @@
             android:summary="@string/prefs_upload_wifi_only_summary"
             android:defaultValue="false"/>
 
+        <androidx.preference.CheckBoxPreference
+            android:key="upload_nextcloud_chunks"
+            android:title="Enable NextCloud Chunking"
+            android:summary="If you are connecting to a NextCloud server, enable more resilient uploads"
+            android:defaultValue="false"/>
+
     </androidx.preference.PreferenceCategory>
 
 

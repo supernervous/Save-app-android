@@ -13,7 +13,7 @@ public class Prefs {
     public final static String PREF_NEARBY_USE_WIFI = "nearby_use_wifi";
     public final static String PREF_USE_TOR = "use_tor";
     public final static String PREF_USE_PROOFMODE = "use_proofmode";
-
+    public final static String PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks";
 
     private static SharedPreferences prefs;
 
@@ -31,7 +31,10 @@ public class Prefs {
         prefs.edit().putString(key, value).apply();
     }
 
-
+    public static boolean useNextcloudChunking ()
+    {
+        return prefs.getBoolean(PREF_USE_NEXTCLOUD_CHUNKING, false);
+    }
     public static boolean getUploadWifiOnly ()
     {
     	return prefs.getBoolean(PREF_UPLOAD_WIFI_ONLY, false);

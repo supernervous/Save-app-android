@@ -15,6 +15,7 @@ import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import org.spongycastle.jce.exception.ExtIOException;
 import org.witness.proofmode.ProofMode;
@@ -87,90 +88,90 @@ public class WebDAVSiteController extends SiteController {
         }
     }
 
-    /**
+
     @Override
-    public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) {
-
-        startAuthentication(account);
-
-        Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
-
-        String basePath = media.getServerUrl();
-
-        String folderName = media.updateDate.toString();
-        String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
-
-        StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
-        projectFolderBuilder.append(server.replace("webdav","dav"));
-
-        if (!server.endsWith("/"))
-            projectFolderBuilder.append('/');
-        projectFolderBuilder.append("files/");
-        projectFolderBuilder.append(account.getUserName()).append('/');
-        projectFolderBuilder.append(basePath);
-
-        String projectFolderPath = projectFolderBuilder.toString();
-
-        if (media.contentLength == 0)
-        {
-            File fileMedia = new File(mediaUri.getPath());
-            if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
-        }
-
-        String finalMediaPath = null;
-
-        try {
-            if (!sardine.exists(projectFolderPath))
-                sardine.createDirectory(projectFolderPath);
-
-            projectFolderPath += '/' + folderName;
-            if (!sardine.exists(projectFolderPath))
-                sardine.createDirectory(projectFolderPath);
-
-            finalMediaPath = projectFolderPath + '/' + fileName;
-
-            if (!sardine.exists(finalMediaPath)) {
-                sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
-
-                    long lastBytes = 0;
-
-                    @Override
-                    public void transferred(long bytes) {
-
-                        if (bytes > lastBytes) {
-                            jobProgress(bytes, null);
-                            lastBytes = bytes;
-                        }
-
-
-                    }
-                });
-
-                media.setServerUrl(finalMediaPath);
-                jobSucceeded(finalMediaPath);
-
-                uploadMetadata (media, projectFolderPath, fileName);
-                uploadProof(media, projectFolderPath);
-
-            }
-            else
-            {
-                media.setServerUrl(finalMediaPath);
-                jobSucceeded(finalMediaPath);
-
-            }
-
-            return true;
-        } catch (IOException e) {
-            Log.w(TAG, "Failed primary media upload: " + finalMediaPath + ": " + e.getMessage());
-            jobFailed(e,-1,finalMediaPath);
-            return false;
-        }
-
-    }**/
-
     public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) throws IOException {
+
+        if (Prefs.useNextcloudChunking())
+            return uploadUsingChunking(account, media, valueMap);
+        else {
+            startAuthentication(account);
+
+            Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
+
+            String basePath = media.getServerUrl();
+
+            String folderName = media.updateDate.toString();
+            String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
+
+            StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
+            projectFolderBuilder.append(server.replace("webdav", "dav"));
+
+            if (!server.endsWith("/"))
+                projectFolderBuilder.append('/');
+            projectFolderBuilder.append("files/");
+            projectFolderBuilder.append(account.getUserName()).append('/');
+            projectFolderBuilder.append(basePath);
+
+            String projectFolderPath = projectFolderBuilder.toString();
+
+            if (media.contentLength == 0) {
+                File fileMedia = new File(mediaUri.getPath());
+                if (fileMedia.exists())
+                    media.contentLength = fileMedia.length();
+            }
+
+            String finalMediaPath = null;
+
+            try {
+                if (!sardine.exists(projectFolderPath))
+                    sardine.createDirectory(projectFolderPath);
+
+                projectFolderPath += '/' + folderName;
+                if (!sardine.exists(projectFolderPath))
+                    sardine.createDirectory(projectFolderPath);
+
+                finalMediaPath = projectFolderPath + '/' + fileName;
+
+                if (!sardine.exists(finalMediaPath)) {
+                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
+
+                        long lastBytes = 0;
+
+                        @Override
+                        public void transferred(long bytes) {
+
+                            if (bytes > lastBytes) {
+                                jobProgress(bytes, null);
+                                lastBytes = bytes;
+                            }
+
+
+                        }
+                    });
+
+                    media.setServerUrl(finalMediaPath);
+                    jobSucceeded(finalMediaPath);
+
+                    uploadMetadata(media, projectFolderPath, fileName);
+                    uploadProof(media, projectFolderPath);
+
+                } else {
+                    media.setServerUrl(finalMediaPath);
+                    jobSucceeded(finalMediaPath);
+
+                }
+
+                return true;
+            } catch (IOException e) {
+                Log.w(TAG, "Failed primary media upload: " + finalMediaPath + ": " + e.getMessage());
+                jobFailed(e, -1, finalMediaPath);
+                return false;
+            }
+        }
+    }
+
+    public boolean uploadUsingChunking (Account account, final Media media, HashMap<String, String> valueMap) throws IOException {
 
         startAuthentication(account);
 
