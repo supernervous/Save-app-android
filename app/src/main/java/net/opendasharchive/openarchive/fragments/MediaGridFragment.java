@@ -75,6 +75,10 @@ public class MediaGridFragment extends MediaListFragment {
             }
         }
 
+        if (!addedView)
+        {
+            mMainView.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
+        }
 
 
         return mMainView;

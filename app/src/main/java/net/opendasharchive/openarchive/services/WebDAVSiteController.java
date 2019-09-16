@@ -27,7 +27,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -433,6 +435,32 @@ public class WebDAVSiteController extends SiteController {
         }
 
         return result.toString();
+
+    }
+
+    public ArrayList<File> getFolders (Account account, String path) throws IOException
+    {
+        startAuthentication(account);
+
+        ArrayList<File> listFiles = new ArrayList<>();
+        List<DavResource> listFolders = sardine.list(path);
+
+        for (DavResource folder : listFolders)
+        {
+            if (folder.isDirectory()) {
+
+                Date folderMod = folder.getModified();
+                String folderPath = folder.getPath();
+
+                File fileFolder = new File(folderPath);
+                fileFolder.setLastModified(folderMod.getTime());
+                listFiles.add(fileFolder);
+            }
+        }
+
+
+        return listFiles;
+
 
     }
 

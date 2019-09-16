@@ -9,6 +9,8 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:id="@+id/mediacontainer"
+    android:gravity="top"
+    android:layout_gravity="top"
     >
 
     <TextView
@@ -19,6 +21,8 @@
         android:layout_margin="48dp"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="@color/oablue"
+        android:visibility="visible"
+        android:id="@+id/add_media_hint"
         />
 
 </LinearLayout>
