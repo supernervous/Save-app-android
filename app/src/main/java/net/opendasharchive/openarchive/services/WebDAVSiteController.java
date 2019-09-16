@@ -54,6 +54,8 @@ public class WebDAVSiteController extends SiteController {
 
     private final static String TAG = "WebDAVSC";
 
+    private boolean mContinueUpload = true;
+
     public WebDAVSiteController (Context context, SiteControllerListener listener, String jobId) {
         super(context, listener, jobId);
 
@@ -88,6 +90,11 @@ public class WebDAVSiteController extends SiteController {
         }
     }
 
+    @Override
+    public void cancel() {
+
+        mContinueUpload = false;
+    }
 
     @Override
     public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) throws IOException {
@@ -134,7 +141,8 @@ public class WebDAVSiteController extends SiteController {
                 finalMediaPath = projectFolderPath + '/' + fileName;
 
                 if (!sardine.exists(finalMediaPath)) {
-                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false, new SardineListener() {
+                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false,
+                            new SardineListener() {
 
                         long lastBytes = 0;
 
@@ -148,7 +156,12 @@ public class WebDAVSiteController extends SiteController {
 
 
                         }
-                    });
+
+                                @Override
+                                public boolean continueUpload() {
+                                    return mContinueUpload;
+                                }
+                            });
 
                     media.setServerUrl(finalMediaPath);
                     jobSucceeded(finalMediaPath);
@@ -249,6 +262,11 @@ public class WebDAVSiteController extends SiteController {
                         @Override
                         public void transferred(long bytes) {
 
+                        }
+
+                        @Override
+                        public boolean continueUpload() {
+                            return mContinueUpload;
                         }
                     });
                 }

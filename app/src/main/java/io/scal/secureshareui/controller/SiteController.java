@@ -87,6 +87,7 @@ public abstract class SiteController {
 
     public abstract boolean upload(Account account, Media media, HashMap<String, String> valueMap) throws IOException;
     public abstract boolean delete(Account account, String bucketName, String mediaFile);
+    public void cancel() {}
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {
        if (site.equals(ArchiveSiteController.SITE_KEY)) {
