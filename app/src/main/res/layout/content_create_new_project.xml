@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="net.opendasharchive.openarchive.CreateNewProjectActivity"
+    tools:showIn="@layout/activity_create_new_project"
+    android:padding="10dp"
+    android:layout_marginTop="48dp"
+    >
+
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Add a project folder to the server"
+            android:textSize="14dp"
+            android:layout_below="@+id/title_create_new"
+            />
+
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Name your project"
+            android:textSize="18dp"
+            android:id="@+id/edtNewProject"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:layout_marginTop="24dp"
+            />
+
+
+
+</LinearLayout>

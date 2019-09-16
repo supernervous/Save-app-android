@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.opendasharchive.openarchive.NewProjectActivity">
+    tools:context=".BrowseProjectsActivity">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,8 +15,8 @@
         android:background="?attr/colorPrimary"
         />
 
-    <include layout="@layout/content_new_project" />
 
 
+    <include layout="@layout/content_browse_projects" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

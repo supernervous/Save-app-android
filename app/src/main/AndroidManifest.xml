@@ -4,8 +4,6 @@
     package="net.opendasharchive.openarchive"
     android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".OpenArchiveApp"
         android:allowBackup="true"
@@ -15,31 +13,25 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
         <activity
+            android:name=".BrowseProjectsActivity"
+            android:label="@string/title_activity_browser_projects"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".CreateNewProjectActivity"
+            android:label="@string/title_activity_create_new_project"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".UploadManagerActivity"
             android:label="@string/title_activity_upload_manager"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BatchMediaReviewActivity"
             android:label="@string/title_activity_batch_media_review"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NewProjectActivity"
+            android:name=".AddProjectActivity"
             android:label="@string/title_activity_new_project"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="net.opendasharchive.openarchive.db" />
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="true" />
-        <meta-data
-            android:name="DATABASE"
-            android:value="openarchive.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="19" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -105,13 +97,25 @@
         <activity
             android:name=".SettingsActivity"
             android:label="App Intro" />
+        <activity
+            android:name=".onboarding.LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".SpaceSettingsActivity"
+            android:label="@string/title_activity_space_settings" />
 
-        <service
-            android:name=".publish.PublishService"
-            android:exported="false" />
-        <service
-            android:name=".publish.PublishJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="net.opendasharchive.openarchive.db" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DATABASE"
+            android:value="openarchive.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="19" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -123,12 +127,14 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name=".onboarding.LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity
-            android:name=".SpaceSettingsActivity"
-            android:label="@string/title_activity_space_settings" />
+        <service
+            android:name=".publish.PublishService"
+            android:exported="false" />
+        <service
+            android:name=".publish.PublishJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

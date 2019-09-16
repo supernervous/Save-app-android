@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect Your Space"
+        android:text="@string/connect_your_space"
 
         android:textAlignment="center"
         android:textSize="30sp"
@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set up where you want your media to be stored"
+        android:text="@string/set_up_where_you_want_your_media_to_be_stored"
 
         android:textAlignment="center"/>
 
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send directly to a private server"
+            android:text="@string/send_directly_to_a_private_server"
             />
 
 
@@ -73,7 +73,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload to the Internet Archive"
+            android:text="@string/upload_to_the_internet_archive"
             />
 
 

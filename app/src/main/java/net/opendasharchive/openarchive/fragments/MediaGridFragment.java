@@ -57,15 +57,25 @@ public class MediaGridFragment extends MediaListFragment {
 
         List<Collection> listCollections = Collection.getAllAsList();
 
+        boolean addedView = false;
         for (Collection coll : listCollections) {
 
             List<Media> listMedia = Media.getMediaByProjectAndCollection(mProjectId, coll.getId());
             if (listMedia.size() > 0)
             {
+                if (!addedView)
+                {
+                    mainContainer.removeAllViews();
+                    addedView = true;
+                }
+
                 View view = createMediaList(mainContainer, coll, listMedia);
                 mainContainer.addView(view);
+
             }
         }
+
+
 
         return mMainView;
     }

@@ -3,6 +3,8 @@ package net.opendasharchive.openarchive.onboarding;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
@@ -25,12 +27,27 @@ public class OAAppIntro extends AppIntro {
 
         // Instead of fragments, you can also use our default slide
         // Just set a title, description, background and image. AppIntro will do the rest.
-        addSlide(AppIntroFragment.newInstance(getString(R.string.title_welcome), getString(R.string.onboarding_intro), R.drawable.oafeature, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance("Save to a safe place.", "Connect to a secure server or the internet archive to upload photos and videos from your phone.", R.drawable.onboarding2, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance("Stay organized.", "Organize your media into projects.", R.drawable.onboarding4, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance("Store the facts.", "Capture notes, location and people with each piece of media.", R.drawable.onboarding3, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance("Ensure authenticity.", "Include your credentials while Save adds extra metadata to help with chain of custody and verification workflows.", R.drawable.onboarding1, getResources().getColor(R.color.oablue)));
+        //addSlide(AppIntroFragment.newInstance(getString(R.string.title_welcome), getString(R.string.onboarding_intro), R.drawable.oafeature, getResources().getColor(R.color.oablue)));
 
+        // Instead of fragments, you can also use our default slide
+        // Just set a title, description, background and image. AppIntro will do the rest.
+        CustomSlideBigText welcome = CustomSlideBigText.newInstance(R.layout.custom_slide_big_text);
+        welcome.setTitle(getString(R.string.onboarding_intro));
+        welcome.setSubTitle(getString(R.string.app_tag_line));
+        welcome.showButton("Get Started >", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getPager().setCurrentItem(1);
+            }
+        });
+        addSlide(welcome);
+
+        this.
+        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3, getResources().getColor(R.color.oablue)));
+        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4, getResources().getColor(R.color.oablue)));
 
         // OPTIONAL METHODS
         // Override bar/separator color.

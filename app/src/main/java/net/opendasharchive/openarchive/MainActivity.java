@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.PagerTitleStrip;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
         List<Project> listProjects = Project.getAllAsList();
         mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
+       // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
+        mPager.setPageMargin(0);
+        PagerTitleStrip pStrip = findViewById(R.id.pager_title_strip);
+        pStrip.setTextSpacing(0);
 
         mFab = (FloatingActionButton) findViewById(R.id.floating_menu);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 if (mPagerAdapter.getCount() > 1 && lastTab > 0)
                     importMedia();
                 else {
-                    promptNewProject();
+                    promptAddProject();
                 }
             }
         });
@@ -110,12 +116,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 lastTab = position;
-                /**
+
                 if (position == 0)
-                    mFab.setVisibility(View.GONE);
-                else
-                    mFab.setVisibility(View.VISIBLE);
-                 **/
+                    promptAddProject();
+
             }
 
             @Override
@@ -147,29 +151,15 @@ public class MainActivity extends AppCompatActivity {
 
     private final static int REQUEST_NEW_PROJECT_NAME = 1001;
 
-    public void promptNewProject ()
+    public void promptAddProject ()
     {
-        startActivityForResult(new Intent(this,NewProjectActivity.class),REQUEST_NEW_PROJECT_NAME);
+        startActivityForResult(new Intent(this, AddProjectActivity.class),REQUEST_NEW_PROJECT_NAME);
 
     }
 
     public void onNewProjectClicked (View view)
     {
-        promptNewProject();
-    }
-    
-    private void startNewProject (String name)
-    {
-        createProject(name);
-        refreshProjects();
-    }
-
-    private void createProject (String description)
-    {
-        Project project = new Project ();
-        project.created = new Date();
-        project.description = description;
-        project.save();
+        promptAddProject();
     }
 
     private void refreshProjects ()
@@ -380,60 +370,14 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             // Make sure the request was successful
-            if (resultCode == RESULT_OK && resultData != null) {
-                String newProjectName = resultData.getStringExtra("projectName");
-                if (!TextUtils.isEmpty(newProjectName))
-                    startNewProject(newProjectName);
+            if (resultCode == RESULT_OK) {
+
+                refreshProjects();
             }
         }
 
 
     }
-
-    /**
-    private Media importMedia (File fileSource, String mimeType)
-    {
-        String title = fileSource.getName();
-        File fileImport = getOutputMediaFile(this, title);
-        boolean success = fileImport.getParentFile().mkdirs();
-        Log.d(TAG,"create parent folders, success=" + success);
-
-        try {
-            boolean imported = Utility.writeStreamToFile(new FileInputStream(fileSource),fileImport);
-            if (!imported)
-                return null;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        // create media
-        Media media = new Media();
-        media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
-        media.setMimeType(mimeType);
-        media.setUpdateDate(media.getCreateDate());
-        media.status = Media.STATUS_LOCAL;
-
-        Date createDate = new Date();
-        if (fileSource.exists()) {
-            createDate = new Date(fileSource.lastModified());
-            media.contentLength = fileSource.length();
-        }
-        else
-            media.contentLength = fileImport.length();
-        media.setCreateDate(createDate);
-
-        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
-
-        media.projectId = project.getId();
-
-        if (title != null)
-            media.setTitle(title);
-        media.save();
-
-
-        return media;
-    }**/
 
     private Media importMedia (Uri uri)
     {

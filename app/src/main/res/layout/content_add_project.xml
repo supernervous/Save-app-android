@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="net.opendasharchive.openarchive.AddProjectActivity"
+    tools:showIn="@layout/activity_add_project"
+    android:padding="10dp"
+
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_new_project"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/oablue"
+        />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Set up where you want your media to be stored."
+        android:textSize="14dp"
+        android:layout_margin="6dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:background="@color/light_grey" android:layout_marginTop="9dp" android:layout_marginBottom="16dp"  android:layout_gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create New Project"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:id="@+id/title_create_new"
+        android:onClick="onNewProjectClicked"
+        />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Add a project folder to the server"
+        android:textSize="14dp"
+        android:layout_below="@+id/title_create_new"
+        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">"
+            android:layout_alignParentEnd="true"
+            android:textSize="28dp"
+            />
+    </RelativeLayout>
+<!--
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:textSize="18dp"
+        android:layout_margin="6dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:id="@+id/edtNewProject"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        />
+-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:background="@color/light_grey"
+        android:layout_marginTop="16dp" android:layout_marginBottom="16dp"  android:layout_gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_browse_projects"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:id="@+id/title_browse_projects"
+            android:onClick="onBrowseProjects"
+
+            />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Choose a project folder from the server"
+            android:textSize="14dp"
+            android:layout_below="@+id/title_browse_projects"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">"
+            android:layout_alignParentEnd="true"
+            android:textSize="28dp"
+            />
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

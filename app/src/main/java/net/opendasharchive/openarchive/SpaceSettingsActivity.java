@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
+import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,6 +54,12 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void onAboutClick (View view)
+    {
+        startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
 
     }
 

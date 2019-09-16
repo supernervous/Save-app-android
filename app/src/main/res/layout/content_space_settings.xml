@@ -101,6 +101,7 @@
         android:layout_height="wrap_content"
         android:text="@string/action_about"
         android:textSize="22dp"
+        android:onClick="onAboutClick"
         />
 
     <View
