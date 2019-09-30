@@ -45,6 +45,7 @@ import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -340,33 +341,35 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && resultData != null) {
 
                 final List<Uri> mSelected = Matisse.obtainResult(resultData);
-                Log.d("Matisse", "mSelected: " + mSelected);
 
                 final Snackbar bar = Snackbar.make(mPager, R.string.importing_media, Snackbar.LENGTH_INDEFINITE);
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
-                for (Uri result : mSelected) {
 
-                    new AsyncTask<Uri, Void, Media>() {
-                        protected void onPreExecute() {
-                            bar.show();
-                        }
+                new AsyncTask<List<Uri>, Void, List<Media>>() {
+                    protected void onPreExecute() {
+                        bar.show();
+                    }
 
-                        protected Media doInBackground(Uri... params) {
-                            return importMedia(params[0]);
-                        }
+                    protected List<Media> doInBackground(List<Uri>... params) {
+                        return importMedia(params[0]);
+                    }
 
-                        protected void onPostExecute(Media media) {
+                    protected void onPostExecute(List<Media> media) {
 
-                            bar.dismiss();
+                        bar.dismiss();
 
-                            refreshCurrentProject();
+                        refreshCurrentProject();
 
-                        }
-                    }.execute(result);
+                        if (media.size() > 0)
+                        startActivity(new Intent(MainActivity.this, BatchMediaReviewActivity.class));
 
-                }
+
+                    }
+                }.execute(mSelected);
+
+
             }
         } else if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             // Make sure the request was successful
@@ -377,6 +380,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private ArrayList<Media> importMedia (List<Uri> importUri)
+    {
+        ArrayList<Media> result = new ArrayList<>();
+
+        for (Uri uri: importUri)
+            result.add(importMedia(uri));
+
+        return result;
     }
 
     private Media importMedia (Uri uri)
