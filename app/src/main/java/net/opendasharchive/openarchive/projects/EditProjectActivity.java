@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
@@ -93,8 +94,10 @@ public class EditProjectActivity extends AppCompatActivity {
 
         String message = getString(R.string.action_remove_project);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setTitle(R.string.remove_from_app)
+                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
                 .setNegativeButton(R.string.action_cancel, dialogClickListener).show();
 
     }
