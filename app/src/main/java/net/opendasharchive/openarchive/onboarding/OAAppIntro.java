@@ -34,7 +34,7 @@ public class OAAppIntro extends AppIntro {
         CustomSlideBigText welcome = CustomSlideBigText.newInstance(R.layout.custom_slide_big_text);
         welcome.setTitle(getString(R.string.onboarding_intro));
         welcome.setSubTitle(getString(R.string.app_tag_line));
-        welcome.showButton("Get Started >", new View.OnClickListener() {
+        welcome.showButton(getString(R.string.action_get_started), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -42,7 +42,7 @@ public class OAAppIntro extends AppIntro {
             }
         });
         addSlide(welcome);
-        
+
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1));
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2));
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
@@ -52,6 +52,7 @@ public class OAAppIntro extends AppIntro {
         // Override bar/separator color.
        // setBarColor(Color.parseColor("#3F51B5"));
        // setSeparatorColor(Color.parseColor("#2196F3"));
+        setSeparatorColor(getResources().getColor(R.color.white));
 
         // Hide Skip/Done button.
         showSkipButton(false);

@@ -271,5 +271,7 @@
     <string name="upload_to_the_internet_archive">Upload to the Internet Archive</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud">Save connects to WebDAV-compatible servers only, such as Nextcloud and ownCloud.</string>
     <string name="app_tag_line">Secure Mobile Media Preservation</string>
+    <string name="action_get_started"><![CDATA[Get Started >]]></string>
+    <string name="action_next">Next</string>
 
 </resources>

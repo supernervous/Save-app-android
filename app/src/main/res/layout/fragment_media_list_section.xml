@@ -40,7 +40,7 @@
         android:layout_gravity="right"
         android:gravity="right"
         android:textSize="14dp"
-        android:text="Next"
+        android:text="@string/action_next"
         android:layout_toRightOf="@id/sectiontimestamp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
