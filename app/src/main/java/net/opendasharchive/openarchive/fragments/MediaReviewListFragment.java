@@ -63,7 +63,12 @@ public class MediaReviewListFragment extends MediaListFragment {
 
         List<Media> listMedia = Media.getMediaByStatus(mStatuses);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row,listMedia, rView );
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMedia, rView, new OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+            }
+        });
         mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);
 

@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
         mMenuUpload = menu.findItem(R.id.menu_upload_manager);
 
         updateMenu();
-        
+
         return super.onCreateOptionsMenu(menu);
 
     }

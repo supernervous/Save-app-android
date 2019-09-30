@@ -13,7 +13,9 @@ import net.opendasharchive.openarchive.db.MediaAdapter;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,12 +118,51 @@ public class MediaListFragment extends Fragment {
             }
         }
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short,listMedia, rView );
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short, listMedia, rView, new OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+                mItemTouchHelper.startDrag(viewHolder);
+
+            }
+        });
         mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);
+        mItemTouchHelper.attachToRecyclerView(rView);
 
         return rootView;
     }
 
+    private ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP|ItemTouchHelper.DOWN,ItemTouchHelper.END|ItemTouchHelper.START) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+
+            mMediaAdapter.onItemMove(viewHolder.getAdapterPosition(),
+                    target.getAdapterPosition());
+
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            mMediaAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        }
+    });
+
+    public void setEditMode (boolean isEditMode)
+    {
+        mMediaAdapter.setEditMode(isEditMode);
+    }
+
+    public interface OnStartDragListener {
+
+        /**
+         * Called when a view is requesting a start of a drag.
+         *
+         * @param viewHolder The holder of the view to drag.
+         */
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
+    }
 
 }

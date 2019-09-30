@@ -279,5 +279,7 @@
     <string name="add_a_project_folder_to_the_server">Add a project folder to the server</string>
     <string name="action_choose_folder">Choose a project folder from the server</string>
     <string name="prompt_arrow"><![CDATA[>]]></string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_done">Done</string>
 
 </resources>

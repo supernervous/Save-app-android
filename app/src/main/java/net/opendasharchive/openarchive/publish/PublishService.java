@@ -54,8 +54,9 @@ import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS
 public class PublishService extends Service implements Runnable {
 
     private boolean isRunning = false;
-
+    private boolean keepUploading = true;
     private Thread mUploadThread = null;
+    private    SiteController sc = null;
 
     @Override
     public void onCreate() {
@@ -77,6 +78,15 @@ public class PublishService extends Service implements Runnable {
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        keepUploading = false;
+        if (sc !=null)
+            sc.cancel();
     }
 
     @Nullable
@@ -132,24 +142,29 @@ public class PublishService extends Service implements Runnable {
             if (results.size() > 0) {
                 //iterate through them, and upload one by one
                 for (Media media : results) {
-                    media.uploadDate = datePublish;
-                    media.progress = 0; //should we reset this?
-                    media.status = Media.STATUS_UPLOADING;
 
-                    try {
-                        uploadMedia(media);
-                        Collection coll = Collection.findById(Collection.class, media.collectionId);
-                        if (coll != null) {
-                            coll.uploadDate = datePublish;
-                            coll.save();
+                    if (keepUploading) {
+                        media.uploadDate = datePublish;
+                        media.progress = 0; //should we reset this?
+                        media.status = Media.STATUS_UPLOADING;
+
+                        try {
+                            uploadMedia(media);
+                            Collection coll = Collection.findById(Collection.class, media.collectionId);
+                            if (coll != null) {
+                                coll.uploadDate = datePublish;
+                                coll.save();
+                            }
+                            media.save();
+                        } catch (IOException ioe) {
+                            Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
+                            media.status = Media.STATUS_QUEUED;
+                            media.save();
                         }
-                        media.save();
                     }
-                    catch (IOException ioe)
+                    else
                     {
-                        Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(),ioe);
-                        media.status = Media.STATUS_QUEUED;
-                        media.save();
+                        break;
                     }
                 }
             }
@@ -188,7 +203,6 @@ public class PublishService extends Service implements Runnable {
         }
         else {**/
 
-            SiteController sc = null;
 
             Project project = Project.getById(media.projectId);
 
@@ -214,6 +228,7 @@ public class PublishService extends Service implements Runnable {
                 }
 
                 sc.upload(account, media, valueMap);
+
 
             }
             else

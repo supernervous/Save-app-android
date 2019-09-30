@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
+import net.opendasharchive.openarchive.publish.PublishService;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,6 +26,7 @@ import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 public class UploadManagerActivity extends AppCompatActivity {
 
     MediaListFragment mFrag;
+    MenuItem mMenuEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,16 +86,56 @@ public class UploadManagerActivity extends AppCompatActivity {
         }
     };
 
+    boolean isEditMode = false;
+
+    public void toggleEditMode ()
+    {
+        isEditMode = !isEditMode;
+        mFrag.setEditMode(isEditMode);
+        mFrag.refresh();
+
+        if (isEditMode) {
+            mMenuEdit.setTitle(R.string.menu_done);
+            startService(new Intent(this, PublishService.class));
+
+        }
+        else {
+            mMenuEdit.setTitle(R.string.menu_edit);
+
+            stopService(new Intent(this, PublishService.class));
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_upload, menu);
+        mMenuEdit = menu.findItem(R.id.menu_edit);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
         switch (item.getItemId()) {
 
-            // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                //NavUtils.navigateUpFromSameTask(this);
                 finish();
                 return true;
+
+
+            case R.id.menu_edit:
+                toggleEditMode();
+                return true;
+
+
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

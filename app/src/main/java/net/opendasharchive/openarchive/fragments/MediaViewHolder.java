@@ -47,6 +47,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     private String lastMediaPath = null;
 
     private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag;
+    public final ImageView handleView;
 
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
@@ -74,6 +75,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                     .addRequestHandler(videoRequestHandler)
                     .build();
         }
+
+        handleView = (ImageView) itemView.findViewById(R.id.handle);
 
     }
 

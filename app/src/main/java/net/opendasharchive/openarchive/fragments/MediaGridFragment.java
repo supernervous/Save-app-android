@@ -119,7 +119,12 @@ public class MediaGridFragment extends MediaListFragment {
 
         setSectionHeaders(coll, listMedia, holder);
 
-        MediaAdapter mediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square,listMedia, rView );
+        MediaAdapter mediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square, listMedia, rView, new OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+
+            }
+        });
         rView.setAdapter(mediaAdapter);
         mAdapters.put(coll.getId(),mediaAdapter);
         mSection.put(coll.getId(),holder);
