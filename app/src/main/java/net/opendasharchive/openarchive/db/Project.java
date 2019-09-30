@@ -13,12 +13,22 @@ public class Project extends SugarRecord {
     public Date created;
 
     public long spaceId;
+    public boolean archived = false;
 
     @Ignore
     private ArrayList<Media> mediaArrayList;
 
     public static List<Project> getAllAsList() {
         return Project.find(Project.class,null,null,null,"ID DESC",null);
+    }
+
+
+    public static List<Project> getAllAsList(boolean archived) {
+
+        int isArchived = archived?1:0;
+        String[] whereArgs = {isArchived+""};
+
+        return Project.find(Project.class,"archived = ?",whereArgs,null,"ID DESC",null);
     }
 
     public static Project getById(long projectId) {
@@ -29,4 +39,22 @@ public class Project extends SugarRecord {
         Project project = Project.findById(Project.class, projectId);
         return project.delete();
     }
+
+
+    public long getSpaceId() {
+        return spaceId;
+    }
+
+    public void setSpaceId(long spaceId) {
+        this.spaceId = spaceId;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
 }

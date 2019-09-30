@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
-        List<Project> listProjects = Project.getAllAsList();
+        List<Project> listProjects = Project.getAllAsList(false);
         mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
        // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshProjects ()
     {
-        List<Project> listProjects = Project.getAllAsList();
+        List<Project> listProjects = Project.getAllAsList(false);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
         mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
@@ -246,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
             // handle if started from outside app
         }
 
+        refreshProjects();
         refreshCurrentProject();
 
 

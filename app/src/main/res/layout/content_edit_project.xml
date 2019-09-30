@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="net.opendasharchive.openarchive.projects.EditProjectActivity"
+    tools:showIn="@layout/activity_edit_project"
+    android:padding="6dp"
+    android:layout_marginTop="48dp"
+    >
+
+
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint=""
+        android:textSize="18dp"
+        android:id="@+id/edtProjectName"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        android:layout_marginTop="24dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_grey"
+        android:layout_marginTop="36dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_from_app"
+        android:id="@+id/action_remove_project"
+        android:textColor="@color/red"
+        android:layout_margin="12dp"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:onClick="removeProject"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/action_archive_project"
+        android:id="@+id/action_archive_project"
+        android:textColor="@color/oablue"
+        android:layout_margin="12dp"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:onClick="archiveProject"
+        />
+
+</LinearLayout>

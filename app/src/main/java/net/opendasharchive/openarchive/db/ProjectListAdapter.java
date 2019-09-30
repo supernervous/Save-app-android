@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.projects.EditProjectActivity;
 import net.opendasharchive.openarchive.util.Globals;
 
 import java.util.List;
@@ -41,7 +43,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter {
                 int itemPosition = mRV.getChildLayoutPosition(view);
                 Project p = mListProjects.get(itemPosition);
 
-                Intent reviewProjectIntent = new Intent(mContext, ProjectSettingsActivity.class);
+                Intent reviewProjectIntent = new Intent(mContext, EditProjectActivity.class);
                 reviewProjectIntent.putExtra(Globals.EXTRA_CURRENT_PROJECT_ID, p.getId());
                 mContext.startActivity(reviewProjectIntent);
             }
@@ -56,7 +58,13 @@ public class ProjectListAdapter extends RecyclerView.Adapter {
         ProjectViewHolder pvh = (ProjectViewHolder)holder;
         Project project = mListProjects.get(position);
 
-        pvh.tvTitle.setText(project.description);
+        StringBuffer sb = new StringBuffer();
+        sb.append(project.description);
+
+        if (project.isArchived())
+            sb.append(" (").append(mContext.getString(R.string.status_archived)).append(")");
+
+        pvh.tvTitle.setText(sb.toString());
 
     }
 

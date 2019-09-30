@@ -282,5 +282,12 @@
     <string name="prompt_arrow"><![CDATA[>]]></string>
     <string name="menu_edit">Edit</string>
     <string name="menu_done">Done</string>
+    <string name="remove_from_app">Remove from App</string>
+    <string name="action_remove_project">Are you sure you want to remove your project?</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_archive_project">Archive Project</string>
+    <string name="action_unarchive_project">Unarchive Project</string>
+    <string name="status_archived">archived</string>
+
 
 </resources>
