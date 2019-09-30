@@ -10,7 +10,7 @@
     tools:context="net.opendasharchive.openarchive.AddProjectActivity"
     tools:showIn="@layout/activity_add_project"
     android:padding="10dp"
-
+    android:layout_marginTop="60dp"
     >
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Set up where you want your media to be stored."
+        android:text="@string/action_media_stored"
         android:textSize="14dp"
         android:layout_margin="6dp"
         android:layout_gravity="center_horizontal"
@@ -43,7 +43,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create New Project"
+        android:text="@string/create_new_project"
         android:textSize="24sp"
         android:textStyle="bold"
         android:id="@+id/title_create_new"
@@ -53,7 +53,7 @@
     <TextView
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Add a project folder to the server"
+        android:text="@string/add_a_project_folder_to_the_server"
         android:textSize="14dp"
         android:layout_below="@+id/title_create_new"
         />
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Choose a project folder from the server"
+            android:text="@string/action_choose_folder"
             android:textSize="14dp"
             android:layout_below="@+id/title_browse_projects"
             />
@@ -111,7 +111,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=">"
+            android:text="@string/prompt_arrow"
             android:layout_alignParentEnd="true"
             android:textSize="28dp"
             />

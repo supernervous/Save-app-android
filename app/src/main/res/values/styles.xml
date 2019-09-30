@@ -76,5 +76,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
+    <style name="viewPagerTitleStrip">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/oablue</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

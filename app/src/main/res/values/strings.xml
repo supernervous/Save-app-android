@@ -274,5 +274,10 @@
     <string name="action_get_started"><![CDATA[Get Started >]]></string>
     <string name="action_next">Next</string>
     <string name="status_flagged">Significant Content</string>
+    <string name="action_media_stored">Set up where you want your media to be stored.</string>
+    <string name="create_new_project">Create New Project</string>
+    <string name="add_a_project_folder_to_the_server">Add a project folder to the server</string>
+    <string name="action_choose_folder">Choose a project folder from the server</string>
+    <string name="prompt_arrow"><![CDATA[>]]></string>
 
 </resources>

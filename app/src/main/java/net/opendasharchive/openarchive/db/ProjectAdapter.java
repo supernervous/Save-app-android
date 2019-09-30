@@ -66,7 +66,7 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
         if (position == 0)
         {
-            return context.getString(R.string.action_plus);
+            return "\u2295";
         }
         else
             return data.get(position-1).description;
