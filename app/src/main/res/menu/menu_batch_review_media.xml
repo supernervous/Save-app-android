@@ -8,7 +8,7 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom|collapseActionView|withText"
         android:visible="true"
-        android:icon="@drawable/ic_cloud_upload_white_36dp"
+        android:text="action_upload"
         />
 
 

@@ -55,6 +55,8 @@ public class Media extends SugarRecord {
     public long contentLength;
     public long progress;
 
+    public boolean flag = false;
+
     //public final static int STATUS_ERROR = 9;
     //public final static int STATUS_DELETE_LOCAL = 6;
     public final static int STATUS_DELETE_REMOTE = 7;
@@ -269,6 +271,15 @@ public class Media extends SugarRecord {
 
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+
+    public boolean isFlagged() {
+        return flag;
+    }
+
+    public void setFlagged(boolean flag) {
+        this.flag = flag;
     }
 
 }

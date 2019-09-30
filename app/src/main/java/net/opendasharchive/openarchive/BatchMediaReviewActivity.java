@@ -43,6 +43,7 @@ public class BatchMediaReviewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        mFrag.refresh();
 
     }
 

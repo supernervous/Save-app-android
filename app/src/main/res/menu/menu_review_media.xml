@@ -6,9 +6,9 @@
 s
     <item android:id="@+id/menu_upload" android:title="@string/action_upload"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|collapseActionView"
+        app:showAsAction="never"
         android:visible="false"
-        android:icon="@drawable/ic_cloud_upload_white_36dp"
+
         />
 
     <item

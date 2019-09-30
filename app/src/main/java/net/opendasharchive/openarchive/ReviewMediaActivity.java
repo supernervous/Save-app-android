@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
@@ -75,6 +76,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private TextView tvLocation;
     private TextView tvUrl;
     private TextView tvLicenseUrl;
+    private TextView tvFlagged;
 
 
     private SimpleWaveformView swMedia;
@@ -85,6 +87,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private MenuItem menuShare;
     private MenuItem menuPublish;
 
+
+    private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag;
 
     private static Picasso mPicasso;
 
@@ -118,6 +122,13 @@ public class ReviewMediaActivity extends AppCompatActivity {
         tvTags = (TextView) findViewById(R.id.tv_tags_lbl);
         tvLocation = (TextView) findViewById(R.id.tv_location_lbl);
         tvUrl = (TextView) findViewById(R.id.tv_url);
+        tvFlagged = findViewById(R.id.tv_flag_lbl);
+
+
+        ivEditTags = findViewById(R.id.ivEditTags);
+        ivEditNotes = findViewById(R.id.ivEditNotes);
+        ivEditLocation = findViewById(R.id.ivEditLocation);
+        ivEditFlag = findViewById(R.id.ivEditFlag);
 
         tbDeriv = (SwitchCompat)findViewById(R.id.tb_cc_deriv);
         tbDeriv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -145,6 +156,33 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         setTitle("");
 
+        findViewById(R.id.row_flag).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mMedia.setFlagged(!mMedia.isFlagged());
+
+                updateFlagState();
+            }
+        });
+
+
+
+    }
+
+    private void updateFlagState ()
+    {
+        ImageView iv = (ImageView)findViewById(R.id.ivEditFlag);
+
+        if (mMedia.isFlagged())
+            iv.setImageResource(R.drawable.ic_flag_selected);
+        else
+            iv.setImageResource(R.drawable.ic_flag_unselected);
+
+        if (mMedia.isFlagged())
+            tvFlagged.setText(R.string.status_flagged);
+        else
+            tvFlagged.setText(R.string.hint_flag);
     }
 
     private void bindMedia ()
@@ -152,11 +190,24 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         // set values
         tvTitle.setText(mMedia.getTitle());
-        tvDescription.setText(mMedia.getDescription());
-        tvAuthor.setText(mMedia.getAuthor());
-        tvLocation.setText(mMedia.getLocation());
-        tvTags.setText(mMedia.getTags());
 
+        if (!TextUtils.isEmpty(mMedia.getDescription())) {
+            tvDescription.setText(mMedia.getDescription());
+            ivEditNotes.setImageResource(R.drawable.ic_edit_selected);
+        }
+
+
+        if (!TextUtils.isEmpty(mMedia.getLocation())) {
+            tvLocation.setText(mMedia.getLocation());
+            ivEditLocation.setImageResource(R.drawable.ic_location_selected);
+        }
+
+        if (!TextUtils.isEmpty(mMedia.getTags())) {
+            tvTags.setText(mMedia.getTags());
+            ivEditTags.setImageResource(R.drawable.ic_tag_selected);
+        }
+
+        tvAuthor.setText(mMedia.getAuthor());
         tvLicenseUrl.setText(mMedia.getLicenseUrl());
 
         if (mMedia.status != Media.STATUS_LOCAL
@@ -214,6 +265,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 menuPublish.setVisible(false);
             }
         }
+
+        updateFlagState ();
 
     }
 

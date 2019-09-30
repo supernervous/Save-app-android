@@ -346,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) bar.getView();
                 snack_view.addView(new ProgressBar(this));
 
-
                 new AsyncTask<List<Uri>, Void, List<Media>>() {
                     protected void onPreExecute() {
                         bar.show();

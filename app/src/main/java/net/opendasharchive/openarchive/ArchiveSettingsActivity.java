@@ -84,6 +84,7 @@ public class ArchiveSettingsActivity extends AppCompatActivity {
     private void initViews(long mediaId) {
         // instantiate values
         tvTitle = (TextView) findViewById(R.id.tv_title_lbl);
+
         tvDescription = (TextView) findViewById(R.id.tv_description_lbl);
         tvAuthor = (TextView) findViewById(R.id.tv_author_lbl);
         tvTags = (TextView) findViewById(R.id.tv_tags_lbl);

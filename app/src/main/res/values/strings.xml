@@ -149,12 +149,12 @@
     <string name="menu_delete">Remove Media</string>
 
     <string name="hint_title">Title</string>
-    <string name="hint_description">Description</string>
+    <string name="hint_description">Add Notes</string>
     <string name="hint_author">Author</string>
-    <string name="hint_location">Location</string>
-    <string name="hint_tags">Tags</string>
+    <string name="hint_location">Add Location</string>
+    <string name="hint_tags">Add People</string>
     <string name="hint_license">License (see questions below)</string>
-
+    <string name="hint_flag">Tap to flag as significant content</string>
     <string name="answer_yes">Yes</string>
     <string name="answer_no">No</string>
 
@@ -273,5 +273,6 @@
     <string name="app_tag_line">Secure Mobile Media Preservation</string>
     <string name="action_get_started"><![CDATA[Get Started >]]></string>
     <string name="action_next">Next</string>
+    <string name="status_flagged">Significant Content</string>
 
 </resources>

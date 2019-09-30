@@ -46,6 +46,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     public boolean doImageFade = true;
     private String lastMediaPath = null;
 
+    private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag;
+
     public MediaViewHolder(final View itemView, Context context) {
         super(itemView);
 
@@ -56,6 +58,11 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         tvTitle = itemView.findViewById(R.id.tvTitle);
         tvCreateDate = itemView.findViewById(R.id.tvCreateDate);
         tvWave = itemView.findViewById(R.id.event_item_sound);
+
+        ivEditTags = itemView.findViewById(R.id.ivEditTags);
+        ivEditNotes = itemView.findViewById(R.id.ivEditNotes);
+        ivEditLocation = itemView.findViewById(R.id.ivEditLocation);
+        ivEditFlag = itemView.findViewById(R.id.ivEditFlag);
 
         tvProgress = itemView.findViewById(R.id.txtProgress);
         progressBar = itemView.findViewById(R.id.progressBar);
@@ -240,6 +247,29 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         sbTitle.append(currentMedia.getTitle());
         tvTitle.setText(sbTitle.toString());
 
+        if (ivEditLocation != null)
+            if (!TextUtils.isEmpty(currentMedia.getLocation()))
+                ivEditLocation.setImageResource(R.drawable.ic_location_selected);
+            else
+                ivEditLocation.setImageResource(R.drawable.ic_location_unselected);
+
+        if (ivEditTags != null)
+            if (!TextUtils.isEmpty(currentMedia.getTags()))
+                ivEditTags.setImageResource(R.drawable.ic_tag_selected);
+            else
+                ivEditTags.setImageResource(R.drawable.ic_tag_unselected);
+
+        if (ivEditNotes != null)
+            if (!TextUtils.isEmpty(currentMedia.getDescription()))
+                ivEditNotes.setImageResource(R.drawable.ic_edit_selected);
+            else
+                ivEditNotes.setImageResource(R.drawable.ic_edit_unselected);
+
+        if (ivEditFlag != null)
+        if (currentMedia.isFlagged())
+            ivEditFlag.setImageResource(R.drawable.ic_flag_selected);
+        else
+            ivEditFlag.setImageResource(R.drawable.ic_flag_unselected);
     }
 
     public static String readableFileSize(long size) {
