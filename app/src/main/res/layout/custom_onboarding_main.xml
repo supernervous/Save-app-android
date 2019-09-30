@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/oablue"
+    >
+
+
+
+    <TextView
+        android:id="@+id/custom_slide_big_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="This is the big text"
+        android:textColor="@color/white"
+        android:gravity="start"
+        android:textStyle="bold"
+        android:textSize="32sp"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+
+        />
+    <TextView
+        android:id="@+id/custom_slide_big_text_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is the longer explainer text that talks about the screens below and helps people figure out what to do"
+        android:textColor="@color/white"
+        android:layout_gravity="start"
+        android:textSize="16sp"
+
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        android:paddingTop="6dp"
+        android:layout_below="@+id/custom_slide_big_text"
+        />
+   <ImageView
+       android:id="@+id/custom_slide_image"
+       android:layout_width="400dp"
+       android:layout_height="400dp"
+       android:src="@drawable/onboarding1"
+       android:layout_alignParentBottom="true"
+       android:layout_alignParentEnd="true"
+       android:layout_alignParentRight="true"
+       android:layout_marginBottom="70dp"
+
+       />
+</RelativeLayout>

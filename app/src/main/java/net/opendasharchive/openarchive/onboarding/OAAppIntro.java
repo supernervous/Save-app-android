@@ -42,12 +42,11 @@ public class OAAppIntro extends AppIntro {
             }
         });
         addSlide(welcome);
-
-        this.
-        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3, getResources().getColor(R.color.oablue)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4, getResources().getColor(R.color.oablue)));
+        
+        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1));
+        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2));
+        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
+        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4));
 
         // OPTIONAL METHODS
         // Override bar/separator color.
