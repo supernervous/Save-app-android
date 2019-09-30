@@ -35,6 +35,8 @@ public class MediaGridFragment extends MediaListFragment {
 
     private View mMainView;
 
+    private View mMediaHint;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -54,6 +56,8 @@ public class MediaGridFragment extends MediaListFragment {
         mMainView.setTag(TAG);
 
         LinearLayout mainContainer = mMainView.findViewById(R.id.mediacontainer);
+
+        mMediaHint = mMainView.findViewById(R.id.add_media_hint);
 
         List<Collection> listCollections = Collection.getAllAsList();
 
@@ -77,7 +81,8 @@ public class MediaGridFragment extends MediaListFragment {
 
         if (!addedView)
         {
-            mMainView.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
+            if (mMediaHint != null)
+             mMediaHint.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
         }
 
 
@@ -154,6 +159,8 @@ public class MediaGridFragment extends MediaListFragment {
             {
                 View view = createMediaList(mainContainer, coll,listMedia);
                 mainContainer.addView(view,0);
+                if (mMediaHint != null)
+                    mMediaHint.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
             }
         }
 

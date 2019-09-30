@@ -40,6 +40,7 @@ import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private Collection mCollNew;
 
     private int lastTab = 0;
+
+    private MenuItem mMenuUpload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         else
             mPager.setCurrentItem(0);
 
+        updateMenu();
 
     }
 
@@ -185,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
             if (frag != null)
                 frag.refresh();
         }
+
+        updateMenu ();
 
     }
 
@@ -260,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
                     MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
                     if (frag != null)
                         frag.refresh();
+
+                    updateMenu();
                 }
             }
             else if (status == (Media.STATUS_UPLOADING))
@@ -277,6 +285,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        mMenuUpload = menu.findItem(R.id.menu_upload_manager);
+
+        updateMenu();
+        
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -311,6 +324,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateMenu ()
+    {
+        if (mMenuUpload != null) {
+            long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED};
+            int uploadCount = Media.getMediaByStatus(mStatuses).size();
+
+            if (uploadCount > 0) {
+                mMenuUpload.setVisible(true);
+
+                BadgeDrawable bg = new BadgeDrawable(this);
+                bg.setCount(uploadCount+"");
+                mMenuUpload.setIcon(bg);
+
+            } else
+                mMenuUpload.setVisible(false);
+        }
     }
 
     private void showSpaceSettings ()

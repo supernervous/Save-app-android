@@ -50,9 +50,10 @@
         android:id="@+id/ivMedia"
         android:contentDescription="@string/iv_content_desc"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
+        android:layout_height="300dp"
+        android:scaleType="centerInside"
         android:src="@drawable/no_thumbnail"
+        android:background="@color/black"
         />
     </LinearLayout>
 

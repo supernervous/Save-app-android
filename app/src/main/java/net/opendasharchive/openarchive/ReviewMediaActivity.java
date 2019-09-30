@@ -172,17 +172,22 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void updateFlagState ()
     {
-        ImageView iv = (ImageView)findViewById(R.id.ivEditFlag);
-
         if (mMedia.isFlagged())
-            iv.setImageResource(R.drawable.ic_flag_selected);
+            ivEditFlag.setImageResource(R.drawable.ic_flag_selected);
         else
-            iv.setImageResource(R.drawable.ic_flag_unselected);
+            ivEditFlag.setImageResource(R.drawable.ic_flag_unselected);
 
         if (mMedia.isFlagged())
             tvFlagged.setText(R.string.status_flagged);
         else
             tvFlagged.setText(R.string.hint_flag);
+
+        if (mMedia.status != Media.STATUS_LOCAL
+                && mMedia.status != Media.STATUS_NEW)
+        {
+            tvFlagged.setVisibility(View.GONE);
+            ivEditFlag.setVisibility(View.GONE);
+        }
     }
 
     private void bindMedia ()
@@ -195,6 +200,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             tvDescription.setText(mMedia.getDescription());
             ivEditNotes.setImageResource(R.drawable.ic_edit_selected);
         }
+
 
 
         if (!TextUtils.isEmpty(mMedia.getLocation())) {
@@ -215,9 +221,9 @@ public class ReviewMediaActivity extends AppCompatActivity {
         {
 
             if (mMedia.status == Media.STATUS_UPLOADED||mMedia.status == Media.STATUS_PUBLISHED) {
-                tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
-                tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
-                tvUrl.setVisibility(View.VISIBLE);
+            //    tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
+             //   tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
+              //  tvUrl.setVisibility(View.VISIBLE);
             }
             else if (mMedia.status == Media.STATUS_QUEUED) {
                 tvUrl.setText("Waiting for upload...");
@@ -233,24 +239,26 @@ public class ReviewMediaActivity extends AppCompatActivity {
             tvTitle.setEnabled(false);
 
             tvDescription.setEnabled(false);
-            if (TextUtils.isEmpty(mMedia.getDescription()))
-                tvDescription.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(mMedia.getDescription())) {
+                ivEditNotes.setVisibility(View.GONE);
+                tvDescription.setHint("");
+            }
 
             tvAuthor.setEnabled(false);
-            if (TextUtils.isEmpty(mMedia.getAuthor()))
-                tvAuthor.setVisibility(View.GONE);
 
             tvLocation.setEnabled(false);
-            if (TextUtils.isEmpty(mMedia.getLocation()))
-                tvLocation.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(mMedia.getLocation())) {
+                ivEditLocation.setVisibility(View.GONE);
+                tvLocation.setHint("");
+            }
 
             tvTags.setEnabled(false);
-            if (TextUtils.isEmpty(mMedia.getTags()))
-                tvTags.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(mMedia.getTags())) {
+                ivEditTags.setVisibility(View.GONE);
+                tvTags.setHint("");
+            }
 
             tvLicenseUrl.setEnabled(false);
-            if (TextUtils.isEmpty(mMedia.getLicenseUrl()))
-                tvTags.setVisibility(View.GONE);
 
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
         }
