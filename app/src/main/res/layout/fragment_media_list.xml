@@ -21,7 +21,7 @@
         android:layout_margin="48dp"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="@color/oablue"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/add_media_hint"
         />
 
