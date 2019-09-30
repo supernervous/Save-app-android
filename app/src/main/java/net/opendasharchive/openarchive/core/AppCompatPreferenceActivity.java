@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive;
+package net.opendasharchive.openarchive.core;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

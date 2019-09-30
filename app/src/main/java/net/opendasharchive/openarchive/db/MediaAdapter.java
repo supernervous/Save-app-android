@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.util.Globals;
-import net.opendasharchive.openarchive.ReviewMediaActivity;
+import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
 import java.util.List;
@@ -148,17 +148,18 @@ public class MediaAdapter extends RecyclerView.Adapter {
 
     public void onItemMove (int oldPos, int newPos)
     {
-        Media mediaToMov = data.get(oldPos);
+        if (this.isEditMode) {
+            Media mediaToMov = data.get(oldPos);
 
-        data.remove(oldPos);
-        data.add(newPos, mediaToMov);
+            data.remove(oldPos);
+            data.add(newPos, mediaToMov);
 
-        int priority = data.size();
+            int priority = data.size();
 
-        for (Media media: data)
-        {
-            media.setPriority(priority--);
-            media.save();
+            for (Media media : data) {
+                media.setPriority(priority--);
+                media.save();
+            }
         }
 
         notifyDataSetChanged();
@@ -166,11 +167,13 @@ public class MediaAdapter extends RecyclerView.Adapter {
 
     public void onItemDismiss (int pos)
     {
-        Media mediaToDismiss = data.get(pos);
-        data.remove(mediaToDismiss);
-        mediaToDismiss.status = Media.STATUS_LOCAL;
-        mediaToDismiss.save();
-        
+        if (this.isEditMode) {
+            Media mediaToDismiss = data.get(pos);
+            data.remove(mediaToDismiss);
+            mediaToDismiss.status = Media.STATUS_LOCAL;
+            mediaToDismiss.save();
+        }
+
         notifyDataSetChanged();
 
 

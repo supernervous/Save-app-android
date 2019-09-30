@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,12 +32,17 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
+import net.opendasharchive.openarchive.core.SpaceSettingsActivity;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
+import net.opendasharchive.openarchive.media.BatchMediaReviewActivity;
+import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
+import net.opendasharchive.openarchive.projects.AddProjectActivity;
+import net.opendasharchive.openarchive.publish.UploadManagerActivity;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.Globals;
@@ -317,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;**/
 
             case R.id.menu_upload_manager:
-                startActivity(new Intent(this,UploadManagerActivity.class));
+                startActivity(new Intent(this, UploadManagerActivity.class));
                 return true;
 
 

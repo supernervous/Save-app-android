@@ -13,23 +13,23 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
         <activity
-            android:name=".BrowseProjectsActivity"
+            android:name=".projects.BrowseProjectsActivity"
             android:label="@string/title_activity_browser_projects"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".CreateNewProjectActivity"
+            android:name=".projects.CreateNewProjectActivity"
             android:label="@string/title_activity_create_new_project"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".UploadManagerActivity"
+            android:name=".publish.UploadManagerActivity"
             android:label="@string/title_activity_upload_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BatchMediaReviewActivity"
+            android:name=".media.BatchMediaReviewActivity"
             android:label="@string/title_activity_batch_media_review"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddProjectActivity"
+            android:name=".projects.AddProjectActivity"
             android:label="@string/title_activity_new_project"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -65,12 +65,12 @@
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ReviewMediaActivity"
+            android:name=".media.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ArchiveSettingsActivity"
+            android:name=".services.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
             android:theme="@style/SettingsTheme" />
@@ -84,7 +84,7 @@
                 android:value="net.opendasharchive.openarchive.onboarding.FirstStartActivity" />
         </activity>
         <activity
-            android:name=".AboutActivity"
+            android:name=".core.AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -95,13 +95,13 @@
             android:name=".onboarding.OAAppIntro"
             android:label="App Intro" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".core.SettingsActivity"
             android:label="App Intro" />
         <activity
             android:name=".onboarding.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".SpaceSettingsActivity"
+            android:name=".core.SpaceSettingsActivity"
             android:label="@string/title_activity_space_settings" />
 
         <meta-data

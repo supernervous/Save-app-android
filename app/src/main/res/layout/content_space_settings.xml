@@ -1,19 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:gravity="top"
-    tools:context=".SpaceSettingsActivity">
+    tools:context=".core.SpaceSettingsActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="24dp"
+        android:id="@+id/section_space"
+        >
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:src="@drawable/avatar_default"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center_horizontal"
+        android:id="@+id/space_avatar"
+
         />
     <TextView
         android:id="@+id/txtSpaceName"
@@ -22,7 +34,10 @@
         android:text="SPACE NAME"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
+        android:layout_toRightOf="@+id/space_avatar"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="6dp"
+
         />
 
     <TextView
@@ -32,41 +47,39 @@
         android:text="foo@foo.org"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        />
+        android:layout_toEndOf="@+id/space_avatar"
+        android:layout_below="@+id/txtSpaceName"
+        android:layout_marginLeft="6dp"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp" android:background="@color/light_grey" android:layout_marginTop="9dp" android:layout_marginBottom="9dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_profile"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        android:id="@+id/btnProfile"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp" android:background="@color/light_grey" android:layout_marginTop="9dp" android:layout_marginBottom="9dp"/>
+    </RelativeLayout>
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/header_projects"
-        android:textSize="24dp"
+        android:textSize="18dp"
         android:textStyle="bold"
+        android:textColor="@color/oablue"
+        android:layout_marginTop="18dp"
         />
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listProjects"
         android:layout_width="match_parent"
-        android:layout_height="1dp" android:background="@color/light_grey" android:layout_marginTop="9dp" android:layout_marginBottom="9dp"/>
+        android:layout_height="wrap_content"/>
+
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/header_info"
-        android:textSize="24dp"
+        android:text="@string/header_settings"
+        android:textSize="18dp"
         android:textStyle="bold"
+        android:textColor="@color/oablue"
+        android:layout_marginTop="18dp"
         />
 
 
@@ -76,6 +89,17 @@
         android:layout_height="wrap_content"
         android:text="@string/action_data_use"
         android:textSize="22dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/header_info"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="@color/oablue"
+        android:layout_marginTop="18dp"
+
         />
 
     <View
@@ -109,3 +133,4 @@
         android:layout_height="2dp"
         android:background="?android:attr/listDivider" />
 </LinearLayout>
+</ScrollView>

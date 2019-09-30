@@ -6,7 +6,7 @@
     android:id="@+id/bgLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.opendasharchive.openarchive.ReviewMediaActivity"
+    tools:context="net.opendasharchive.openarchive.media.ReviewMediaActivity"
     android:theme="@style/AppMediaTheme"
     >
 
@@ -27,7 +27,7 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.opendasharchive.openarchive.ReviewMediaActivity">
+    tools:context="net.opendasharchive.openarchive.media.ReviewMediaActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.ReviewMediaActivity;
+import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.util.Globals;
 

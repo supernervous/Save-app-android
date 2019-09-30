@@ -2,30 +2,23 @@ package net.opendasharchive.openarchive.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.opendasharchive.openarchive.BatchMediaReviewActivity;
+import net.opendasharchive.openarchive.media.BatchMediaReviewActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
-import net.opendasharchive.openarchive.db.MediaSection;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class MediaGridFragment extends MediaListFragment {
 
