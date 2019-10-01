@@ -27,8 +27,9 @@ android {
         versionCode 20014
         versionName "0.2.0-beta-4"
         archivesBaseName = "OpenArchive-$versionName"
-        multiDexEnabled true//
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+
     }
     lintOptions {
         abortOnError false
@@ -54,6 +55,7 @@ android {
             applicationId 'net.opendasharchive.openarchive.release'
         }
     }
+
     buildToolsVersion '28.0.3'
 }
 
