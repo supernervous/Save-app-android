@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/servername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/server"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content">
 
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

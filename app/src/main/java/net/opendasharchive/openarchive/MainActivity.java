@@ -90,7 +90,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.avatar_default);
 
-        setTitle(R.string.main_activity_title);
+        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+        if (account != null &&(!TextUtils.isEmpty(account.getName())))
+            setTitle(account.getName());
+        else
+            setTitle(R.string.main_activity_title);
 
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
@@ -135,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
 
         if (account == null || TextUtils.isEmpty(account.getSite()))
         {

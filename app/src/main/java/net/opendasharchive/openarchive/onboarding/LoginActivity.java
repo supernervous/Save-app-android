@@ -49,7 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity {
 
     private final static String TAG = "Login";
 
@@ -59,10 +59,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView, mServerView;
-    private EditText mPasswordView;
+    private EditText mNameView, mEmailView, mServerView, mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Account mAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +73,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mAccount = new Account(LoginActivity.this, WebDAVSiteController.SITE_NAME);
+
         // Set up the login form.
+        mNameView = findViewById(R.id.servername);
         mEmailView = findViewById(R.id.email);
         mServerView = findViewById(R.id.server);
+
+        if (mAccount != null)
+        {
+
+            if (!TextUtils.isEmpty(mAccount.getName()))
+                mNameView.setText(mAccount.getName());
+
+            if (!TextUtils.isEmpty(mAccount.getSite()))
+                mServerView.setText(mAccount.getSite());
+
+
+            if (!TextUtils.isEmpty(mAccount.getUserName()))
+                mEmailView.setText(mAccount.getUserName());
+
+        }
 
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -109,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String server = mServerView.getText().toString();
@@ -147,8 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, server);
+            mAuthTask = new UserLoginTask(name, email, password, server);
             mAuthTask.execute((Void) null);
         }
     }
@@ -161,95 +179,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return password.length() > 0;
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -260,8 +189,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private final String mServer;
+        private final String mName;
 
-        UserLoginTask(String email, String password, String server) {
+        UserLoginTask(String name, String email, String password, String server) {
+            mName = name;
             mEmail = email;
             mPassword = password;
             mServer = server;
@@ -271,12 +202,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
 
             Account account = new Account(LoginActivity.this, WebDAVSiteController.SITE_NAME);
+            account.setName(mName);
             account.setUserName(mEmail);
             account.setCredentials(mPassword);
             account.setSite(mServer);
             account.setAuthenticated(false);
             account.saveToSharedPrefs(LoginActivity.this, WebDAVSiteController.SITE_NAME);
-
 
             StringBuffer siteUrl = new StringBuffer();
             siteUrl.append(mServer);
@@ -321,7 +252,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+          //  showProgress(false);
 
             if (success) {
                 finish();
@@ -334,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
+          //  showProgress(false);
         }
     }
 

@@ -49,7 +49,12 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         if (account != null && (!TextUtils.isEmpty(account.getSite())))
         {
             Uri uriServer = Uri.parse(account.getSite());
-            txtSpaceName.setText(uriServer.getHost());
+
+            if (!TextUtils.isEmpty(account.getName()))
+                txtSpaceName.setText(account.getName());
+            else
+                txtSpaceName.setText(uriServer.getHost());
+
             txtSpaceUser.setText(account.getUserName());
         }
 

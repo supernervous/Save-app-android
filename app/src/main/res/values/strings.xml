@@ -171,6 +171,8 @@
     <string name="status_waiting">Waiting</string>
     <string name="status_public">Public</string>
     <string name="status_uploading">Uploading</string>
+    <string name="header_uploading">UPLOADING</string>
+
     <string name="your_media_is_available">Your media is available at</string>
 
     <string name="prefs_networking_title">Networking</string>
@@ -288,6 +290,10 @@
     <string name="action_archive_project">Archive Project</string>
     <string name="action_unarchive_project">Unarchive Project</string>
     <string name="status_archived">archived</string>
+    <string name="status_ready_to_upload">READY TO UPLOAD</string>
+    <string name="label_items">item(s)</string>
+    <string name="label_items_uploaded">item(s) uploaded</string>
+    <string name="label_out_of">out of</string>
 
 
 </resources>

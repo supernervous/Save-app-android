@@ -170,8 +170,8 @@ public class MediaGridFragment extends MediaListFragment {
         {
             if (media.status == Media.STATUS_LOCAL)
             {
-                holder.sectionStatus.setText("READY TO UPLOAD");
-                holder.sectionTimestamp.setText(listMedia.size() + " item(s)");
+                holder.sectionStatus.setText(R.string.status_ready_to_upload);
+                holder.sectionTimestamp.setText(listMedia.size() + getString(R.string.label_items));
                 holder.action.setVisibility(View.VISIBLE);
                 holder.action.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -184,18 +184,22 @@ public class MediaGridFragment extends MediaListFragment {
             }
             else if (media.status == Media.STATUS_QUEUED || media.status == Media.STATUS_UPLOADING)
             {
-                holder.sectionStatus.setText("UPLOADING");
-                if (coll.getUploadDate() != null)
-                    holder.sectionTimestamp.setText(coll.getUploadDate().toLocaleString());
-                else if (listMedia.size() > 0 && listMedia.get(0).uploadDate != null)
-                    holder.sectionTimestamp.setText(listMedia.get(0).uploadDate.toString());
+                holder.sectionStatus.setText(R.string.header_uploading);
+
+                int uploadedCount = 0;
+                for (Media localMedia : listMedia)
+                    if (localMedia.status == Media.STATUS_UPLOADED)
+                        uploadedCount++;
+
+                holder.sectionTimestamp.setText(uploadedCount + " " + getString(R.string.label_out_of) + " " + listMedia.size() + ' ' + getString(R.string.label_items_uploaded));
+
 
                 holder.action.setVisibility(View.GONE);
                 break;
             }
             else
             {
-                holder.sectionStatus.setText(listMedia.size() + " items uploaded");
+                holder.sectionStatus.setText(listMedia.size() + " " + getString(R.string.label_items_uploaded));
                 if (coll.getUploadDate() != null)
                     holder.sectionTimestamp.setText(coll.getUploadDate().toLocaleString());
                 else if (listMedia.size() > 0 && listMedia.get(0).uploadDate != null)
