@@ -5,9 +5,9 @@
     <string name="app_name">SAVE</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">SAVE</string>
+    <string name="main_activity_title">Save</string>
     <string name="title_activity_main">Capture Media</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_login">Log in</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_first_start">First Start</string>
     <string name="title_activity_view_media">View Media</string>
@@ -21,17 +21,17 @@
     <string name="lblEditMetadata">Edit Media</string>
     <string name="lblSave">Save</string>
     <string name="loading_title">Uploading Media</string>
-    <string name="loading_message">Please wait while your media uploads to the Internet Archive...</string>
+    <string name="loading_message">Please wait while your media uploads to the Internet Archive…</string>
 
     <!-- Default Values -->
     <string name="default_title">My Title</string>
-    <string name="default_tags">openarchive</string>
+    <string name="default_tags">OpenArchive</string>
 
     <!-- Alert Values -->
-    <string name="alert_lbl_logout">Logout?</string>
-    <string name="alert_logout">Logging out will remove all your settings but still keep your uploads.</string>
+    <string name="alert_lbl_logout">Log out?</string>
+    <string name="alert_logout">Logging out will remove all your settings, but still keep your uploads.</string>
 
-    <string name="alert_media_deleted">Media successfully removed</string>
+    <string name="alert_media_deleted">Media removed</string>
     <string name="alert_delete_media">Remove media from the app?</string>
     <string name="alert_lbl_delete_media">Delete Media</string>
 
@@ -43,7 +43,7 @@
 
     <string name="drawer_home">Home</string>
     <string name="drawer_uploads">Uploads</string>
-    <string name="drawer_logout">Logout</string>
+    <string name="drawer_logout">Log out</string>
     <string name="drawer_about">About</string>
     <string name="drawer_settings">Settings</string>
     <string name="drawer_accounts">Spaces</string>
@@ -55,18 +55,18 @@
     <string name="eula_accept">Accept</string>
     <string name="eula_refuse">Refuse</string>
     <string name="end_user_license_agreement">Terms of Use and Privacy Policy</string>
-    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.net/terms">https://open-archive.net/terms</a></string>
-    <string name="by_clicking_accept">By clicking \'Accept\' you agree to our terms and policies:</string>
+    <string name="end_user_license_agreement_url" translatable="false"><a href="https://open-archive.org/privacy/#terms-of-service">https://open-archive.org/privacy/#terms-of-service</a></string>
+    <string name="by_clicking_accept">By clicking \'Accept\' you agree to the stated terms and policies:</string>
     <string name="tos_dialog_title">Terms of Service</string>
-    <string name="tos_dialog_msg">Please Accept our Terms of Service before continuing</string>
+    <string name="tos_dialog_msg">Please Accept the Terms of Service before continuing</string>
     <string name="tos_dialog_positive_button">Got it</string>
 
     <!-- FirstStartActivity -->
     <string name="sign_in_btn">Internet Archive</string>
 
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">Don\'t have an account?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>
-    <string name="tos_btn">I agree to the terms of service.</string>
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
+    <string name="sign_up_btn">Don\'t have an account?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>
+    <string name="tos_btn">I agree to the Terms of Service.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Import</string>
@@ -80,38 +80,38 @@
     <string name="iv_content_desc">Main Image</string>
 
     <!-- Errors -->
-    <string name="error_file_not_found">File not found</string>
-    <string name="error_invalid_media_type">File Type not recognized</string>
-    <string name="error_no_media">No Media Found!</string>
+    <string name="error_file_not_found">Could not find this file</string>
+    <string name="error_invalid_media_type">Unrecognized filetype</string>
+    <string name="error_no_media">Could not find any media</string>
 
     <!-- Server -->
     <string name="lbl_Yes">Yes</string>
     <string name="lbl_Cancel">Cancel</string>
     <string name="lbl_off">Off</string>
     <string name="lbl_on">On</string>
-    <string name="lbl_ok">Ok</string>
+    <string name="lbl_ok">OK</string>
     <string name="lbl_settings">Settings</string>
     <string name="lbl_cancelled">Canceled</string>
-    <string name="lbl_success">Success</string>
+    <string name="lbl_success">Done</string>
     <string name="lbl_continue">Continue</string>
-    <string name="archive_title">Email Confirmation</string>
-    <string name="archive_message">Please confirm your email and return to connect your Archive account.</string>
+    <string name="archive_title">E-mail Confirmation</string>
+    <string name="archive_message">Please confirm your e-mail address and return to connect your Internet Archive account.</string>
     <string name="archive_license_by" translatable="false"><a href="https://creativecommons.org/licenses/by/4.0/">Attribution</a></string>
     <string name="archive_license_bysa" translatable="false"><a href="https://creativecommons.org/licenses/by-sa/4.0/">Attribution-ShareAlike</a></string>
-    <string name="archive_license_byncnd" translatable="false"><a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
+    <string name="archive_license_byncnd" translatable="false"><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">Attribution-NonCommercial-NoDerivs</a></string>
     <string name="upload_to_internet_archive">Upload to Internet Archive</string>
-    <string name="upload_securely_via_tor">Upload Securely via Tor</string>
+    <string name="upload_securely_via_tor">Upload via Tor</string>
     <string name="lbl_share_prefs">Sharing Preferences</string>
-    <string name="problem_authticating">There was a problem authenticating with Internet Archive.</string>
-    <string name="uploading_to_internet_archive">Uploading to Internet Archive...</string>
+    <string name="problem_authticating">Could not log in at the Internet Archive.</string>
+    <string name="uploading_to_internet_archive">Uploading to the Internet Archive…</string>
     <string name="lbl_update_value">Update Value</string>
     <string name="lbl_enter_value">Tap to enter a value.</string>
-    <string name="title_activity_about">About OpenArchive</string>
+    <string name="title_activity_about">About</string>
 
     <string name="about_body">This is the SAVE app from OpenArchive.
     </string>
 
-    <string name="upload_success">Your media is now SAVED!</string>
+    <string name="upload_success">Your media is now saved.</string>
 
     <string name="share_using">Share archive link via</string>
     <string name="share_text">shared via OpenArchive at</string>
@@ -128,24 +128,24 @@
     <string name="info_license_sharealike">Require them to share like you have?</string>
     <string name="info_license_comm">Allow commercial use?</string>
 
-    <string name="orbot_detected">Orbot detected; using Tor network to connect more securely...</string>
+    <string name="orbot_detected">Orbot detected; using Tor network to connect more securely…</string>
 
-    <string name="media_hint">Click the (+) button to import or create media to add to your archive</string>
+    <string name="media_hint">Click \'+\' to pick or create media to add to your archive</string>
 
-    <string name="intro1_title">Welcome to *Your* OpenArchive!</string>
-    <string name="intro1_desc">OpenArchive is a free, open-source app dedicated to preserving your photos, video and audio</string>
+    <string name="intro1_title">Welcome to *your* OpenArchive.</string>
+    <string name="intro1_desc">OpenArchive is a graits, copylefted libre software app for preserving your photos, video and audio</string>
 
     <string name="intro2_title">Move Your Media</string>
     <string name="intro2_desc">Safely archive your mobile media to trustworthy public or private servers</string>
 
     <string name="intro3_title">Share Nearby With Friends</string>
-    <string name="intro3_desc">Use Wifi and Bluetooth to share instantly with friends near you</string>
+    <string name="intro3_desc">Use Wi-Fi and Bluetooth to share instantly with friends near you</string>
 
     <string name="menu_import_media">Import Media</string>
     <string name="menu_take_photo">Take Photo</string>
     <string name="menu_take_video">Take Video</string>
     <string name="menu_record_audio">Record Audio</string>
-    <string name="menu_nearby_rec">Nearby Receive</string>
+    <string name="menu_nearby_rec">Nearby Reception</string>
     <string name="menu_delete">Remove Media</string>
 
     <string name="hint_title">Title</string>
@@ -160,7 +160,7 @@
 
     <string name="nearby_public">Public</string>
     <string name="nearby_private">Private</string>
-    <string name="nearby_paired_only">Paired Devices Only?</string>
+    <string name="nearby_paired_only">Paired devices only?</string>
 
     <string name="action_cancel">Cancel</string>
 
@@ -174,10 +174,10 @@
     <string name="your_media_is_available">Your media is available at</string>
 
     <string name="prefs_networking_title">Networking</string>
-    <string name="prefs_use_tor_title">Enable Onion Routing</string>
+    <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">If Orbot is installed, use the Tor network</string>
-    <string name="prefs_upload_wifi_only_title">Upload on Wifi Only</string>
-    <string name="prefs_upload_wifi_only_summary">Wait until on Wifi to upload media</string>
+    <string name="prefs_upload_wifi_only_title">Upload Only on Wi-Fi</string>
+    <string name="prefs_upload_wifi_only_summary">Wait for Wi-Fi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>
 
     <string name="prefs_data_title">Metadata</string>
@@ -188,46 +188,46 @@
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="prefs_bt_summary">Use Bluetooth for nearby sharing</string>
 
-    <string name="prefs_wifi_title">Wifi Peer-to-Peer</string>
-    <string name="prefs_wifi_summary">Use Wifi Peer-to-Peer for nearby sharing</string>
+    <string name="prefs_wifi_title">Wi-Fi Peer-to-Peer</string>
+    <string name="prefs_wifi_summary">Use Wi-Fi Peer-to-Peer for nearby sharing</string>
 
-    <string name="prefs_lan_title">Wifi Hotspot</string>
-    <string name="prefs_lan_summary">Use Wifi Hotspot for nearby sharing</string>
+    <string name="prefs_lan_title">Wi-Fi Hotspot</string>
+    <string name="prefs_lan_summary">Make Wi-Fi hotspot for nearby sharing</string>
 
     <string name="menu_share">Share</string>
 
     <!-- Strings for nearby sharing -->
-    <string name="bt_not_supported">Bluetooth not supported</string>
-    <string name="bt_not_enabled">Bluetooth not enabled</string>
-    <string name="bt_enabled">Bluetooth enabled</string>
+    <string name="bt_not_supported">Bluetooth unsupported</string>
+    <string name="bt_not_enabled">Bluetooth off</string>
+    <string name="bt_enabled">Bluetooth on</string>
 
     <string name="action_received">Received</string>
-    <string name="status_receiving">Receiving...</string>
+    <string name="status_receiving">Receiving…</string>
     <string name="action_duplicate">Duplicate received</string>
-    <string name="status_connecting">Connecting...</string>
+    <string name="status_connecting">Connecting…</string>
     <string name="status_connected">Connected!</string>
-    <string name="looking_for_nearby_devices">Looking for nearby devices...</string>
+    <string name="looking_for_nearby_devices">Looking for nearby devices…</string>
     <string name="tap_to_connect">Tap to connect</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
-    <string name="prompt_server">WebDAV/NextCloud Server</string>
+    <string name="prompt_server">WebDAV/Nextcloud Server</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">This e-mail address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
+    <string name="permission_rationale">"Contact permission needed for e-mail
         completions."
     </string>
 
     <string name="sign_in_private_btn">Private Server</string>
-    <string name="importing_media">Importing media...</string>
+    <string name="importing_media">Importing media…</string>
 
     <string name="setup_nearby">Nearby</string>
     <string name="title_activity_space_settings">Your Space</string>
-    <string name="onboarding_intro">Save all the things!</string>
+    <string name="onboarding_intro">Save everything</string>
     <string name="title_welcome">Welcome</string>
     <string name="status_uploaded">Uploaded</string>
     <string name="header_settings">App Settings</string>
@@ -258,19 +258,19 @@
     <string name="title_activity_create_new_project">CreateNewProjectActivity</string>
     <string name="title_activity_browser_projects">BrowserProjectsActivity</string>
     <string name="tap_to_add">Tap the button below to add media to your project.</string>
-    <string name="oa_title_1">Save to a safe place.</string>
-    <string name="oa_subtitle_1">Connect to a secure server or the internet archive to upload photos and videos from your phone.</string>
-    <string name="oa_title_2">Stay organized.</string>
-    <string name="oa_subtitle_2">Organize your media into projects.</string>
-    <string name="oa_title_3">Store the facts.</string>
-    <string name="oa_subtitle_3">Capture notes, location and people with each piece of media.</string>
-    <string name="oa_title_4">Ensure authenticity.</string>
-    <string name="oa_subtitle_4">Include your credentials while Save adds extra metadata to help with chain of custody and verification workflows.</string>
+    <string name="oa_title_1">Save to a Safe Place</string>
+    <string name="oa_subtitle_1">Upload media from your device by connecting to a secure server, or the Internet Archive</string>
+    <string name="oa_title_2">Stay Organized</string>
+    <string name="oa_subtitle_2">Organize your media into projects</string>
+    <string name="oa_title_3">Store the Facts</string>
+    <string name="oa_subtitle_3">Capture notes, location and people with each piece of media</string>
+    <string name="oa_title_4">Ensure Authenticity</string>
+    <string name="oa_subtitle_4">Includes your credentials while \"Save\" adds extra metadata to help with chain of custody and verification workflows</string>
     <string name="connect_your_space">Connect Your Space</string>
     <string name="set_up_where_you_want_your_media_to_be_stored">Set up where you want your media to be stored</string>
     <string name="send_directly_to_a_private_server">Send directly to a private server</string>
     <string name="upload_to_the_internet_archive">Upload to the Internet Archive</string>
-    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud">Save connects to WebDAV-compatible servers only, such as Nextcloud and ownCloud.</string>
+    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud">\"Save\" only connects to WebDAV-compatible servers, such as Nextcloud.</string>
     <string name="app_tag_line">Secure Mobile Media Preservation</string>
     <string name="action_get_started"><![CDATA[Get Started >]]></string>
     <string name="action_next">Next</string>
