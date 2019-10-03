@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,8 +17,12 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CreateNewProjectActivity extends AppCompatActivity {
+
+    public static final String SPECIAL_CHARS = ".*[\\\\/*\\s]";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,15 @@ public class CreateNewProjectActivity extends AppCompatActivity {
                     String newProjectName = etNewProjectName.getText().toString();
                     if (!TextUtils.isEmpty(newProjectName))
                     {
-                        createProject(newProjectName);
-                        setResult(RESULT_OK);
-                        finish();
+                        if (newProjectName.matches(SPECIAL_CHARS))
+                        {
+                            Toast.makeText(CreateNewProjectActivity.this, "Please do not include special characters in the name",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            createProject(newProjectName);
+                            setResult(RESULT_OK);
+                            finish();
+                        }
                     }
 
                 }
