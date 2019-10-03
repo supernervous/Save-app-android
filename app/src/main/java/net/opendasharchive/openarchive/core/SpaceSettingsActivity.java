@@ -41,22 +41,6 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         mProjectList.setLayoutManager(new LinearLayoutManager(this));
         mProjectList.setHasFixedSize(false);
 
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
-
-        TextView txtSpaceName = findViewById(R.id.txtSpaceName);
-        TextView txtSpaceUser = findViewById(R.id.txtSpaceUser);
-
-        if (account != null && (!TextUtils.isEmpty(account.getSite())))
-        {
-            Uri uriServer = Uri.parse(account.getSite());
-
-            if (!TextUtils.isEmpty(account.getName()))
-                txtSpaceName.setText(account.getName());
-            else
-                txtSpaceName.setText(uriServer.getHost());
-
-            txtSpaceUser.setText(account.getUserName());
-        }
 
 
         findViewById(R.id.section_space).setOnClickListener(new View.OnClickListener() {
@@ -82,7 +66,24 @@ public class SpaceSettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        updateProjects();
+        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+
+        TextView txtSpaceName = findViewById(R.id.txtSpaceName);
+        TextView txtSpaceUser = findViewById(R.id.txtSpaceUser);
+
+        if (account != null && (!TextUtils.isEmpty(account.getSite()))) {
+            Uri uriServer = Uri.parse(account.getSite());
+
+            if (!TextUtils.isEmpty(account.getName()))
+                txtSpaceName.setText(account.getName());
+            else
+                txtSpaceName.setText(uriServer.getHost());
+
+            txtSpaceUser.setText(account.getUserName());
+
+            updateProjects();
+
+        }
     }
 
     public void updateProjects ()
