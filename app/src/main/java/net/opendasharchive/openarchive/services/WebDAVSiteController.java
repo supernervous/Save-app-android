@@ -438,22 +438,36 @@ public class WebDAVSiteController extends SiteController {
 
     }
 
+    private final static String FILE_BASE = "files/";
+
     public ArrayList<File> getFolders (Account account, String path) throws IOException
     {
         startAuthentication(account);
 
         ArrayList<File> listFiles = new ArrayList<>();
-        List<DavResource> listFolders = sardine.list(path);
+
+        StringBuffer sbFolderPath = new StringBuffer();
+        sbFolderPath.append(path);
+        sbFolderPath.append(FILE_BASE).append('/');
+        sbFolderPath.append(account.getUserName()).append('/');
+
+        List<DavResource> listFolders = sardine.list(sbFolderPath.toString());
 
         for (DavResource folder : listFolders)
         {
             if (folder.isDirectory()) {
 
-                Date folderMod = folder.getModified();
                 String folderPath = folder.getPath();
-
                 File fileFolder = new File(folderPath);
-                fileFolder.setLastModified(folderMod.getTime());
+
+
+                Date folderMod = folder.getModified();
+
+                if (folderMod != null)
+                    fileFolder.setLastModified(folderMod.getTime());
+                else
+                    fileFolder.setLastModified(new Date().getTime());
+
                 listFiles.add(fileFolder);
             }
         }
