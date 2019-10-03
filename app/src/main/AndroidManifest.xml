@@ -99,7 +99,8 @@
         <activity
             android:name=".onboarding.OAAppIntro"
             android:label="App Intro"
-	    android:screenOrientation="portrait"/>
+	        android:screenOrientation="portrait"
+            />
         <activity
             android:name=".core.SettingsActivity"
             android:label="App Intro" />

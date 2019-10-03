@@ -36,6 +36,7 @@
 
     <style name="Button" parent="android:Widget.Button">
         <item name="android:alpha">1</item>
+        <item name="android:textColor">@color/oablue</item>
     </style>
 
     <style name="TextView" parent="android:Widget.TextView">

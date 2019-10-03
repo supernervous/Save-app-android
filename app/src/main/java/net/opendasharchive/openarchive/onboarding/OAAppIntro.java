@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.onboarding;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class OAAppIntro extends AppIntro {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setFadeAnimation();
 
         // Instead of fragments, you can also use our default slide
@@ -48,12 +50,12 @@ public class OAAppIntro extends AppIntro {
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4));
 
+        setColorDoneText(getResources().getColor(R.color.oablue));
         // OPTIONAL METHODS
         // Override bar/separator color.
        // setBarColor(Color.parseColor("#3F51B5"));
        // setSeparatorColor(Color.parseColor("#2196F3"));
         setSeparatorColor(getResources().getColor(R.color.white));
-
         // Hide Skip/Done button.
         showSkipButton(false);
        // setProgressButtonEnabled(false);

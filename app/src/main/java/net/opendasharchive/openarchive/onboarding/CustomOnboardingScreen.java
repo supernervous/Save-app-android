@@ -68,6 +68,8 @@ public class CustomOnboardingScreen extends Fragment {
         if (getArguments() != null && getArguments().containsKey(ARG_LAYOUT_IMAGE)) {
             mImageResource = getArguments().getInt(ARG_LAYOUT_IMAGE);
         }
+
+
     }
 
     @Nullable
