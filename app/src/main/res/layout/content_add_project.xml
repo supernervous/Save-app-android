@@ -39,7 +39,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="onNewProjectClicked"
+        >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +49,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:id="@+id/title_create_new"
-        android:onClick="onNewProjectClicked"
+
         />
 
     <TextView
@@ -88,7 +90,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="onBrowseProjects"
+
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,7 +101,6 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:id="@+id/title_browse_projects"
-            android:onClick="onBrowseProjects"
 
             />
 
