@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context="net.opendasharchive.openarchive.projects.AddProjectActivity">
 
+
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        />
+        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
 
     <include layout="@layout/content_edit_project" />
 

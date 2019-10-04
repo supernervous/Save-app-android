@@ -10,13 +10,12 @@
     android:theme="@style/AppMediaTheme"
     >
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        />
+        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
 
         <fragment
             android:id="@+id/fragUploadManager"
