@@ -15,6 +15,8 @@ public class Project extends SugarRecord {
     public long spaceId;
     public boolean archived = false;
 
+    public long openCollectionId;
+
     @Ignore
     private ArrayList<Media> mediaArrayList;
 
@@ -55,6 +57,14 @@ public class Project extends SugarRecord {
 
     public void setArchived(boolean archived) {
         this.archived = archived;
+    }
+
+    public long getOpenCollectionId() {
+        return openCollectionId;
+    }
+
+    public void setOpenCollectionId(long openCollectionId) {
+        this.openCollectionId = openCollectionId;
     }
 
 }

@@ -147,6 +147,12 @@ public class PublishService extends Service implements Runnable {
                             if (coll != null) {
                                 coll.uploadDate = datePublish;
                                 coll.save();
+                                Project proj = Project.findById(Project.class, coll.projectId);
+                                if (proj != null)
+                                {
+                                    proj.setOpenCollectionId(-1);
+                                    proj.save();
+                                }
                             }
                             media.save();
                         } catch (IOException ioe) {

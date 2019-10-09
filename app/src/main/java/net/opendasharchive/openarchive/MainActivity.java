@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.core.SpaceSettingsActivity;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
     private ProjectAdapter mPagerAdapter;
 
     private FloatingActionButton mFab;
-
-    private Collection mCollNew;
 
     private int lastTab = 0;
 
@@ -215,7 +214,27 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
 
-        if (getIntent() != null && getIntent().getData() != null) {
+        final Intent data = getIntent();
+        importSharedMedia(data);
+
+        refreshProjects();
+        refreshCurrentProject();
+
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        importSharedMedia(intent);
+    }
+
+    private void importSharedMedia (Intent data)
+    {
+
+
+
+        if (data != null) {
 
             final Snackbar bar = Snackbar.make(mPager, getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
             Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
@@ -227,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 protected Media doInBackground(Void... unused) {
-                    return handleOutsideMedia(getIntent());
+                    return handleOutsideMedia(data);
                 }
                 protected void onPostExecute(Media media) {
                     // Post Code
@@ -248,8 +267,6 @@ public class MainActivity extends AppCompatActivity {
             // handle if started from outside app
         }
 
-        refreshProjects();
-        refreshCurrentProject();
 
 
     }
@@ -449,25 +466,31 @@ public class MainActivity extends AppCompatActivity {
         // create media
         Media media = new Media();
 
-        if (mCollNew == null)
+        Collection coll = null;
+
+        if (project.getOpenCollectionId() == -1)
         {
-            mCollNew = new Collection();
-            mCollNew.projectId = project.getId();
-            mCollNew.save();
+            coll = new Collection();
+            coll.projectId = project.getId();
+            coll.save();
+            project.setOpenCollectionId(coll.getId());
+            project.save();
         }
         else
         {
-            mCollNew = Collection.findById(Collection.class,mCollNew.getId());
+            coll = Collection.findById(Collection.class,project.getOpenCollectionId());
 
-            if (mCollNew.getUploadDate() != null)
+            if (coll.getUploadDate() != null)
             {
-                mCollNew = new Collection();
-                mCollNew.projectId = project.getId();
-                mCollNew.save();
+                coll = new Collection();
+                coll.projectId = project.getId();
+                coll.save();
+                project.setOpenCollectionId(coll.getId());
+                project.save();
             }
         }
 
-        media.collectionId = mCollNew.getId();
+        media.collectionId = coll.getId();
 
         File fileSource = new File(uri.getPath());
         Date createDate = new Date();
