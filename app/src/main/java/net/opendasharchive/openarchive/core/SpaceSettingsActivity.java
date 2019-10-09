@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.core;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
@@ -97,10 +99,27 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     public void onAboutClick (View view)
     {
-        startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
+        //startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
+        openBrowser("https://open-archive.org/");
+    }
+
+    public void onPrivacyClick (View view)
+    {
+        openBrowser("https://open-archive.org/privacy/");
 
     }
 
+    private void openBrowser (String link)
+    {
+        try {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No application can handle this request."
+                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
