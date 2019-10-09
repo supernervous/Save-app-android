@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.media;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,6 +41,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
@@ -608,7 +608,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             public void run() {
 
                 if(!isFinishing()){
-                    new AlertDialog.Builder(ReviewMediaActivity.this)
+                    new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
                             .setTitle("Upload Error")
                             .setMessage(message)
                             .setCancelable(false)
@@ -650,7 +650,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     {
 
 
-        AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this)
+        AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
             .setTitle(R.string.menu_delete)
             .setMessage(R.string.alert_delete_media)
             .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

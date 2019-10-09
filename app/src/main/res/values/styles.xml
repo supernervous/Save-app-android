@@ -6,6 +6,8 @@
         <item name="android:buttonStyle">@style/Button</item>
         <item name="android:textViewStyle">@style/TextView</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+
     </style>
 
     <style name="AppMediaTheme" parent="Theme.MaterialComponents.NoActionBar">
@@ -18,6 +20,7 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:editTextColor">@color/white</item>
         <item name="android:textColorHint">@color/light_grey</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
 
@@ -36,6 +39,21 @@
 
     <style name="Button" parent="android:Widget.Button">
         <item name="android:alpha">1</item>
+        <item name="android:textColor">@color/oablue</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textColor">@color/oablue</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/oablue</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/oablue</item>
     </style>
 
