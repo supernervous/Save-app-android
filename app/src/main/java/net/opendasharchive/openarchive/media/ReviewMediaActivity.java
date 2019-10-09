@@ -148,17 +148,6 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         setTitle("");
 
-        findViewById(R.id.row_flag).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mMedia.setFlagged(!mMedia.isFlagged());
-
-                updateFlagState();
-            }
-        });
-
-
 
     }
 
@@ -174,11 +163,11 @@ public class ReviewMediaActivity extends AppCompatActivity {
         else
             tvFlagged.setText(R.string.hint_flag);
 
-        if (mMedia.status != Media.STATUS_LOCAL
-                && mMedia.status != Media.STATUS_NEW)
+        if ((mMedia.status != Media.STATUS_LOCAL
+                && mMedia.status != Media.STATUS_NEW) && (!mMedia.isFlagged()))
         {
-            tvFlagged.setVisibility(View.GONE);
             ivEditFlag.setVisibility(View.GONE);
+            tvFlagged.setVisibility(View.GONE);
         }
     }
 
@@ -253,6 +242,21 @@ public class ReviewMediaActivity extends AppCompatActivity {
             tvLicenseUrl.setEnabled(false);
 
             findViewById(R.id.groupLicenseChooser).setVisibility(View.GONE);
+        }
+        else
+        {
+
+            findViewById(R.id.row_flag).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mMedia.setFlagged(!mMedia.isFlagged());
+
+                    updateFlagState();
+                }
+            });
+
+
         }
 
         if (menuPublish != null) {
