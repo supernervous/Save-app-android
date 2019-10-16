@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,7 +17,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -26,6 +29,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.PagerTitleStrip;
 import androidx.viewpager.widget.ViewPager;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -71,10 +75,14 @@ public class MainActivity extends AppCompatActivity {
     private ProjectAdapter mPagerAdapter;
 
     private FloatingActionButton mFab;
+    private ImageView mAvatar;
+    private TextView mTitle;
 
     private int lastTab = 0;
 
     private MenuItem mMenuUpload;
+
+    private Space mSpace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,30 +94,22 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.avatar_default);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        Space space = Space.getCurrentSpace();
-        if (space != null &&(!TextUtils.isEmpty(space.name)))
-            setTitle(space.name);
-        else {
-
-            Iterator<Space> listSpaces = Space.getAllAsList();
-            if (listSpaces.hasNext())
-            {
-                space = listSpaces.next();
-                setTitle(space.name);
-                Prefs.setCurrentSpaceId(space.getId());
+        mTitle = findViewById(R.id.space_name);
+        mAvatar = findViewById(R.id.space_avatar);
+        mAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSpaceSettings();
             }
-            else
-                setTitle(R.string.main_activity_title);
-        }
+        });
 
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
 
-        if (space != null) {
-            List<Project> listProjects = Project.getAllBySpace(space.getId(), false);
+        if (mSpace != null) {
+            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
 
@@ -157,12 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        if (space == null || TextUtils.isEmpty(space.host))
-        {
-            Intent intent = new Intent(this, OAAppIntro.class);
-            startActivity(intent);
-        }
 
 
 
@@ -220,9 +214,49 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
+    private void setTitle (String title)
+    {
+        mTitle.setText(title);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        mSpace = Space.getCurrentSpace();
+
+        if (mSpace != null &&(!TextUtils.isEmpty(mSpace.name)))
+            setTitle(mSpace.name);
+        else {
+
+            Iterator<Space> listSpaces = Space.getAllAsList();
+            if (listSpaces.hasNext())
+            {
+                mSpace = listSpaces.next();
+                setTitle(mSpace.name);
+                Prefs.setCurrentSpaceId(mSpace.getId());
+
+
+            }
+            else
+                setTitle(R.string.main_activity_title);
+
+        }
+
+        if (mSpace != null)
+        {
+            if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
+                mAvatar.setImageResource(R.drawable.ialogo128);
+            }
+            else
+            {
+                TextDrawable drawable = TextDrawable.builder()
+                        .buildRound(mSpace.name.substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
+                mAvatar.setImageDrawable(drawable);
+            }
+        }
+        else
+            mAvatar.setImageResource(R.drawable.avatar_default);
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
@@ -233,6 +267,13 @@ public class MainActivity extends AppCompatActivity {
 
         refreshProjects();
         refreshCurrentProject();
+
+        if (mSpace == null || TextUtils.isEmpty(mSpace.host))
+        {
+            Intent intent = new Intent(this, OAAppIntro.class);
+            startActivity(intent);
+        }
+
 
     }
 

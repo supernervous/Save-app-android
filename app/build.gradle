@@ -83,6 +83,7 @@ dependencies {
     //implementation "net.gotev:uploadservice-okhttp:${uploadServiceVersion}"
 
     implementation 'com.github.abdularis:circularimageview:1.4'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
