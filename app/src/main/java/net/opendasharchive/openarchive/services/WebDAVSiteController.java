@@ -13,38 +13,26 @@ import com.thegrizzlylabs.sardineandroid.Sardine;
 import com.thegrizzlylabs.sardineandroid.SardineListener;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
-import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Prefs;
 
-import org.spongycastle.jce.exception.ExtIOException;
 import org.witness.proofmode.ProofMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
-import io.scal.secureshareui.lib.Util;
-import io.scal.secureshareui.model.Account;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-
-import static com.orm.util.Collection.list;
 
 public class WebDAVSiteController extends SiteController {
 
@@ -66,15 +54,15 @@ public class WebDAVSiteController extends SiteController {
     }
 
     @Override
-    public void startRegistration(Account account) {
+    public void startRegistration(Space space) {
 
     }
 
     @Override
-    public void startAuthentication(Account account) {
+    public void startAuthentication(Space space) {
 
-        sardine.setCredentials (account.getUserName(), account.getCredentials());
-        server = account.getSite();
+        sardine.setCredentials (space.username,space.password);
+        server = space.host;
 
     }
 
@@ -99,12 +87,12 @@ public class WebDAVSiteController extends SiteController {
     }
 
     @Override
-    public boolean upload(Account account, final Media media, HashMap<String, String> valueMap) throws IOException {
+    public boolean upload(Space space, final Media media, HashMap<String, String> valueMap) throws IOException {
 
         if (Prefs.useNextcloudChunking())
-            return uploadUsingChunking(account, media, valueMap);
+            return uploadUsingChunking(space, media, valueMap);
         else {
-            startAuthentication(account);
+            startAuthentication(space);
 
             Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
@@ -119,7 +107,7 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(account.getUserName()).append('/');
+            projectFolderBuilder.append(space.username).append('/');
             projectFolderBuilder.append(basePath);
 
             String projectFolderPath = projectFolderBuilder.toString();
@@ -186,9 +174,9 @@ public class WebDAVSiteController extends SiteController {
         }
     }
 
-    public boolean uploadUsingChunking (Account account, final Media media, HashMap<String, String> valueMap) throws IOException {
+    public boolean uploadUsingChunking (Space space, final Media media, HashMap<String, String> valueMap) throws IOException {
 
-        startAuthentication(account);
+        startAuthentication(space);
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
         String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
@@ -200,7 +188,7 @@ public class WebDAVSiteController extends SiteController {
         if (!server.endsWith("/"))
             projectFolderBuilder.append('/');
         projectFolderBuilder.append("uploads/");
-        projectFolderBuilder.append(account.getUserName()).append('/');
+        projectFolderBuilder.append(space.username).append('/');
         projectFolderBuilder.append(chunkFolderPath);
 
         String projectFolderPath = projectFolderBuilder.toString();
@@ -287,7 +275,7 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(account.getUserName()).append('/');
+            projectFolderBuilder.append(space.username).append('/');
             projectFolderBuilder.append(URLEncoder.encode(media.getServerUrl(),"UTF-8"));
 
             projectFolderPath = projectFolderBuilder.toString();
@@ -389,7 +377,7 @@ public class WebDAVSiteController extends SiteController {
     }
 
     @Override
-    public boolean delete(Account account, String bucketName, String mediaFile) {
+    public boolean delete(Space space, String bucketName, String mediaFile) {
 
         String url = bucketName;
         try {
@@ -440,16 +428,18 @@ public class WebDAVSiteController extends SiteController {
 
     private final static String FILE_BASE = "files/";
 
-    public ArrayList<File> getFolders (Account account, String path) throws IOException
+    public ArrayList<File> getFolders (Space space, String path) throws IOException
     {
-        startAuthentication(account);
+        startAuthentication(space);
 
         ArrayList<File> listFiles = new ArrayList<>();
 
+        path = path.replace("webdav", "dav");
+
         StringBuffer sbFolderPath = new StringBuffer();
         sbFolderPath.append(path);
-        sbFolderPath.append(FILE_BASE).append('/');
-        sbFolderPath.append(account.getUserName()).append('/');
+        sbFolderPath.append(FILE_BASE);
+        sbFolderPath.append(space.username).append('/');
 
         List<DavResource> listFolders = sardine.list(sbFolderPath.toString());
 

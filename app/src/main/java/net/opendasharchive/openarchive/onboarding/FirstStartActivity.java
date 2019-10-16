@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
-import net.opendasharchive.openarchive.MainActivity;
-import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.onboarding.EulaActivity.OnEulaAgreedTo;
-import io.scal.secureshareui.controller.ArchiveSiteController;
+
 import io.scal.secureshareui.controller.SiteController;
-import io.scal.secureshareui.model.Account;
 
 /**
  * Prompt the user to view & agree to the  TOS / EULA
@@ -30,27 +28,24 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     private static final String TAG = "FirstStartActivity";
     private boolean eulaAgreed = false;
-    private Account mAccount = null;
+    private Space mSpace = null;
 
     private SiteController.OnEventListener mAuthEventListener = new SiteController.OnEventListener() {
 
         @Override
-        public void onSuccess(Account account) {
-            account.setAuthenticated(true);
-            account.saveToSharedPrefs(FirstStartActivity.this, null);
+        public void onSuccess(Space space) {
+
+            space.save();
         }
 
         @Override
-        public void onFailure(Account account, String failureMessage) {
-            // TODO we should invalidate the locally saved credentials rather than just clearing them
-            account.setAuthenticated(false);
-            account.saveToSharedPrefs(FirstStartActivity.this, null);
+        public void onFailure(Space space, String failureMessage) {
+
         }
 
         @Override
-        public void onRemove(Account account) {
-            Account.clearSharedPreferences(FirstStartActivity.this, null);
-            // FIXME do we need to do somehting to clear cookies in the webview? or is that handled for us?
+        public void onRemove(Space space) {
+
         }
     };
 
@@ -61,8 +56,7 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_sign_in);
-
-        mAccount = new Account(this, null);
+        mSpace = new Space();
     }
 
     @Override
@@ -70,11 +64,11 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         super.onPause();
     }
 
-    public void onSignInButtonClick(View v) {
-        if (assertTosAccepted()) {
-            doAuthentication();
-        }
+    public void onSignInArchiveButtonClick (View v) {
+        startActivity(new Intent(this,ArchiveOrgLoginActivity.class));
+        finish();
     }
+
 
     public void onSignInPrivateButtonClick (View v) {
 
@@ -82,14 +76,7 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         finish();
     }
 
-    public void onSetupNearbyButtonClick (View v) {
-
-    }
-
-    public void onSignUpButtonClick(View v) {
-            doSignUp();
-    }
-
+    /**
     private void doAuthentication ()
     {
         boolean useTor = ((OpenArchiveApp)getApplication()).getUseTor();
@@ -108,7 +95,7 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
         siteController.setUseTor(useTor);
         siteController.setOnEventListener(mAuthEventListener);
         siteController.startRegistration(mAccount);
-    }
+    }**/
 
     /**
      * Show an AlertDialog prompting the user to
@@ -124,9 +111,11 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
     @Override
     public void onEulaAgreedTo() {
-        doAuthentication ();
+        //doAuthentication ();
+
     }
 
+    /**
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
@@ -152,7 +141,7 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
 
             }
         }
-    }
+    }**/
 
 }
 

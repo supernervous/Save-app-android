@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.lib.Util;
 
+import static io.scal.secureshareui.controller.ArchiveSiteController.ARCHIVE_BASE_URL;
+
 public class ArchiveLoginActivity extends Activity {
 
 	private static final String TAG = "ArchiveLoginActivity";
@@ -93,7 +95,7 @@ public class ArchiveLoginActivity extends Activity {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				//if logged in, hide and redirect to credentials
 				if (url.equals(ARCHIVE_LOGGED_IN_URL)) {
-					view.setVisibility(View.INVISIBLE);
+			//		view.setVisibility(View.INVISIBLE);
 					view.loadUrl(ARCHIVE_CREDENTIALS_URL);
 					
 					return true;
@@ -122,6 +124,10 @@ public class ArchiveLoginActivity extends Activity {
 					sIsLoginScren = false;
 					//String jsSourceDump = "javascript:";
 					//mWebview.loadUrl(jsSourceDump);
+				}
+				else if (url.equals(ARCHIVE_BASE_URL))
+				{
+					view.loadUrl(ARCHIVE_CREDENTIALS_URL);
 				}
 			}
 		});

@@ -3,11 +3,10 @@ package net.opendasharchive.openarchive.services;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.InputStreamRequestBody;
 
 import org.witness.proofmode.ProofMode;
@@ -16,12 +15,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
-import io.scal.secureshareui.model.Account;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -47,12 +44,12 @@ public class PirateBoxSiteController extends SiteController {
     }
 
     @Override
-    public void startRegistration(Account account) {
+    public void startRegistration(Space space) {
         //no need to register
     }
 
     @Override
-    public void startAuthentication(Account account) {
+    public void startAuthentication(Space spacet) {
         //no need to authenticate
 
     }
@@ -63,7 +60,7 @@ public class PirateBoxSiteController extends SiteController {
     }
 
     @Override
-    public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
+    public boolean upload(Space space, Media media, HashMap<String, String> valueMap) {
 
         //upload file and proof, if it exists, to a local piratebox
 
@@ -156,7 +153,7 @@ public class PirateBoxSiteController extends SiteController {
     }
 
     @Override
-    public boolean delete(Account account, String bucketName, String mediaFile) {
+    public boolean delete(Space space, String bucketName, String mediaFile) {
         //not supported
         return false;
     }

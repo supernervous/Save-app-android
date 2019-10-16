@@ -1,19 +1,18 @@
 package net.opendasharchive.openarchive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.multidex.MultiDex;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
-import net.gotev.uploadservice.Logger;
-import net.gotev.uploadservice.UploadService;
-import net.gotev.uploadservice.okhttp.OkHttpStack;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Prefs;
 
@@ -22,13 +21,10 @@ import org.acra.annotation.AcraCore;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
-import org.witness.proofmode.ProofMode;
 
-import androidx.multidex.MultiDex;
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
 import info.guardianproject.netcipher.proxy.OrbotHelper;
-import info.guardianproject.netcipher.proxy.StatusCallback;
 import io.cleaninsights.sdk.CleanInsights;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import okhttp3.OkHttpClient;
@@ -42,6 +38,8 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public static volatile boolean orbotConnected = false;
 
     private CleanInsightsApplication cleanInsightsApp;
+
+    private Space mCurrentSpace = null;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -64,12 +62,6 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         Fresco.initialize(this, config);
 
-        // setup the broadcast action namespace string which will
-        // be used to notify upload status.
-        // Gradle automatically generates proper variable as below.
-        UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
-
-        Logger.setLogLevel(Logger.LogLevel.DEBUG);
 
         //disable proofmode GPS dat tracking by default
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -161,7 +153,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
             StrongOkHttpClientBuilder.forMaxSecurity(appContext).build(new StrongBuilder.Callback<OkHttpClient>() {
                 @Override
                 public void onConnected(OkHttpClient okHttpClient) {
-                    UploadService.HTTP_STACK = new OkHttpStack(okHttpClient);
+
                     orbotConnected = true;
                     Log.i("NetCipherClient", "Connection to orbot established!");
                     // from now on, you can create upload requests
@@ -193,4 +185,16 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     }
 
 
+    public synchronized Space getCurrentSpace ()
+    {
+        if (mCurrentSpace == null) {
+
+            long spaceId = Prefs.getCurrentSpaceId();
+            if (spaceId != -1L) {
+                mCurrentSpace = Space.findById(Space.class,spaceId);
+            }
+        }
+
+        return mCurrentSpace;
+    }
 }

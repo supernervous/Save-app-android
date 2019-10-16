@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Space;
 
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
-import io.scal.secureshareui.model.Account;
 
 public class SCPSiteController extends SiteController {
 
@@ -18,12 +18,12 @@ public class SCPSiteController extends SiteController {
     }
 
     @Override
-    public void startRegistration(Account account) {
+    public void startRegistration(Space space) {
 
     }
 
     @Override
-    public void startAuthentication(Account account) {
+    public void startAuthentication(Space space) {
 
     }
 
@@ -33,12 +33,12 @@ public class SCPSiteController extends SiteController {
     }
 
     @Override
-    public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
+    public boolean upload(Space space, Media media, HashMap<String, String> valueMap) {
         return false;
     }
 
     @Override
-    public boolean delete(Account account, String bucketName, String mediaFile) {
+    public boolean delete(Space space, String bucketName, String mediaFile) {
         return false;
     }
 }

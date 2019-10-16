@@ -11,10 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
-
-import io.scal.secureshareui.model.Account;
 
 public class AddProjectActivity extends AppCompatActivity {
 
@@ -32,8 +30,8 @@ public class AddProjectActivity extends AppCompatActivity {
 
     public void onNewProjectClicked (View view) {
 
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
-        if (account != null && (!TextUtils.isEmpty(account.getSite()))) {
+        Space space = Space.getCurrentSpace();
+        if (space != null) {
             Intent intent = new Intent(this, CreateNewProjectActivity.class);
             startActivityForResult(intent, 1000);
         }
@@ -46,8 +44,8 @@ public class AddProjectActivity extends AppCompatActivity {
 
     public void onBrowseProjects (View view) {
 
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
-        if (account != null && (!TextUtils.isEmpty(account.getSite()))) {
+        Space space = Space.getCurrentSpace();
+        if (space != null) {
             Intent intent = new Intent(this, BrowseProjectsActivity.class);
             startActivityForResult(intent, 1001);
         }

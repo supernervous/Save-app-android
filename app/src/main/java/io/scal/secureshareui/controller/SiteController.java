@@ -5,21 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.webkit.MimeTypeMap;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.services.PirateBoxSiteController;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-
-import io.scal.secureshareui.model.Account;
 
 public abstract class SiteController {
     private OnEventListener mPublishEventListener;
@@ -62,11 +59,11 @@ public abstract class SiteController {
     boolean mUseTor = false;
 
     public interface OnEventListener {
-        public void onSuccess(Account publishAccount);
+        public void onSuccess(Space space);
 
-        public void onFailure(Account publishAccount, String failureMessage);
+        public void onFailure(Space space, String failureMessage);
         
-        public void onRemove(Account account);
+        public void onRemove(Space space);
     }
 
     public SiteController(Context context, SiteControllerListener listener, String jobId) {
@@ -75,8 +72,8 @@ public abstract class SiteController {
         mJobId = jobId;
     }
 
-    public abstract void startRegistration (Account account);
-    public abstract void startAuthentication(Account account);
+    public abstract void startRegistration (Space space);
+    public abstract void startAuthentication(Space space);
     
     /**
      * Gives a SiteController a chance to add metadata to the intent resulting from the ChooseAccounts process
@@ -85,8 +82,8 @@ public abstract class SiteController {
      */
     public abstract void startMetadataActivity(Intent intent);
 
-    public abstract boolean upload(Account account, Media media, HashMap<String, String> valueMap) throws IOException;
-    public abstract boolean delete(Account account, String bucketName, String mediaFile);
+    public abstract boolean upload(Space space, Media media, HashMap<String, String> valueMap) throws IOException;
+    public abstract boolean delete(Space space, String bucketName, String mediaFile);
     public void cancel() {}
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {

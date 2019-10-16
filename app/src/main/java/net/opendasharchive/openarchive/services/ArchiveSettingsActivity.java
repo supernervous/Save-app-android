@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.util.Globals;
 
 import java.util.HashMap;
@@ -155,41 +156,5 @@ public class ArchiveSettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static String getSlug(String title) {
-        return title.replaceAll("[^A-Za-z0-9]", "-");
-    }
 
-    public static HashMap<String, String> getMediaMetadata(Context context, Media mMedia) {
-
-        HashMap<String, String> valueMap = new HashMap<String, String>();
-        SharedPreferences sharedPref = context.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
-
-        valueMap.put(SiteController.VALUE_KEY_MEDIA_PATH, mMedia.getOriginalFilePath());
-        valueMap.put(SiteController.VALUE_KEY_MIME_TYPE, mMedia.getMimeType());
-        valueMap.put(SiteController.VALUE_KEY_SLUG, getSlug(mMedia.getTitle()));
-        valueMap.put(SiteController.VALUE_KEY_TITLE, mMedia.getTitle());
-
-        if (!TextUtils.isEmpty(mMedia.getLicenseUrl()))
-            valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, mMedia.getLicenseUrl());
-        else
-            valueMap.put(SiteController.VALUE_KEY_LICENSE_URL, "https://creativecommons.org/licenses/by/4.0/");
-
-        if (!TextUtils.isEmpty(mMedia.getTags())) {
-            String tags = context.getString(R.string.default_tags) + ";" + mMedia.getTags(); // FIXME are keywords/tags separated by spaces or commas?
-            valueMap.put(SiteController.VALUE_KEY_TAGS, tags);
-        }
-
-        if (!TextUtils.isEmpty(mMedia.getAuthor()))
-            valueMap.put(SiteController.VALUE_KEY_AUTHOR, mMedia.getAuthor());
-
-        //valueMap.put(SiteController.VALUE_KEY_PROFILE_URL, "TESTING"); // TODO
-
-        if (!TextUtils.isEmpty(mMedia.getLocation()))
-            valueMap.put(SiteController.VALUE_KEY_LOCATION_NAME, mMedia.getLocation()); // TODO
-
-        if (!TextUtils.isEmpty(mMedia.getDescription()))
-            valueMap.put(SiteController.VALUE_KEY_BODY, mMedia.getDescription());
-
-        return valueMap;
-    }
 }

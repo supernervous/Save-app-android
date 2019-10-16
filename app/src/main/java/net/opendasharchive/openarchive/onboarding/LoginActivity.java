@@ -1,50 +1,35 @@
 package net.opendasharchive.openarchive.onboarding;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.Toolbar;
 
 import com.thegrizzlylabs.sardineandroid.Sardine;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import io.scal.secureshareui.model.Account;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -62,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mNameView, mEmailView, mServerView, mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private Account mAccount;
+    private Space mSpace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,27 +58,32 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAccount = new Account(LoginActivity.this, WebDAVSiteController.SITE_NAME);
+        mSpace = null;
+
+        if (getIntent().hasExtra("space")) {
+            mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
+            findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
+        }
+        else {
+            mSpace = new Space();
+            mSpace.type = Space.TYPE_WEBDAV;
+        }
 
         // Set up the login form.
         mNameView = findViewById(R.id.servername);
         mEmailView = findViewById(R.id.email);
         mServerView = findViewById(R.id.server);
 
-        if (mAccount != null)
-        {
 
-            if (!TextUtils.isEmpty(mAccount.getName()))
-                mNameView.setText(mAccount.getName());
+        if (!TextUtils.isEmpty(mSpace.name))
+            mNameView.setText(mSpace.name);
 
-            if (!TextUtils.isEmpty(mAccount.getSite()))
-                mServerView.setText(mAccount.getSite());
+        if (!TextUtils.isEmpty(mSpace.host))
+            mServerView.setText(mSpace.host);
 
 
-            if (!TextUtils.isEmpty(mAccount.getUserName()))
-                mEmailView.setText(mAccount.getUserName());
-
-        }
+        if (!TextUtils.isEmpty(mSpace.username))
+            mEmailView.setText(mSpace.username);
 
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -127,36 +117,42 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String name = mNameView.getText().toString();
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String server = mServerView.getText().toString();
+        mSpace.name = mNameView.getText().toString();
+        mSpace.username = mEmailView.getText().toString();
+        mSpace.password = mPasswordView.getText().toString();
+        mSpace.host = mServerView.getText().toString();
+
+
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(mSpace.password) && !isPasswordValid(mSpace.password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(mSpace.username)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!isEmailValid(mSpace.username)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }
 
-        if (!server.toLowerCase().startsWith("http"))
+        if (!mSpace.host.toLowerCase().startsWith("http"))
         {
             //auto add nextcloud defaults
-            server = "https://" + server + "/remote.php/webdav/";
+            mSpace.host = "https://" + mSpace.host + "/remote.php/dav/";
+        }
+        else if (!mSpace.host.contains("/dav"))
+        {
+            mSpace.host += "/remote.php/dav/";
         }
 
         if (cancel) {
@@ -166,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask(name, email, password, server);
+            mAuthTask = new UserLoginTask();
             mAuthTask.execute((Void) null);
         }
     }
@@ -186,44 +182,29 @@ public class LoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-        private final String mServer;
-        private final String mName;
+        UserLoginTask() {
 
-        UserLoginTask(String name, String email, String password, String server) {
-            mName = name;
-            mEmail = email;
-            mPassword = password;
-            mServer = server;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            Account account = new Account(LoginActivity.this, WebDAVSiteController.SITE_NAME);
-            account.setName(mName);
-            account.setUserName(mEmail);
-            account.setCredentials(mPassword);
-            account.setSite(mServer);
-            account.setAuthenticated(false);
-            account.saveToSharedPrefs(LoginActivity.this, WebDAVSiteController.SITE_NAME);
 
             StringBuffer siteUrl = new StringBuffer();
-            siteUrl.append(mServer);
-            if (!mServer.endsWith("/"))
+            siteUrl.append(mSpace.host);
+            if (!mSpace.host.endsWith("/"))
                 siteUrl.append("/");
 
             Sardine sardine = new OkHttpSardine();
-            sardine.setCredentials(account.getUserName(),account.getCredentials());
+            sardine.setCredentials(mSpace.username,mSpace.password);
 
             try {
                 try
                 {
                     sardine.getQuota(siteUrl.toString());
 
-                    account.setAuthenticated(true);
-                    account.saveToSharedPrefs(LoginActivity.this, WebDAVSiteController.SITE_NAME);
+                    mSpace.save();
+                    Prefs.setCurrentSpaceId(mSpace.getId());
 
                     return true;
                 }
@@ -231,10 +212,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     siteUrl.append("remote.php/dav/");
                     sardine.getQuota(siteUrl.toString());
-
-                    account.setSite(siteUrl.toString());
-                    account.setAuthenticated(true);
-                    account.saveToSharedPrefs(LoginActivity.this, WebDAVSiteController.SITE_NAME);
+                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    mSpace.save();
 
                     return true;
                 }
@@ -292,6 +271,55 @@ public class LoginActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void removeProject (View view) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        confirmRemoveSpace();
+                        finish();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        String message = getString(R.string.confirm_remove_space);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setTitle(R.string.remove_from_app)
+                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+                .setNegativeButton(R.string.action_cancel, dialogClickListener).show();
+    }
+
+    private void confirmRemoveSpace () {
+        mSpace.delete();
+
+        List<Project> listProjects = Project.getAllBySpace(mSpace.getId());
+
+        for (Project project : listProjects)
+        {
+
+            List<Media> listMedia = Media.getMediaByProject(project.getId());
+
+            for (Media media : listMedia)
+            {
+                media.delete();
+            }
+
+            project.delete();
+        }
+
+        finish();
     }
 }
 

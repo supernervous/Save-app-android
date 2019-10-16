@@ -30,7 +30,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
-import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.core.SpaceSettingsActivity;
@@ -38,6 +37,7 @@ import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.media.BatchMediaReviewActivity;
 import net.opendasharchive.openarchive.media.ReviewMediaActivity;
@@ -47,15 +47,15 @@ import net.opendasharchive.openarchive.publish.UploadManagerActivity;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-
-import io.scal.secureshareui.model.Account;
 
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
@@ -89,18 +89,37 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.avatar_default);
 
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
-        if (account != null &&(!TextUtils.isEmpty(account.getName())))
-            setTitle(account.getName());
-        else
-            setTitle(R.string.main_activity_title);
+        Space space = Space.getCurrentSpace();
+        if (space != null &&(!TextUtils.isEmpty(space.name)))
+            setTitle(space.name);
+        else {
+
+            Iterator<Space> listSpaces = Space.getAllAsList();
+            if (listSpaces.hasNext())
+            {
+                space = listSpaces.next();
+                setTitle(space.name);
+                Prefs.setCurrentSpaceId(space.getId());
+            }
+            else
+                setTitle(R.string.main_activity_title);
+        }
 
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
-        List<Project> listProjects = Project.getAllAsList(false);
-        mPagerAdapter.updateData(listProjects);
-        mPager.setAdapter(mPagerAdapter);
-       // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
+
+        if (space != null) {
+            List<Project> listProjects = Project.getAllBySpace(space.getId(), false);
+            mPagerAdapter.updateData(listProjects);
+            mPager.setAdapter(mPagerAdapter);
+
+            if (listProjects.size() > 0)
+                mPager.setCurrentItem(1);
+            else
+                mPager.setCurrentItem(0);
+        }
+
+           // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mPager.setPageMargin(0);
         PagerTitleStrip pStrip = findViewById(R.id.pager_title_strip);
         pStrip.setTextSpacing(0);
@@ -139,17 +158,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (account == null || TextUtils.isEmpty(account.getSite()))
+        if (space == null || TextUtils.isEmpty(space.host))
         {
             Intent intent = new Intent(this, OAAppIntro.class);
             startActivity(intent);
         }
 
-
-        if (listProjects.size() > 0)
-            mPager.setCurrentItem(1);
-        else
-            mPager.setCurrentItem(0);
 
 
         //check for any queued uploads and restart
@@ -173,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshProjects ()
     {
-        List<Project> listProjects = Project.getAllAsList(false);
+        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(),false);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
         mPagerAdapter.updateData(listProjects);
         mPager.setAdapter(mPagerAdapter);
@@ -468,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
 
         Collection coll = null;
 
-        if (project.getOpenCollectionId() == -1)
+        if (project.getOpenCollectionId() == -1L)
         {
             coll = new Collection();
             coll.projectId = project.getId();
@@ -480,7 +494,8 @@ public class MainActivity extends AppCompatActivity {
         {
             coll = Collection.findById(Collection.class,project.getOpenCollectionId());
 
-            if (coll.getUploadDate() != null)
+            if (coll == null
+                    || coll.getUploadDate() != null)
             {
                 coll = new Collection();
                 coll.projectId = project.getId();

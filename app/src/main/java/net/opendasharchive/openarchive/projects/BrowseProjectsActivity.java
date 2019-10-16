@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import io.scal.secureshareui.controller.SiteController;
-import io.scal.secureshareui.model.Account;
 
 public class BrowseProjectsActivity extends AppCompatActivity {
 
@@ -79,7 +79,6 @@ public class BrowseProjectsActivity extends AppCompatActivity {
             }
         }.execute();
 
-
     }
 
     private void createProject (String description)
@@ -87,6 +86,7 @@ public class BrowseProjectsActivity extends AppCompatActivity {
         Project project = new Project ();
         project.created = new Date();
         project.description = description;
+        project.spaceId = Space.getCurrentSpace().getId();
         project.save();
     }
 
@@ -95,15 +95,15 @@ public class BrowseProjectsActivity extends AppCompatActivity {
     {
         WebDAVSiteController sc = null;
 
-        Account account = new Account(this, WebDAVSiteController.SITE_NAME);
+        Space space = Space.getCurrentSpace();
 
-        if (account != null && account.getSite() != null) {
+        if (space != null && space.type == Space.TYPE_WEBDAV) {
 
             //webdav
             sc = (WebDAVSiteController)SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, null, null);
 
             try {
-                listFolders = sc.getFolders(account,account.getSite());
+                listFolders = sc.getFolders(space,space.host);
             } catch (IOException e) {
                 e.printStackTrace();
             }

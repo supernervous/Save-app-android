@@ -15,6 +15,8 @@ public class Prefs {
     public final static String PREF_USE_PROOFMODE = "use_proofmode";
     public final static String PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks";
 
+    public final static String PREF_CURRENT_SPACE_ID = "current_space";
+
     private static SharedPreferences prefs;
 
     public static void setContext(Context context) {
@@ -73,5 +75,12 @@ public class Prefs {
     public static void setUseTor (boolean useTor)
     {
         putBoolean(PREF_USE_TOR,useTor);
+    }
+
+    public static long getCurrentSpaceId () { return prefs.getLong(PREF_CURRENT_SPACE_ID, -1L);}
+
+    public static void setCurrentSpaceId (long spaceId)
+    {
+        prefs.edit().putLong(PREF_CURRENT_SPACE_ID, spaceId).commit();
     }
 }

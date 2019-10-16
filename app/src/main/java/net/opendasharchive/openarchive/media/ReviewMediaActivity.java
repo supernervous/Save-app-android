@@ -29,6 +29,7 @@ import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
@@ -48,7 +49,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.scal.secureshareui.controller.ArchiveSiteController;
-import io.scal.secureshareui.model.Account;
 
 import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 
@@ -483,22 +483,11 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void uploadMedia ()
     {
         
-        Account accountWebDAV = new Account(this, WebDAVSiteController.SITE_NAME);
-        Account accountArchive = new Account(this, ArchiveSiteController.SITE_NAME);
+        Space space = Space.getCurrentSpace();
 
-        /**
-        if (PirateBoxSiteController.isPirateBox(this))
-        {
-            //mark queued
-            mMedia.status = Media.STATUS_QUEUED;
-            saveMedia();
-            bindMedia();
-            startService(new Intent(this, PublishService.class));
-        }
-        else {
-         **/
+
         // if user doesn't have an account
-        if (accountWebDAV.isAuthenticated() || accountArchive.isAuthenticated()) {
+        if (space != null) {
 
             //mark queued
             mMedia.status = Media.STATUS_QUEUED;
@@ -511,7 +500,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
             startActivity(firstStartIntent);
         }
-      //  }
+
 
     }
 

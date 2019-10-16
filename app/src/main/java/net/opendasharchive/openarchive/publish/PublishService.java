@@ -18,6 +18,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.onboarding.ArchiveOrgLoginActivity;
 import net.opendasharchive.openarchive.services.ArchiveSettingsActivity;
 import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.R;
@@ -38,7 +40,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
-import io.scal.secureshareui.model.Account;
 
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
@@ -187,62 +188,44 @@ public class PublishService extends Service implements Runnable {
     private void uploadMedia (Media media) throws IOException
     {
 
-        /**
-        if (PirateBoxSiteController.isPirateBox(this))
-        {
-            Account account = new Account(this, PirateBoxSiteController.SITE_NAME);
+        Project project = Project.getById(media.projectId);
 
-            PirateBoxSiteController siteController = (PirateBoxSiteController) SiteController.getSiteController(PirateBoxSiteController.SITE_KEY, this, new UploaderListener(media), null);
-            HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
-
+        if (project != null) {
+            HashMap<String, String> valueMap = ArchiveSiteController.getMediaMetadata(this, media);
+            media.serverUrl = project.description;
             media.status = Media.STATUS_UPLOADING;
             media.save();
             notifyMediaUpdated(media);
-            siteController.upload(account, media, valueMap);
-        }
-        else {**/
 
+            Space space = null;
 
-            Project project = Project.getById(media.projectId);
+            if (project.spaceId != -1L)
+                space = Space.findById(Space.class, project.spaceId);
+            else
+                space = Space.getCurrentSpace();
 
-            if (project != null) {
-                HashMap<String, String> valueMap = ArchiveSettingsActivity.getMediaMetadata(this, media);
-                media.serverUrl = project.description;
-                media.status = Media.STATUS_UPLOADING;
-                media.save();
-                notifyMediaUpdated(media);
+            if (space != null) {
 
-                Account account = new Account(this, WebDAVSiteController.SITE_NAME);
-
-                if (account != null && account.getSite() != null) {
-
-                    //webdav
+                if (space.type == Space.TYPE_WEBDAV)
                     sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
-
-                } else {
-                    account = new Account(this, ArchiveSiteController.SITE_NAME);
-
+                else if (space.type == Space.TYPE_INTERNET_ARCHIVE)
                     sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
 
-                }
-
-                sc.upload(account, media, valueMap);
-
-
-            }
-            else
-            {
-                media.delete();
+                sc.upload(space, media, valueMap);
             }
 
+        }
+        else
+        {
+            media.delete();
+        }
 
-     //   }
     }
 
     private void deleteMedia (Media media)
     {
-        Account account = new Account(this, null);
 
+        /**
         // if user doesn't have an account
         if(account.isAuthenticated()) {
             ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new DeleteListener(media), null);
@@ -257,7 +240,7 @@ public class PublishService extends Service implements Runnable {
             }
 
             media.delete();
-        }
+        }**/
     }
 
     public class UploaderListener implements SiteControllerListener {

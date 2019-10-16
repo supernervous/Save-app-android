@@ -294,6 +294,14 @@
     <string name="label_items">item(s)</string>
     <string name="label_items_uploaded">item(s) uploaded</string>
     <string name="label_out_of">out of</string>
+    <string name="access_key">Access Key</string>
+    <string name="secret_key">Secret Key</string>
+    <string name="info_archiveorg_keys">Save needs your Internet Archive account\'s API keys to be able to upload to it.</string>
+    <string name="action_acquire_keys">Acquire Keys</string>
+    <string name="title_new_project">New Project</string>
+    <string name="warning_special_chars">Please do not include special characters in the name</string>
+    <string name="label_ia">Internet Archive</string>
+    <string name="confirm_remove_space">Are you sure you want to remove this space from the app?</string>
 
 
 </resources>

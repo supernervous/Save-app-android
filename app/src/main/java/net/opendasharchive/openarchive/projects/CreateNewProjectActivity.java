@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.Space;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -32,7 +33,7 @@ public class CreateNewProjectActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("New Project");
+        getSupportActionBar().setTitle(getString(R.string.title_new_project));
 
 
          final EditText etNewProjectName = findViewById(R.id.edtNewProject);
@@ -46,7 +47,7 @@ public class CreateNewProjectActivity extends AppCompatActivity {
                     {
                         if (newProjectName.matches(SPECIAL_CHARS))
                         {
-                            Toast.makeText(CreateNewProjectActivity.this, "Please do not include special characters in the name",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateNewProjectActivity.this, getString(R.string.warning_special_chars),Toast.LENGTH_SHORT).show();
                         }
                         else {
                             createProject(newProjectName);
@@ -67,6 +68,7 @@ public class CreateNewProjectActivity extends AppCompatActivity {
         Project project = new Project ();
         project.created = new Date();
         project.description = description;
+        project.spaceId = Space.getCurrentSpace().getId();
         project.save();
     }
 

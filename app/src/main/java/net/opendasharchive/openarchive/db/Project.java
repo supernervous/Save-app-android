@@ -20,17 +20,18 @@ public class Project extends SugarRecord {
     @Ignore
     private ArrayList<Media> mediaArrayList;
 
-    public static List<Project> getAllAsList() {
-        return Project.find(Project.class,null,null,null,"ID DESC",null);
+    public static List<Project> getAllBySpace(long spaceId) {
+        String[] whereArgs = {spaceId + ""};
+        return Project.find(Project.class,"space_id = ?",whereArgs,null,"ID DESC",null);
     }
 
 
-    public static List<Project> getAllAsList(boolean archived) {
+    public static List<Project> getAllBySpace(long spaceId, boolean archived) {
 
         int isArchived = archived?1:0;
-        String[] whereArgs = {isArchived+""};
+        String[] whereArgs = {spaceId + "", isArchived+""};
 
-        return Project.find(Project.class,"archived = ?",whereArgs,null,"ID DESC",null);
+        return Project.find(Project.class,"space_id = ? AND archived = ?",whereArgs,null,"ID DESC",null);
     }
 
     public static Project getById(long projectId) {
