@@ -69,7 +69,8 @@ public class Prefs {
 
     public static boolean getUseTor ()
     {
-        return prefs.getBoolean(PREF_USE_TOR, false);
+        //return prefs.getBoolean(PREF_USE_TOR, false);
+        return false;
     }
 
     public static void setUseTor (boolean useTor)

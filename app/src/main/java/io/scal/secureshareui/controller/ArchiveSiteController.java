@@ -21,6 +21,7 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
+import info.guardianproject.netcipher.client.StrongBuilder;
+import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
 import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.login.ArchiveLoginActivity;
 import okhttp3.Headers;
@@ -37,6 +40,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.internal.http.ExchangeCodec;
 
 public class ArchiveSiteController extends SiteController {
 
@@ -60,11 +64,63 @@ public class ArchiveSiteController extends SiteController {
 	public static final MediaType MEDIA_TYPE = MediaType.parse("");
 
     private OkHttpClient client;
+    private boolean waiting = true;
 
 	public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
 		super(context, listener, jobId);
-        this.client = new OkHttpClient.Builder().build();
+        initClient(context);
 	}
+
+	private void initClient (Context context)
+    {
+
+        if (!Prefs.getUseTor())
+        {
+            this.client = new OkHttpClient.Builder().build();
+        }
+        else {
+
+            try {
+
+                StrongOkHttpClientBuilder.forMaxSecurity(context).build(new StrongBuilder.Callback<OkHttpClient>() {
+                    @Override
+                    public void onConnected(OkHttpClient okHttpClient) {
+
+                        Log.i("NetCipherClient", "Connection to orbot established!");
+                        client = okHttpClient;
+                        waiting = false;
+                    }
+
+                    @Override
+                    public void onConnectionException(Exception exc) {
+                        Log.e("NetCipherClient", "onConnectionException()", exc);
+                        waiting = false;
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        Log.e("NetCipherClient", "onTimeout()");
+                        waiting = false;
+                    }
+
+                    @Override
+                    public void onInvalid() {
+                        Log.e("NetCipherClient", "onInvalid()");
+                        waiting = false;
+                    }
+                });
+            } catch (Exception exc) {
+                Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
+                waiting = false;
+            }
+
+            while (waiting)
+            {
+                try { Thread.sleep(500);}
+                catch (Exception e){}
+            }
+        }
+    }
 
 	@Override
 	public void startRegistration(Space space) {
@@ -322,8 +378,6 @@ public class ArchiveSiteController extends SiteController {
          like so:
          x-archive-cascade-delete:1
          */
-
-        OkHttpClient client = new OkHttpClient();
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
 
