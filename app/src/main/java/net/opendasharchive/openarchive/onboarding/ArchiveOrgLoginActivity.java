@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.onboarding;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,13 +14,19 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
+
+import java.util.List;
 
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
@@ -53,8 +60,11 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        if (getIntent().hasExtra("space"))
-            mSpace = Space.findById(Space.class,getIntent().getLongExtra("space",-1L));
+        if (getIntent().hasExtra("space")) {
+            mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
+            findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
+
+        }
         else {
             mSpace = new Space();
             mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
@@ -268,6 +278,55 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void removeProject (View view) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        confirmRemoveSpace();
+                        finish();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        String message = getString(R.string.confirm_remove_space);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogCustom));
+        builder.setTitle(R.string.remove_from_app)
+                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+                .setNegativeButton(R.string.action_cancel, dialogClickListener).show();
+    }
+
+    private void confirmRemoveSpace () {
+        mSpace.delete();
+
+        List<Project> listProjects = Project.getAllBySpace(mSpace.getId());
+
+        for (Project project : listProjects)
+        {
+
+            List<Media> listMedia = Media.getMediaByProject(project.getId());
+
+            for (Media media : listMedia)
+            {
+                media.delete();
+            }
+
+            project.delete();
+        }
+
+        finish();
     }
 
 }

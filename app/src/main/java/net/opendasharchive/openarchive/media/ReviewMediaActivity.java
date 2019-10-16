@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.media;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -381,9 +382,13 @@ public class ReviewMediaActivity extends AppCompatActivity {
             case R.id.menu_item_share_link:
                 shareLink();
                 break;
-            case R.id.menu_item_share_media:
-                shareMedia();
+
+            case R.id.menu_item_open_link:
+                openLink();
                 break;
+          //  case R.id.menu_item_share_media:
+            //    shareMedia();
+              //  break;
 
             case R.id.menu_delete:
                 deleteMedia();
@@ -519,6 +524,19 @@ public class ReviewMediaActivity extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
     }
+
+    private void openLink ()
+    {
+        try {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mMedia.getServerUrl()));
+            startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No application can handle this request."
+                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
 
     //share the link to the file on the IA
     private void shareTorrentLink ()

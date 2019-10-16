@@ -99,6 +99,19 @@
                 android:textColor="@color/oablue"
                 android:onClick="onAcquireKeys"
                 />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/remove_from_app"
+                android:id="@+id/action_remove_space"
+                android:textColor="@color/red"
+                android:layout_margin="12dp"
+                android:textSize="18dp"
+                android:gravity="center"
+                android:onClick="removeProject"
+                android:visibility="gone"
+                />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

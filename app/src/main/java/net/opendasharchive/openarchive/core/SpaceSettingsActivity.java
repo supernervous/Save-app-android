@@ -57,8 +57,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         findViewById(R.id.section_space).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SpaceSettingsActivity.this, LoginActivity.class));
-
+                startSpaceAuthActivity();
             }
         });
 
@@ -175,22 +174,27 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = null;
-
-                    if (mSpace.type == Space.TYPE_WEBDAV)
-                        intent = new Intent(SpaceSettingsActivity.this, LoginActivity.class);
-                    else
-                        intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
-
-                    intent.putExtra("space",mSpace.getId());
-
-                    startActivity(intent);
+                   startSpaceAuthActivity ();
 
                 }
             });
 
 
         }
+    }
+
+    private void startSpaceAuthActivity ()
+    {
+        Intent intent = null;
+
+        if (mSpace.type == Space.TYPE_WEBDAV)
+            intent = new Intent(SpaceSettingsActivity.this, LoginActivity.class);
+        else
+            intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
+
+        intent.putExtra("space",mSpace.getId());
+
+        startActivity(intent);
     }
 
     public void updateProjects ()

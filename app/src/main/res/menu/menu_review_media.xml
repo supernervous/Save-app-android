@@ -19,10 +19,10 @@ s
         android:icon="@drawable/ic_share_white_36dp"
         >
         <menu>
+            <item android:id="@+id/menu_item_open_link"
+                android:title="@string/open_link" />
             <item android:id="@+id/menu_item_share_link"
-                android:title="Share Link" />
-            <item android:id="@+id/menu_item_share_media"
-                android:title="Share Media" />
+                android:title="@string/share_link" />
         </menu>
 
     </item>
