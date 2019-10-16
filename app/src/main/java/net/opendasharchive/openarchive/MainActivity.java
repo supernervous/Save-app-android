@@ -181,15 +181,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshProjects ()
     {
-        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(),false);
-        mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
-        mPagerAdapter.updateData(listProjects);
-        mPager.setAdapter(mPagerAdapter);
+        if (mSpace != null) {
+            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+            mPagerAdapter = new ProjectAdapter(this, getSupportFragmentManager());
+            mPagerAdapter.updateData(listProjects);
+            mPager.setAdapter(mPagerAdapter);
 
-        if (listProjects.size() > 0)
-            mPager.setCurrentItem(1);
-        else
-            mPager.setCurrentItem(0);
+            if (listProjects.size() > 0)
+                mPager.setCurrentItem(1);
+            else
+                mPager.setCurrentItem(0);
+        }
 
         updateMenu();
 
