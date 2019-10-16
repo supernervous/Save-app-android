@@ -59,7 +59,6 @@ android {
     buildToolsVersion '28.0.3'
 }
 
-def uploadServiceVersion = "3.5.2"
 def netCipherVersion = "2.0.0-alpha1"
 
 dependencies {
