@@ -65,7 +65,8 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
             findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
 
         }
-        else {
+
+        if (mSpace == null) {
             mSpace = new Space();
             mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
             mSpace.host = ARCHIVE_BASE_URL;
@@ -239,7 +240,8 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
             if (success) {
 
-                Prefs.setCurrentSpaceId(mSpace.getId());
+                if (mSpace != null)
+                    Prefs.setCurrentSpaceId(mSpace.getId());
 
                 finish();
             } else {

@@ -1,5 +1,7 @@
 package net.opendasharchive.openarchive.db;
 
+import android.text.TextUtils;
+
 import com.orm.SugarRecord;
 
 import net.opendasharchive.openarchive.util.Prefs;
@@ -32,7 +34,14 @@ public class Space extends SugarRecord {
     {
         long spaceId = Prefs.getCurrentSpaceId();
         if (spaceId != -1L) {
-            return Space.findById(Space.class,spaceId);
+            Space space = Space.findById(Space.class,spaceId);
+
+            if (space != null) {
+                if (TextUtils.isEmpty(space.name))
+                    space.name = space.username;
+
+                return space;
+            }
         }
 
         return null;

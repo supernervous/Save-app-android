@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.abdularis.civ.AvatarImageView;
 
+import org.w3c.dom.Text;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -107,6 +109,9 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setState(AvatarImageView.SHOW_IMAGE);
         }
         else {
+            if (TextUtils.isEmpty(space.name))
+                space.name = space.username;
+
             image.setText(space.name.substring(0, 1).toUpperCase());
             image.setState(AvatarImageView.SHOW_INITIAL);
         }
@@ -165,9 +170,14 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
                 image.setImageResource(R.drawable.ialogo128);
                 image.setState(AvatarImageView.SHOW_IMAGE);
+
             }
             else {
-                image.setText(mSpace.name.substring(0, 1).toUpperCase());
+                String spaceName = mSpace.name;
+                if (TextUtils.isEmpty(spaceName))
+                    spaceName = mSpace.host;
+
+                image.setText(spaceName.substring(0, 1).toUpperCase());
                 image.setState(AvatarImageView.SHOW_INITIAL);
             }
 

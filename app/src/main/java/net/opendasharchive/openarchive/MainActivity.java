@@ -505,6 +505,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Media importMedia (Uri uri)
     {
+        if (uri == null)
+            return null;
+
         String title = Utility.getUriDisplayName(this,uri);
         String mimeType = Utility.getMimeType(this,uri);
 

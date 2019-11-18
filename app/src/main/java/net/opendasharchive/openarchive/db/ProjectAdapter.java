@@ -47,7 +47,10 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
     public Project getProject (int i)
     {
-        return data.get(i-1);
+        if (data != null && i > 0)
+            return data.get(i-1);
+        else
+            return null;
     }
 
     public void updateData (List<Project> data)
