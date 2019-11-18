@@ -304,6 +304,7 @@
     <string name="confirm_remove_space">Are you sure you want to remove this space from the app?</string>
     <string name="open_link">Open Link</string>
     <string name="share_link">Share Link</string>
+    <string name="error_project_exists">Project name already exists</string>
 
 
 </resources>

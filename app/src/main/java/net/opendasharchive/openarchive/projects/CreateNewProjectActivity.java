@@ -18,6 +18,7 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,9 +51,10 @@ public class CreateNewProjectActivity extends AppCompatActivity {
                             Toast.makeText(CreateNewProjectActivity.this, getString(R.string.warning_special_chars),Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            createProject(newProjectName);
-                            setResult(RESULT_OK);
-                            finish();
+                            if (createProject(newProjectName)) {
+                                setResult(RESULT_OK);
+                                finish();
+                            }
                         }
                     }
 
@@ -63,13 +65,26 @@ public class CreateNewProjectActivity extends AppCompatActivity {
 
     }
 
-    private void createProject (String description)
+    private boolean createProject (String description)
     {
+        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(), false);
+
+        //check for duplicate name
+        for (Project project : listProjects)
+        {
+           if (project.description.equals(description)) {
+               Toast.makeText(this,getString(R.string.error_project_exists),Toast.LENGTH_LONG).show();
+               return false;
+           }
+        }
+
         Project project = new Project ();
         project.created = new Date();
         project.description = description;
         project.spaceId = Space.getCurrentSpace().getId();
         project.save();
+
+        return true;
     }
 
 
