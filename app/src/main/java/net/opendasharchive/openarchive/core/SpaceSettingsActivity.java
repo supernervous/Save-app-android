@@ -20,6 +20,7 @@ import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.onboarding.ArchiveOrgLoginActivity;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.onboarding.LoginActivity;
+import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
@@ -218,8 +219,8 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     public void onAboutClick (View view)
     {
-        //startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
-        openBrowser("https://open-archive.org/");
+       // startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
+        openBrowser("https://open-archive.org/about/");
     }
 
     public void onPrivacyClick (View view)
