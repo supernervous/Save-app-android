@@ -126,14 +126,6 @@ OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 
 
     <string name="media_hint">单击 (+) 按钮导入或创建要添加到您的归档中的媒体</string>
 
-    <string name="intro1_title">欢迎使用 *您的* OpenArchive！</string>
-    <string name="intro1_desc">OpenArchive 是一款免费的开源应用程序，致力于保存您的照片、视频和音频</string>
-
-    <string name="intro2_title">我们 &lt;3 Internet Archive</string>
-    <string name="intro2_desc">轻松地直接发布到 Archive.org，或者通过 Tor 发布以提高安全性</string>
-
-    <string name="intro3_title">与好友进行附近分享</string>
-    <string name="intro3_desc">使用蓝牙与一群好友即时分享某个媒体文件</string>
 
     <string name="menu_import_media">导入媒体</string>
     <string name="menu_take_photo">拍照</string>

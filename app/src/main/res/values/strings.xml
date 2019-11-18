@@ -5,7 +5,7 @@
     <string name="app_name">SAVE</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">Save</string>
+    <string name="main_activity_title">SAVE</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Log in</string>
     <string name="title_activity_settings">Settings</string>
@@ -111,7 +111,7 @@
     <string name="about_body">This is the SAVE app from OpenArchive.
     </string>
 
-    <string name="upload_success">Your media is now saved.</string>
+    <string name="upload_success">Your media is now SAVED!</string>
 
     <string name="share_using">Share archive link via</string>
     <string name="share_text">shared via OpenArchive at</string>
@@ -131,15 +131,6 @@
     <string name="orbot_detected">Orbot detected; using Tor network to connect more securely…</string>
 
     <string name="media_hint">Click \'+\' to pick or create media to add to your archive</string>
-
-    <string name="intro1_title">Welcome to *your* OpenArchive.</string>
-    <string name="intro1_desc">OpenArchive is a graits, copylefted libre software app for preserving your photos, video and audio</string>
-
-    <string name="intro2_title">Move Your Media</string>
-    <string name="intro2_desc">Safely archive your mobile media to trustworthy public or private servers</string>
-
-    <string name="intro3_title">Share Nearby With Friends</string>
-    <string name="intro3_desc">Use Wi-Fi and Bluetooth to share instantly with friends near you</string>
 
     <string name="menu_import_media">Import Media</string>
     <string name="menu_take_photo">Take Photo</string>
@@ -229,7 +220,7 @@
 
     <string name="setup_nearby">Nearby</string>
     <string name="title_activity_space_settings">Your Space</string>
-    <string name="onboarding_intro">Save everything</string>
+    <string name="onboarding_intro">Save all the things!</string>
     <string name="title_welcome">Welcome</string>
     <string name="status_uploaded">Uploaded</string>
     <string name="header_settings">App Settings</string>
@@ -305,6 +296,7 @@
     <string name="open_link">Open Link</string>
     <string name="share_link">Share Link</string>
     <string name="error_project_exists">Project name already exists</string>
+    <string name="save_by_openarchive">SAVE by OpenArchive</string>
 
 
 </resources>

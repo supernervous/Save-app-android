@@ -127,15 +127,6 @@ https://open-archive.net
 
     <string name="media_hint">برای وارد کردن رسانه و یا ساخت رسانه جدید و اضافه کردن آن به آرشیو خود، روی علامت + کلیک کن</string>
 
-    <string name="intro1_title">به آرشیو باز خود خوش آمدی</string>
-    <string name="intro1_desc">آرشیو باز یک اپ رایگان و کدباز برای حفاظت از عکس، ویدیو و فایل صوتی شماست</string>
-
-    <string name="intro2_title">ما  &lt;3 آرشیو اینترنت هستیم</string>
-    <string name="intro2_desc">براحتی روی آرشیو باز به اشتراک بذار، یا بطور مستقیم یا از طریق شبکه تور</string>
-
-    <string name="intro3_title">با دوستانی که در نزدیکی هستند به اشتراک بذار</string>
-    <string name="intro3_desc">با استفاده از بلوتوث با گروهی از دوستان به اشتراک بذار</string>
-
     <string name="menu_import_media">رسانه وارد کن</string>
     <string name="menu_take_photo">عکس بگیر</string>
     <string name="menu_take_video">ویدیو بگیر</string>

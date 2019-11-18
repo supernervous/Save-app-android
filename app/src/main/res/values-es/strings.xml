@@ -125,14 +125,6 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
 
     <string name="media_hint">Haz clic en el botón (+) para importar o crear multimedia para agregar a tu archivo</string>
 
-    <string name="intro1_title">¡Bienvenido a  *tu* OpenArchive!</string>
-    <string name="intro1_desc">OpenArchive es una aplicación gratuita y de código abierto dedicada a preservar tus fotos, vídeos y audios</string>
-
-    <string name="intro2_title">Nosotros &lt;3 Internet Archive</string>
-    <string name="intro2_desc">Publica fácilmente en Archive.org, directamente o de forma más segura a través de Tor</string>
-
-    <string name="intro3_title">Compartir Nearby con tus amigos</string>
-    <string name="intro3_desc">Utiliza Bluetooth para compartir instantáneamente cualquier archivo multimedia con un grupo de amigos</string>
 
     <string name="menu_import_media">Importar medios</string>
     <string name="menu_take_photo">Sacar una foto</string>

@@ -127,15 +127,6 @@
 
     <string name="media_hint">انقر على زر (+) لاستيراد أو إنشاء وسائط لإضافتها إلى الأرشيف</string>
 
-    <string name="intro1_title">أهلا وسهلا بك إلى OpenArchive * الخاص بك * !</string>
-    <string name="intro1_desc">OpenArchive تطبيق مجاني مفتوح المصدر مكرس للحفاظ على صورك وفيديوهاتك وملفات الصوت الخاصة بك </string>
-
-    <string name="intro2_title">We &lt;3 أرشيف الأنترنيت</string>
-    <string name="intro2_desc">انشر بسهولة على Archive.org، مباشرة أو بشكل أكثر أمانا عبر Tor</string>
-
-    <string name="intro3_title">مشاركة قريبة مع الأصدقاء</string>
-    <string name="intro3_desc">استخدام البلوتوث لتبادل أي ملف وسائط على الفور مع مجموعة من الأصدقاء</string>
-
     <string name="menu_import_media">استيراد الوسائط</string>
     <string name="menu_take_photo">التقاط صورة</string>
     <string name="menu_take_video">التقاط فيديو</string>
