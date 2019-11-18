@@ -122,7 +122,8 @@ public class LoginActivity extends AppCompatActivity {
         mSpace.password = mPasswordView.getText().toString();
         mSpace.host = mServerView.getText().toString();
 
-
+        if (TextUtils.isEmpty(mSpace.name))
+            mSpace.name = mSpace.host;
 
         boolean cancel = false;
         View focusView = null;
