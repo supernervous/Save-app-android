@@ -98,7 +98,7 @@ dependencies {
     implementation "info.guardianproject.netcipher:netcipher-okhttp3:${netCipherVersion}"
 
     //from here: https://github.com/guardianproject/proofmode
-    implementation 'org.witness:android-libproofmode:0.0.3'
+    implementation 'org.witness:android-libproofmode:0.0.4'
     implementation 'com.eternitywall:opentimestamps:0.1.14.1'
 
     //  implementation 'com.github.WrathChaos:MediaPickerLib:0.1.4'

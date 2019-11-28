@@ -365,7 +365,9 @@ public class WebDAVSiteController extends SiteController {
             fos.close();
             sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
-            Prefs.putBoolean(ProofMode.);
+            Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION,false);
+            Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK,false);
+
             String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
             File fileProofDir = ProofMode.getProofDir(metaMediaHash);
             if (fileProofDir != null && fileProofDir.exists()) {
