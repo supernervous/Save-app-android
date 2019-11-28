@@ -46,7 +46,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     public boolean doImageFade = true;
     private String lastMediaPath = null;
 
-    private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag;
+    private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag, ivIsVideo;
     public final ImageView handleView;
 
     public MediaViewHolder(final View itemView, Context context) {
@@ -56,6 +56,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
         mContext = context;
 
         ivIcon = itemView.findViewById(R.id.ivIcon);
+        ivIsVideo = itemView.findViewById(R.id.iconVideo);
         tvTitle = itemView.findViewById(R.id.tvTitle);
         tvCreateDate = itemView.findViewById(R.id.tvCreateDate);
         tvWave = itemView.findViewById(R.id.event_item_sound);
@@ -86,6 +87,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         final String mediaPath = currentMedia.getOriginalFilePath();
 
+        if (ivIsVideo != null)
+            ivIsVideo.setVisibility(View.GONE);
+
         if (currentMedia.status == Media.STATUS_PUBLISHED || currentMedia.status == Media.STATUS_UPLOADED) {
             ivIcon.setAlpha(1f);
         }
@@ -110,6 +114,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                 mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
                 ivIcon.setVisibility(View.VISIBLE);
                 tvWave.setVisibility(View.GONE);
+
+                if (ivIsVideo != null)
+                    ivIsVideo.setVisibility(View.VISIBLE);
 
             } else if (currentMedia.getMimeType().startsWith("audio")) {
 

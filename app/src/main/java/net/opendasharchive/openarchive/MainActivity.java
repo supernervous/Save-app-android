@@ -677,6 +677,7 @@ public class MainActivity extends AppCompatActivity {
                 askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 2);
                 break;
             case 2:
+                importMedia ();
                 break;
         }
 
