@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -19,14 +18,12 @@ import android.os.Message;
 import android.util.Log;
 
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.onboarding.ArchiveOrgLoginActivity;
-import net.opendasharchive.openarchive.services.ArchiveSettingsActivity;
 import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.IOException;

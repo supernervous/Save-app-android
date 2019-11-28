@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
 import java.io.IOException;

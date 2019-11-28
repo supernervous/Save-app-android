@@ -20,7 +20,6 @@
             android:key="use_tor"
             android:title="@string/prefs_use_tor_title"
             android:summary="@string/prefs_use_tor_summary"
-            android:enabled="false"
             android:defaultValue="false" />
 
         <androidx.preference.CheckBoxPreference

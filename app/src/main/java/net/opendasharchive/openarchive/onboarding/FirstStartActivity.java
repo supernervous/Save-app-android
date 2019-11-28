@@ -10,6 +10,9 @@ import android.view.Window;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.onboarding.EulaActivity.OnEulaAgreedTo;
+import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity;
+import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
+import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
 
 import io.scal.secureshareui.controller.SiteController;
 
@@ -65,15 +68,21 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     }
 
     public void onSignInArchiveButtonClick (View v) {
-        startActivity(new Intent(this,ArchiveOrgLoginActivity.class));
+        startActivity(new Intent(this, ArchiveOrgLoginActivity.class));
         finish();
     }
 
 
     public void onSignInPrivateButtonClick (View v) {
 
-        startActivity(new Intent(this,LoginActivity.class));
+        startActivity(new Intent(this, WebDAVLoginActivity.class));
         finish();
+    }
+
+    public void onSetupDropboxButtonClick (View v) {
+        startActivity(new Intent(this, DropboxLoginActivity.class));
+        finish();
+
     }
 
     /**

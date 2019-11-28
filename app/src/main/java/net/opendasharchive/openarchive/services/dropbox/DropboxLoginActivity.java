@@ -1,7 +1,6 @@
-package net.opendasharchive.openarchive.onboarding;
+package net.opendasharchive.openarchive.services.dropbox;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,24 +18,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 
+
+import com.dropbox.core.android.Auth;
+
+import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
+import java.io.IOException;
 import java.util.List;
-
-import io.scal.secureshareui.controller.ArchiveSiteController;
-import io.scal.secureshareui.controller.SiteController;
-
-import static io.scal.secureshareui.controller.ArchiveSiteController.ARCHIVE_BASE_URL;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class ArchiveOrgLoginActivity extends AppCompatActivity {
+public class DropboxLoginActivity extends AppCompatActivity {
 
     private final static String TAG = "Login";
 
@@ -46,105 +44,45 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private EditText mAccessKeyView, mSecretKeyView;
-
+    private EditText  mEmailView;
+    private View mProgressView;
+    private View mLoginFormView;
     private Space mSpace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_archive_key_login);
+        setContentView(R.layout.activity_login_dropbox);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mSpace = null;
 
         if (getIntent().hasExtra("space")) {
             mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
             findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
-
         }
-
-        if (mSpace == null) {
+        else {
             mSpace = new Space();
-            mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
-            mSpace.host = ARCHIVE_BASE_URL;
-            mSpace.name = getString(R.string.label_ia);
+            mSpace.type = Space.TYPE_DROPBOX;
         }
 
 
-        // Set up the login form.
-        mAccessKeyView = findViewById(R.id.accesskey);
-        mSecretKeyView = findViewById(R.id.secretkey);
+        mEmailView = findViewById(R.id.email);
+
 
         if (!TextUtils.isEmpty(mSpace.username))
-            mAccessKeyView.setText(mSpace.username);
+            mEmailView.setText(mSpace.username);
 
-        mSecretKeyView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
 
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+
+        attemptLogin();
     }
 
-    public void onAcquireKeys (View view)
-    {
-
-        SiteController siteController = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null);
-        siteController.setOnEventListener(new SiteController.OnEventListener() {
-            @Override
-            public void onSuccess(Space space) {
-
-                space.save();
-            }
-
-            @Override
-            public void onFailure(Space space, String failureMessage) {
-
-            }
-
-            @Override
-            public void onRemove(Space space) {
-
-            }
-        });
-
-        siteController.startAuthentication(mSpace);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        if (requestCode == SiteController.CONTROLLER_REQUEST_CODE) {
-            if (resultCode == android.app.Activity.RESULT_OK) {
-
-                String credentials = intent.getStringExtra(SiteController.EXTRAS_KEY_CREDENTIALS);
-                mSpace.password = (credentials != null ? credentials : "");
-
-                String username = intent.getStringExtra(SiteController.EXTRAS_KEY_USERNAME);
-                mSpace.username = (username != null ? username : "");
-
-                mAccessKeyView.setText(username);
-
-                mSecretKeyView.setText(credentials);
-                mSpace.name = getString(R.string.label_ia);
-
-                mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
-
-                mSpace.save();
-
-            }
-        }
-    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -158,26 +96,12 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
 
         // Store values at the time of the login attempt.
-        String accessKey = mAccessKeyView.getText().toString();
-        String secretKey = mSecretKeyView.getText().toString();
+        mSpace.username = "dropbox";
+        mSpace.name = "dropbox";
+        mSpace.host = "dropbox.com";
 
         boolean cancel = false;
         View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(secretKey) && !isPasswordValid(secretKey)) {
-            mSecretKeyView.setError(getString(R.string.error_invalid_password));
-            focusView = mSecretKeyView;
-            cancel = true;
-        }
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(accessKey) && !isPasswordValid(accessKey)) {
-            mAccessKeyView.setError(getString(R.string.error_invalid_password));
-            focusView = mAccessKeyView;
-            cancel = true;
-        }
-
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -186,7 +110,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask(accessKey, secretKey);
+            mAuthTask = new UserLoginTask();
             mAuthTask.execute((Void) null);
         }
     }
@@ -195,9 +119,6 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         return !TextUtils.isEmpty(email);
     }
 
-    private boolean isPasswordValid(String password) {
-        return password.length() > 0;
-    }
 
 
     /**
@@ -206,12 +127,8 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mAccessKey;
-        private final String mSecretKey;
+        UserLoginTask() {
 
-        UserLoginTask(String accessKey, String secretKey) {
-            mAccessKey = accessKey;
-            mSecretKey = secretKey;
         }
 
         @Override
@@ -220,33 +137,33 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
 
             try {
+                Auth.startOAuth2Authentication(DropboxLoginActivity.this, BuildConfig.dropbox_key);
 
+                String accessToken = Auth.getOAuth2Token();
 
-
+                mSpace.password = accessToken;
+                mSpace.save();
 
                 return true;
 
             } catch (Exception e) {
 
-                Log.e(TAG, "error on login", e);
+                Log.e(TAG,"error on login",e);
 
                 return false;
             }
+
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
+          //  showProgress(false);
 
             if (success) {
-
-                if (mSpace != null)
-                    Prefs.setCurrentSpaceId(mSpace.getId());
-
                 finish();
             } else {
-                mSecretKeyView.setError(getString(R.string.error_incorrect_password));
-                mSecretKeyView.requestFocus();
+
             }
         }
 
@@ -330,6 +247,5 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
         finish();
     }
-
 }
 

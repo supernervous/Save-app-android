@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.services;
+package net.opendasharchive.openarchive.services.archivedotorg;
 
 import android.content.Context;
 import android.content.SharedPreferences;

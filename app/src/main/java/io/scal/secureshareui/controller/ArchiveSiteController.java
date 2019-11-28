@@ -135,7 +135,6 @@ public class ArchiveSiteController extends SiteController {
 	public void startAuthentication(Space space) {
 		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
 		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.password);
-		intent.putExtra("useTor",mUseTor);
 		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
 		// FIXME not a safe cast, context might be a service
 	}

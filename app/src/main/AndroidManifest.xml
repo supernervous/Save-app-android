@@ -75,7 +75,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".services.ArchiveSettingsActivity"
+            android:name=".services.archivedotorg.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
             android:theme="@style/SettingsTheme" />
@@ -106,10 +106,13 @@
             android:name=".core.SettingsActivity"
             android:label="App Intro" />
         <activity
-            android:name=".onboarding.LoginActivity"
+            android:name=".services.webdav.WebDAVLoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".onboarding.ArchiveOrgLoginActivity"
+            android:name=".services.archivedotorg.ArchiveOrgLoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".services.dropbox.DropboxLoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".core.SpaceSettingsActivity"
@@ -144,8 +147,26 @@
         <service
             android:name=".publish.PublishJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity
+            android:name="com.dropbox.core.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:launchMode="singleTask">
+            <intent-filter>
+
+                <!-- Change this to be db- followed by your app key -->
+                <data android:scheme="db-gd5sputfo57s1l1" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+
 
 </manifest>

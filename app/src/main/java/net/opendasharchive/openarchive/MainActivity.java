@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,7 +47,6 @@ import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.publish.UploadManagerActivity;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
@@ -497,8 +495,11 @@ public class MainActivity extends AppCompatActivity {
     {
         ArrayList<Media> result = new ArrayList<>();
 
-        for (Uri uri: importUri)
-            result.add(importMedia(uri));
+        for (Uri uri: importUri) {
+            Media media = importMedia(uri);
+            if (media != null)
+                result.add(media);
+        }
 
         return result;
     }
@@ -522,6 +523,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
+
+        if (project == null)
+            return null;
 
         // create media
         Media media = new Media();

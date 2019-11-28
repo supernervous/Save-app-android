@@ -35,7 +35,6 @@ import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Utility;
 
@@ -49,7 +48,6 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import io.scal.secureshareui.controller.ArchiveSiteController;
 
 import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 

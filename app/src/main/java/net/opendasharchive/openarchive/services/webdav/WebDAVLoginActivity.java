@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.onboarding;
+package net.opendasharchive.openarchive.services.webdav;
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -25,7 +25,6 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class WebDAVLoginActivity extends AppCompatActivity {
 
     private final static String TAG = "Login";
 

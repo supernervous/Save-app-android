@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.core;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,22 +16,18 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectListAdapter;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.onboarding.ArchiveOrgLoginActivity;
+import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
-import net.opendasharchive.openarchive.onboarding.LoginActivity;
-import net.opendasharchive.openarchive.onboarding.OAAppIntro;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
+import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.abdularis.civ.AvatarImageView;
-
-import org.w3c.dom.Text;
 
 import java.util.Iterator;
 import java.util.List;
@@ -199,7 +194,9 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         Intent intent = null;
 
         if (mSpace.type == Space.TYPE_WEBDAV)
-            intent = new Intent(SpaceSettingsActivity.this, LoginActivity.class);
+            intent = new Intent(SpaceSettingsActivity.this, WebDAVLoginActivity.class);
+        else if (mSpace.type == Space.TYPE_DROPBOX)
+            intent = new Intent(SpaceSettingsActivity.this, DropboxLoginActivity.class);
         else
             intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
 

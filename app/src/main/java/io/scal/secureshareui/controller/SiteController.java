@@ -11,7 +11,7 @@ import android.webkit.MimeTypeMap;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.WebDAVSiteController;
+import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,8 +56,6 @@ public abstract class SiteController {
 
     private static final String TAG = "SiteController";
 
-    boolean mUseTor = false;
-
     public interface OnEventListener {
         public void onSuccess(Space space);
 
@@ -92,7 +90,12 @@ public abstract class SiteController {
         }
         else if (site.equals(WebDAVSiteController.SITE_KEY))
        {
-           return new WebDAVSiteController(context,listener,jobId);
+           try {
+               return new WebDAVSiteController(context,listener,jobId);
+           } catch (Exception e) {
+               e.printStackTrace();
+               return null;
+           }
        }
        /**
         else if (site.equalsIgnoreCase(PirateBoxSiteController.SITE_KEY)) {
@@ -186,8 +189,4 @@ public abstract class SiteController {
         return R.drawable.ic_launcher;
     }
 
-    public void setUseTor (boolean useTor)
-    {
-        mUseTor = useTor;
-    }
 }

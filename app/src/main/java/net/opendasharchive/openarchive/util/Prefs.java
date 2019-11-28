@@ -25,11 +25,11 @@ public class Prefs {
 
     }
 
-    private static void putBoolean(String key, boolean value) {
+    public static void putBoolean(String key, boolean value) {
         prefs.edit().putBoolean(key, value).apply();
     }
 
-    private static void putString(String key, String value) {
+    public static void putString(String key, String value) {
         prefs.edit().putString(key, value).apply();
     }
 
@@ -69,8 +69,7 @@ public class Prefs {
 
     public static boolean getUseTor ()
     {
-        //return prefs.getBoolean(PREF_USE_TOR, false);
-        return false;
+        return prefs.getBoolean(PREF_USE_TOR, false);
     }
 
     public static void setUseTor (boolean useTor)
