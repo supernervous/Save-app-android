@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.eternitywall:opentimestamps:0.1.14.1'
 
     //  implementation 'com.github.WrathChaos:MediaPickerLib:0.1.4'
-    implementation 'com.zhihu.android:matisse:0.5.2-beta3'
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 
     //adding web dav support: https://github.com/thegrizzlylabs/sardine-android'
     implementation 'com.github.guardianproject:sardine-android:aa5e964489'

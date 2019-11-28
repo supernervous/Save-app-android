@@ -33,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
 import net.opendasharchive.openarchive.core.SpaceSettingsActivity;
@@ -637,6 +638,8 @@ public class MainActivity extends AppCompatActivity {
                     .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                     .thumbnailScale(0.85f)
                     .imageEngine(new PicassoEngine())
+                    .capture(true)
+                    .captureStrategy(new CaptureStrategy(true, getPackageName() + ".provider", "capture"))
                     .forResult(REQUEST_FILE_IMPORT);
         }
     }
