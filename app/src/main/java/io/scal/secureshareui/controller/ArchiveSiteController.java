@@ -12,6 +12,7 @@ import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
+import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 import com.thegrizzlylabs.sardineandroid.impl.SardineException;
 import com.thegrizzlylabs.sardineandroid.impl.handler.ResponseHandler;
 import com.thegrizzlylabs.sardineandroid.impl.handler.VoidResponseHandler;
@@ -82,14 +83,15 @@ public class ArchiveSiteController extends SiteController {
 
             try {
 
-                StrongOkHttpClientBuilder.forMaxSecurity(context).build(new StrongBuilder.Callback<OkHttpClient>() {
+                StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
+                builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
                     @Override
                     public void onConnected(OkHttpClient okHttpClient) {
 
                         Log.i("NetCipherClient", "Connection to orbot established!");
                         client = okHttpClient;
-                        waiting = false;
-                    }
+                        waiting = false;                    }
+
 
                     @Override
                     public void onConnectionException(Exception exc) {
@@ -109,6 +111,8 @@ public class ArchiveSiteController extends SiteController {
                         waiting = false;
                     }
                 });
+
+             
             } catch (Exception exc) {
                 Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
                 waiting = false;
