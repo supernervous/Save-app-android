@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 mPager.setCurrentItem(1);
             else
                 mPager.setCurrentItem(0);
+
         }
 
         updateMenu();
@@ -224,8 +225,53 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mSpace = Space.getCurrentSpace();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(INTENT_FILTER_NAME));
+        mAvatar.setImageResource(R.drawable.avatar_default);
+
+        Space spaceCurrent = Space.getCurrentSpace();
+
+        if (spaceCurrent != null)
+        {
+            if (mSpace != null) {
+
+                if (mSpace.getId() != spaceCurrent.getId())
+                {
+                    initSpace(spaceCurrent);
+                    refreshProjects();
+                    refreshCurrentProject();
+                }
+                else
+                {
+                    initSpace(spaceCurrent);
+                }
+
+
+            }
+            else
+            {
+                initSpace(spaceCurrent);
+                refreshProjects();
+                refreshCurrentProject();
+            }
+        }
+
+        if (mSpace == null || TextUtils.isEmpty(mSpace.host))
+        {
+            Intent intent = new Intent(this, OAAppIntro.class);
+            startActivity(intent);
+        }
+
+
+        final Intent data = getIntent();
+        importSharedMedia(data);
+
+
+    }
+
+    private void initSpace (Space space)
+    {
         if (mSpace != null &&(!TextUtils.isEmpty(mSpace.name)))
             setTitle(mSpace.name);
         else {
@@ -244,38 +290,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if (mSpace != null)
-        {
-            if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
-                mAvatar.setImageResource(R.drawable.ialogo128);
-            }
-            else
-            {
-                TextDrawable drawable = TextDrawable.builder()
-                        .buildRound(mSpace.name.substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
-                mAvatar.setImageDrawable(drawable);
-            }
+        if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
+            mAvatar.setImageResource(R.drawable.ialogo128);
         }
         else
-            mAvatar.setImageResource(R.drawable.avatar_default);
-
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter(INTENT_FILTER_NAME));
-
-        final Intent data = getIntent();
-        importSharedMedia(data);
-
-        refreshProjects();
-        refreshCurrentProject();
-
-        if (mSpace == null || TextUtils.isEmpty(mSpace.host))
         {
-            Intent intent = new Intent(this, OAAppIntro.class);
-            startActivity(intent);
+            TextDrawable drawable = TextDrawable.builder()
+                    .buildRound(mSpace.name.substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
+            mAvatar.setImageDrawable(drawable);
         }
-
-
     }
 
 
@@ -523,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        Project project = mPagerAdapter.getProject(mPager.getCurrentItem());
+        Project project = mPagerAdapter.getProject(lastTab);
 
         if (project == null)
             return null;
