@@ -79,6 +79,10 @@ public class DropboxSiteController extends SiteController {
                 space.save();
                 DropboxClientFactory.init(mContext, accessToken);
             }
+            else
+            {
+
+            }
         } else {
             DropboxClientFactory.init(mContext, accessToken);
         }
