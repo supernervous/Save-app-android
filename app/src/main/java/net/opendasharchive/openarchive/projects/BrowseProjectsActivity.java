@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,8 @@ import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 
@@ -67,9 +70,18 @@ public class BrowseProjectsActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(View view, int position) {
 
-
                             File fileFolder = adapter.getItem(position);
-                            createProject(fileFolder.getName());
+                            String projectName = fileFolder.getName();
+                            try {
+                                projectName = URLDecoder.decode(fileFolder.getName(),"UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (!projectExists(projectName)) {
+                                createProject(projectName);
+                            }
+
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -79,6 +91,21 @@ public class BrowseProjectsActivity extends AppCompatActivity {
             }
         }.execute();
 
+    }
+
+    private boolean projectExists (String name)
+    {
+        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(), false);
+
+        //check for duplicate name
+        for (Project project : listProjects)
+        {
+            if (project.description.equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void createProject (String description)
@@ -147,7 +174,12 @@ public class BrowseProjectsActivity extends AppCompatActivity {
         // binds the data to the TextView in each row
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String folder = mData.get(position).getName();
+            String folder = null;
+            try {
+                folder = URLDecoder.decode(mData.get(position).getName(),"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+               folder = mData.get(position).getName();
+            }
             holder.myTextView.setText(folder);
         }
 

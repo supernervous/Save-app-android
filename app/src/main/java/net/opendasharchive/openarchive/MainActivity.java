@@ -235,7 +235,14 @@ public class MainActivity extends AppCompatActivity {
         {
             if (mSpace != null) {
 
+                List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+
                 if (mSpace.getId() != spaceCurrent.getId())
+                {
+                    initSpace(spaceCurrent);
+                    refreshProjects();
+                }
+                else if (listProjects.size() != (mPagerAdapter.getCount()-1))
                 {
                     initSpace(spaceCurrent);
                     refreshProjects();
