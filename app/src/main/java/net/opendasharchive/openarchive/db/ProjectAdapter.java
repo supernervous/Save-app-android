@@ -61,7 +61,10 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return data.size()+1;
+        if (data != null)
+            return data.size()+1;
+        else
+            return 0;
     }
 
     @Override
