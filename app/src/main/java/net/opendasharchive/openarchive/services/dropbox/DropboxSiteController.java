@@ -44,7 +44,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class DropboxSiteController extends SiteController {
 
-    private String server;
 
     public static final String SITE_NAME = "Dropbox";
     public static final String SITE_KEY = "dropbox";
@@ -121,8 +120,6 @@ public class DropboxSiteController extends SiteController {
 
         StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
 
-        if (!server.endsWith("/"))
-            projectFolderBuilder.append('/');
         projectFolderBuilder.append("files/");
         projectFolderBuilder.append(space.username).append('/');
         projectFolderBuilder.append(basePath);
@@ -153,44 +150,12 @@ public class DropboxSiteController extends SiteController {
                 @Override
                 public void onError(Exception e) {
 
+                    jobFailed(e, -1, e.getMessage());
                 }
             });
 
             uTask.execute(mediaUri.toString(),fileName, folderName);
 
-                    /**
-                     if (!sardine.exists(finalMediaPath)) {
-                     sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false,
-                     new SardineListener() {
-
-                     long lastBytes = 0;
-
-                     @Override public void transferred(long bytes) {
-
-                     if (bytes > lastBytes) {
-                     jobProgress(bytes, null);
-                     lastBytes = bytes;
-                     }
-
-
-                     }
-
-                     @Override public boolean continueUpload() {
-                     return mContinueUpload;
-                     }
-                     });
-
-                     media.setServerUrl(finalMediaPath);
-                     jobSucceeded(finalMediaPath);
-
-                     uploadMetadata(media, projectFolderPath, fileName);
-                     uploadProof(media, projectFolderPath);
-
-                     } else {
-                     media.setServerUrl(finalMediaPath);
-                     jobSucceeded(finalMediaPath);
-
-                     }**/
 
             return true;
         } catch (Exception e) {

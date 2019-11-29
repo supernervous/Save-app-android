@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
@@ -207,8 +208,11 @@ public class PublishService extends Service implements Runnable {
                     sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
                 else if (space.type == Space.TYPE_INTERNET_ARCHIVE)
                     sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
+                else if (space.type == Space.TYPE_DROPBOX)
+                    sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, new UploaderListener(media), null);
 
-                sc.upload(space, media, valueMap);
+                if (sc != null)
+                    sc.upload(space, media, valueMap);
             }
 
         }

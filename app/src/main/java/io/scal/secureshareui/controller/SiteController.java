@@ -11,6 +11,7 @@ import android.webkit.MimeTypeMap;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
@@ -92,6 +93,15 @@ public abstract class SiteController {
        {
            try {
                return new WebDAVSiteController(context,listener,jobId);
+           } catch (Exception e) {
+               e.printStackTrace();
+               return null;
+           }
+       }
+       else if (site.equals(DropboxSiteController.SITE_KEY))
+       {
+           try {
+               return new DropboxSiteController(context,listener,jobId);
            } catch (Exception e) {
                e.printStackTrace();
                return null;
