@@ -112,7 +112,7 @@ public class ArchiveSiteController extends SiteController {
                     }
                 });
 
-             
+
             } catch (Exception exc) {
                 Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
                 waiting = false;
