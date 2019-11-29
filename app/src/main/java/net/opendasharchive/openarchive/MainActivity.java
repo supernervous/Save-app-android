@@ -225,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
         mAvatar.setImageResource(R.drawable.avatar_default);
@@ -240,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     initSpace(spaceCurrent);
                     refreshProjects();
-                    refreshCurrentProject();
                 }
                 else
                 {
@@ -253,8 +251,10 @@ public class MainActivity extends AppCompatActivity {
             {
                 initSpace(spaceCurrent);
                 refreshProjects();
-                refreshCurrentProject();
             }
+
+
+            refreshCurrentProject();
         }
 
         if (mSpace == null || TextUtils.isEmpty(mSpace.host))
@@ -272,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSpace (Space space)
     {
+        mSpace = space;
+
         if (mSpace != null &&(!TextUtils.isEmpty(mSpace.name)))
             setTitle(mSpace.name);
         else {

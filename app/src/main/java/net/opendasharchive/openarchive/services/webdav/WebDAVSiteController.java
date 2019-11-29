@@ -215,6 +215,9 @@ public class WebDAVSiteController extends SiteController {
         }
     }
 
+    int chunkStartIdx = 0;
+
+
     public boolean uploadUsingChunking (Space space, final Media media, HashMap<String, String> valueMap) throws IOException {
 
 
@@ -257,7 +260,7 @@ public class WebDAVSiteController extends SiteController {
             int chunkSize = 1024 * 2000;
             int bufferSize = 1024 * 4;
             byte[] buffer = new byte[bufferSize];
-            int chunkStartIdx = 0;
+            chunkStartIdx = 0;
 
             InputStream is = mContext.getContentResolver().openInputStream(mediaUri);
 
@@ -296,7 +299,7 @@ public class WebDAVSiteController extends SiteController {
 
                         @Override
                         public void transferred(long bytes) {
-
+                                jobProgress((long)chunkStartIdx+bytes, null);
                         }
 
                         @Override

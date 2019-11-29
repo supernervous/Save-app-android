@@ -78,10 +78,10 @@ public class DropboxSiteController extends SiteController {
             if (accessToken != null) {
                 space.password = accessToken;
                 space.save();
-                DropboxClientFactory.init(accessToken);
+                DropboxClientFactory.init(mContext, accessToken);
             }
         } else {
-            DropboxClientFactory.init(accessToken);
+            DropboxClientFactory.init(mContext, accessToken);
         }
 
         String uid = Auth.getUid();
