@@ -147,18 +147,24 @@ public class DropboxSiteController extends SiteController {
                     jobSucceeded(finalMediaPath);
 
                     uploadMetadata(media, folderName, fileName);
-                    uploadProof(media, folderName);
+
+                    if (Prefs.getUseProofMode())
+                        uploadProof(media, folderName);
+
 
                 }
 
                 @Override
                 public void onError(Exception e) {
 
-                    jobFailed(e, -1, e.getMessage());
+                    if (e != null)
+                        jobFailed(e, -1, e.getMessage());
+                    else
+                        jobFailed(new Exception("unknown error"),-1,"unknown error");
                 }
             });
 
-            uTask.execute(mediaUri.toString(),fileName, folderName);
+            uTask.execute(mediaUri.toString(),fileName,folderName);
 
 
             return true;
@@ -173,19 +179,19 @@ public class DropboxSiteController extends SiteController {
 
     private boolean uploadMetadata (final Media media, String basePath, String fileName)
     {
-        String urlMeta = basePath + '/' + fileName + ".meta.json";
+        String metadataFileName = fileName + ".meta.json";
+        //String urlMeta = basePath + '/' + metadataFileName;
+
         Gson gson = new Gson();
         String json = gson.toJson(media,Media.class);
 
         try {
 
-            File fileMetaData = new File(mContext.getFilesDir(),fileName+".meta.json");
+            File fileMetaData = new File(mContext.getFilesDir(),metadataFileName);
             FileOutputStream fos = new FileOutputStream(fileMetaData);
             fos.write(json.getBytes());
             fos.flush();
             fos.close();
-
-          //  sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
             UploadFileTask uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
                 @Override
@@ -199,36 +205,41 @@ public class DropboxSiteController extends SiteController {
                 }
             });
 
-            uTask.execute(Uri.fromFile(fileMetaData).toString(),fileName, basePath);
+            uTask.execute(Uri.fromFile(fileMetaData).toString(),metadataFileName, basePath);
 
-            String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
-            File fileProofDir = ProofMode.getProofDir(metaMediaHash);
-            if (fileProofDir != null && fileProofDir.exists()) {
-                File[] filesProof = fileProofDir.listFiles();
-                for (File fileProof : filesProof) {
-                    uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
-                        @Override
-                        public void onUploadComplete(FileMetadata result) {
+            if (Prefs.getUseProofMode()) {
+                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
-                        }
+                String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
+                File fileProofDir = ProofMode.getProofDir(metaMediaHash);
+                if (fileProofDir != null && fileProofDir.exists()) {
+                    File[] filesProof = fileProofDir.listFiles();
+                    for (File fileProof : filesProof) {
+                        uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+                            @Override
+                            public void onUploadComplete(FileMetadata result) {
 
-                        @Override
-                        public void onError(Exception e) {
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onError(Exception e) {
 
-                    uTask.execute(Uri.fromFile(fileProof).toString(),fileProof.getName(), basePath);
+                            }
+                        });
+
+                        uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), basePath);
+                    }
+
                 }
-
             }
 
             return true;
         }
         catch (IOException e)
         {
-            Log.e(TAG, "Failed primary media upload: " + urlMeta,e);
-            jobFailed(e,-1,urlMeta);
+            Log.e(TAG, "Failed primary media upload: " + metadataFileName,e);
+            jobFailed(e,-1,metadataFileName);
 
         }
 

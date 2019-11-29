@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.dropbox;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,10 +39,6 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
     private final static String TAG = "Login";
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText  mEmailView;
@@ -83,6 +80,20 @@ public class DropboxLoginActivity extends AppCompatActivity {
         attemptLogin();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String accessToken = Auth.getOAuth2Token();
+
+        if (!TextUtils.isEmpty(accessToken) && mSpace != null) {
+            mSpace.username = Auth.getUid();
+            mSpace.password = accessToken;
+            mSpace.save();
+            finish();
+        }
+    }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -90,9 +101,6 @@ public class DropboxLoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
 
         // Store values at the time of the login attempt.
@@ -110,67 +118,8 @@ public class DropboxLoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask();
-            mAuthTask.execute((Void) null);
-        }
-    }
+            Auth.startOAuth2Authentication(DropboxLoginActivity.this, BuildConfig.dropbox_key);
 
-    private boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email);
-    }
-
-
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        UserLoginTask() {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-
-
-            try {
-                Auth.startOAuth2Authentication(DropboxLoginActivity.this, BuildConfig.dropbox_key);
-
-                String accessToken = Auth.getOAuth2Token();
-
-                mSpace.password = accessToken;
-                mSpace.save();
-
-                return true;
-
-            } catch (Exception e) {
-
-                Log.e(TAG,"error on login",e);
-
-                return false;
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-          //  showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-          //  showProgress(false);
         }
     }
 

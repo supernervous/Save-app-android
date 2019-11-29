@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 /**
  * Async task to upload a file to a directory
@@ -53,18 +54,34 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
         File localFile = UriHelpers.getFileForUri(mContext, Uri.parse(localUri));
 
         if (localFile != null) {
-            String remoteFolderPath = params[1];
 
-            // Note - this is not ensuring the name is a valid dropbox file name
-            String remoteFileName = params[2];
+            try {
+                String remoteFolderPath = "/" + params[2];
 
-            try (InputStream inputStream = new FileInputStream(localFile)) {
-                return mDbxClient.files().uploadBuilder(remoteFolderPath + "/" + remoteFileName)
-                        .withMode(WriteMode.OVERWRITE)
-                        .uploadAndFinish(inputStream);
-            } catch (DbxException | IOException e) {
+                // Note - this is not ensuring the name is a valid dropbox file name
+                String remoteFileName = params[1];
+
+                try {
+                    mDbxClient.files().listFolder(remoteFolderPath);
+                }
+                catch (Exception e)
+                {
+                    mDbxClient.files().createFolderV2(remoteFolderPath);
+                }
+
+                try (InputStream inputStream = new FileInputStream(localFile)) {
+                    return mDbxClient.files().uploadBuilder(remoteFolderPath + "/" + remoteFileName)
+                            .withMode(WriteMode.OVERWRITE)
+                            .uploadAndFinish(inputStream);
+                } catch (DbxException | IOException e) {
+                    mException = e;
+                }
+
+            } catch (Exception e) {
                 mException = e;
             }
+
+
         }
 
         return null;

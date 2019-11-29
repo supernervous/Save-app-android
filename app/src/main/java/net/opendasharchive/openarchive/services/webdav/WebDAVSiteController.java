@@ -339,8 +339,9 @@ public class WebDAVSiteController extends SiteController {
             jobSucceeded(finalMediaPath);
 
             uploadMetadata (media, projectFolderPath, fileName);
-            uploadProof(media, projectFolderPath);
 
+            if (Prefs.getUseProofMode())
+                uploadProof(media, projectFolderPath);
 
 
             return true;
@@ -368,17 +369,19 @@ public class WebDAVSiteController extends SiteController {
             fos.close();
             sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
-            Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION,false);
-            Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK,false);
+            if (Prefs.getUseProofMode()) {
+                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
-            String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
-            File fileProofDir = ProofMode.getProofDir(metaMediaHash);
-            if (fileProofDir != null && fileProofDir.exists()) {
-                File[] filesProof = fileProofDir.listFiles();
-                for (File fileProof : filesProof) {
-                    sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false, null);
+                String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
+                File fileProofDir = ProofMode.getProofDir(metaMediaHash);
+                if (fileProofDir != null && fileProofDir.exists()) {
+                    File[] filesProof = fileProofDir.listFiles();
+                    for (File fileProof : filesProof) {
+                        sardine.put(basePath + '/' + fileProof.getName(), fileProof, "text/plain", false, null);
+                    }
+
                 }
-
             }
 
             return true;

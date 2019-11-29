@@ -129,16 +129,19 @@ public class PublishService extends Service implements Runnable {
 
             Date datePublish = new Date();
 
-            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED + "");
+            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED+"");
 
             if (results.size() > 0) {
                 //iterate through them, and upload one by one
                 for (Media media : results) {
 
                     if (keepUploading) {
-                        media.uploadDate = datePublish;
-                        media.progress = 0; //should we reset this?
-                        media.status = Media.STATUS_UPLOADING;
+
+                        if (media.status != Media.STATUS_UPLOADING) {
+                            media.uploadDate = datePublish;
+                            media.progress = 0; //should we reset this?
+                            media.status = Media.STATUS_UPLOADING;
+                        }
 
                         try {
                             uploadMedia(media);

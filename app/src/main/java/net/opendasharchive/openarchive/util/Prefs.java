@@ -67,6 +67,7 @@ public class Prefs {
         putBoolean(PREF_NEARBY_USE_WIFI,useWifi);
     }
 
+    public static boolean getUseProofMode () { return prefs.getBoolean(PREF_USE_PROOFMODE, false);}
     public static boolean getUseTor ()
     {
         return prefs.getBoolean(PREF_USE_TOR, false);
