@@ -6,6 +6,9 @@ import android.content.Intent;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -40,5 +43,10 @@ public class SCPSiteController extends SiteController {
     @Override
     public boolean delete(Space space, String bucketName, String mediaFile) {
         return false;
+    }
+
+    @Override
+    public ArrayList<File> getFolders(Space space, String path) throws IOException {
+        return null;
     }
 }

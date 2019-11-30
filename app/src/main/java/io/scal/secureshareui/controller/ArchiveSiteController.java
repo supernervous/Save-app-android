@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
@@ -410,6 +411,11 @@ public class ArchiveSiteController extends SiteController {
         deleteFileTask.execute();
 
         return true;
+    }
+
+    @Override
+    public ArrayList<File> getFolders(Space space, String path) throws IOException {
+        return null;
     }
 
     /**

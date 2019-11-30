@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
@@ -120,22 +121,24 @@ public class BrowseProjectsActivity extends AppCompatActivity {
 
     public void getFolders ()
     {
-        WebDAVSiteController sc = null;
+        SiteController sc = null;
 
         Space space = Space.getCurrentSpace();
 
-        if (space != null && space.type == Space.TYPE_WEBDAV) {
+        if (space != null) {
 
-            //webdav
-            sc = (WebDAVSiteController)SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, null, null);
+            if (space.type == Space.TYPE_WEBDAV)
+                sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, null, null);
+            else if (space.type == Space.TYPE_DROPBOX)
+                sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, null, null);
 
-            try {
-                listFolders = sc.getFolders(space,space.host);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (sc != null) {
+                try {
+                    listFolders = sc.getFolders(space, space.host);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-
         }
     }
 

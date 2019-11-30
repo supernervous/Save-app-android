@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
@@ -156,6 +157,11 @@ public class PirateBoxSiteController extends SiteController {
     public boolean delete(Space space, String bucketName, String mediaFile) {
         //not supported
         return false;
+    }
+
+    @Override
+    public ArrayList<File> getFolders(Space space, String path) throws IOException {
+        return null;
     }
 
     /**

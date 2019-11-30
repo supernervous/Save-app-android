@@ -8,9 +8,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.dropbox.core.DbxException;
 import com.dropbox.core.android.Auth;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
 import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
@@ -101,8 +104,6 @@ public class DropboxSiteController extends SiteController {
 
     }
 
-    private void listFolders (String url) throws IOException {
-    }
 
     @Override
     public void cancel() {
@@ -117,16 +118,10 @@ public class DropboxSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
-        String basePath = media.getServerUrl();
-
+        String projectName = media.getServerUrl();
         String folderName = media.updateDate.toString();
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
-        StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
-
-        projectFolderBuilder.append("files/");
-        projectFolderBuilder.append(space.username).append('/');
-        projectFolderBuilder.append(basePath);
 
         if (media.contentLength == 0) {
             File fileMedia = new File(mediaUri.getPath());
@@ -146,10 +141,10 @@ public class DropboxSiteController extends SiteController {
                     media.save();
                     jobSucceeded(finalMediaPath);
 
-                    uploadMetadata(media, folderName, fileName);
+                    uploadMetadata(media, projectName, folderName, fileName);
 
                     if (Prefs.getUseProofMode())
-                        uploadProof(media, folderName);
+                        uploadProof(media, projectName, folderName);
 
 
                 }
@@ -164,7 +159,7 @@ public class DropboxSiteController extends SiteController {
                 }
             });
 
-            uTask.execute(mediaUri.toString(),fileName,folderName);
+            uTask.execute(mediaUri.toString(),fileName,folderName,projectName);
 
 
             return true;
@@ -177,7 +172,7 @@ public class DropboxSiteController extends SiteController {
     }
 
 
-    private boolean uploadMetadata (final Media media, String basePath, String fileName)
+    private boolean uploadMetadata (final Media media, String projectName, String folderName, String fileName)
     {
         String metadataFileName = fileName + ".meta.json";
         //String urlMeta = basePath + '/' + metadataFileName;
@@ -205,7 +200,7 @@ public class DropboxSiteController extends SiteController {
                 }
             });
 
-            uTask.execute(Uri.fromFile(fileMetaData).toString(),metadataFileName, basePath);
+            uTask.execute(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
 
             if (Prefs.getUseProofMode()) {
                 Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
@@ -228,7 +223,7 @@ public class DropboxSiteController extends SiteController {
                             }
                         });
 
-                        uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), basePath);
+                        uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
                     }
 
                 }
@@ -248,11 +243,22 @@ public class DropboxSiteController extends SiteController {
     }
 
 
-    private boolean uploadProof (Media media, String basePath)
+    private boolean uploadProof (Media media, String projectName, String folderName)
     {
-        String lastUrl = null;
 
         try {
+
+            UploadFileTask  uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+                @Override
+                public void onUploadComplete(FileMetadata result) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
 
             if (media.getMediaHash() != null) {
                 String mediaHash = new String(media.getMediaHash());
@@ -260,10 +266,8 @@ public class DropboxSiteController extends SiteController {
                     File fileProofDir = ProofMode.getProofDir(mediaHash);
                     if (fileProofDir != null && fileProofDir.exists()) {
                         File[] filesProof = fileProofDir.listFiles();
-                        for (File fileProof : filesProof) {
-                            lastUrl = basePath + fileProof.getName();
-                         //   sardine.put(lastUrl, fileProof, "text/plain", false, null);
-                        }
+                        for (File fileProof : filesProof)
+                            uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
 
                     }
                 }
@@ -274,7 +278,7 @@ public class DropboxSiteController extends SiteController {
         catch (Exception e)
         {
             //proof upload failed
-            Log.e(TAG, "Failed proof upload: " + lastUrl,e);
+            Log.e(TAG, "Failed proof upload: " + media,e);
         }
 
         return false;
@@ -338,32 +342,19 @@ public class DropboxSiteController extends SiteController {
 
         ArrayList<File> listFiles = new ArrayList<>();
 
-        path = path.replace("webdav", "dav");
+        try {
+            ListFolderResult result = DropboxClientFactory.getClient().files().listFolder("");
 
-        StringBuffer sbFolderPath = new StringBuffer();
-        sbFolderPath.append(path);
-        sbFolderPath.append(FILE_BASE);
-        sbFolderPath.append(space.username).append('/');
-
-        List<DavResource> listFolders = null;//sardine.list(sbFolderPath.toString());
-
-        for (DavResource folder : listFolders)
-        {
-            if (folder.isDirectory()) {
-
-                String folderPath = folder.getPath();
-                File fileFolder = new File(folderPath);
-
-
-                Date folderMod = folder.getModified();
-
-                if (folderMod != null)
-                    fileFolder.setLastModified(folderMod.getTime());
-                else
-                    fileFolder.setLastModified(new Date().getTime());
-
-                listFiles.add(fileFolder);
+            for (Metadata md : result.getEntries())
+            {
+                String fileOrFolder = md.getPathLower();
+                if(!fileOrFolder.contains(".")) {
+                    listFiles.add(new File(fileOrFolder));
+                }
             }
+
+        } catch (DbxException e) {
+            e.printStackTrace();
         }
 
 

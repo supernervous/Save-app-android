@@ -87,9 +87,6 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         final String mediaPath = currentMedia.getOriginalFilePath();
 
-        if (ivIsVideo != null)
-            ivIsVideo.setVisibility(View.GONE);
-
         if (currentMedia.status == Media.STATUS_PUBLISHED || currentMedia.status == Media.STATUS_UPLOADED) {
             ivIcon.setAlpha(1f);
         }

@@ -56,21 +56,31 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
         if (localFile != null) {
 
             try {
+                String remoteProjectPath = "/" + params[3];
                 String remoteFolderPath = "/" + params[2];
 
                 // Note - this is not ensuring the name is a valid dropbox file name
                 String remoteFileName = params[1];
 
+
                 try {
-                    mDbxClient.files().listFolder(remoteFolderPath);
+                    mDbxClient.files().listFolder(remoteProjectPath);
                 }
                 catch (Exception e)
                 {
-                    mDbxClient.files().createFolderV2(remoteFolderPath);
+                    mDbxClient.files().createFolderV2(remoteProjectPath);
+                }
+
+                try {
+                    mDbxClient.files().listFolder(remoteProjectPath + remoteFolderPath);
+                }
+                catch (Exception e)
+                {
+                    mDbxClient.files().createFolderV2(remoteProjectPath + remoteFolderPath);
                 }
 
                 try (InputStream inputStream = new FileInputStream(localFile)) {
-                    return mDbxClient.files().uploadBuilder(remoteFolderPath + "/" + remoteFileName)
+                    return mDbxClient.files().uploadBuilder(remoteProjectPath + remoteFolderPath + "/" + remoteFileName)
                             .withMode(WriteMode.OVERWRITE)
                             .uploadAndFinish(inputStream);
                 } catch (DbxException | IOException e) {

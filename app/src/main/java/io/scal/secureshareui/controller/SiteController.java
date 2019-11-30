@@ -17,6 +17,7 @@ import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class SiteController {
@@ -83,6 +84,9 @@ public abstract class SiteController {
 
     public abstract boolean upload(Space space, Media media, HashMap<String, String> valueMap) throws IOException;
     public abstract boolean delete(Space space, String bucketName, String mediaFile);
+
+    public abstract ArrayList<File> getFolders (Space space, String path)  throws IOException;
+
     public void cancel() {}
 
     public static SiteController getSiteController(String site, Context context, SiteControllerListener listener, String jobId) {
