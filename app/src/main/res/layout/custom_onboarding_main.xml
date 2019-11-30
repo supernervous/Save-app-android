@@ -6,6 +6,17 @@
     android:background="@color/oablue"
     >
 
+    <ImageView
+        android:id="@+id/custom_slide_image"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:src="@drawable/onboarding1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="64dp"
+
+        />
 
 
     <TextView
@@ -20,6 +31,7 @@
         android:textSize="32sp"
         android:paddingLeft="36dp"
         android:paddingRight="36dp"
+        android:background="@color/oablue"
 
         />
     <TextView
@@ -35,16 +47,7 @@
         android:paddingRight="36dp"
         android:paddingTop="6dp"
         android:layout_below="@+id/custom_slide_big_text"
-        />
-   <ImageView
-       android:id="@+id/custom_slide_image"
-       android:layout_width="400dp"
-       android:layout_height="400dp"
-       android:src="@drawable/onboarding1"
-       android:layout_alignParentBottom="true"
-       android:layout_alignParentEnd="true"
-       android:layout_alignParentRight="true"
-       android:layout_marginBottom="64dp"
+        android:background="@color/oablue"
 
-       />
+        />
 </RelativeLayout>

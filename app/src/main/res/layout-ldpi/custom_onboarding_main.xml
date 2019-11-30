@@ -7,6 +7,17 @@
     >
 
 
+    <ImageView
+        android:id="@+id/custom_slide_image"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="64dp"
+        android:scaleType="centerInside"
+
+
+        android:src="@drawable/onboarding1" />
 
     <TextView
         android:id="@+id/custom_slide_big_text"
@@ -20,6 +31,8 @@
         android:textSize="24sp"
         android:paddingLeft="36dp"
         android:paddingRight="36dp"
+        android:background="@color/oablue"
+
 
         />
     <TextView
@@ -35,17 +48,8 @@
         android:paddingRight="36dp"
         android:paddingTop="6dp"
         android:layout_below="@+id/custom_slide_big_text"
+        android:background="@color/oablue"
+
         />
 
-    <ImageView
-        android:id="@+id/custom_slide_image"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="64dp"
-        android:scaleType="centerInside"
-
-
-        android:src="@drawable/onboarding1" />
 </RelativeLayout>
