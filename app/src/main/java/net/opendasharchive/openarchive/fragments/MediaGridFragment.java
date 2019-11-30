@@ -72,12 +72,8 @@ public class MediaGridFragment extends MediaListFragment {
             }
         }
 
-        if (!addedView)
-        {
-            if (mMediaHint != null)
-             mMediaHint.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
-        }
-
+        if (mMediaHint != null)
+            mMediaHint.setVisibility(addedView? View.GONE : View.VISIBLE);
 
         return mMainView;
     }
@@ -157,8 +153,9 @@ public class MediaGridFragment extends MediaListFragment {
             {
                 View view = createMediaList(mainContainer, coll,listMedia);
                 mainContainer.addView(view,0);
+
                 if (mMediaHint != null)
-                    mMediaHint.findViewById(R.id.add_media_hint).setVisibility(View.VISIBLE);
+                    mMediaHint.setVisibility(View.GONE);
             }
         }
 
