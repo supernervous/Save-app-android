@@ -65,10 +65,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="right"
         android:padding="10dp"
         android:background="@android:color/transparent"
         >
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_videocam_black_24dp"
+            android:tint="@color/white"
+            android:id="@+id/iconVideo"
+            android:visibility="gone"
+            android:layout_margin="6dp"
+            android:background="@android:color/transparent"
+            />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="@android:color/transparent"
+        android:gravity="right"
+        >
+
         <ImageView android:id="@+id/ivEditTags"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -100,6 +120,7 @@
             android:background="@color/float_transparent"
 
             />
+    </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>
