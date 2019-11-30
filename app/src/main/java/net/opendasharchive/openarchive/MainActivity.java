@@ -30,6 +30,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -121,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
            // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mPager.setPageMargin(0);
         PagerTitleStrip pStrip = findViewById(R.id.pager_title_strip);
-        pStrip.setTextSpacing(0);
+        //pStrip.setTextSpacing(0);
+
 
         mFab = (FloatingActionButton) findViewById(R.id.floating_menu);
         mFab.setOnClickListener(new View.OnClickListener() {
