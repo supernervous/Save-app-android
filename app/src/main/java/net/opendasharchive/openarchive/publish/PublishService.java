@@ -129,53 +129,47 @@ public class PublishService extends Service implements Runnable {
 
             Date datePublish = new Date();
 
-            results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED+"");
+            while ((results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED+"")).size() > 0 && keepUploading) {
 
-            if (results.size() > 0) {
-                //iterate through them, and upload one by one
-                for (Media media : results) {
+                for (Media media: results) {
 
-                    if (keepUploading) {
+                    if (media.status != Media.STATUS_UPLOADING) {
+                        media.uploadDate = datePublish;
+                        media.progress = 0; //should we reset this?
+                        media.status = Media.STATUS_UPLOADING;
+                    }
 
-                        if (media.status != Media.STATUS_UPLOADING) {
-                            media.uploadDate = datePublish;
-                            media.progress = 0; //should we reset this?
-                            media.status = Media.STATUS_UPLOADING;
-                        }
-
-                        try {
-                            uploadMedia(media);
-                            Collection coll = Collection.findById(Collection.class, media.collectionId);
-                            if (coll != null) {
-                                coll.uploadDate = datePublish;
-                                coll.save();
-                                Project proj = Project.findById(Project.class, coll.projectId);
-                                if (proj != null)
-                                {
-                                    proj.setOpenCollectionId(-1);
-                                    proj.save();
-                                }
+                    try {
+                        uploadMedia(media);
+                        Collection coll = Collection.findById(Collection.class, media.collectionId);
+                        if (coll != null) {
+                            coll.uploadDate = datePublish;
+                            coll.save();
+                            Project proj = Project.findById(Project.class, coll.projectId);
+                            if (proj != null) {
+                                proj.setOpenCollectionId(-1);
+                                proj.save();
                             }
-                            media.save();
-                        } catch (IOException ioe) {
-                            Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
-                            media.status = Media.STATUS_QUEUED;
-                            media.save();
                         }
+                        media.save();
+                    } catch (IOException ioe) {
+                        Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
+                        media.status = Media.STATUS_QUEUED;
+                        media.save();
                     }
-                    else
-                    {
+
+                    if (!keepUploading)
                         break;
-                    }
                 }
+
             }
 
             results = Media.find(Media.class, "status = ?", Media.STATUS_DELETE_REMOTE + "");
 
             //iterate through them, and upload one by one
-            for (Media media : results) {
+            for (Media mediaDelete : results) {
 
-                deleteMedia(media);
+                deleteMedia(mediaDelete);
             }
 
         }
