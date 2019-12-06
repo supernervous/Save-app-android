@@ -64,7 +64,7 @@ public class MediaSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(androidx.recyclerview.widget.RecyclerView.ViewHolder holder, int position) {
         MediaViewHolder itemHolder = (MediaViewHolder) holder;
-        itemHolder.bindData(mMediaList.get(position));
+        itemHolder.bindData(mMediaList.get(position),true);
 
     }
 

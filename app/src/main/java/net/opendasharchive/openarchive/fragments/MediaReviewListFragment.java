@@ -69,6 +69,8 @@ public class MediaReviewListFragment extends MediaListFragment {
 
             }
         });
+
+
         mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);
 

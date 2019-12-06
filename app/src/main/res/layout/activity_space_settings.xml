@@ -37,6 +37,7 @@
                     android:id="@+id/spaceview"
                     android:layout_gravity="right|end"
                     android:gravity="right|end"
+                    android:padding="3dp"
                     />
             </androidx.core.widget.NestedScrollView>
         <ImageView

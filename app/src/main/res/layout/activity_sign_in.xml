@@ -95,7 +95,7 @@
             android:id="@+id/btnSetupDropbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dropbox"
+            android:text="@string/title_dropbox"
             android:textSize="22dp"
             android:textStyle="bold"
 
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sometimes you just gotta use it"
+            android:text="@string/description_dropbox"
             />
 
 

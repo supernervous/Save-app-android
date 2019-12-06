@@ -59,6 +59,11 @@ public class MediaListFragment extends Fragment {
 
     }
 
+    public void stopBatchMode ()
+    {
+        if (mMediaAdapter != null && mMediaAdapter.getActionMode() != null)
+            mMediaAdapter.getActionMode().finish();
+    }
 
     public void refresh ()
     {

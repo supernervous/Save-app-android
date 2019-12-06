@@ -2,15 +2,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
+    <string name="app_name">Save</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">SAVE</string>
+    <string name="main_activity_title">Save</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Log in</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_first_start">First Start</string>
-    <string name="title_activity_view_media">View Media</string>
+    <string name="title_activity_view_media">Add Info</string>
+    <string name="title_activity_batch_view_media">Batch Edit</string>
     <string name="title_activity_archive_metadata">Metadata</string>
     <string name="title_media_list">Uploads</string>
 
@@ -240,7 +241,7 @@
     <string name="create_a_new_project">Create a new project</string>
     <string name="title_uploads">Uploads</string>
 
-    <string name="title_activity_batch_media_review">Review</string>
+    <string name="title_activity_batch_media_review">Preview</string>
     <string name="action_upload">Upload</string>
     <string name="action_preview">Preview</string>
 
@@ -297,6 +298,9 @@
     <string name="share_link">Share Link</string>
     <string name="error_project_exists">Project name already exists</string>
     <string name="save_by_openarchive">SAVE by OpenArchive</string>
+    <string name="action_edit">Edit</string>
+    <string name="title_dropbox">Dropbox (BETA)</string>
+    <string name="description_dropbox">A more secure, smarter way to use the corporate cloud</string>
 
 
 </resources>

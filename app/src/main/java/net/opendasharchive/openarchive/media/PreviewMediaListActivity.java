@@ -1,13 +1,12 @@
 package net.opendasharchive.openarchive.media;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
@@ -16,21 +15,15 @@ import net.opendasharchive.openarchive.publish.PublishService;
 
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
-
-
-public class BatchMediaReviewActivity extends AppCompatActivity {
+public class PreviewMediaListActivity extends AppCompatActivity {
 
     MediaListFragment mFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_batch_review_media);
+        setContentView(R.layout.activity_preview_media);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.title_activity_batch_media_review));
@@ -45,6 +38,8 @@ public class BatchMediaReviewActivity extends AppCompatActivity {
         super.onResume();
 
         mFrag.refresh();
+
+        mFrag.stopBatchMode();
 
     }
 

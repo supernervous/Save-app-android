@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.opendasharchive.openarchive.media.BatchMediaReviewActivity;
+import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
@@ -173,7 +173,7 @@ public class MediaGridFragment extends MediaListFragment {
                 holder.action.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getActivity(), BatchMediaReviewActivity.class));
+                        startActivity(new Intent(getActivity(), PreviewMediaListActivity.class));
                     }
                 });
                 break;

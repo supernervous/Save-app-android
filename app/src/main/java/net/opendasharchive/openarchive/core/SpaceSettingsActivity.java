@@ -112,9 +112,9 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setState(AvatarImageView.SHOW_INITIAL);
         }
 
-        int iconSize = 128;
+        int iconSize = 106;
 
-        int margin = 3;
+        int margin = 6;
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(margin, margin, margin, margin);

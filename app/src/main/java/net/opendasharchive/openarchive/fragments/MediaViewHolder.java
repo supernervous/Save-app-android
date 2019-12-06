@@ -81,9 +81,18 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void bindData(final Media currentMedia) {
+    public void bindData(final Media currentMedia, boolean isBatchMode) {
 
         mView.setTag(currentMedia.getId());
+
+        if (currentMedia.isSelected() && isBatchMode)
+        {
+            mView.setBackgroundResource(R.color.oablue);
+        }
+        else
+        {
+            mView.setBackgroundResource(android.R.color.transparent);
+        }
 
         final String mediaPath = currentMedia.getOriginalFilePath();
 

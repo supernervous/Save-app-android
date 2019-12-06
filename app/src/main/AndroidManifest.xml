@@ -25,7 +25,7 @@
             android:label="@string/title_activity_upload_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".media.BatchMediaReviewActivity"
+            android:name=".media.PreviewMediaListActivity"
             android:label="@string/title_activity_batch_media_review"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -72,6 +72,11 @@
         <activity
             android:name=".media.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".media.BatchReviewMediaActivity"
+            android:label="@string/title_activity_batch_view_media"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -129,7 +134,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="24" />
+            android:value="25" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -1,20 +1,32 @@
 package net.opendasharchive.openarchive.db;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
+import net.opendasharchive.openarchive.media.BatchReviewMediaActivity;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +42,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
     private boolean doImageFade = true;
     private final MediaListFragment.OnStartDragListener mDragStartListener;
     private boolean isEditMode = false;
+    private ActionMode mActionMode;
 
     public MediaAdapter(Context context, int layoutResourceId, List<Media> data, RecyclerView recyclerView, MediaListFragment.OnStartDragListener dragStartListener) {
         super();
@@ -81,6 +94,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
         }
 
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -88,15 +102,27 @@ public class MediaAdapter extends RecyclerView.Adapter {
         return data.size();
     }
 
+    public ActionMode getActionMode ()
+    {
+        return mActionMode;
+    }
+
     @NonNull
     @Override
     public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                int itemPosition = recyclerview.getChildLayoutPosition(view);
+        MediaViewHolder mvh = new MediaViewHolder(view, mContext);
+        mvh.doImageFade = doImageFade;
+
+        view.setOnClickListener(view1 -> {
+
+            if (mActionMode != null)
+            {
+                selectView(view1);
+            }
+            else {
+                int itemPosition = recyclerview.getChildLayoutPosition(view1);
 
                 Intent reviewMediaIntent = new Intent(mContext, ReviewMediaActivity.class);
                 reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, data.get(itemPosition).getId());
@@ -104,17 +130,48 @@ public class MediaAdapter extends RecyclerView.Adapter {
                 mContext.startActivity(reviewMediaIntent);
             }
         });
-        MediaViewHolder mvh = new MediaViewHolder(view, mContext);
-        mvh.doImageFade = doImageFade;
+
+        view.setOnLongClickListener(v -> {
+            if (mActionMode != null) {
+                return false;
+            }
+
+
+            // Start the CAB using the ActionMode.Callback defined above
+            mActionMode = ((AppCompatActivity) mContext).startActionMode(mActionModeCallback);
+            ((AppCompatActivity) mContext).getSupportActionBar().hide();
+
+            selectView(v);
+
+
+            return true;
+        });
 
         return mvh;
+    }
+
+    private void selectView (View view)
+    {
+        long mediaId = (long)view.getTag();
+
+        for (Media media : getMediaList()) {
+
+            if (media.getId() == mediaId) {
+                media.setSelected(!media.isSelected());
+                media.save();
+                break;
+            }
+        }
+
+        notifyDataSetChanged();
+
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         MediaViewHolder mvh = (MediaViewHolder)holder;
 
-        mvh.bindData(data.get(position));
+        mvh.bindData(data.get(position),mActionMode != null);
 
         if (mvh.handleView != null) {
             if (isEditMode)
@@ -178,4 +235,70 @@ public class MediaAdapter extends RecyclerView.Adapter {
 
 
     }
+
+    ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_batch_edit_media, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            switch (item.getItemId()) {
+                case R.id.menu_edit:
+
+                    List<Media> selectedMedia = Media.find(Media.class, "selected = ?", "1");
+
+                    long[] selectedMediaIds = new long[selectedMedia.size()];
+                    for (int i = 0; i < selectedMediaIds.length; i++)
+                        selectedMediaIds[i] = selectedMedia.get(i).getId();
+
+                    Intent intent = new Intent(mContext, BatchReviewMediaActivity.class);
+                    intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID,selectedMediaIds);
+                    mContext.startActivity(intent);
+
+
+                //    deleteMessage(((MessageListItem)mLastSelectedView).getPacketId(),((MessageListItem)mLastSelectedView).getLastMessage());
+                  //  mode.finish(); // Action picked, so close the CAB
+
+                default:
+                    return false;
+            }
+
+
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+
+
+            for (Media media : getMediaList())
+            {
+                media.setSelected(false);
+                media.save();
+            }
+
+            notifyDataSetChanged();
+
+            ((AppCompatActivity) mContext).getSupportActionBar().show();
+
+        }
+
+
+    };
 }

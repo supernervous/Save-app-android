@@ -59,6 +59,9 @@ public class Media extends SugarRecord {
 
     public int priority = 0;
 
+
+    public boolean selected = false;
+
     //public final static int STATUS_ERROR = 9;
     //public final static int STATUS_DELETE_LOCAL = 6;
     public final static int STATUS_DELETE_REMOTE = 7;
@@ -291,5 +294,14 @@ public class Media extends SugarRecord {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

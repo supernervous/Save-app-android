@@ -30,7 +30,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -44,7 +43,7 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.media.BatchMediaReviewActivity;
+import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.projects.AddProjectActivity;
@@ -507,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
                         refreshCurrentProject();
 
                         if (media.size() > 0)
-                        startActivity(new Intent(MainActivity.this, BatchMediaReviewActivity.class));
+                        startActivity(new Intent(MainActivity.this, PreviewMediaListActivity.class));
 
 
                     }
