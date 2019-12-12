@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -12,6 +13,7 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.publish.PublishService;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class PreviewMediaListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFrag = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.fragUploadManager);
+
+        showFirstTimeBatch();
     }
 
 
@@ -87,5 +91,20 @@ public class PreviewMediaListActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFirstTimeBatch ()
+    {
+
+        if ( !Prefs.getBoolean("ft.batch")) {
+            AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                    .setTitle(R.string.popup_batch_title)
+                    .setMessage(R.string.popup_batch_desc);
+
+
+            build.create().show();
+
+            Prefs.putBoolean("ft.batch",true);
+        }
     }
 }

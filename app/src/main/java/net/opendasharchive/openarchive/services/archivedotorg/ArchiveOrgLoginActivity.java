@@ -91,6 +91,8 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
             }
         });
 
+        showFirstTimeIA();
+
     }
 
     public void onAcquireKeys (View view)
@@ -328,6 +330,21 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         }
 
         finish();
+    }
+
+    private void showFirstTimeIA ()
+    {
+
+        if ( !Prefs.getBoolean("ft.ia")) {
+            AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                    .setTitle(R.string.popup_ia_title)
+                    .setMessage(R.string.popup_ia_desc);
+
+
+            build.create().show();
+
+            Prefs.putBoolean("ft.ia",true);
+        }
     }
 
 }

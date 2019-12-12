@@ -36,6 +36,7 @@ import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
@@ -249,6 +250,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
+                    showFirstTimeFlag();
+
                     mMedia.setFlagged(!mMedia.isFlagged());
 
                     updateFlagState();
@@ -271,6 +274,21 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         updateFlagState ();
 
+    }
+
+    private void showFirstTimeFlag ()
+    {
+
+        if ( !Prefs.getBoolean("ft.flag")) {
+            AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
+                    .setTitle(R.string.popup_flag_title)
+                    .setMessage(R.string.popup_flag_desc);
+
+
+            build.create().show();
+
+            Prefs.putBoolean("ft.flag",true);
+        }
     }
 
     private void setLicense ()
@@ -660,8 +678,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
 
         AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
-            .setTitle(R.string.menu_delete)
-            .setMessage(R.string.alert_delete_media)
+            .setTitle(R.string.popup_remove_title)
+            .setMessage(R.string.popup_remove_desc)
             .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

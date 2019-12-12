@@ -307,4 +307,17 @@
     <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 
 
+    <string name="popup_flag_title">Flag Significant Content</string>
+    <string name="popup_flag_desc">When you flag an item, it is routed into a subfolder within the chosen project folder on the private server.</string>
+
+
+    <string name="popup_batch_title">Edit Multiple Items</string>
+    <string name="popup_batch_desc">To edit multiple items, tap and hold each.</string>
+
+    <string name="popup_ia_title">Internet Archive</string>
+    <string name="popup_ia_desc">You will need to log into or create an Internet Archive account in order to send and preserve Save media at the Internet Archive</string>
+
+    <string name="popup_remove_title">Remove Media From Save</string>
+    <string name="popup_remove_desc">This item will be removed only from the Save App. It will remain on the server and in your photo gallery.</string>
+
 </resources>

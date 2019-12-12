@@ -29,6 +29,11 @@ public class Prefs {
         prefs.edit().putBoolean(key, value).apply();
     }
 
+    public static boolean getBoolean (String key) {
+        return prefs.getBoolean(key,false);
+    }
+
+
     public static void putString(String key, String value) {
         prefs.edit().putString(key, value).apply();
     }

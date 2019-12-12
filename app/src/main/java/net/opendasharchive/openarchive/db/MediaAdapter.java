@@ -21,12 +21,14 @@ import net.opendasharchive.openarchive.media.BatchReviewMediaActivity;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -153,6 +155,8 @@ public class MediaAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
 
+                    showFirstTimeFlag ();
+
                     //toggle flag
                     long mediaId = (long)view.getTag();
 
@@ -171,6 +175,21 @@ public class MediaAdapter extends RecyclerView.Adapter {
             });
 
         return mvh;
+    }
+
+    private void showFirstTimeFlag ()
+    {
+
+        if ( !Prefs.getBoolean("ft.flag")) {
+            AlertDialog.Builder build = new AlertDialog.Builder(mContext, R.style.AlertDialogTheme)
+                    .setTitle(R.string.popup_flag_title)
+                    .setMessage(R.string.popup_flag_desc);
+
+
+            build.create().show();
+
+            Prefs.putBoolean("ft.flag",true);
+        }
     }
 
     private void selectView (View view)
