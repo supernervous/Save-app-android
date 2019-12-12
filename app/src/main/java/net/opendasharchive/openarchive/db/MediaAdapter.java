@@ -147,6 +147,28 @@ public class MediaAdapter extends RecyclerView.Adapter {
             return true;
         });
 
+        if (mvh.ivEditFlag != null)
+            mvh.ivEditFlag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //toggle flag
+                    long mediaId = (long)view.getTag();
+
+                    for (Media media : getMediaList()) {
+
+                        if (media.getId() == mediaId) {
+                            media.setFlagged(!media.isFlagged());
+                            media.save();
+                            break;
+                        }
+                    }
+
+                    notifyDataSetChanged();
+
+                }
+            });
+
         return mvh;
     }
 

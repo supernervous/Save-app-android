@@ -46,7 +46,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
     public boolean doImageFade = true;
     private String lastMediaPath = null;
 
-    private ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag, ivIsVideo;
+    public ImageView ivEditTags, ivEditLocation, ivEditNotes, ivEditFlag, ivIsVideo;
     public final ImageView handleView;
 
     public MediaViewHolder(final View itemView, Context context) {
