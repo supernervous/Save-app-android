@@ -11,5 +11,11 @@ s
         android:icon="@drawable/ic_mode_edit_black_24dp"
         />
 
+    <item android:id="@+id/menu_delete" android:title="@string/action_remove"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:visible="true"
+        android:icon="@drawable/ic_delete_black_24dp"
+        />
 
 </menu>

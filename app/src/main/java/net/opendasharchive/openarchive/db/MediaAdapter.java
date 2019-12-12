@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -292,8 +293,26 @@ public class MediaAdapter extends RecyclerView.Adapter {
                     Intent intent = new Intent(mContext, BatchReviewMediaActivity.class);
                     intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID,selectedMediaIds);
                     mContext.startActivity(intent);
+                    return true;
+
+                case R.id.menu_delete:
+
+                    Iterator<Media> it = new ArrayList<>(data).iterator();
+                    while (it.hasNext())
+                    {
+                        Media mediaDelete = it.next();
+                        if (mediaDelete.isSelected()) {
+                            data.remove(mediaDelete);
+                            mediaDelete.delete();
+                        }
+                    }
+
+                    mode.finish();
+                    notifyDataSetChanged();
 
 
+
+                    return true;
                 //    deleteMessage(((MessageListItem)mLastSelectedView).getPacketId(),((MessageListItem)mLastSelectedView).getLastMessage());
                   //  mode.finish(); // Action picked, so close the CAB
 
