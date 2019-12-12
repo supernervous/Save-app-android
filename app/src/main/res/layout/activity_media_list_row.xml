@@ -14,13 +14,26 @@
         android:id="@+id/ivGroup"
         android:orientation="vertical"
         >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="3dp"
+            >
     <ImageView android:id="@+id/ivIcon"
                android:layout_width="match_parent"
                android:layout_height="200dp"
                android:scaleType="centerCrop"
-               android:layout_marginTop="3dp"
                 android:src="@drawable/no_thumbnail"
         />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+
+                app:srcCompat="@drawable/ic_img_gradient"
+                />
+        </FrameLayout>
 
     <com.github.derlio.waveform.SimpleWaveformView
         android:id="@+id/event_item_sound"
@@ -69,6 +82,7 @@
         android:background="@android:color/transparent"
         >
 
+
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -80,12 +94,13 @@
             android:background="@android:color/transparent"
             />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:background="@android:color/transparent"
+        android:background="@color/float_transparent"
         android:gravity="right"
         >
 
