@@ -52,19 +52,27 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         mProjectList.setHasFixedSize(false);
 
 
-        findViewById(R.id.section_space).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSpaceAuthActivity();
-            }
+        findViewById(R.id.section_space).setOnClickListener(v -> startSpaceAuthActivity());
+
+        findViewById(R.id.btnDataUse).setOnClickListener(v -> {
+            Intent intent = new Intent(SpaceSettingsActivity.this, SettingsActivity.class);
+            intent.putExtra(SettingsActivity.KEY_TYPE,SettingsActivity.KEY_DATAUSE);
+            startActivity(intent);
+
         });
 
-        findViewById(R.id.btnDataUse).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SpaceSettingsActivity.this, SettingsActivity.class));
+        findViewById(R.id.btnMetadata).setOnClickListener(v -> {
+            Intent intent = new Intent(SpaceSettingsActivity.this, SettingsActivity.class);
+            intent.putExtra(SettingsActivity.KEY_TYPE,SettingsActivity.KEY_METADATA);
+            startActivity(intent);
 
-            }
+        });
+
+        findViewById(R.id.btnNetworking).setOnClickListener(v -> {
+            Intent intent = new Intent(SpaceSettingsActivity.this, SettingsActivity.class);
+            intent.putExtra(SettingsActivity.KEY_TYPE,SettingsActivity.KEY_NETWORKING);
+            startActivity(intent);
+
         });
 
     }

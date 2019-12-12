@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.core;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,12 @@ import net.opendasharchive.openarchive.R;
 public class SettingsActivity extends AppCompatActivity {
 
     SettingsFragment fragment;
+
+    public final static String KEY_TYPE = "type";
+    public final static String KEY_DATAUSE = "datause";
+    public final static String KEY_METADATA = "metadata";
+    public final static String KEY_NETWORKING = "networking";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +51,15 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             // Load the Preferences from the XML file
-            addPreferencesFromResource(R.xml.app_prefs);
+
+            String type = getActivity().getIntent().getStringExtra(KEY_TYPE);
+
+            if (TextUtils.isEmpty(type) || type.equals(KEY_DATAUSE))
+                addPreferencesFromResource(R.xml.app_prefs_datause);
+            else if (type.equals(KEY_METADATA))
+                addPreferencesFromResource(R.xml.app_prefs_metadata);
+            else if (type.equals(KEY_NETWORKING))
+                addPreferencesFromResource(R.xml.app_prefs_networking);
 
             initValues();
         }

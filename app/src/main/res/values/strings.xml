@@ -301,6 +301,10 @@
     <string name="action_edit">Edit</string>
     <string name="title_dropbox">Dropbox (BETA)</string>
     <string name="description_dropbox">Securely access the commercial cloud</string>
+    <string name="metadata">Metadata</string>
+    <string name="networking">Networking</string>
+    <string name="pref_nextcloud_title">Enable NextCloud Chunking</string>
+    <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 
 
 </resources>
