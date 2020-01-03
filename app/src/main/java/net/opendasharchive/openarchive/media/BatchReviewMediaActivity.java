@@ -348,30 +348,13 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_review_media, menu);
 
-        /**
-        menuShare = menu.findItem(R.id.menu_item_share);
-        menuPublish = menu.findItem(R.id.menu_upload);
-
-        if (media.status != Media.STATUS_UPLOADED)
-            menuPublish.setVisible(true);
-        else {
-            menuShare.setVisible(true);
-            menuPublish.setVisible(true);
-            menuPublish.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }**/
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-
-//        if (drawerListener.onOptionsItemSelected(item)) {
-//            return true;
-//        }
 
         Intent intent = null;
         switch (item.getItemId()) {
