@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.onboarding;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -9,9 +10,11 @@ import android.view.View;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
+import com.github.paolorotolo.appintro.IndicatorController;
 
 import net.opendasharchive.openarchive.R;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -36,13 +39,15 @@ public class OAAppIntro extends AppIntro {
         CustomSlideBigText welcome = CustomSlideBigText.newInstance(R.layout.custom_slide_big_text);
         welcome.setTitle(getString(R.string.onboarding_intro));
         welcome.setSubTitle(getString(R.string.app_tag_line));
+        /**
         welcome.showButton(getString(R.string.action_get_started), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 getPager().setCurrentItem(1);
             }
-        });
+        });**/
+
         addSlide(welcome);
 
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1));
@@ -56,9 +61,12 @@ public class OAAppIntro extends AppIntro {
        // setBarColor(Color.parseColor("#3F51B5"));
        // setSeparatorColor(Color.parseColor("#2196F3"));
         setSeparatorColor(getResources().getColor(R.color.white));
+        setBarColor(getResources().getColor(R.color.oablue));
         // Hide Skip/Done button.
         showSkipButton(false);
-       // setProgressButtonEnabled(false);
+
+        setProgressButtonEnabled(true);
+
 
     }
 
