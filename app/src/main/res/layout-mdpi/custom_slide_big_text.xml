@@ -6,6 +6,11 @@
     android:padding="36dp"
     >
 
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:src="@drawable/savelogo"/>
     <TextView
         android:id="@+id/custom_slide_big_text_headline"
         android:layout_width="wrap_content"
@@ -14,16 +19,19 @@
         android:textColor="@color/oablue"
         android:layout_gravity="start|top"
         android:layout_marginLeft="0dp"
+        android:layout_marginTop="20dp"
         android:textStyle="bold"
         android:textSize="16sp"
+        android:layout_toRightOf="@+id/logo"
         />
 
     <TextView
         android:id="@+id/custom_slide_big_text"
+        android:layout_below="@+id/custom_slide_big_text_headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="This is the main headline"
+        android:layout_marginTop="20dp"
+        android:text="@string/onboarding_intro"
         android:textColor="@color/oablue"
         android:gravity="start"
         android:textStyle="bold"
@@ -32,11 +40,11 @@
         android:id="@+id/custom_slide_big_text_sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="this is the subtitle"
+        android:text="@string/app_tag_line"
         android:textColor="@color/oablue"
         android:layout_gravity="start"
         android:textStyle="bold"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_below="@id/custom_slide_big_text"
         />
 
