@@ -105,35 +105,40 @@
         >
 
         <ImageView android:id="@+id/ivEditTags"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:srcCompat="@drawable/ic_tag_unselected"
             android:layout_marginRight="23dp"
             android:background="@color/float_transparent"
+            android:scaleType="fitCenter"
+            android:padding="2dp"
             />
         <ImageView android:id="@+id/ivEditLocation"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:srcCompat="@drawable/ic_location_unselected"
             android:layout_marginRight="23dp"
             android:background="@color/float_transparent"
-
+            android:scaleType="fitCenter"
+            android:padding="2dp"
 
             />
         <ImageView android:id="@+id/ivEditNotes"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:srcCompat="@drawable/ic_edit_unselected"
             android:layout_marginRight="23dp"
             android:background="@color/float_transparent"
-
+            android:scaleType="fitCenter"
+            android:padding="2dp"
             />
         <ImageView android:id="@+id/ivEditFlag"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:srcCompat="@drawable/ic_flag_unselected"
             android:background="@color/float_transparent"
-
+            android:scaleType="fitCenter"
+            android:padding="2dp"
             />
     </LinearLayout>
 
