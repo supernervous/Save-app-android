@@ -663,7 +663,7 @@ public class MainActivity extends AppCompatActivity {
             **/
 
             Matisse.from(MainActivity.this)
-                    .choose(MimeType.ofAll())
+                    .choose(MimeType.ofAll(),false)
                     .countable(true)
                     .maxSelectable(100)
               //      .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
