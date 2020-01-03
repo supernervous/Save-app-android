@@ -75,6 +75,8 @@ public class Media extends SugarRecord {
 
     private final static String[] WHERE_NOT_DELETED = {STATUS_UPLOADED+""};
 
+    public final static String PRIORITY_DESC = "priority DESC";
+
     public static enum MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE;
     }

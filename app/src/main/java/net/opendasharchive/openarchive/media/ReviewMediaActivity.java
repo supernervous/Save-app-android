@@ -716,9 +716,12 @@ public class ReviewMediaActivity extends AppCompatActivity {
             ((OpenArchiveApp)getApplication()).uploadQueue();
         }
         else {
-            boolean success = Media.findById(Media.class, currentMediaId).delete();
-            Log.d("OAMedia", "Item deleted: " + success);
-            mMedia = null;
+            Media media = Media.findById(Media.class, currentMediaId);
+            if (media != null) {
+                boolean success = Media.findById(Media.class, currentMediaId).delete();
+                Log.d("OAMedia", "Item deleted: " + success);
+                mMedia = null;
+            }
         }
     }
 }

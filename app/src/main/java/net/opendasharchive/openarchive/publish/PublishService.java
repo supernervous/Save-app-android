@@ -35,6 +35,10 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.orm.query.Condition;
+import com.orm.query.Select;
+
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
@@ -129,7 +133,9 @@ public class PublishService extends Service implements Runnable {
 
             Date datePublish = new Date();
 
-            while ((results = Media.find(Media.class, "status = ?", Media.STATUS_QUEUED+"")).size() > 0 && keepUploading) {
+            while ((results =  Select.from(Media.class)
+                    .where(Condition.prop("status").eq(Media.STATUS_QUEUED+"")).orderBy("priority DESC")
+                    .list()).size() > 0 && keepUploading) {
 
                 for (Media media: results) {
 
