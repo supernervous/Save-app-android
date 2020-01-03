@@ -9,6 +9,8 @@ s
         app:showAsAction="always"
         android:visible="true"
         android:icon="@drawable/ic_mode_edit_black_24dp"
+        android:iconTint="@color/oablue"
+
         />
 
     <item android:id="@+id/menu_delete" android:title="@string/action_remove"
@@ -16,6 +18,7 @@ s
         app:showAsAction="always"
         android:visible="true"
         android:icon="@drawable/ic_delete_black_24dp"
+        android:iconTint="@color/oablue"
         />
 
 </menu>
