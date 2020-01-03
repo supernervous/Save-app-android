@@ -2,6 +2,8 @@ package net.opendasharchive.openarchive.db;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.fragments.MediaGridFragment;
@@ -72,7 +74,15 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
         if (position == 0)
         {
-            return "  \u2295";
+            ImageSpan imageSpan = new ImageSpan(context, R.drawable.ic_add_circle_outline_black_24dp);
+            SpannableString spannableString = new SpannableString(" ");
+
+            int start = 0;
+            int end = 1;
+            int flag = 0;
+            spannableString.setSpan(imageSpan, start, end, flag);
+
+            return spannableString;
         }
         else
             return data.get(position-1).description;
