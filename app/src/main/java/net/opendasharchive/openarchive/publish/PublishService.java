@@ -81,6 +81,9 @@ public class PublishService extends Service implements Runnable {
         super.onDestroy();
 
         keepUploading = false;
+        if (mUploadThread != null && mUploadThread.isAlive())
+            mUploadThread.interrupt();
+
         if (sc !=null)
             sc.cancel();
     }
