@@ -115,6 +115,9 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                 ivIcon.setVisibility(View.VISIBLE);
                 tvWave.setVisibility(View.GONE);
 
+                if (ivIsVideo != null)
+                    ivIsVideo.setVisibility(View.GONE);
+
             } else if (currentMedia.getMimeType().startsWith("video")) {
 
                 mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.getOriginalFilePath()).fit().centerCrop().into(ivIcon);
@@ -127,6 +130,10 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             } else if (currentMedia.getMimeType().startsWith("audio")) {
 
                 ivIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_thumbnail));
+
+
+                if (ivIsVideo != null)
+                    ivIsVideo.setVisibility(View.GONE);
 
                 if (mSoundFileCache.get(mediaPath) == null) {
 
