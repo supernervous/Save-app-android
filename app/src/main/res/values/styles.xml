@@ -7,6 +7,8 @@
         <item name="android:textViewStyle">@style/TextView</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
+
 
     </style>
 
@@ -21,8 +23,15 @@
         <item name="android:editTextColor">@color/white</item>
         <item name="android:textColorHint">@color/light_grey</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
+
     </style>
 
+
+    <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:textColor">@color/oablue</item>
@@ -95,6 +104,8 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
