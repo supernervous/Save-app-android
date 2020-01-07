@@ -240,7 +240,6 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
             mAuthTask = null;
 
             if (success) {
-
                 if (mSpace != null)
                     Prefs.setCurrentSpaceId(mSpace.getId());
 

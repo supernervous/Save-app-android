@@ -1,8 +1,9 @@
 package net.opendasharchive.openarchive.services.webdav;
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,7 +41,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private Thread mAuthThread = null;
 
     // UI references.
     private EditText mNameView, mEmailView, mServerView, mPasswordView;
@@ -107,7 +108,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (mAuthThread != null) {
             return;
         }
 
@@ -162,8 +163,9 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask();
-            mAuthTask.execute((Void) null);
+            mAuthThread = new Thread(new UserLoginTask());
+            mAuthThread.start();
+
         }
     }
 
@@ -175,19 +177,39 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         return password.length() > 0;
     }
 
+    private Handler mHandlerLogin = new Handler ()
+    {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch(msg.what)
+            {
+                case 0:
+                    //success;
+                    finish();
+
+                    break;
+                case 1:
+                default:
+
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+
+                    break;
+            }
+        }
+    };
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask implements Runnable {
 
-        UserLoginTask() {
-
-        }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        public void run () {
 
 
             StringBuffer siteUrl = new StringBuffer();
@@ -206,7 +228,8 @@ public class WebDAVLoginActivity extends AppCompatActivity {
                     mSpace.save();
                     Prefs.setCurrentSpaceId(mSpace.getId());
 
-                    return true;
+
+                    mHandlerLogin.sendEmptyMessage(0);
                 }
                 catch (Exception e) {
 
@@ -215,7 +238,8 @@ public class WebDAVLoginActivity extends AppCompatActivity {
                     Prefs.setCurrentSpaceId(mSpace.getId());
                     mSpace.save();
 
-                    return true;
+
+                    mHandlerLogin.sendEmptyMessage(0);
                 }
 
 
@@ -223,29 +247,12 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
                 Log.e(TAG,"error on login: " + siteUrl.toString(),e);
 
-                return false;
+                mHandlerLogin.sendEmptyMessage(1);
+
             }
 
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-          //  showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-          //  showProgress(false);
-        }
     }
 
     @Override

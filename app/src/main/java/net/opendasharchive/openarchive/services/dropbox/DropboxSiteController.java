@@ -146,7 +146,6 @@ public class DropboxSiteController extends SiteController {
                     if (Prefs.getUseProofMode())
                         uploadProof(media, projectName, folderName);
 
-
                 }
 
                 @Override
@@ -159,7 +158,7 @@ public class DropboxSiteController extends SiteController {
                 }
             });
 
-            uTask.execute(mediaUri.toString(),fileName,folderName,projectName);
+            uTask.upload(mediaUri.toString(),fileName,folderName,projectName);
 
 
             return true;
@@ -200,7 +199,7 @@ public class DropboxSiteController extends SiteController {
                 }
             });
 
-            uTask.execute(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
+            uTask.upload(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
 
             if (Prefs.getUseProofMode()) {
                 Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
@@ -223,7 +222,7 @@ public class DropboxSiteController extends SiteController {
                             }
                         });
 
-                        uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
+                        uTask.upload(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
                     }
 
                 }
@@ -267,7 +266,7 @@ public class DropboxSiteController extends SiteController {
                     if (fileProofDir != null && fileProofDir.exists()) {
                         File[] filesProof = fileProofDir.listFiles();
                         for (File fileProof : filesProof)
-                            uTask.execute(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
+                            uTask.upload(Uri.fromFile(fileProof).toString(), fileProof.getName(), folderName, projectName);
 
                     }
                 }

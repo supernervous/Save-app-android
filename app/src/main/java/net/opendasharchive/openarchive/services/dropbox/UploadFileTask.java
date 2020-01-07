@@ -3,6 +3,8 @@ package net.opendasharchive.openarchive.services.dropbox;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
@@ -13,17 +15,38 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 
 /**
  * Async task to upload a file to a directory
  */
-public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
+public class UploadFileTask implements Runnable {
 
     private final Context mContext;
     private final DbxClientV2 mDbxClient;
     private final Callback mCallback;
     private Exception mException;
+    private FileMetadata result;
+    private String mLocalUri;
+
+    private String mRemoteProjectPath;
+    private String mRemoteFolderPath;
+    private String mRemoteFileName;
+
+    private Handler mHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if (mException != null) {
+                mCallback.onError(mException);
+            } else if (result == null) {
+                mCallback.onError(null);
+            } else {
+                mCallback.onUploadComplete(result);
+            }
+        }
+    };
 
     public interface Callback {
         void onUploadComplete(FileMetadata result);
@@ -36,64 +59,60 @@ public class UploadFileTask extends AsyncTask<String, Void, FileMetadata> {
         mCallback = callback;
     }
 
-    @Override
-    protected void onPostExecute(FileMetadata result) {
-        super.onPostExecute(result);
-        if (mException != null) {
-            mCallback.onError(mException);
-        } else if (result == null) {
-            mCallback.onError(null);
-        } else {
-            mCallback.onUploadComplete(result);
-        }
+    public void upload (String localUri, String remoteProjectPath, String remoteFolderPath, String remoteFileName)
+    {
+        mRemoteProjectPath = "/" + remoteProjectPath;
+        mRemoteFolderPath = "/" + remoteFolderPath;
+        mRemoteFileName = remoteFileName;
+
+        new Thread(this).start();
     }
 
-    @Override
-    protected FileMetadata doInBackground(String... params) {
-        String localUri = params[0];
-        File localFile = UriHelpers.getFileForUri(mContext, Uri.parse(localUri));
+    public void run () {
+
+        File localFile = UriHelpers.getFileForUri(mContext, Uri.parse(mLocalUri));
 
         if (localFile != null) {
 
             try {
-                String remoteProjectPath = "/" + params[3];
-                String remoteFolderPath = "/" + params[2];
-
-                // Note - this is not ensuring the name is a valid dropbox file name
-                String remoteFileName = params[1];
 
 
                 try {
-                    mDbxClient.files().listFolder(remoteProjectPath);
+                    mDbxClient.files().listFolder(mRemoteProjectPath);
                 }
                 catch (Exception e)
                 {
-                    mDbxClient.files().createFolderV2(remoteProjectPath);
+                    mDbxClient.files().createFolderV2(mRemoteProjectPath);
                 }
 
                 try {
-                    mDbxClient.files().listFolder(remoteProjectPath + remoteFolderPath);
+                    mDbxClient.files().listFolder(mRemoteProjectPath + mRemoteFolderPath);
                 }
                 catch (Exception e)
                 {
-                    mDbxClient.files().createFolderV2(remoteProjectPath + remoteFolderPath);
+                    mDbxClient.files().createFolderV2(mRemoteProjectPath + mRemoteFolderPath);
                 }
 
                 try (InputStream inputStream = new FileInputStream(localFile)) {
-                    return mDbxClient.files().uploadBuilder(remoteProjectPath + remoteFolderPath + "/" + remoteFileName)
+                    result = mDbxClient.files().uploadBuilder(mRemoteProjectPath + mRemoteFolderPath + "/" + mRemoteFileName)
                             .withMode(WriteMode.OVERWRITE)
                             .uploadAndFinish(inputStream);
+
+                    mHandler.sendEmptyMessage(0);
                 } catch (DbxException | IOException e) {
                     mException = e;
+
+                    mHandler.sendEmptyMessage(1);
                 }
 
             } catch (Exception e) {
                 mException = e;
+
+                mHandler.sendEmptyMessage(1);
             }
 
 
         }
 
-        return null;
     }
 }
