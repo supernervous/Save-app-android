@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mPager);
-       
+
         //check for any queued uploads and restart
         ((OpenArchiveApp)getApplication()).uploadQueue();
 
@@ -278,6 +278,10 @@ public class MainActivity extends AppCompatActivity {
         final Intent data = getIntent();
         importSharedMedia(data);
 
+        if (mPager.getCurrentItem() == 0 && mPagerAdapter.getCount() > 1)
+        {
+            mPager.setCurrentItem(1);
+        }
 
     }
 
