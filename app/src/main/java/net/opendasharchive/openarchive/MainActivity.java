@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.renderscript.BaseObj;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -25,11 +26,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.PagerTitleStrip;
 import androidx.viewpager.widget.ViewPager;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
@@ -120,8 +121,6 @@ public class MainActivity extends AppCompatActivity {
 
            // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mPager.setPageMargin(0);
-        PagerTitleStrip pStrip = findViewById(R.id.pager_title_strip);
-        //pStrip.setTextSpacing(0);
 
 
         mFab = (FloatingActionButton) findViewById(R.id.floating_menu);
@@ -138,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+
                 lastTab = position;
 
                 if (position == 0)
@@ -158,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mPager);
+       
         //check for any queued uploads and restart
         ((OpenArchiveApp)getApplication()).uploadQueue();
 

@@ -1,9 +1,13 @@
-<FrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -33,7 +37,18 @@
                 />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        style="@style/AppTheme.TabLayout"
+        app:tabTextColor="@color/light_grey"
+        app:tabSelectedTextColor="@color/oablue"
+        app:tabTextAppearance="@style/CustomTextAppearanceTab"
+        app:tabGravity="fill"/>
 
+    </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
     xmlns:fab="http://schemas.android.com/apk/res-auto"
@@ -47,15 +62,6 @@
                 android:layout_height="match_parent" >
 
 
-                <androidx.viewpager.widget.PagerTabStrip
-                    android:id="@+id/pager_title_strip"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_gravity="top"
-                    android:textColor="@color/oablue"
-                    android:textSize="20dp"
-                    android:layout_marginLeft="30dp"
-                    />
 
             </androidx.viewpager.widget.ViewPager>
 <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
@@ -74,5 +80,6 @@ android:layout_margin="16dp"
     />
 
     </RelativeLayout>
-    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 

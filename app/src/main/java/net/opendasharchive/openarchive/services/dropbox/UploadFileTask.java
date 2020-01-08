@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.services.dropbox;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 
