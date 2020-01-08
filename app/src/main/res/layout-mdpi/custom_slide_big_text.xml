@@ -43,8 +43,9 @@
         android:text="@string/app_tag_line"
         android:textColor="@color/oablue"
         android:layout_gravity="start"
-        android:textStyle="bold"
-        android:textSize="14sp"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:layout_marginTop="6dp"
         android:layout_below="@id/custom_slide_big_text"
         />
 
