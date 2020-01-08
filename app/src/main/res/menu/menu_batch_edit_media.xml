@@ -8,8 +8,7 @@ s
         android:orderInCategory="100"
         app:showAsAction="always"
         android:visible="true"
-        android:icon="@drawable/ic_mode_edit_black_24dp"
-        android:iconTint="@color/oablue"
+        android:icon="@drawable/ic_mode_edit_teal"
 
         />
 
@@ -17,8 +16,7 @@ s
         android:orderInCategory="100"
         app:showAsAction="always"
         android:visible="true"
-        android:icon="@drawable/ic_delete_black_24dp"
-        android:iconTint="@color/oablue"
+        android:icon="@drawable/ic_delete_teal"
         />
 
 </menu>
