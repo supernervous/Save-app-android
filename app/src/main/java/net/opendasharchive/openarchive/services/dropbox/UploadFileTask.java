@@ -18,7 +18,7 @@ import java.io.InputStream;
 /**
  * Async task to upload a file to a directory
  */
-public class UploadFileTask implements Runnable {
+public class UploadFileTask {
 
     private final Context mContext;
     private final DbxClientV2 mDbxClient;
@@ -31,22 +31,6 @@ public class UploadFileTask implements Runnable {
     private String mRemoteFolderPath;
     private String mRemoteFileName;
 
-    private Handler mHandler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-            if (mException != null) {
-                mCallback.onError(mException);
-            } else if (result == null) {
-                mCallback.onError(null);
-            } else {
-                mCallback.onUploadComplete(result);
-            }
-        }
-    };
-
     public interface Callback {
         void onUploadComplete(FileMetadata result);
         void onError(Exception e);
@@ -58,16 +42,17 @@ public class UploadFileTask implements Runnable {
         mCallback = callback;
     }
 
-    public void upload (String localUri, String remoteProjectPath, String remoteFolderPath, String remoteFileName)
+    public void upload (String localUri, String remoteFileName, String remoteFolderPath, String remoteProjectPath)
     {
+        mLocalUri = localUri;
         mRemoteProjectPath = "/" + remoteProjectPath;
         mRemoteFolderPath = "/" + remoteFolderPath;
         mRemoteFileName = remoteFileName;
 
-        new Thread(this).start();
+        upload();
     }
 
-    public void run () {
+    public void upload () {
 
         File localFile = UriHelpers.getFileForUri(mContext, Uri.parse(mLocalUri));
 
@@ -97,17 +82,24 @@ public class UploadFileTask implements Runnable {
                             .withMode(WriteMode.OVERWRITE)
                             .uploadAndFinish(inputStream);
 
-                    mHandler.sendEmptyMessage(0);
+                    mCallback.onUploadComplete(result);
                 } catch (DbxException | IOException e) {
                     mException = e;
 
-                    mHandler.sendEmptyMessage(1);
+                    if (mException != null) {
+                        mCallback.onError(mException);
+                    } else if (result == null) {
+                        mCallback.onError(null);
+                    }
                 }
 
             } catch (Exception e) {
                 mException = e;
-
-                mHandler.sendEmptyMessage(1);
+                if (mException != null) {
+                    mCallback.onError(mException);
+                } else if (result == null) {
+                    mCallback.onError(null);
+                }
             }
 
 

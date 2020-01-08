@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.MainActivity;
@@ -121,7 +122,7 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private synchronized boolean doPublish ()
+    private boolean doPublish ()
     {
         isRunning = true;
         boolean publishing = false;
@@ -136,9 +137,10 @@ public class PublishService extends Service implements Runnable {
 
             Date datePublish = new Date();
 
-            while ((results =  Select.from(Media.class)
-                    .where(Condition.prop("status").eq(Media.STATUS_QUEUED+"")).orderBy("priority DESC")
-                    .list()).size() > 0 && keepUploading) {
+            String where = "status = ? OR status = ?";
+            String[] whereArgs = {Media.STATUS_QUEUED+"", Media.STATUS_UPLOADING+""};
+
+            while ((results = Media.find(Media.class,where ,whereArgs,null,"priority DESC",null)).size() > 0 && keepUploading) {
 
                 for (Media media: results) {
 
@@ -295,10 +297,11 @@ public class PublishService extends Service implements Runnable {
             int errorCode = data.getInt(SiteController.MESSAGE_KEY_CODE);
             String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             String error = "Error " + errorCode + ": " + errorMessage;
-            //  showError(error);
-            // Log.d(TAG, "upload error: " + error);
 
-            uploadMedia.status = Media.STATUS_LOCAL;
+            Toast.makeText(PublishService.this,error,Toast.LENGTH_LONG).show();
+             Log.d("OAPublish", "upload error: " + error);
+
+            uploadMedia.status = Media.STATUS_QUEUED;
             uploadMedia.save();
 
             notifyMediaUpdated(uploadMedia);

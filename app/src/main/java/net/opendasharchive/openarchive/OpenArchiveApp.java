@@ -77,6 +77,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);
 
+        uploadQueue();
     }
 
     public void uploadQueue ()
