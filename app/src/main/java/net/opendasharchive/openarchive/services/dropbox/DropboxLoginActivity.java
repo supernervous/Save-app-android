@@ -1,16 +1,12 @@
 package net.opendasharchive.openarchive.services.dropbox;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,17 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 
-
+import com.dropbox.core.DbxException;
 import com.dropbox.core.android.Auth;
+import com.dropbox.core.v2.DbxClientV2;
 
 import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.util.Prefs;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,8 +36,6 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
     // UI references.
     private TextView  mEmailView;
-    private View mProgressView;
-    private View mLoginFormView;
     private Space mSpace;
 
     private boolean isNewSpace = false;
@@ -61,9 +54,6 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
         mEmailView = findViewById(R.id.email);
 
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
 
         if (getIntent().hasExtra("space")) {
             mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
@@ -92,14 +82,47 @@ public class DropboxLoginActivity extends AppCompatActivity {
         super.onResume();
 
         if (isNewSpace) {
-            String accessToken = Auth.getOAuth2Token();
 
-            if (!TextUtils.isEmpty(accessToken) && mSpace != null) {
-                mSpace.username = Auth.getUid();
-                mSpace.password = accessToken;
-                mSpace.save();
-                finish();
-            }
+            new AsyncTask<Void,Void,Boolean>()
+            {
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    super.onPostExecute(result);
+
+                    if (result)
+                        finish();
+
+
+                }
+
+                @Override
+                protected Boolean doInBackground(Void[] objects) {
+                    String accessToken = Auth.getOAuth2Token();
+
+                    if (!TextUtils.isEmpty(accessToken) && mSpace != null) {
+
+                        DbxClientV2 client = new DropboxClientFactory().init(DropboxLoginActivity.this,accessToken);
+
+                        try {
+                            String email = client.users().getCurrentAccount().getEmail();
+                            mSpace.username = email;
+
+                        } catch (DbxException e) {
+
+                            mSpace.username = Auth.getUid();
+                            e.printStackTrace();
+                        }
+
+                        mSpace.password = accessToken;
+                        mSpace.save();
+
+                        return true;
+                    }
+                    return false;
+                }
+            }.execute();
+
+
         }
     }
 

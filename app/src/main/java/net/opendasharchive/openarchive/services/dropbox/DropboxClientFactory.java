@@ -20,9 +20,9 @@ import okhttp3.OkHttpClient;
  */
 public class DropboxClientFactory {
 
-    private static DbxClientV2 sDbxClient;
+    private DbxClientV2 sDbxClient;
 
-    public static void init(Context context, String accessToken) {
+    public DbxClientV2 init(Context context, String accessToken) {
         if (sDbxClient == null) {
             DbxRequestConfig requestConfig = DbxRequestConfig.newBuilder("dbc")
                     .withHttpRequestor(new OkHttp3Requestor(getOkClient(context)))
@@ -30,19 +30,21 @@ public class DropboxClientFactory {
 
             sDbxClient = new DbxClientV2(requestConfig, accessToken);
         }
+
+        return sDbxClient;
     }
 
-    public static DbxClientV2 getClient() {
+    public DbxClientV2 getClient() {
         if (sDbxClient == null) {
             throw new IllegalStateException("Client not initialized.");
         }
         return sDbxClient;
     }
 
-    private static OkHttpClient client;
-    private static boolean waiting = false;
+    private OkHttpClient client;
+    private boolean waiting = false;
 
-    private synchronized static OkHttpClient getOkClient (Context context)
+    private OkHttpClient getOkClient (Context context)
     {
 
         if (Prefs.getUseTor()) {

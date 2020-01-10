@@ -55,6 +55,7 @@ public class DropboxSiteController extends SiteController {
 
     private boolean mContinueUpload = true;
 
+    private DropboxClientFactory dbClient = null;
 
     public DropboxSiteController(Context context, SiteControllerListener listener, String jobId) {
         super(context, listener, jobId);
@@ -66,7 +67,7 @@ public class DropboxSiteController extends SiteController {
     @Override
     public void startRegistration(Space space) {
 
-
+        //not supported
     }
 
     @Override
@@ -75,27 +76,11 @@ public class DropboxSiteController extends SiteController {
         space.host = "dropbox.com";
 
         String accessToken = space.password;
-        if (space.password == null) {
-            accessToken = Auth.getOAuth2Token();
-            if (accessToken != null) {
-                space.password = accessToken;
-                space.save();
-                DropboxClientFactory.init(mContext, accessToken);
-            }
-            else
-            {
 
-            }
-        } else {
-            DropboxClientFactory.init(mContext, accessToken);
+        if (!TextUtils.isEmpty(accessToken)) {
+            dbClient = new DropboxClientFactory();
+            dbClient.init(mContext, accessToken);
         }
-
-        String uid = Auth.getUid();
-        space.username = uid;
-        space.save();
-
-        space.name = space.username + "@dropbox";
-
 
     }
 
@@ -131,7 +116,7 @@ public class DropboxSiteController extends SiteController {
 
         try {
 
-            UploadFileTask uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+            UploadFileTask uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
                 @Override
                 public void onUploadComplete(FileMetadata result) {
 
@@ -187,7 +172,7 @@ public class DropboxSiteController extends SiteController {
             fos.flush();
             fos.close();
 
-            UploadFileTask uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+            UploadFileTask uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
                 @Override
                 public void onUploadComplete(FileMetadata result) {
 
@@ -210,7 +195,7 @@ public class DropboxSiteController extends SiteController {
                 if (fileProofDir != null && fileProofDir.exists()) {
                     File[] filesProof = fileProofDir.listFiles();
                     for (File fileProof : filesProof) {
-                        uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+                        uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
                             @Override
                             public void onUploadComplete(FileMetadata result) {
 
@@ -247,7 +232,7 @@ public class DropboxSiteController extends SiteController {
 
         try {
 
-            UploadFileTask  uTask = new UploadFileTask(mContext, DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
+            UploadFileTask  uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
                 @Override
                 public void onUploadComplete(FileMetadata result) {
 
@@ -342,7 +327,7 @@ public class DropboxSiteController extends SiteController {
         ArrayList<File> listFiles = new ArrayList<>();
 
         try {
-            ListFolderResult result = DropboxClientFactory.getClient().files().listFolder("");
+            ListFolderResult result = dbClient.getClient().files().listFolder("");
 
             for (Metadata md : result.getEntries())
             {
