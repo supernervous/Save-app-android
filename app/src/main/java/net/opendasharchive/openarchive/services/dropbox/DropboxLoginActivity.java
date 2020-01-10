@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -41,7 +40,7 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
 
     // UI references.
-    private EditText  mEmailView;
+    private TextView  mEmailView;
     private View mProgressView;
     private View mLoginFormView;
     private Space mSpace;
