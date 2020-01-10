@@ -43,3 +43,4 @@ proguard/
 
 # Mac Garbage
 .DS_Store
+app/releaseflavor/*
