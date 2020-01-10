@@ -46,6 +46,8 @@ public class DropboxLoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Space mSpace;
 
+    private boolean isNewSpace = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,40 +59,48 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
         mSpace = null;
 
-        if (getIntent().hasExtra("space")) {
-            mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
-            findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
-        }
-        else {
-            mSpace = new Space();
-            mSpace.type = Space.TYPE_DROPBOX;
-        }
-
 
         mEmailView = findViewById(R.id.email);
-
-
-        if (!TextUtils.isEmpty(mSpace.username))
-            mEmailView.setText(mSpace.username);
 
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        attemptLogin();
+        if (getIntent().hasExtra("space")) {
+            mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
+            findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
+
+            if (!TextUtils.isEmpty(mSpace.username))
+                mEmailView.setText(mSpace.username);
+
+        }
+        else {
+            isNewSpace = true;
+            mSpace = new Space();
+            mSpace.type = Space.TYPE_DROPBOX;
+            if (TextUtils.isEmpty(mSpace.password))
+                attemptLogin();
+
+        }
+
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        String accessToken = Auth.getOAuth2Token();
+        if (isNewSpace) {
+            String accessToken = Auth.getOAuth2Token();
 
-        if (!TextUtils.isEmpty(accessToken) && mSpace != null) {
-            mSpace.username = Auth.getUid();
-            mSpace.password = accessToken;
-            mSpace.save();
-            finish();
+            if (!TextUtils.isEmpty(accessToken) && mSpace != null) {
+                mSpace.username = Auth.getUid();
+                mSpace.password = accessToken;
+                mSpace.save();
+                finish();
+            }
         }
     }
 
