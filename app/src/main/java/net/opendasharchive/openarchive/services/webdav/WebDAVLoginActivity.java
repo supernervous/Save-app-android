@@ -19,8 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.thegrizzlylabs.sardineandroid.Sardine;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
+import com.thegrizzlylabs.sardineandroid.impl.SardineException;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
@@ -48,6 +50,8 @@ public class WebDAVLoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
     private Space mSpace;
+
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,8 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mSnackbar = Snackbar.make(findViewById(R.id.loginform),"Logging in...",Snackbar.LENGTH_INDEFINITE);
     }
 
 
@@ -108,9 +114,11 @@ public class WebDAVLoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthThread != null) {
+        if (mAuthThread != null && mAuthThread.isAlive()) {
             return;
         }
+
+        mSnackbar.show();
 
         // Reset errors.
         mEmailView.setError(null);
@@ -186,12 +194,15 @@ public class WebDAVLoginActivity extends AppCompatActivity {
             switch(msg.what)
             {
                 case 0:
+                    mSnackbar.dismiss();
+
                     //success;
                     finish();
 
                     break;
                 case 1:
                 default:
+                    mSnackbar.dismiss();
 
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
@@ -221,8 +232,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
             sardine.setCredentials(mSpace.username,mSpace.password);
 
             try {
-                try
-                {
+                try {
                     sardine.getQuota(siteUrl.toString());
 
                     mSpace.save();
@@ -230,8 +240,25 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
 
                     mHandlerLogin.sendEmptyMessage(0);
-                }
-                catch (Exception e) {
+                } catch (SardineException se) {
+                    if (se.getStatusCode() == 401) {
+                        //unauthorized
+                        Log.e(TAG, "error on login: " + siteUrl.toString(), se);
+
+                        mHandlerLogin.sendEmptyMessage(1);
+                    } else {
+                        //try again?
+                        siteUrl.append("remote.php/dav/");
+                        sardine.getQuota(siteUrl.toString());
+                        Prefs.setCurrentSpaceId(mSpace.getId());
+                        mSpace.save();
+
+
+                        mHandlerLogin.sendEmptyMessage(0);
+                    }
+                } catch (IOException e) {
+
+                    //try again?
 
                     siteUrl.append("remote.php/dav/");
                     sardine.getQuota(siteUrl.toString());
@@ -241,10 +268,25 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
                     mHandlerLogin.sendEmptyMessage(0);
                 }
+            }
+            catch (SardineException se)
+            {
+                if (se.getStatusCode() == 401)
+                {
+                    //unauthorized
+                    Log.e(TAG,"unauthorized login: " + siteUrl.toString(),se);
 
+                    mHandlerLogin.sendEmptyMessage(1);
+                }
+                else
+                {
+                    Log.e(TAG,"login error: " + siteUrl.toString(),se);
 
+                    mHandlerLogin.sendEmptyMessage(0);
+                }
             } catch (IOException e) {
 
+                //nope that is legit an error
                 Log.e(TAG,"error on login: " + siteUrl.toString(),e);
 
                 mHandlerLogin.sendEmptyMessage(1);
