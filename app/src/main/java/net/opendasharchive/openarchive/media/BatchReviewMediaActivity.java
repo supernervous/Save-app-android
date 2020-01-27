@@ -39,6 +39,7 @@ import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
@@ -281,26 +282,8 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
 
     private void setLicense (Media media)
     {
-
-        if (tbDeriv != null) {
-            //the default
-            String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
-
-            if (tbDeriv.isChecked() && tbComm.isChecked() && tbShare.isChecked()) {
-                licenseUrl = "http://creativecommons.org/licenses/by-sa/4.0/";
-            } else if (tbDeriv.isChecked() && tbShare.isChecked()) {
-                licenseUrl = "http://creativecommons.org/licenses/by-nc-sa/4.0/";
-            } else if (tbDeriv.isChecked() && tbComm.isChecked()) {
-                licenseUrl = "http://creativecommons.org/licenses/by/4.0/";
-            } else if (tbDeriv.isChecked()) {
-                licenseUrl = "http://creativecommons.org/licenses/by-nc/4.0/";
-            } else if (tbComm.isChecked()) {
-                licenseUrl = "http://creativecommons.org/licenses/by-nd/4.0/";
-            }
-
-            tvLicenseUrl.setText(licenseUrl);
-            media.setLicenseUrl(licenseUrl);
-        }
+        Project project = Project.getById(media.getProjectId());
+        media.setLicenseUrl(project.getLicenseUrl());
     }
 
     private void saveMedia ()

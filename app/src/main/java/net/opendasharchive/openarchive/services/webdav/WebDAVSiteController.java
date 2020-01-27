@@ -14,6 +14,7 @@ import com.thegrizzlylabs.sardineandroid.SardineListener;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Prefs;
 
@@ -356,6 +357,11 @@ public class WebDAVSiteController extends SiteController {
 
     private boolean uploadMetadata (final Media media, String basePath, String fileName)
     {
+
+        //update to the latest project license
+        Project project = Project.getById(media.getProjectId());
+        media.setLicenseUrl(project.getLicenseUrl());
+
         String urlMeta = basePath + '/' + fileName + ".meta.json";
         Gson gson = new Gson();
         String json = gson.toJson(media,Media.class);

@@ -17,6 +17,10 @@ public class Project extends SugarRecord {
 
     public long openCollectionId;
 
+
+    public String licenseUrl;
+
+
     @Ignore
     private ArrayList<Media> mediaArrayList;
 
@@ -66,6 +70,15 @@ public class Project extends SugarRecord {
 
     public void setOpenCollectionId(long openCollectionId) {
         this.openCollectionId = openCollectionId;
+    }
+
+
+    public String getLicenseUrl() {
+        return licenseUrl;
+    }
+
+    public void setLicenseUrl(String licenseUrl) {
+        this.licenseUrl = licenseUrl;
     }
 
 }

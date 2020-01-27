@@ -319,5 +319,6 @@
 
     <string name="popup_remove_title">Remove Media From Save</string>
     <string name="popup_remove_desc">This item will be removed only from the Save App. It will remain on the server and in your photo gallery.</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">Allow Creative Commons use for all media in this project</string>
 
 </resources>
