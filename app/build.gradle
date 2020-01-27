@@ -30,8 +30,8 @@ android {
         applicationId "net.opendasharchive.openarchive"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 20217
-        versionName "0.2.2-beta-7"
+        versionCode 20301
+        versionName "0.2.2-RC-1"
         archivesBaseName = "OpenArchive-$versionName"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
