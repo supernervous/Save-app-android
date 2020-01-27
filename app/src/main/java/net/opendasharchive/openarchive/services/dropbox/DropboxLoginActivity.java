@@ -158,7 +158,7 @@ public class DropboxLoginActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+      //  getMenuInflater().inflate(R.menu.menu_login, menu);
 
 
         return true;
@@ -167,9 +167,7 @@ public class DropboxLoginActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_sign_in:
-                attemptLogin();
-                return true;
+
 
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
