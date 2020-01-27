@@ -97,13 +97,13 @@ public class UploadManagerActivity extends AppCompatActivity {
 
         if (isEditMode) {
             mMenuEdit.setTitle(R.string.menu_done);
-            startService(new Intent(this, PublishService.class));
+            stopService(new Intent(this, PublishService.class));
 
         }
         else {
             mMenuEdit.setTitle(R.string.menu_edit);
+            startService(new Intent(this, PublishService.class));
 
-            stopService(new Intent(this, PublishService.class));
 
         }
     }
