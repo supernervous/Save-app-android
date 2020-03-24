@@ -454,7 +454,7 @@ public class PublishService extends Service implements Runnable {
                 notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_oa_notify)
+                .setSmallIcon(R.drawable.ic_app_notify)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.app_subtext))
                 .setDefaults(Notification.DEFAULT_LIGHTS)
