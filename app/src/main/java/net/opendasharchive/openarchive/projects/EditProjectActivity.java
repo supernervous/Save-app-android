@@ -67,7 +67,13 @@ public class EditProjectActivity extends AppCompatActivity {
     private void updateProject ()
     {
         EditText et = findViewById(R.id.edtProjectName);
-        et.setText(mProject.description);
+
+        if (mProject == null)
+            return;
+
+        if (!TextUtils.isEmpty(mProject.description))
+            et.setText(mProject.description);
+
         et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
