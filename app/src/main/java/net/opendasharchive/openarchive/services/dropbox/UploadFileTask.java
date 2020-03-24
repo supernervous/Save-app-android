@@ -78,11 +78,11 @@ public class UploadFileTask {
                 }
 
                 try (InputStream inputStream = new FileInputStream(localFile)) {
-                    result = mDbxClient.files().uploadBuilder(mRemoteProjectPath + mRemoteFolderPath + "/" + mRemoteFileName)
-                            .withMode(WriteMode.OVERWRITE)
-                            .uploadAndFinish(inputStream);
 
+                    mDbxClient.files().uploadBuilder(mRemoteProjectPath + mRemoteFolderPath + "/" + mRemoteFileName)
+                            .withMode(WriteMode.OVERWRITE).uploadAndFinish(inputStream);
                     mCallback.onUploadComplete(result);
+
                 } catch (DbxException | IOException e) {
                     mException = e;
 

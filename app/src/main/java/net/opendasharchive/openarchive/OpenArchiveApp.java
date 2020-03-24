@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -82,7 +83,13 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     public void uploadQueue ()
     {
-        startService(new Intent(this, PublishService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, PublishService.class));
+        }
+        else
+        {
+            startService(new Intent(this, PublishService.class));
+        }
     }
 
     public CleanInsightsApplication getCleanInsightsApp ()

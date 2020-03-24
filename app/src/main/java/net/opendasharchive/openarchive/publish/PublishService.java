@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.publish;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.orm.query.Condition;
@@ -63,6 +65,7 @@ public class PublishService extends Service implements Runnable {
         if (Build.VERSION.SDK_INT >= 26)
             createNotificationChannel();
 
+        doForeground();
     }
 
     @Override
@@ -442,5 +445,25 @@ public class PublishService extends Service implements Runnable {
         mNotificationManager.createNotificationChannel(mChannel);
     }
 
+
+    private synchronized void doForeground() {
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_oa_notify)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.app_subtext))
+                .setDefaults(Notification.DEFAULT_LIGHTS)
+                //.setVibrate(new long[]{0L}) // Passing null here silently fails
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(1337, notification);
+
+
+    }
 
 }
