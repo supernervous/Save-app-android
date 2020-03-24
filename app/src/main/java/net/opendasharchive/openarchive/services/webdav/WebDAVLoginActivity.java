@@ -30,7 +30,12 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Prefs;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -222,6 +227,15 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         @Override
         public void run () {
 
+            if (TextUtils.isEmpty(mSpace.host))
+                return;
+
+            try {
+                new URL(mSpace.host).toURI();
+            } catch (MalformedURLException | URISyntaxException malformedURLException) {
+                //not a valid URL
+                return;
+            }
 
             StringBuffer siteUrl = new StringBuffer();
             siteUrl.append(mSpace.host);
@@ -233,8 +247,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
             try {
                 try {
-                    sardine.getQuota(siteUrl.toString());
-
+                                        sardine.getQuota(siteUrl.toString());
                     mSpace.save();
                     Prefs.setCurrentSpaceId(mSpace.getId());
 
