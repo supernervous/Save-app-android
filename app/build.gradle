@@ -24,7 +24,7 @@ android {
 
     signingConfigs {
     }
-    compileSdkVersion project.ext.compileSdkVersion
+    compileSdkVersion 28
     buildToolsVersion project.ext.buildToolsVersion
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
