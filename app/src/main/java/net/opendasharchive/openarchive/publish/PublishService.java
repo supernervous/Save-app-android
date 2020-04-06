@@ -301,7 +301,7 @@ public class PublishService extends Service implements Runnable {
             String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             String error = "Error " + errorCode + ": " + errorMessage;
 
-            Toast.makeText(PublishService.this,error,Toast.LENGTH_LONG).show();
+//            Toast.makeText(PublishService.this,error,Toast.LENGTH_LONG).show();
              Log.d("OAPublish", "upload error: " + error);
 
             uploadMedia.status = Media.STATUS_QUEUED;
@@ -456,7 +456,8 @@ public class PublishService extends Service implements Runnable {
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_app_notify)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.app_subtext))
+                //.setContentText(getString(R.string.app_subtext))
+
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 //.setVibrate(new long[]{0L}) // Passing null here silently fails
                 .setContentIntent(pendingIntent).build();
