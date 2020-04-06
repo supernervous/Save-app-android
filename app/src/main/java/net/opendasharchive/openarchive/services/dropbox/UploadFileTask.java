@@ -24,7 +24,6 @@ public class UploadFileTask {
     private final DbxClientV2 mDbxClient;
     private final Callback mCallback;
     private Exception mException;
-    private FileMetadata result;
     private String mLocalUri;
 
     private String mRemoteProjectPath;
@@ -58,6 +57,9 @@ public class UploadFileTask {
 
         if (localFile != null) {
 
+
+            FileMetadata result = null;
+
             try {
 
 
@@ -79,8 +81,9 @@ public class UploadFileTask {
 
                 try (InputStream inputStream = new FileInputStream(localFile)) {
 
-                    mDbxClient.files().uploadBuilder(mRemoteProjectPath + mRemoteFolderPath + "/" + mRemoteFileName)
+                    result = mDbxClient.files().uploadBuilder(mRemoteProjectPath + mRemoteFolderPath + "/" + mRemoteFileName)
                             .withMode(WriteMode.OVERWRITE).uploadAndFinish(inputStream);
+
                     mCallback.onUploadComplete(result);
 
                 } catch (DbxException | IOException e) {

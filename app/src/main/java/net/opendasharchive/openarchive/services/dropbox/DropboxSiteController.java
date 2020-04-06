@@ -120,17 +120,18 @@ public class DropboxSiteController extends SiteController {
                 @Override
                 public void onUploadComplete(FileMetadata result) {
 
-                    String finalMediaPath = result.getPathDisplay();
+                    if (result != null) {
+                        String finalMediaPath = result.getPathDisplay();
 
-                    media.setServerUrl(finalMediaPath);
-                    media.save();
-                    jobSucceeded(finalMediaPath);
+                        media.setServerUrl(finalMediaPath);
+                        media.save();
+                        jobSucceeded(finalMediaPath);
 
-                    uploadMetadata(media, projectName, folderName, fileName);
+                        uploadMetadata(media, projectName, folderName, fileName);
 
-                    if (Prefs.getUseProofMode())
-                        uploadProof(media, projectName, folderName);
-
+                        if (Prefs.getUseProofMode())
+                            uploadProof(media, projectName, folderName);
+                    }
                 }
 
                 @Override
