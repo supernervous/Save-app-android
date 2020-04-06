@@ -71,25 +71,28 @@ public class EditProjectActivity extends AppCompatActivity {
         if (mProject == null)
             return;
 
-        if (!TextUtils.isEmpty(mProject.description))
+        if (!TextUtils.isEmpty(mProject.description)) {
             et.setText(mProject.description);
+            et.setEnabled(false);
+        }
+        else {
+            et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-        et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
+                        String newProjectName = et.getText().toString();
+                        if (!TextUtils.isEmpty(newProjectName)) {
+                            mProject.description = newProjectName;
+                            mProject.save();
+                        }
 
-                    String newProjectName = et.getText().toString();
-                    if (!TextUtils.isEmpty(newProjectName))
-                    {
-                        mProject.description = newProjectName;
-                        mProject.save();
                     }
-
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
+
         TextView tv = findViewById(R.id.action_archive_project);
 
         if (mProject.isArchived())
