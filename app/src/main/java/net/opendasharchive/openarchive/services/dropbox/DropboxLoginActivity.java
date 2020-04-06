@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.List;
 
@@ -115,6 +116,8 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
                         mSpace.password = accessToken;
                         mSpace.save();
+                        Prefs.setCurrentSpaceId(mSpace.getId());
+
 
                         return true;
                     }
