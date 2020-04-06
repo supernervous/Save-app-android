@@ -113,7 +113,8 @@ public class MediaAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+
+        final View view = LayoutInflater.from(parent.getContext()).inflate(layoutResourceId, parent, false);
 
         MediaViewHolder mvh = new MediaViewHolder(view, mContext);
         mvh.doImageFade = doImageFade;
@@ -235,10 +236,10 @@ public class MediaAdapter extends RecyclerView.Adapter {
         }
     }
 
-    @Override
-    public int getItemViewType(final int position) {
-        return layoutResourceId;
-    }
+//    @Override
+ //   public int getItemViewType(final int position) {
+   //     return layoutResourceId;
+   // }
 
     public void setEditMode (boolean isEditMode)
     {
@@ -261,7 +262,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
             }
         }
 
-        notifyDataSetChanged();
+        notifyItemMoved(oldPos, newPos);
     }
 
     public void onItemDismiss (int pos)
