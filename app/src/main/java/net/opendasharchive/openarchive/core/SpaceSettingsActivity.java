@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -85,10 +86,20 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         LinearLayout viewSpace = findViewById(R.id.spaceview);
         viewSpace.removeAllViews();
 
+        int actionBarHeight = 80;
+
+        // Calculate ActionBar height
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+
+
         while (listSpaces.hasNext()) {
             Space space = listSpaces.next();
 
-            ImageView image = getSpaceIcon(space);
+            ImageView image = getSpaceIcon(space, (int) (((float)actionBarHeight)*.7f));
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +113,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         }
     }
 
-    private ImageView getSpaceIcon (Space space)
+    private ImageView getSpaceIcon (Space space, int iconSize)
     {
         AvatarImageView image = new AvatarImageView(this);
 
@@ -119,8 +130,6 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setText(space.name.substring(0, 1).toUpperCase());
             image.setState(AvatarImageView.SHOW_INITIAL);
         }
-
-        int iconSize = 106;
 
         int margin = 6;
 

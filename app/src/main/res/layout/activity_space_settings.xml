@@ -35,8 +35,8 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:id="@+id/spaceview"
-                    android:layout_gravity="right|end"
-                    android:gravity="right|end"
+                    android:layout_gravity="right|end|center_vertical"
+                    android:gravity="right|end|center_vertical"
                     android:padding="3dp"
                     />
             </androidx.core.widget.NestedScrollView>
