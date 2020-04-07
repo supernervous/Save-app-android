@@ -112,6 +112,20 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         mSnackbar = Snackbar.make(findViewById(R.id.loginform),"Logging in...",Snackbar.LENGTH_INDEFINITE);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+        if (mSpace != null && (!TextUtils.isEmpty(mSpace.name))) {
+            if (!mNameView.getText().toString().equals(mSpace.name))
+            {
+                mSpace.name = mNameView.getText().toString();
+                mSpace.save();
+            }
+        }
+
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.

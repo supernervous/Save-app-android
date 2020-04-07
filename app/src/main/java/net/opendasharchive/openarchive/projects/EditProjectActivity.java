@@ -61,8 +61,7 @@ public class EditProjectActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if (mProject != null)
-            updateLicense();
+        updateLicense();
     }
 
     private void updateProject ()
