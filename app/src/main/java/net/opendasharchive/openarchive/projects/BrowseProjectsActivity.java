@@ -177,12 +177,7 @@ public class BrowseProjectsActivity extends AppCompatActivity {
         // binds the data to the TextView in each row
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String folder = null;
-            try {
-                folder = URLDecoder.decode(mData.get(position).getName(),"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-               folder = mData.get(position).getName();
-            }
+            String folder = mData.get(position).getName();
             holder.myTextView.setText(folder);
         }
 
