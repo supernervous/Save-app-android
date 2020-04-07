@@ -77,8 +77,8 @@ public class Project extends SugarRecord {
         return licenseUrl;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
+    public void setLicenseUrl(String newLicenseUrl) {
+        this.licenseUrl = newLicenseUrl;
     }
 
 }

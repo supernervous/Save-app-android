@@ -149,20 +149,23 @@ public class PublishService extends Service implements Runnable {
 
                 for (Media media: results) {
 
+                    Collection coll = Collection.findById(Collection.class, media.collectionId);
+                    Project proj = Project.findById(Project.class, coll.projectId);
+
                     if (media.status != Media.STATUS_UPLOADING) {
                         media.uploadDate = datePublish;
                         media.progress = 0; //should we reset this?
                         media.status = Media.STATUS_UPLOADING;
                     }
 
+                    media.setLicenseUrl(proj.getLicenseUrl());
+
                     try {
                         boolean success = uploadMedia(media);
                         if (success) {
-                            Collection coll = Collection.findById(Collection.class, media.collectionId);
                             if (coll != null) {
                                 coll.uploadDate = datePublish;
                                 coll.save();
-                                Project proj = Project.findById(Project.class, coll.projectId);
                                 if (proj != null) {
                                     proj.setOpenCollectionId(-1);
                                     proj.save();

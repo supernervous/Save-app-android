@@ -195,7 +195,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
         if (!switchCC.isChecked()){
             tvCCLicense.setText("");
-            mProject.setLicenseUrl("");
+            mProject.setLicenseUrl(null);
             mProject.save();
             return;
         }
