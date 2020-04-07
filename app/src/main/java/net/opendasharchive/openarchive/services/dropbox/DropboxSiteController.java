@@ -56,13 +56,12 @@ public class DropboxSiteController extends SiteController {
     private boolean mContinueUpload = true;
 
     private DropboxClientFactory dbClient = null;
+    private UploadFileTask uTask;
 
     public DropboxSiteController(Context context, SiteControllerListener listener, String jobId) {
         super(context, listener, jobId);
 
     }
-
-
 
     @Override
     public void startRegistration(Space space) {
@@ -94,6 +93,9 @@ public class DropboxSiteController extends SiteController {
     public void cancel() {
 
         mContinueUpload = false;
+
+        if (uTask != null)
+            uTask.cancel();
     }
 
     @Override
@@ -116,7 +118,7 @@ public class DropboxSiteController extends SiteController {
 
         try {
 
-            UploadFileTask uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
+            uTask = new UploadFileTask(mContext, dbClient.getClient(), new UploadFileTask.Callback() {
                 @Override
                 public void onUploadComplete(FileMetadata result) {
 
@@ -141,6 +143,11 @@ public class DropboxSiteController extends SiteController {
                         jobFailed(e, -1, e.getMessage());
                     else
                         jobFailed(new Exception("unknown error"),-1,"unknown error");
+                }
+
+                @Override
+                public void onProgress(long progress) {
+                    jobProgress(progress,"");
                 }
             });
 
@@ -183,6 +190,13 @@ public class DropboxSiteController extends SiteController {
                 public void onError(Exception e) {
 
                 }
+
+                @Override
+                public void onProgress(long progress) {
+
+                }
+
+
             });
 
             uTask.upload(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
@@ -204,6 +218,11 @@ public class DropboxSiteController extends SiteController {
 
                             @Override
                             public void onError(Exception e) {
+
+                            }
+
+                            @Override
+                            public void onProgress(long progress) {
 
                             }
                         });
@@ -241,6 +260,11 @@ public class DropboxSiteController extends SiteController {
 
                 @Override
                 public void onError(Exception e) {
+
+                }
+
+                @Override
+                public void onProgress(long progress) {
 
                 }
             });

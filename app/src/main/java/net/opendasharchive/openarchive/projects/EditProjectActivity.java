@@ -61,7 +61,8 @@ public class EditProjectActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        updateLicense();
+        if (mProject != null)
+            updateLicense();
     }
 
     private void updateProject ()
@@ -195,7 +196,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
         if (!switchCC.isChecked()){
             tvCCLicense.setText("");
-            mProject.setLicenseUrl(null);
+            mProject.setLicenseUrl("");
             mProject.save();
             return;
         }
@@ -236,6 +237,7 @@ public class EditProjectActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         mProject.delete();
+                        mProject = null;
                         finish();
                         break;
 

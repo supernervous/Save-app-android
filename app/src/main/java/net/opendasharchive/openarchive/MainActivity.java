@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -52,6 +53,7 @@ import net.opendasharchive.openarchive.publish.UploadManagerActivity;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
+import net.opendasharchive.openarchive.util.SelectiveViewPager;
 import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
@@ -68,10 +70,10 @@ import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private static final String TAG = "OASAVE:Main";
-    private ViewPager mPager;
+    private SelectiveViewPager mPager;
     private ProjectAdapter mPagerAdapter;
 
     private FloatingActionButton mFab;
@@ -107,16 +109,26 @@ public class MainActivity extends AppCompatActivity {
 
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         if (mSpace != null) {
             List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
-
             if (listProjects.size() > 0)
                 mPager.setCurrentItem(1);
             else
                 mPager.setCurrentItem(0);
+
+            tabLayout.removeOnTabSelectedListener(this);
+        }
+        else {
+            mPager.setAdapter(mPagerAdapter);
+            mPager.setCurrentItem(0);
+
+            tabLayout.addOnTabSelectedListener(this);
+
+
         }
 
            // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
@@ -135,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -160,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mPager);
 
         //check for any queued uploads and restart
@@ -169,7 +182,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private final static int REQUEST_NEW_PROJECT_NAME = 1001;
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+        if (mSpace == null || mPagerAdapter.getCount() <= 1)
+            promptAddProject();
+
+    }
+
+
+    public final static int REQUEST_NEW_PROJECT_NAME = 1001;
 
     public void promptAddProject ()
     {
@@ -194,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
                 mPager.setCurrentItem(1);
             else
                 mPager.setCurrentItem(0);
+
+        }
+        else
+        {
 
         }
 
@@ -450,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
     {
         if (mMenuUpload != null) {
             long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED};
-            int uploadCount = Media.getMediaByStatus(mStatuses).size();
+            int uploadCount = Media.getMediaByStatus(mStatuses,Media.ORDER_PRIORITY).size();
 
             if (uploadCount > 0) {
                 mMenuUpload.setVisible(true);

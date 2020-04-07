@@ -18,9 +18,12 @@ import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import org.acra.ACRA;
+import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 import org.acra.config.CoreConfigurationBuilder;
+import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
+import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
@@ -71,14 +74,62 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         if (Prefs.getUseTor())
             initNetCipher(this);
 
-        CoreConfigurationBuilder builder = new CoreConfigurationBuilder(this);
-        builder.setBuildConfigClass(BuildConfig.class).setReportFormat(StringFormat.JSON);
-        builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class).setMailTo("support@guardianproject.info");
+        initCrashReporting();
+
+
+        uploadQueue();
+    }
+
+    private void initCrashReporting ()
+    {
+
+        CoreConfigurationBuilder builder = new CoreConfigurationBuilder(this)
+                .setBuildConfigClass(BuildConfig.class)
+                .setReportFormat(StringFormat.KEY_VALUE_LIST)
+                .setReportContent(
+                        //ReportField.USER_COMMENT,
+                        ReportField.REPORT_ID,
+                        ReportField.APP_VERSION_NAME,
+                        ReportField.APP_VERSION_CODE,
+                        ReportField.ANDROID_VERSION,
+                        ReportField.PHONE_MODEL,
+                        ReportField.PACKAGE_NAME,
+                        ReportField.CRASH_CONFIGURATION,
+                        ReportField.CUSTOM_DATA,
+                        ReportField.STACK_TRACE,
+                        ReportField.APPLICATION_LOG,
+                        ReportField.BUILD);
+        /**
+        builder.getPluginConfigurationBuilder(ToastConfigurationBuilder.class)
+                .setEnabled(true)
+                .setResText(R.string.crash_dialog_text);
+
+
+// email config
+
+         builder.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder.class)
+         .setUri(getResources().getString(R.string.error_end_point))
+         .setHttpMethod(HttpSender.Method.POST)
+         .setEnabled(true);
+
+// dialog config
+        builder.getPluginConfigurationBuilder(DialogConfigurationBuilder.class)
+                .setResText(R.string.crash_dialog_text)
+                .setResIcon(android.R.drawable.ic_dialog_info)
+                .setTitle(getResources().getString(R.string.crash_dialog_title))
+                .setResCommentPrompt(R.string.crash_dialog_comment_prompt)
+                .setEnabled(true);
+            **/
+
+// Mail config
+
+        builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
+                .setEnabled(true)
+                .setMailTo(getResources().getString(R.string.crashreportemail))
+                .setReportAsFile(true);
 
         // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);
-
-        uploadQueue();
     }
 
     public void uploadQueue ()

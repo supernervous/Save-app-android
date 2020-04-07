@@ -321,4 +321,9 @@
     <string name="popup_remove_desc">This item will be removed only from the Save App. It will remain on the server and in your photo gallery.</string>
     <string name="allow_creative_commons_use_for_all_media_in_this_project">Allow Creative Commons use for all media in this project</string>
 
+    <string name="crash_dialog_text">Help us improve, share your crashes</string>
+    <string name="crash_dialog_title">Crash Reporting</string>
+    <string name="crash_dialog_comment_prompt">What were you doing when the crash occured?</string>
+
+    <string name="crashreportemail">support@guardianproject.info</string>
 </resources>

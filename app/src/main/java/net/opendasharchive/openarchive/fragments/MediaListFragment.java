@@ -73,7 +73,7 @@ public class MediaListFragment extends Fragment {
 
             if (mProjectId == -1)
             {
-                listMedia = Media.getMediaByStatus(mStatuses);
+                listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
             }
             else
@@ -106,8 +106,7 @@ public class MediaListFragment extends Fragment {
 
         if (mProjectId == -1)
         {
-            listMedia = Media.getMediaByStatus(mStatuses);
-
+            listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
         }
         else
         {

@@ -30,6 +30,7 @@ import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class PublishService extends Service implements Runnable {
     private boolean isRunning = false;
     private boolean keepUploading = true;
     private Thread mUploadThread = null;
-    private    SiteController sc = null;
+    private ArrayList<SiteController> listControllers = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -85,11 +86,12 @@ public class PublishService extends Service implements Runnable {
         super.onDestroy();
 
         keepUploading = false;
-        if (mUploadThread != null && mUploadThread.isAlive())
-            mUploadThread.interrupt();
 
-        if (sc !=null)
+        for (SiteController sc : listControllers)
             sc.cancel();
+
+        listControllers.clear();
+
     }
 
     @Nullable
@@ -154,18 +156,20 @@ public class PublishService extends Service implements Runnable {
                     }
 
                     try {
-                        uploadMedia(media);
-                        Collection coll = Collection.findById(Collection.class, media.collectionId);
-                        if (coll != null) {
-                            coll.uploadDate = datePublish;
-                            coll.save();
-                            Project proj = Project.findById(Project.class, coll.projectId);
-                            if (proj != null) {
-                                proj.setOpenCollectionId(-1);
-                                proj.save();
+                        boolean success = uploadMedia(media);
+                        if (success) {
+                            Collection coll = Collection.findById(Collection.class, media.collectionId);
+                            if (coll != null) {
+                                coll.uploadDate = datePublish;
+                                coll.save();
+                                Project proj = Project.findById(Project.class, coll.projectId);
+                                if (proj != null) {
+                                    proj.setOpenCollectionId(-1);
+                                    proj.save();
+                                }
                             }
+                            media.save();
                         }
-                        media.save();
                     } catch (IOException ioe) {
                         Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
                         media.status = Media.STATUS_QUEUED;
@@ -173,7 +177,7 @@ public class PublishService extends Service implements Runnable {
                     }
 
                     if (!keepUploading)
-                        break;
+                        return false;// time to end this
                 }
 
             }
@@ -194,7 +198,7 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private void uploadMedia (Media media) throws IOException
+    private boolean uploadMedia (Media media) throws IOException
     {
 
         Project project = Project.getById(media.projectId);
@@ -213,7 +217,11 @@ public class PublishService extends Service implements Runnable {
             else
                 space = Space.getCurrentSpace();
 
+
+
             if (space != null) {
+
+                SiteController sc = null;
 
                 if (space.type == Space.TYPE_WEBDAV)
                     sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
@@ -222,14 +230,22 @@ public class PublishService extends Service implements Runnable {
                 else if (space.type == Space.TYPE_DROPBOX)
                     sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, new UploaderListener(media), null);
 
+                listControllers.add(sc);
+
                 if (sc != null)
                     sc.upload(space, media, valueMap);
+
+                listControllers.remove(sc);
+
             }
 
+            return true;
         }
         else
         {
             media.delete();
+            return false;
+
         }
 
     }

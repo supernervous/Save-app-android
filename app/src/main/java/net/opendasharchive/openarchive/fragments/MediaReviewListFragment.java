@@ -36,9 +36,7 @@ public class MediaReviewListFragment extends MediaListFragment {
     {
         if (mMediaAdapter != null)
         {
-            List<Media> listMedia = Media.getMediaByStatus(mStatuses);
-
-
+            List<Media> listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
             mMediaAdapter.updateData(listMedia);
 
         }
@@ -61,7 +59,7 @@ public class MediaReviewListFragment extends MediaListFragment {
         rView.setLayoutManager(new LinearLayoutManager(getActivity()));
         rView.setHasFixedSize(true);
 
-        List<Media> listMedia = Media.getMediaByStatus(mStatuses);
+        List<Media> listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
         mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMedia, rView, new OnStartDragListener() {
             @Override

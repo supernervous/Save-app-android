@@ -1,14 +1,20 @@
 package net.opendasharchive.openarchive.db;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.fragments.MediaGridFragment;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.fragments.NewProjectFragment;
+import net.opendasharchive.openarchive.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter;
 
 import java.util.List;
@@ -16,15 +22,17 @@ import java.util.List;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import static net.opendasharchive.openarchive.MainActivity.REQUEST_NEW_PROJECT_NAME;
+
 /**
  * Created by micahjlucas on 1/20/15.
  */
 public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
 
     private List<Project> data;
-    private Context context;
+    private Activity context;
 
-    public ProjectAdapter(Context context, FragmentManager fm) {
+    public ProjectAdapter(Activity context, FragmentManager fm) {
         super(fm);
         this.context = context;
 
@@ -87,5 +95,8 @@ public class ProjectAdapter extends SmartFragmentStatePagerAdapter {
         else
             return data.get(position-1).description;
     }
+
+
+
 
 }

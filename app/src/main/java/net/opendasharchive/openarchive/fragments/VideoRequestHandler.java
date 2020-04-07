@@ -38,8 +38,8 @@ public class VideoRequestHandler extends RequestHandler{
         Bitmap bm = null;
         try {
             bm = retrieveVideoFrameFromVideo(mContext, Uri.parse(data.uri.toString().substring(6)));
-
-            return new RequestHandler.Result(bm, Picasso.LoadedFrom.DISK);
+            if (bm != null)
+                return new RequestHandler.Result(bm, Picasso.LoadedFrom.DISK);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

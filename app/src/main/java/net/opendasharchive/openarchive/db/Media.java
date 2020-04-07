@@ -198,7 +198,10 @@ public class Media extends SugarRecord {
         return Media.find(Media.class,"status = ?",values,null,"STATUS DESC",null);
     }
 
-    public static List<Media> getMediaByStatus(long[] statuses) {
+    public final static String ORDER_STATUS_AND_PRIORITY = "STATUS, PRIORITY DESC";
+    public final static String ORDER_PRIORITY = "PRIORITY DESC";
+
+    public static List<Media> getMediaByStatus(long[] statuses, String order) {
         String[] values = new String[statuses.length];
         int idx = 0;
         for (long status: statuses)
@@ -211,7 +214,7 @@ public class Media extends SugarRecord {
                 sbWhere.append(" OR ");
         }
 
-        return Media.find(Media.class,sbWhere.toString(),values,null,"STATUS, PRIORITY DESC",null);
+        return Media.find(Media.class,sbWhere.toString(),values,null,order,null);
     }
 
     public static List<Media> getMediaByProjectAndCollection(long projectId, long collectionId) {
