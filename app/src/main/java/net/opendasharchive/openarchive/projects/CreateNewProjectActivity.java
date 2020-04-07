@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -43,26 +44,40 @@ public class CreateNewProjectActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE){
 
-                    String newProjectName = etNewProjectName.getText().toString();
-                    if (!TextUtils.isEmpty(newProjectName))
-                    {
-                        if (newProjectName.matches(SPECIAL_CHARS))
-                        {
-                            Toast.makeText(CreateNewProjectActivity.this, getString(R.string.warning_special_chars),Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            if (createProject(newProjectName)) {
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        }
-                    }
+                    saveProject ();
 
                 }
             return false;
         }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_new_project, menu);
+
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    private void saveProject ()
+    {
+        final EditText etNewProjectName = findViewById(R.id.edtNewProject);
+        String newProjectName = etNewProjectName.getText().toString();
+        if (!TextUtils.isEmpty(newProjectName))
+        {
+            if (newProjectName.matches(SPECIAL_CHARS))
+            {
+                Toast.makeText(CreateNewProjectActivity.this, getString(R.string.warning_special_chars),Toast.LENGTH_SHORT).show();
+            }
+            else {
+                if (createProject(newProjectName)) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            }
+        }
     }
 
     private boolean createProject (String description)
@@ -96,6 +111,10 @@ public class CreateNewProjectActivity extends AppCompatActivity {
             case android.R.id.home:
                 //NavUtils.navigateUpFromSameTask(this);
                 finish();
+                return true;
+
+            case R.id.action_done:
+                saveProject();
                 return true;
         }
         return super.onOptionsItemSelected(item);
