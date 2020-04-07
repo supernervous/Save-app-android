@@ -501,13 +501,18 @@ public class WebDAVSiteController extends SiteController {
         sbFolderPath.append(FILE_BASE);
         sbFolderPath.append(space.username).append('/');
 
-        List<DavResource> listFolders = sardine.list(sbFolderPath.toString());
+        String baseFolderPath = sbFolderPath.toString();
+        List<DavResource> listFolders = sardine.list(baseFolderPath);
 
         for (DavResource folder : listFolders)
         {
             if (folder.isDirectory()) {
 
                 String folderPath = folder.getPath();
+
+                if (baseFolderPath.endsWith(folderPath))
+                    continue; //this is the root folder... don't include it in the list
+
                 File fileFolder = new File(folderPath);
 
 
