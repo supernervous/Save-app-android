@@ -15,6 +15,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.crypto.PgpUtils;
 
@@ -66,14 +67,17 @@ public class SettingsActivity extends AppCompatActivity {
                 addPreferencesFromResource(R.xml.app_prefs_datause);
             else if (type.equals(KEY_METADATA)) {
                 addPreferencesFromResource(R.xml.app_prefs_metadata);
-                Preference myPref = findPreference("share_proofmode");
-                myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    public boolean onPreferenceClick(Preference preference) {
-                        //open browser or intent here
-                        shareKey(getActivity());
-                        return true;
-                    }
-                });
+
+                if (Prefs.getUseProofMode()) {
+                    Preference myPref = findPreference("share_proofmode");
+                    myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        public boolean onPreferenceClick(Preference preference) {
+                            //open browser or intent here
+                            shareKey(getActivity());
+                            return true;
+                        }
+                    });
+                }
             }
             else if (type.equals(KEY_NETWORKING))
                 addPreferencesFromResource(R.xml.app_prefs_networking);
