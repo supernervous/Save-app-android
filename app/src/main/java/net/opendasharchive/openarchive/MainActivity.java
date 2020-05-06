@@ -56,8 +56,11 @@ import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.SelectiveViewPager;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.witness.proofmode.crypto.PgpUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;

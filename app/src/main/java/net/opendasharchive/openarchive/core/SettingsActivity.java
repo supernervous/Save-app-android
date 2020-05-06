@@ -1,16 +1,24 @@
 package net.opendasharchive.openarchive.core;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import net.opendasharchive.openarchive.R;
+
+import org.witness.proofmode.crypto.PgpUtils;
+
+import java.io.IOException;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -56,20 +64,45 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (TextUtils.isEmpty(type) || type.equals(KEY_DATAUSE))
                 addPreferencesFromResource(R.xml.app_prefs_datause);
-            else if (type.equals(KEY_METADATA))
+            else if (type.equals(KEY_METADATA)) {
                 addPreferencesFromResource(R.xml.app_prefs_metadata);
+                Preference myPref = findPreference("share_proofmode");
+                myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        //open browser or intent here
+                        shareKey(getActivity());
+                        return true;
+                    }
+                });
+            }
             else if (type.equals(KEY_NETWORKING))
                 addPreferencesFromResource(R.xml.app_prefs_networking);
 
-            initValues();
         }
 
-        private void initValues ()
+
+    }
+
+
+
+    public static void shareKey (Activity activity)
+    {
+
+        try {
+
+            PgpUtils mPgpUtils = PgpUtils.getInstance(activity,PgpUtils.DEFAULT_PASSWORD);
+
+            String pubKey = mPgpUtils.getPublicKey();
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT,pubKey);
+            activity.startActivity(intent);
+        }
+        catch (IOException ioe)
         {
-
+            Log.e("Proofmode","error publishing key",ioe);
         }
-
-
     }
 
 

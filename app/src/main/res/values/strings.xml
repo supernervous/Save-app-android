@@ -178,6 +178,9 @@
     <string name="prefs_use_proofmode_title">Enable ProofMode</string>
     <string name="prefs_use_proofmode_summary">Capture extra metadata and notarize all media</string>
 
+    <string name="prefs_share_proofmode_title">ProofMode Identity</string>
+    <string name="prefs_share_proofmode_summary">Share ProofMode Public Key</string>
+
 
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="prefs_bt_summary">Use Bluetooth for nearby sharing</string>

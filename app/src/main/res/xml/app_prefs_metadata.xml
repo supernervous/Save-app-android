@@ -11,6 +11,12 @@
             android:summary="@string/prefs_use_proofmode_summary"
             android:defaultValue="false" />
 
+        <androidx.preference.Preference
+            android:key="share_proofmode"
+            android:title="@string/prefs_share_proofmode_title"
+            android:summary="@string/prefs_share_proofmode_summary"
+            />
+
     </androidx.preference.PreferenceCategory>
 
 
