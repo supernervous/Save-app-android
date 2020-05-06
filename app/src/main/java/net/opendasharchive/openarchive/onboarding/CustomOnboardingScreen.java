@@ -25,7 +25,8 @@ public class CustomOnboardingScreen extends Fragment {
     private String mTitle;
     private String mSubTitle;
     private int mImageResource;
-    private View.OnClickListener mButtonListener;
+
+    private Button mButton;
 
     public static CustomOnboardingScreen newInstance(int layoutResId, String title, String subtitle, int image) {
         CustomOnboardingScreen sampleSlide = new CustomOnboardingScreen();
@@ -89,7 +90,22 @@ public class CustomOnboardingScreen extends Fragment {
 
         ((ImageView)view.findViewById(R.id.custom_slide_image)).setImageResource(mImageResource);
 
+        mButton = view.findViewById(R.id.custom_slide_button);
+        if (mButton != null && mButtonListener != null) {
+            mButton.setText(mButtonText);
+            mButton.setVisibility(View.VISIBLE);
+            mButton.setOnClickListener(mButtonListener);
+        }
         return view;
 
+    }
+
+    private String mButtonText;
+    private View.OnClickListener mButtonListener;
+
+    public void enableButton (String buttonText, View.OnClickListener listener)
+    {
+        mButtonText = buttonText;
+        mButtonListener = listener;
     }
 }

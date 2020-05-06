@@ -13,10 +13,13 @@ import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.IndicatorController;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import javax.crypto.spec.OAEPParameterSpec;
 
 import info.guardianproject.netcipher.proxy.OrbotHelper;
 
@@ -59,10 +62,30 @@ public class OAAppIntro extends AppIntro {
 
        if (!OrbotHelper.isOrbotInstalled(this))
        {
-            addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.onboarding_archive_over_tor_install_orbot), R.drawable.onboarding4));
+           CustomOnboardingScreen cos = CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.onboarding_archive_over_tor_install_orbot), R.drawable.onboarding5);
+           addSlide(cos);
+           cos.enableButton(getString(R.string.action_install), new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   Prefs.setUseTor(true);
+                   startActivity(OrbotHelper.getOrbotInstallIntent(OAAppIntro.this));
+               }
+           });
+
         }
        else {
-           addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.archive_over_tor_enable_orbot), R.drawable.onboarding4));
+           CustomOnboardingScreen cos = CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.archive_over_tor_enable_orbot), R.drawable.onboarding5);
+           addSlide(cos);
+           cos.enableButton(getString(R.string.action_enable), new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   Prefs.setUseTor(true);
+                   OrbotHelper.requestStartTor(OAAppIntro.this);
+                   finish();
+                   startActivity(new Intent(OAAppIntro.this,FirstStartActivity.class));
+               }
+           });
+
        }
 
         setColorDoneText(getResources().getColor(R.color.oablue));

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 
 import java.io.File;
@@ -44,7 +45,12 @@ public class Media extends SugarRecord {
     public String tags;
 
     public String licenseUrl;
+
+    @SerializedName(value = "mediaHashBytes")
     public byte[] mediaHash;
+
+    @SerializedName(value = "mediaHash")
+    public String mediaHashString;
 
     public int status;
 
@@ -171,14 +177,14 @@ public class Media extends SugarRecord {
         this.licenseUrl = licenseUrl;
     }
 
-    public byte[] getMediaHash ()
+    public String getMediaHash ()
     {
-        return mediaHash;
+        return mediaHashString;
     }
 
-    public void setMediaHash (byte[] mediaHash)
+    public void setMediaHash (String mediaHash)
     {
-        this.mediaHash = mediaHash;
+        this.mediaHashString = mediaHash;
     }
 
     public void setTags(String tags) {

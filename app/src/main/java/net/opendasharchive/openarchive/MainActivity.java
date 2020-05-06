@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -30,6 +32,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.danimahardhika.cafebar.CafeBar;
+import com.danimahardhika.cafebar.CafeBarCallback;
+import com.danimahardhika.cafebar.CafeBarTheme;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.zhihu.matisse.Matisse;
@@ -47,6 +52,7 @@ import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
 import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 import net.opendasharchive.openarchive.media.ReviewMediaActivity;
+import net.opendasharchive.openarchive.onboarding.CustomOnboardingScreen;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.publish.UploadManagerActivity;
@@ -56,6 +62,8 @@ import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.SelectiveViewPager;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.witness.proofmode.ProofMode;
+import org.witness.proofmode.crypto.HashUtils;
 import org.witness.proofmode.crypto.PgpUtils;
 
 import java.io.File;
@@ -65,6 +73,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import info.guardianproject.netcipher.proxy.OrbotHelper;
 
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
@@ -183,7 +193,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         ((OpenArchiveApp)getApplication()).uploadQueue();
 
 
+
     }
+
+
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -653,7 +666,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         media.setUpdateDate(media.getCreateDate());
         media.status = Media.STATUS_LOCAL;
 
-
+        media.mediaHashString =HashUtils.getSHA256FromFileContent(fileImport);
         media.projectId = project.getId();
 
         if (title != null)

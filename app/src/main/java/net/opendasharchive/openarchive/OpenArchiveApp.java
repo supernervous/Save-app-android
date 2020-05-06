@@ -71,7 +71,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putBoolean("trackLocation",false);
 
-        if (Prefs.getUseTor())
+        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(this))
             initNetCipher(this);
 
         initCrashReporting();

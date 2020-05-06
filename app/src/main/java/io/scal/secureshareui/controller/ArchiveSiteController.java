@@ -34,6 +34,7 @@ import java.util.HashMap;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
+import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.login.ArchiveLoginActivity;
 import okhttp3.Headers;
@@ -76,7 +77,7 @@ public class ArchiveSiteController extends SiteController {
 	private void initClient (Context context)
     {
 
-        if (!Prefs.getUseTor())
+        if (!Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context))
         {
             this.client = new OkHttpClient.Builder().build();
         }

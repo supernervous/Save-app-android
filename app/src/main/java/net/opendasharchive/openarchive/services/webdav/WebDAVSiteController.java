@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.google.common.net.UrlEscapers;
 import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
@@ -16,6 +17,7 @@ import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.ProofMode;
@@ -26,7 +28,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +40,7 @@ import java.util.List;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
+import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
 import okhttp3.OkHttpClient;
@@ -49,11 +56,14 @@ public class WebDAVSiteController extends SiteController {
     private final static String TAG = "WebDAVSC";
 
     private boolean mContinueUpload = true;
+    private SimpleDateFormat dateFormat;
 
     public WebDAVSiteController (Context context, SiteControllerListener listener, String jobId) throws Exception {
         super(context, listener, jobId);
 
-        if (Prefs.getUseTor()) {
+        dateFormat = new SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT);
+
+        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
             builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
                 @Override
@@ -140,7 +150,7 @@ public class WebDAVSiteController extends SiteController {
 
             String basePath = media.getServerUrl();
 
-            String folderName = media.updateDate.toString();
+            String folderName = dateFormat.format(media.updateDate);
             String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
             StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
@@ -158,6 +168,10 @@ public class WebDAVSiteController extends SiteController {
                 File fileMedia = new File(mediaUri.getPath());
                 if (fileMedia.exists())
                     media.contentLength = fileMedia.length();
+            }
+
+            if (media.mediaHash == null) {
+
             }
 
             String finalMediaPath = null;
@@ -229,8 +243,9 @@ public class WebDAVSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
         String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
+        String folderName = dateFormat.format(media.updateDate);
 
-        String chunkFolderPath = URLEncoder.encode(media.getServerUrl() + "-" + fileName,"UTF-8");
+        String chunkFolderPath = media.getServerUrl() + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName);
 
         StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
         projectFolderBuilder.append(server.replace("webdav","dav"));
@@ -315,7 +330,6 @@ public class WebDAVSiteController extends SiteController {
                 chunkStartIdx = totalBytes + 1;
             }
 
-            //String folderName = media.updateDate.toString();
             fileName = getUploadFileName(media.getTitle(),media.getMimeType());
 
             projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
@@ -324,15 +338,21 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(space.username).append('/');
-            projectFolderBuilder.append(URLEncoder.encode(media.getServerUrl(),"UTF-8"));
+            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(space.username)).append('/');
+            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(media.getServerUrl()));
 
             projectFolderPath = projectFolderBuilder.toString();
 
-            String finalMediaPath = projectFolderPath + '/' + fileName;
-
             if (!sardine.exists(projectFolderPath))
                 sardine.createDirectory(projectFolderPath);
+
+            projectFolderPath += '/' + folderName;
+            if (!sardine.exists(projectFolderPath))
+                sardine.createDirectory(projectFolderPath);
+
+            //UrlEscapers.urlFragmentEscaper().escape(inputString);
+
+            String finalMediaPath = projectFolderPath + '/' + fileName;
 
             sardine.move(tmpMediaPath + "/.file",finalMediaPath);
 
@@ -347,6 +367,9 @@ public class WebDAVSiteController extends SiteController {
 
             return true;
         } catch (IOException e) {
+
+            sardine.delete(tmpMediaPath);
+
             Log.w(TAG, "Failed primary media upload: " + tmpMediaPath + ": " + e.getMessage());
             jobFailed(e,-1,tmpMediaPath);
             return false;
@@ -471,16 +494,11 @@ public class WebDAVSiteController extends SiteController {
 
         }
 
-        try {
-            result.append(URLEncoder.encode(title,"UTF-8"));
+        result.append(title);
 
-            if (!title.endsWith(ext))
-                result.append('.').append(ext);
+        if (!title.endsWith(ext))
+            result.append('.').append(ext);
 
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Couldn't encode title",e);
-            return null;
-        }
 
         return result.toString();
 

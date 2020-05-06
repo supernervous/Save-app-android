@@ -47,7 +47,7 @@ public class DropboxClientFactory {
     private OkHttpClient getOkClient (Context context)
     {
 
-        if (Prefs.getUseTor()) {
+        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
 
             try {
 

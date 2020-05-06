@@ -134,7 +134,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="26" />
+            android:value="28" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

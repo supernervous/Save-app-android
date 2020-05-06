@@ -175,7 +175,7 @@ public class PublishService extends Service implements Runnable {
                         }
                     } catch (IOException ioe) {
                         Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
-                        media.status = Media.STATUS_QUEUED;
+                        media.status = Media.STATUS_LOCAL;
                         media.save();
                     }
 

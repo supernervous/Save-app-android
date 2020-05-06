@@ -29,5 +29,7 @@ public class Globals {
     public final static String SITE_ARCHIVE             = "archive"; //Text, Audio, Photo, Video
     public static final String PREF_FIRST_TIME_KEY        = "archive_first_key";
 
+    public final static String FOLDER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'GMT'ZZZZZ";
+
 }
 
