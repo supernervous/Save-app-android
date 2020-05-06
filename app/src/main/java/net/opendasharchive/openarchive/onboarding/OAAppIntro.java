@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import info.guardianproject.netcipher.proxy.OrbotHelper;
+
 /**
  * Created by n8fr8 on 8/3/16.
  */
@@ -54,6 +56,14 @@ public class OAAppIntro extends AppIntro {
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2));
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
         addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4));
+
+       if (!OrbotHelper.isOrbotInstalled(this))
+       {
+            addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.onboarding_archive_over_tor_install_orbot), R.drawable.onboarding4));
+        }
+       else {
+           addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.archive_over_tor_enable_orbot), R.drawable.onboarding4));
+       }
 
         setColorDoneText(getResources().getColor(R.color.oablue));
         // OPTIONAL METHODS

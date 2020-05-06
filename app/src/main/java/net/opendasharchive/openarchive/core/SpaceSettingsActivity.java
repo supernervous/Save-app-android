@@ -208,18 +208,23 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     private void startSpaceAuthActivity ()
     {
-        Intent intent = null;
+        if (mSpace != null) {
 
-        if (mSpace.type == Space.TYPE_WEBDAV)
-            intent = new Intent(SpaceSettingsActivity.this, WebDAVLoginActivity.class);
-        else if (mSpace.type == Space.TYPE_DROPBOX)
-            intent = new Intent(SpaceSettingsActivity.this, DropboxLoginActivity.class);
+            Intent intent = null;
+
+            if (mSpace.type == Space.TYPE_WEBDAV)
+                intent = new Intent(SpaceSettingsActivity.this, WebDAVLoginActivity.class);
+            else if (mSpace.type == Space.TYPE_DROPBOX)
+                intent = new Intent(SpaceSettingsActivity.this, DropboxLoginActivity.class);
+            else
+                intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
+
+            intent.putExtra("space", mSpace.getId());
+
+            startActivity(intent);
+        }
         else
-            intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
-
-        intent.putExtra("space",mSpace.getId());
-
-        startActivity(intent);
+            finish();
     }
 
     public void updateProjects ()
