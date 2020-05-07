@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.webdav;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -110,6 +111,20 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
 
         mSnackbar = Snackbar.make(findViewById(R.id.loginform),"Logging in...",Snackbar.LENGTH_INDEFINITE);
+
+        Intent intent = getIntent();
+
+        if (intent != null && intent.hasExtra("user"))
+        {
+            String user = intent.getStringExtra("user");
+            String password = intent.getStringExtra("password");
+            String server = intent.getStringExtra("server");
+
+            mNameView.setText(server);
+            mServerView.setText(server);
+            mEmailView.setText(user);
+            mPasswordView.setText(password);
+        }
     }
 
     @Override

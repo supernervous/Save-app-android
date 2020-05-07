@@ -148,6 +148,8 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
         showCurrentSpace();
         loadSpaces();
+
+        checkSpaceLink();
     }
 
     private void showCurrentSpace () {
@@ -276,5 +278,35 @@ public class SpaceSettingsActivity extends AppCompatActivity {
     {
         Intent myIntent = new Intent(this, FirstStartActivity.class);
         startActivity(myIntent);
+    }
+
+    private void checkSpaceLink ()
+    {
+        Intent intent = getIntent();
+        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+            Uri uri = intent.getData();
+
+            String queryString = uri.toString();
+
+            if(queryString != null && queryString.startsWith("nc://login/"))
+            {
+                //user, password, server
+                String[] queryParts = queryString.substring(11).split("&");
+
+                String user = queryParts[0].substring(5);
+                String password = queryParts[1].substring(9);
+                String server = queryParts[2].substring(7);
+
+                Intent intentLogin = new Intent(this, WebDAVLoginActivity.class);
+                intentLogin.putExtra("user",user);
+                intentLogin.putExtra("password",password);
+                intentLogin.putExtra("server",server);
+
+                startActivity(intentLogin);
+
+            }
+
+
+        }
     }
 }
