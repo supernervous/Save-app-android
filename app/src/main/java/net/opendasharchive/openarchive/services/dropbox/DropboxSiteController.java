@@ -2,48 +2,35 @@ package net.opendasharchive.openarchive.services.dropbox;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.dropbox.core.DbxException;
-import com.dropbox.core.android.Auth;
-import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
+import com.google.common.net.UrlEscapers;
 import com.google.gson.Gson;
-import com.thegrizzlylabs.sardineandroid.DavResource;
-import com.thegrizzlylabs.sardineandroid.Sardine;
-import com.thegrizzlylabs.sardineandroid.SardineListener;
-import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
 
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.dropbox.DropboxClientFactory;
-import net.opendasharchive.openarchive.services.dropbox.UploadFileTask;
+import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.ProofMode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class DropboxSiteController extends SiteController {
 
@@ -58,8 +45,12 @@ public class DropboxSiteController extends SiteController {
     private DropboxClientFactory dbClient = null;
     private UploadFileTask uTask;
 
+    private SimpleDateFormat dateFormat;
+
+
     public DropboxSiteController(Context context, SiteControllerListener listener, String jobId) {
         super(context, listener, jobId);
+        dateFormat = new SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT);
 
     }
 
@@ -106,9 +97,8 @@ public class DropboxSiteController extends SiteController {
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
         String projectName = media.getServerUrl();
-        String folderName = media.updateDate.toString();
+        String folderName = dateFormat.format(media.updateDate);
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
-
 
         if (media.contentLength == 0) {
             File fileMedia = new File(mediaUri.getPath());
@@ -328,16 +318,10 @@ public class DropboxSiteController extends SiteController {
 
         }
 
-        try {
-            result.append(URLEncoder.encode(title,"UTF-8"));
+        result.append(UrlEscapers.urlFragmentEscaper().escape(title));
 
-            if (!title.endsWith(ext))
-                result.append('.').append(ext);
-
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Couldn't encode title",e);
-            return null;
-        }
+        if (!title.endsWith(ext))
+            result.append('.').append(ext);
 
         return result.toString();
 
