@@ -152,31 +152,39 @@ public class PublishService extends Service implements Runnable {
                     Collection coll = Collection.findById(Collection.class, media.collectionId);
                     Project proj = Project.findById(Project.class, coll.projectId);
 
-                    if (media.status != Media.STATUS_UPLOADING) {
-                        media.uploadDate = datePublish;
-                        media.progress = 0; //should we reset this?
-                        media.status = Media.STATUS_UPLOADING;
-                    }
+                    if (proj != null) {
+                        if (media.status != Media.STATUS_UPLOADING) {
+                            media.uploadDate = datePublish;
+                            media.progress = 0; //should we reset this?
+                            media.status = Media.STATUS_UPLOADING;
+                        }
 
-                    media.setLicenseUrl(proj.getLicenseUrl());
+                        media.setLicenseUrl(proj.getLicenseUrl());
 
-                    try {
-                        boolean success = uploadMedia(media);
-                        if (success) {
-                            if (coll != null) {
-                                coll.uploadDate = datePublish;
-                                coll.save();
-                                if (proj != null) {
-                                    proj.setOpenCollectionId(-1);
-                                    proj.save();
+                        try {
+                            boolean success = uploadMedia(media);
+                            if (success) {
+                                if (coll != null) {
+                                    coll.uploadDate = datePublish;
+                                    coll.save();
+                                    if (proj != null) {
+                                        proj.setOpenCollectionId(-1);
+                                        proj.save();
+                                    }
                                 }
+                                media.save();
                             }
+                        } catch (IOException ioe) {
+                            Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
+                            media.status = Media.STATUS_LOCAL;
                             media.save();
                         }
-                    } catch (IOException ioe) {
-                        Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
+                    }
+                    else
+                    {
+                        //project was deleted, so we should stop uploading
                         media.status = Media.STATUS_LOCAL;
-                        media.save();
+
                     }
 
                     if (!keepUploading)
