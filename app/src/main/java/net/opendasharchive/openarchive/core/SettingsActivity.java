@@ -68,16 +68,15 @@ public class SettingsActivity extends AppCompatActivity {
             else if (type.equals(KEY_METADATA)) {
                 addPreferencesFromResource(R.xml.app_prefs_metadata);
 
-                if (Prefs.getUseProofMode()) {
-                    Preference myPref = findPreference("share_proofmode");
-                    myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                        public boolean onPreferenceClick(Preference preference) {
-                            //open browser or intent here
-                            shareKey(getActivity());
-                            return true;
-                        }
-                    });
-                }
+                Preference myPref = findPreference("share_proofmode");
+                myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        //open browser or intent here
+                        shareKey(getActivity());
+                        return true;
+                    }
+                });
+
             }
             else if (type.equals(KEY_NETWORKING))
                 addPreferencesFromResource(R.xml.app_prefs_networking);
@@ -95,13 +94,13 @@ public class SettingsActivity extends AppCompatActivity {
         try {
 
             PgpUtils mPgpUtils = PgpUtils.getInstance(activity,PgpUtils.DEFAULT_PASSWORD);
-
             String pubKey = mPgpUtils.getPublicKey();
-
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,pubKey);
-            activity.startActivity(intent);
+            if (!TextUtils.isEmpty(pubKey)) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, pubKey);
+                activity.startActivity(intent);
+            }
         }
         catch (IOException ioe)
         {
