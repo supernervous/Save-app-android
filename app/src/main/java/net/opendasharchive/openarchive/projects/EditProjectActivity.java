@@ -51,13 +51,16 @@ public class EditProjectActivity extends AppCompatActivity {
 
         if (projectId != -1L) {
             mProject = Project.getById(projectId);
-            if (mProject == null)
+            if (mProject == null) {
                 finish();
+                return;
+            }
 
         }
-        else
+        else {
             finish();
-
+            return;
+        }
 
         updateProject();
     }
@@ -71,10 +74,11 @@ public class EditProjectActivity extends AppCompatActivity {
 
     private void updateProject ()
     {
-        EditText et = findViewById(R.id.edtProjectName);
 
         if (mProject == null)
             return;
+
+        EditText et = findViewById(R.id.edtProjectName);
 
         if (!TextUtils.isEmpty(mProject.description)) {
             et.setText(mProject.description);
@@ -195,8 +199,10 @@ public class EditProjectActivity extends AppCompatActivity {
 
     public void updateLicense ()
     {
-        if (mProject == null)
+        if (mProject == null) {
             finish();
+            return;
+        }
 
         //the default
         String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
