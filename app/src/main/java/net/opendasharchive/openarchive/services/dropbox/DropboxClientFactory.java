@@ -42,16 +42,16 @@ public class DropboxClientFactory {
     }
 
     private OkHttpClient client;
-    private boolean waiting = false;
 
     private OkHttpClient getOkClient (Context context)
     {
+        client = new OkHttpClient.Builder().build();
 
         if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
 
             try {
 
-                waiting = true;
+                OrbotHelper.requestStartTor(context);
 
                 StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
                 builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
@@ -60,43 +60,35 @@ public class DropboxClientFactory {
 
                         Log.i("NetCipherClient", "Connection to orbot established!");
                         client = okHttpClient;
-                        waiting = false;                    }
+                      }
 
 
                     @Override
                     public void onConnectionException(Exception exc) {
                         Log.e("NetCipherClient", "onConnectionException()", exc);
-                        waiting = false;
+
                     }
 
                     @Override
                     public void onTimeout() {
                         Log.e("NetCipherClient", "onTimeout()");
-                        waiting = false;
+
                     }
 
                     @Override
                     public void onInvalid() {
                         Log.e("NetCipherClient", "onInvalid()");
-                        waiting = false;
+
                     }
                 });
 
 
             } catch (Exception exc) {
                 Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
-                waiting = false;
+
             }
 
-            while (waiting)
-            {
-                try { Thread.sleep(500);}
-                catch (Exception e){}
-            }
-        }
-        else
-        {
-            client = new OkHttpClient.Builder().build();
+
         }
 
         return client;
