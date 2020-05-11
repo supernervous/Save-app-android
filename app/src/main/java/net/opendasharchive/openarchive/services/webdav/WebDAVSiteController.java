@@ -21,6 +21,7 @@ import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.ProofMode;
+import org.witness.proofmode.crypto.PgpUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -444,6 +445,11 @@ public class WebDAVSiteController extends SiteController {
                         }
 
                     }
+
+                    PgpUtils mPgpUtils = PgpUtils.getInstance(mContext,PgpUtils.DEFAULT_PASSWORD);
+                    String pubKey = mPgpUtils.getPublicKey();
+                    String keyPath =  basePath + "/proofmode.pubkey";
+                    sardine.put(keyPath,pubKey.getBytes(),"text/plain",null);
                 }
 
                 return true;
