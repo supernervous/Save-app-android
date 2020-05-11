@@ -49,10 +49,15 @@ public class EditProjectActivity extends AppCompatActivity {
 
         long projectId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID,-1L);
 
-        if (projectId != -1L)
+        if (projectId != -1L) {
             mProject = Project.getById(projectId);
+            if (mProject == null)
+                finish();
+
+        }
         else
             finish();
+
 
         updateProject();
     }
@@ -190,6 +195,9 @@ public class EditProjectActivity extends AppCompatActivity {
 
     public void updateLicense ()
     {
+        if (mProject == null)
+            finish();
+
         //the default
         String licenseUrl = "https://creativecommons.org/licenses/by/4.0/";
 
