@@ -15,8 +15,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="64dp"
         android:scaleType="centerInside"
-
-
         android:src="@drawable/onboarding1" />
 
     <TextView
@@ -39,7 +37,7 @@
         android:id="@+id/custom_slide_big_text_sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the app"
+        android:text="Welcome to the app onboarding page where you want to have an interesting time, isn't that true?"
         android:textColor="@color/white"
         android:layout_gravity="start"
         android:textSize="16sp"
@@ -49,7 +47,7 @@
         android:paddingTop="6dp"
         android:layout_below="@+id/custom_slide_big_text"
         android:background="@color/oablue"
-
+        android:layout_marginBottom="12dp"
         />
 
     <Button
