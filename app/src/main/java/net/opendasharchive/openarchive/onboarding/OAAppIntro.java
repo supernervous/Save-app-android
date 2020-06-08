@@ -1,25 +1,17 @@
 package net.opendasharchive.openarchive.onboarding;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntroFragment;
-import com.github.paolorotolo.appintro.IndicatorController;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.util.Prefs;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import javax.crypto.spec.OAEPParameterSpec;
 
 import info.guardianproject.netcipher.proxy.OrbotHelper;
 
@@ -82,7 +74,7 @@ public class OAAppIntro extends AppIntro {
                    Prefs.setUseTor(true);
                    OrbotHelper.requestStartTor(OAAppIntro.this);
                    finish();
-                   startActivity(new Intent(OAAppIntro.this,FirstStartActivity.class));
+                   startActivity(new Intent(OAAppIntro.this, SpaceSetupActivity.class));
                }
            });
 
@@ -117,7 +109,7 @@ public class OAAppIntro extends AppIntro {
 
 
         finish();
-        startActivity(new Intent(this,FirstStartActivity.class));
+        startActivity(new Intent(this, SpaceSetupActivity.class));
     }
 
     @Override

@@ -14,6 +14,9 @@ import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginAct
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
 
+import java.util.Iterator;
+import java.util.List;
+
 import io.scal.secureshareui.controller.SiteController;
 
 /**
@@ -27,7 +30,7 @@ import io.scal.secureshareui.controller.SiteController;
  *
  * @author micahjlucas
  */
-public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
+public class SpaceSetupActivity extends Activity implements OnEulaAgreedTo {
 
     private static final String TAG = "FirstStartActivity";
     private boolean eulaAgreed = false;
@@ -65,6 +68,22 @@ public class FirstStartActivity extends Activity implements OnEulaAgreedTo {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean hasDropbox = false;
+
+        Iterator<Space> itSpaces = Space.getAllAsList();
+
+        while (itSpaces.hasNext()) {
+            Space space = itSpaces.next();
+            hasDropbox = space.type == Space.TYPE_DROPBOX;
+        }
+
+        findViewById(R.id.dropboxFrame).setVisibility(hasDropbox ? View.GONE : View.VISIBLE);
     }
 
     public void onSignInArchiveButtonClick (View v) {

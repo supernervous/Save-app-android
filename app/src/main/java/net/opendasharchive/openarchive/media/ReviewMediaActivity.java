@@ -34,7 +34,7 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
-import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
@@ -494,7 +494,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
             finish();
         }
         else {
-            Intent firstStartIntent = new Intent(this, FirstStartActivity.class);
+            Intent firstStartIntent = new Intent(this, SpaceSetupActivity.class);
             startActivity(firstStartIntent);
         }
 

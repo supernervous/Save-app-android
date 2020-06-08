@@ -66,7 +66,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".onboarding.FirstStartActivity"
+            android:name=".onboarding.SpaceSetupActivity"
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait" />
         <activity
@@ -87,11 +87,11 @@
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".onboarding.FirstStartActivity"
+            android:parentActivityName=".onboarding.SpaceSetupActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.onboarding.FirstStartActivity" />
+                android:value="net.opendasharchive.openarchive.onboarding.SpaceSetupActivity" />
         </activity>
 
         <activity

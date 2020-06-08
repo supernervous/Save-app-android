@@ -18,7 +18,7 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectListAdapter;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity;
-import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
 import net.opendasharchive.openarchive.util.Prefs;
@@ -276,7 +276,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     public void onNewSpaceClicked (View view)
     {
-        Intent myIntent = new Intent(this, FirstStartActivity.class);
+        Intent myIntent = new Intent(this, SpaceSetupActivity.class);
         startActivity(myIntent);
     }
 

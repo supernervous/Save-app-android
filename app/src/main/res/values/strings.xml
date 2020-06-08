@@ -302,7 +302,7 @@
     <string name="error_project_exists">Project name already exists</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Edit</string>
-    <string name="title_dropbox">Dropbox (BETA)</string>
+    <string name="title_dropbox">Dropbox</string>
     <string name="description_dropbox">Securely access the commercial cloud</string>
     <string name="metadata">Metadata</string>
     <string name="networking">Networking</string>

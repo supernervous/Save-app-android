@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.projects;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -12,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.onboarding.FirstStartActivity;
+import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
 
 public class AddProjectActivity extends AppCompatActivity {
 
@@ -38,7 +37,7 @@ public class AddProjectActivity extends AppCompatActivity {
         else
         {
             finish();
-            startActivity(new Intent(this, FirstStartActivity.class));
+            startActivity(new Intent(this, SpaceSetupActivity.class));
         }
     }
 
@@ -52,7 +51,7 @@ public class AddProjectActivity extends AppCompatActivity {
         else
         {
             finish();
-            startActivity(new Intent(this, FirstStartActivity.class));
+            startActivity(new Intent(this, SpaceSetupActivity.class));
         }
 
     }
