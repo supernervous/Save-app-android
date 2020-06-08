@@ -157,6 +157,7 @@ public class PublishService extends Service implements Runnable {
                             media.uploadDate = datePublish;
                             media.progress = 0; //should we reset this?
                             media.status = Media.STATUS_UPLOADING;
+                            media.statusMessage = "";
                         }
 
                         media.setLicenseUrl(proj.getLicenseUrl());
@@ -175,9 +176,14 @@ public class PublishService extends Service implements Runnable {
                                 media.save();
                             }
                         } catch (IOException ioe) {
-                            Log.d(getClass().getName(), "error in uploading media: " + ioe.getMessage(), ioe);
-                            media.status = Media.STATUS_LOCAL;
+                            String err = "error in uploading media: " + ioe.getMessage();
+                            Log.d(getClass().getName(), err, ioe);
+
+                            media.setStatusMessage(err);
+
+                            media.status = Media.STATUS_ERROR;
                             media.save();
+
                         }
                     }
                     else
@@ -328,10 +334,10 @@ public class PublishService extends Service implements Runnable {
             String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             String error = "Error " + errorCode + ": " + errorMessage;
 
-//            Toast.makeText(PublishService.this,error,Toast.LENGTH_LONG).show();
              Log.d("OAPublish", "upload error: " + error);
 
-            uploadMedia.status = Media.STATUS_QUEUED;
+             uploadMedia.setStatusMessage(error);
+            uploadMedia.status = Media.STATUS_ERROR;
             uploadMedia.save();
 
             notifyMediaUpdated(uploadMedia);
@@ -392,8 +398,8 @@ public class PublishService extends Service implements Runnable {
             String error = "Error " + errorCode + ": " + errorMessage;
             //  showError(error);
             // Log.d(TAG, "upload error: " + error);
-
-
+            deleteMedia.status = Media.STATUS_ERROR;
+            deleteMedia.setStatusMessage(error);
             notifyMediaUpdated(deleteMedia);
 
         }

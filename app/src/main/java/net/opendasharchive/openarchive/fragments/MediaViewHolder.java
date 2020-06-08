@@ -230,10 +230,23 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         StringBuffer sbTitle = new StringBuffer();
 
+        if (currentMedia.status == Media.STATUS_ERROR) {
+            sbTitle.append(mContext.getString(R.string.status_error));
 
-        if (currentMedia.status == Media.STATUS_QUEUED) {
+            if (progressBar != null)
+            {
+                progressBar.setVisibility(View.GONE);
+                tvProgress.setVisibility(View.GONE);
+                progressBar.setProgress(0);
+                tvProgress.setText(0 + "%");
+            }
+
+            if (!TextUtils.isEmpty(currentMedia.statusMessage))
+                tvCreateDate.setText(currentMedia.statusMessage);
+
+        }
+        else if (currentMedia.status == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
-
 
             if (progressBar != null)
             {

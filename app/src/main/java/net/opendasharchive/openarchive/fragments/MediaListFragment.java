@@ -28,7 +28,7 @@ public class MediaListFragment extends Fragment {
 
     protected long mProjectId = -1;
     protected long mStatus = Media.STATUS_UPLOADING;
-    protected long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED};
+    protected long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED, Media.STATUS_ERROR};
 
 
     /**

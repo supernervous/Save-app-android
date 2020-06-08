@@ -46,6 +46,7 @@ public class UploadManagerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        mFrag.refresh();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));

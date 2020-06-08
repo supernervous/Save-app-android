@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.services.webdav;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -63,11 +64,8 @@ public class WebDAVSiteController extends SiteController {
         super(context, listener, jobId);
 
         dateFormat = new SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT);
-        sardine = new OkHttpSardine();
 
         if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
-
-            OrbotHelper.requestStartTor(context);
 
             StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
             builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
@@ -80,18 +78,41 @@ public class WebDAVSiteController extends SiteController {
                 @Override
                 public void onConnectionException(Exception e) {
 
+                    Message msg = new Message();
+                    msg.getData().putInt(SiteController.MESSAGE_KEY_CODE, 500);
+                    msg.getData().putString(SiteController.MESSAGE_KEY_MESSAGE, "Unable to connect to Orbot/Tor: " + e.getMessage());
+                    listener.failure(msg);
                 }
 
                 @Override
                 public void onTimeout() {
-
+                    Message msg = new Message();
+                    msg.getData().putInt(SiteController.MESSAGE_KEY_CODE, 500);
+                    msg.getData().putString(SiteController.MESSAGE_KEY_MESSAGE, "Unable to connect to Orbot/Tor: TIMEOUT");
+                    listener.failure(msg);
                 }
 
                 @Override
                 public void onInvalid() {
-
+                    Message msg = new Message();
+                    msg.getData().putInt(SiteController.MESSAGE_KEY_CODE, 500);
+                    msg.getData().putString(SiteController.MESSAGE_KEY_MESSAGE, "Unable to connect to Orbot/Tor: INVALID");
+                    listener.failure(msg);
                 }
             });
+
+            while (sardine == null) {
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                }
+                Log.d(TAG,"waiting for Tor-enabled Sardine to init");
+            }
+
+        }
+        else
+        {
+            sardine = new OkHttpSardine();
         }
 
     }

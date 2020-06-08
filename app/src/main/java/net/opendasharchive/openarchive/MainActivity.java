@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private void updateMenu ()
     {
         if (mMenuUpload != null) {
-            long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED};
+            long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED,Media.STATUS_ERROR};
             int uploadCount = Media.getMediaByStatus(mStatuses,Media.ORDER_PRIORITY).size();
 
             if (uploadCount > 0) {
