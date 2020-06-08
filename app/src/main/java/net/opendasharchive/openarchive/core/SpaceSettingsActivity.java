@@ -2,6 +2,8 @@ package net.opendasharchive.openarchive.core;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -75,6 +77,20 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             startActivity(intent);
 
         });
+
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            StringBuffer appString = new StringBuffer();
+            appString.append(getString(R.string.app_name));
+            appString.append(' ');
+            appString.append(version);
+            ((TextView)findViewById(R.id.txtVersion)).setText(appString.toString());
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
