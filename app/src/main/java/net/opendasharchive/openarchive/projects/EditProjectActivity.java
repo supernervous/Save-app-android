@@ -69,7 +69,7 @@ public class EditProjectActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        updateLicense();
+        //updateLicense();
     }
 
     private void updateProject ()
