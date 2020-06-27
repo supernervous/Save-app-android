@@ -74,8 +74,11 @@ public class MediaAdapter extends RecyclerView.Adapter {
             if (item.getId() == mediaId)
             {
                 item.status = Media.STATUS_UPLOADING;
-                item.progress = progress;
-                notifyItemChanged(i);
+
+                if (progress > item.progress) {
+                    item.progress = progress;
+                    notifyItemChanged(i);
+                }
 
                return true;
             }
@@ -88,13 +91,14 @@ public class MediaAdapter extends RecyclerView.Adapter {
     {
         this.data = data;
 
+        /**
         int priority = data.size();
 
         for (Media media: data)
         {
             media.setPriority(priority--);
             media.save();
-        }
+        }**/
 
         notifyDataSetChanged();
 

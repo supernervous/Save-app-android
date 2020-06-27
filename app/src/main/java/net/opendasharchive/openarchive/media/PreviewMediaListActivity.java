@@ -66,8 +66,11 @@ public class PreviewMediaListActivity extends AppCompatActivity {
     {
         List<Media> listMedia = mFrag.getMediaList();
 
+        int priority = 0;
+
         for (Media media : listMedia)
         {
+            media.setPriority(priority++);
             media.status = Media.STATUS_QUEUED;
             media.save();
         }
