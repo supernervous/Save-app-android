@@ -34,16 +34,6 @@ allprojects {
         maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }
 
     }
-    project.ext {
-        // these are common variables used in */build.gradle
-        // these are common variables used in */build.gradle
-        buildToolsVersion = config.buildToolsVersion
-        compileSdkVersion = config.compileSdkVersion
-        minSdkVersion = config.minSdkVersion
-        targetSdkVersion = config.targetSdkVersion
-        appcompat = config.appcompat
-    }
-
 }
 
 task clean(type: Delete) {

@@ -111,7 +111,7 @@ dependencies {
     implementation libraries.acra_mail
 
     implementation libraries.appcompat
-    implementation libraries.constraintlayout
+    implementation libraries.constraint_layout
     implementation libraries.material
 
     implementation libraries.dropbox_core_sdk
