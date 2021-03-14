@@ -80,7 +80,7 @@ public class OAAppIntro extends AppIntro {
 
        }
 
-        setColorDoneText(getResources().getColor(R.color.oablue));
+        setColorDoneText(getResources().getColor(R.color.white));
         // OPTIONAL METHODS
         // Override bar/separator color.
        // setBarColor(Color.parseColor("#3F51B5"));
