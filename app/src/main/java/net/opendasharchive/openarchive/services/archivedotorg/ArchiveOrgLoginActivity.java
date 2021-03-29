@@ -70,6 +70,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
             mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
             mSpace.host = ARCHIVE_BASE_URL;
             mSpace.name = getString(R.string.label_ia);
+            mSpace.save();
         }
 
 
@@ -80,15 +81,12 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(mSpace.username))
             mAccessKeyView.setText(mSpace.username);
 
-        mSecretKeyView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mSecretKeyView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
 
         showFirstTimeIA();
