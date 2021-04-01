@@ -57,11 +57,13 @@ import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.publish.UploadManagerActivity;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
+import net.opendasharchive.openarchive.ui.JavaConsentRequestUi;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 import net.opendasharchive.openarchive.util.SelectiveViewPager;
 import net.opendasharchive.openarchive.util.Utility;
 
+import org.cleaninsights.sdk.CleanInsights;
 import org.witness.proofmode.ProofMode;
 import org.witness.proofmode.crypto.HashUtils;
 import org.witness.proofmode.crypto.PgpUtils;
@@ -606,6 +608,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         String title = Utility.getUriDisplayName(this,uri);
         String mimeType = Utility.getMimeType(this,uri);
 
+        doMeasurement(mimeType);
+
         File fileImport = getOutputMediaFile(this, title);
         try {
             boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
@@ -687,7 +691,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             Uri uri = intent.getData();
 
-
             if (uri == null)
             {
                 if (Build.VERSION.SDK_INT >= 16 && intent.getClipData() != null && intent.getClipData().getItemCount() > 0) {
@@ -706,7 +709,34 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         return media;
     }
 
+    private void doMeasurement (String mimeType) {
 
+        CleanInsights ci = ((OpenArchiveApp) getApplication()).getCleanInsights();
+
+        if (Prefs.hasConsent()) {
+            ci.measureEvent("media", "import-media",
+                    "april", mimeType, 1.0);
+        }
+        else {
+            JavaConsentRequestUi ui = new JavaConsentRequestUi(this);
+
+            ci.requestConsent("april", ui, granted -> {
+
+                if (granted) {
+                    Prefs.giveConsent();
+                    ci.measureEvent("consent", "consent-given",
+                            "april");
+                    ci.measureEvent("media", "import-media",
+                            "april", mimeType, 1.0);
+                }
+
+
+            });
+
+        }
+
+
+    }
 
     private void importMedia ()
     {

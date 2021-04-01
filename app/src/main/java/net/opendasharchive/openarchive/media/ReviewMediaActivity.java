@@ -656,14 +656,14 @@ public class ReviewMediaActivity extends AppCompatActivity {
         AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
             .setTitle(R.string.popup_remove_title)
             .setMessage(R.string.popup_remove_desc)
-            .setCancelable(true).setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+            .setCancelable(true).setNegativeButton(R.string.lbl_Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //do nothing
             }
         })
 
-            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 

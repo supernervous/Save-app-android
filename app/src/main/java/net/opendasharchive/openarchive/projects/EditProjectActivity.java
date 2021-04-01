@@ -19,9 +19,13 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
+
+import java.util.ArrayList;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -46,6 +50,14 @@ public class EditProjectActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (Prefs.hasConsent()) {
+            ArrayList<String> scenePath = new ArrayList<>();
+            scenePath.add("Main");
+            scenePath.add("EditProject");
+            ((OpenArchiveApp) getApplication()).getCleanInsights().
+                    measureVisit(scenePath, "april");
+        }
 
         long projectId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID,-1L);
 

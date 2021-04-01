@@ -89,4 +89,15 @@ public class Prefs {
     {
         prefs.edit().putLong(PREF_CURRENT_SPACE_ID, spaceId).commit();
     }
+
+    public static final String PREF_HAS_CONSENT = "ci-consented";
+
+    public static void giveConsent ()
+    {
+        putBoolean(PREF_HAS_CONSENT,true);
+    }
+    public static boolean hasConsent ()
+    {
+        return prefs.getBoolean(PREF_HAS_CONSENT, false);
+    }
 }

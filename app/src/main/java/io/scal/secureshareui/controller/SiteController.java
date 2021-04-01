@@ -200,7 +200,7 @@ public abstract class SiteController {
             return areCredentialsValid ? R.drawable.library : R.drawable.library;
         }
 
-        return R.drawable.ic_launcher;
+        return R.drawable.ic_app_notify;
     }
 
 }

@@ -84,7 +84,6 @@ dependencies {
 
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.paolorotolo:appintro:4.1.0'
-    implementation 'com.github.cleaninsights:cleaninsights-android-sdk:4058e052f5'
     implementation 'com.github.derlio:audio-waveform:v1.0.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
@@ -134,6 +133,9 @@ dependencies {
     //alerter
     implementation 'com.tapadoo.android:alerter:5.1.2'
 
+    //measurement
+    implementation 'com.gitlab.cleaninsights:clean-insights-android-sdk:2.4.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 configurations {

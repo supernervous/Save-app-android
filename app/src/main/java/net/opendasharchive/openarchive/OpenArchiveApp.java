@@ -12,6 +12,7 @@ import androidx.multidex.MultiDex;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
+import com.google.android.gms.common.util.IOUtils;
 
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.publish.PublishService;
@@ -25,13 +26,15 @@ import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
 import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
+import org.cleaninsights.sdk.CleanInsights;
+
+import java.io.IOException;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
 import info.guardianproject.netcipher.proxy.OrbotHelper;
-import io.cleaninsights.sdk.CleanInsights;
-import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import okhttp3.OkHttpClient;
+import timber.log.Timber;
 
 /**
  * Created by josh on 3/6/15.
@@ -41,9 +44,9 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
     public static volatile boolean orbotConnected = false;
 
-    private CleanInsightsApplication cleanInsightsApp;
-
     private Space mCurrentSpace = null;
+
+    private CleanInsights mCleanInsights = null;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -76,8 +79,24 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
         initCrashReporting();
 
+        initMeasurement();
 
         uploadQueue();
+    }
+
+    private void initMeasurement () {
+
+        try {
+            String config = new String(IOUtils.readInputStreamFully(
+                    getAssets().open("cleaninsights.json")));
+            mCleanInsights = new CleanInsights(config,getFilesDir());
+        } catch (IOException e) {
+            Timber.d("CleanInsights config json not found");
+        }
+    }
+
+    public CleanInsights getCleanInsights () {
+        return mCleanInsights;
     }
 
     private void initCrashReporting ()
@@ -141,49 +160,6 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         {
             startService(new Intent(this, PublishService.class));
         }
-    }
-
-    public CleanInsightsApplication getCleanInsightsApp ()
-    {
-        return cleanInsightsApp;
-    }
-
-    private void initInsights ()
-    {
-        CleanInsights cim = CleanInsights.getInstance(this);
-
-        //setup a passthrough application for CleanInsights, since we are already a SugarApp
-        cleanInsightsApp = new CleanInsightsApplication() {
-
-            @Override
-            public Context getApplicationContext() {
-                return OpenArchiveApp.this.getApplicationContext();
-            }
-
-            @Override
-            public SharedPreferences getSharedPreferences(String name, int mode) {
-                return OpenArchiveApp.this.getSharedPreferences(name, mode);
-            }
-
-            @Override
-            public String getMeasureUrl() {
-                return "https://demo.cleaninsights.io";
-            }
-
-            @Override
-            public String getMeasureUrlCertificatePin()
-            {
-                //generate your own using this tool: https://github.com/scottyab/ssl-pin-generator
-                return "sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I=";
-            }
-
-            @Override
-            public Integer getSiteId() {
-                return 1;
-            }
-        };
-
-        cim.initPwiki(cleanInsightsApp);
     }
 
     public boolean getUseTor ()
