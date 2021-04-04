@@ -24,7 +24,6 @@ import org.witness.proofmode.ProofMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +96,7 @@ public class DropboxSiteController extends SiteController {
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
         String projectName = media.getServerUrl();
-        String folderName = dateFormat.format(media.updateDate);
+        String folderName = dateFormat.format(media.getCreateDate());
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
         if (media.contentLength == 0) {
