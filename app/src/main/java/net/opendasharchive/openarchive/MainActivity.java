@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private Space mSpace;
 
+    private Snackbar mSnackBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +125,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mPager = findViewById(R.id.pager);
         mPagerAdapter = new ProjectAdapter(this,getSupportFragmentManager());
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        mSnackBar = Snackbar.make(mPager, getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)mSnackBar.getView();
+        snack_view.addView(new ProgressBar(this));
 
         if (mSpace != null) {
             List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
@@ -385,13 +391,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         if (data != null) {
 
-            final Snackbar bar = Snackbar.make(mPager, getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE);
-            Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout)bar.getView();
-            snack_view.addView(new ProgressBar(this));
             // The Very Basic
             new AsyncTask<Void, Void, Media>() {
                 protected void onPreExecute() {
-                    bar.show();
+                    mSnackBar.show();
 
                 }
                 protected Media doInBackground(Void... unused) {
@@ -405,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                         startActivity(reviewMediaIntent);
                     }
 
-                    bar.dismiss();
+                    mSnackBar.dismiss();
 
                     setIntent(null);
                 }
@@ -435,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             int status = intent.getIntExtra(MESSAGE_KEY_STATUS,-1);
             if (status == Media.STATUS_UPLOADED) {
+                mSnackBar.dismiss();
                 if (mPager.getCurrentItem() > 0) {
                     MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
                     if (frag != null)
@@ -445,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
             else if (status == (Media.STATUS_UPLOADING))
             {
+                mSnackBar.show();
                 if (mediaId != -1 && mPager.getCurrentItem() > 0) {
                     MediaListFragment frag = ((MediaListFragment) mPagerAdapter.getRegisteredFragment(mPager.getCurrentItem()));
                     if (frag != null)
