@@ -528,4 +528,19 @@ public class FileUtils {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         return intent;
     }
+
+
+    public static String getMediaPathFromUri(Uri uri, Context context) {
+        ContentResolver cr = context.getContentResolver();
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cur = cr.query(Uri.parse(uri.toString()), projection, null, null, null);
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                String filePath = cur.getString(0);
+                return filePath;
+            }
+            cur.close();
+        }
+        return null;
+    }
 }

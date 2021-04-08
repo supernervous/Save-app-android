@@ -171,7 +171,7 @@ public class WebDAVSiteController extends SiteController {
 
             String basePath = media.getServerUrl();
 
-            String folderName = dateFormat.format(media.updateDate);
+            String folderName = dateFormat.format(media.getCreateDate());
             String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
             StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
