@@ -14,6 +14,7 @@ buildscript {
         classpath "com.neenbedankt.gradle.plugins:android-apt:$versions.neenbedankt_gradle_plugin"
         classpath "com.testdroid:gradle:$versions.testdroid_gradle"
         classpath "gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:$versions.browserstack_gradle_plugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
 }
 

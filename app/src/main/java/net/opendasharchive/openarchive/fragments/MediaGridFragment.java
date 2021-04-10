@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
+import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MediaGridFragment extends MediaListFragment {
 
@@ -52,12 +52,12 @@ public class MediaGridFragment extends MediaListFragment {
 
         mMediaHint = mMainView.findViewById(R.id.add_media_hint);
 
-        List<Collection> listCollections = Collection.getAllAsList();
+        List<Collection> listCollections = Collection.Companion.getAllAsList();
 
         boolean addedView = false;
         for (Collection coll : listCollections) {
 
-            List<Media> listMedia = Media.getMediaByProjectAndCollection(mProjectId, coll.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(mProjectId, coll.getId());
             if (listMedia.size() > 0)
             {
                 if (!addedView)
@@ -133,11 +133,11 @@ public class MediaGridFragment extends MediaListFragment {
 
         LinearLayout mainContainer = mMainView.findViewById(R.id.mediacontainer);
 
-        List<Collection> listCollections = Collection.getAllAsList();
+        List<Collection> listCollections = Collection.Companion.getAllAsList();
 
         for (Collection coll : listCollections) {
 
-            List<Media> listMedia = Media.getMediaByProjectAndCollection(mProjectId, coll.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(mProjectId, coll.getId());
 
             MediaAdapter adapter = mAdapters.get(coll.getId());
             SectionViewHolder holder = mSection.get(coll.getId());
@@ -165,7 +165,7 @@ public class MediaGridFragment extends MediaListFragment {
     {
         for (Media media : listMedia)
         {
-            if (media.status == Media.STATUS_LOCAL)
+            if (media.getStatus() == Media.STATUS_LOCAL)
             {
                 holder.sectionStatus.setText(R.string.status_ready_to_upload);
                 holder.sectionTimestamp.setText(listMedia.size() + getString(R.string.label_items));
@@ -179,13 +179,13 @@ public class MediaGridFragment extends MediaListFragment {
                 break;
 
             }
-            else if (media.status == Media.STATUS_QUEUED || media.status == Media.STATUS_UPLOADING)
+            else if (media.getStatus() == Media.STATUS_QUEUED || media.getStatus() == Media.STATUS_UPLOADING)
             {
                 holder.sectionStatus.setText(R.string.header_uploading);
 
                 int uploadedCount = 0;
                 for (Media localMedia : listMedia)
-                    if (localMedia.status == Media.STATUS_UPLOADED)
+                    if (localMedia.getStatus() == Media.STATUS_UPLOADED)
                         uploadedCount++;
 
                 holder.sectionTimestamp.setText(uploadedCount + " " + getString(R.string.label_out_of) + " " + listMedia.size() + ' ' + getString(R.string.label_items_uploaded));
@@ -199,8 +199,8 @@ public class MediaGridFragment extends MediaListFragment {
                 holder.sectionStatus.setText(listMedia.size() + " " + getString(R.string.label_items_uploaded));
                 if (coll.getUploadDate() != null)
                     holder.sectionTimestamp.setText(coll.getUploadDate().toLocaleString());
-                else if (listMedia.size() > 0 && listMedia.get(0).uploadDate != null)
-                    holder.sectionTimestamp.setText(listMedia.get(0).uploadDate.toString());
+                else if (listMedia.size() > 0 && listMedia.get(0).getUploadDate() != null)
+                    holder.sectionTimestamp.setText(listMedia.get(0).getUploadDate().toString());
 
                 holder.action.setVisibility(View.GONE);
             }

@@ -5,19 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.db.MediaAdapter;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaAdapter;
+
+import java.util.List;
 
 public class MediaListFragment extends Fragment {
 
@@ -73,12 +72,12 @@ public class MediaListFragment extends Fragment {
 
             if (mProjectId == -1)
             {
-                listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
+                listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
             }
             else
             {
-                listMedia = Media.getMediaByProject(mProjectId);
+                listMedia = Media.Companion.getMediaByProject(mProjectId);
             }
 
             mMediaAdapter.updateData(listMedia);
@@ -106,15 +105,15 @@ public class MediaListFragment extends Fragment {
 
         if (mProjectId == -1)
         {
-            listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
+            listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
         }
         else
         {
-            listMedia = Media.getMediaByProject(mProjectId);
+            listMedia = Media.Companion.getMediaByProject(mProjectId);
 
             for (Media media : listMedia)
             {
-                if (media.status == Media.STATUS_LOCAL)
+                if (media.getStatus() == Media.STATUS_LOCAL)
                 {
 
                     break;

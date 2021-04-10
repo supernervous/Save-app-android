@@ -217,7 +217,7 @@ public class DropboxLoginActivity extends AppCompatActivity {
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

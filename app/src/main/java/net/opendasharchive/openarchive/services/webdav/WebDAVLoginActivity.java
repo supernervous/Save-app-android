@@ -31,8 +31,6 @@ import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Prefs;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -400,7 +398,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

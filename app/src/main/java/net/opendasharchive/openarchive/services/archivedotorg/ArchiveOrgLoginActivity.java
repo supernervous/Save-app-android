@@ -6,13 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -316,7 +314,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

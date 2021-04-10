@@ -67,6 +67,7 @@ import java.util.List;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
+import static net.opendasharchive.openarchive.db.Media.ORDER_PRIORITY;
 import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
@@ -496,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     {
         if (mMenuUpload != null) {
             long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED,Media.STATUS_ERROR};
-            int uploadCount = Media.getMediaByStatus(mStatuses,Media.ORDER_PRIORITY).size();
+            int uploadCount = Media.Companion.getMediaByStatus(mStatuses, ORDER_PRIORITY).size();
 
             if (uploadCount > 0) {
                 mMenuUpload.setVisible(true);
@@ -622,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (project.getOpenCollectionId() == -1L)
         {
             coll = new Collection();
-            coll.projectId = project.getId();
+            coll.setProjectId(project.getId());
             coll.save();
             project.setOpenCollectionId(coll.getId());
             project.save();
@@ -635,32 +636,32 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     || coll.getUploadDate() != null)
             {
                 coll = new Collection();
-                coll.projectId = project.getId();
+                coll.setProjectId(project.getId());
                 coll.save();
                 project.setOpenCollectionId(coll.getId());
                 project.save();
             }
         }
 
-        media.collectionId = coll.getId();
+        media.setCollectionId(coll.getId());
 
         File fileSource = new File(FileUtils.getMediaPathFromUri(uri, this));
         Date createDate = new Date();
         if (fileSource.exists()) {
             createDate = new Date(fileSource.lastModified());
-            media.contentLength = fileSource.length();
+            media.setContentLength(fileSource.length());
         }
         else
-            media.contentLength = fileImport.length();
+            media.setContentLength(fileImport.length());
 
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
         media.setCreateDate(createDate);
         media.setUpdateDate(media.getCreateDate());
-        media.status = Media.STATUS_LOCAL;
+        media.setStatus(Media.STATUS_LOCAL);
 
-        media.mediaHashString =HashUtils.getSHA256FromFileContent(fileImport);
-        media.projectId = project.getId();
+        media.setMediaHashString(HashUtils.getSHA256FromFileContent(fileImport));
+        media.setProjectId(project.getId());
 
         if (title != null)
             media.setTitle(title);

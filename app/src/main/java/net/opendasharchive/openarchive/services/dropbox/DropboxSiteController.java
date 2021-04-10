@@ -99,10 +99,10 @@ public class DropboxSiteController extends SiteController {
         String folderName = dateFormat.format(media.getCreateDate());
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
-        if (media.contentLength == 0) {
+        if (media.getContentLength() == 0) {
             File fileMedia = new File(mediaUri.getPath());
             if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
+                media.setContentLength(fileMedia.length());
         }
 
         try {

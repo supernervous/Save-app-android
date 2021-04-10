@@ -1,8 +1,5 @@
 package net.opendasharchive.openarchive.db;
 
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.view.ActionMode;
@@ -13,25 +10,24 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.media.BatchReviewMediaActivity;
-import net.opendasharchive.openarchive.util.Globals;
-import net.opendasharchive.openarchive.media.ReviewMediaActivity;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
-import net.opendasharchive.openarchive.util.Prefs;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MotionEventCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.fragments.MediaListFragment;
+import net.opendasharchive.openarchive.fragments.MediaViewHolder;
+import net.opendasharchive.openarchive.media.BatchReviewMediaActivity;
+import net.opendasharchive.openarchive.media.ReviewMediaActivity;
+import net.opendasharchive.openarchive.util.Globals;
+import net.opendasharchive.openarchive.util.Prefs;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by micahjlucas on 1/20/15.
@@ -73,8 +69,8 @@ public class MediaAdapter extends RecyclerView.Adapter {
             Media item = data.get(i);
             if (item.getId() == mediaId)
             {
-                item.status = Media.STATUS_UPLOADING;
-                item.progress = progress;
+                item.setStatus(Media.STATUS_UPLOADING);
+                item.setProgress(progress);
                 notifyItemChanged(i);
 
                return true;
@@ -164,7 +160,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
                     for (Media media : getMediaList()) {
 
                         if (media.getId() == mediaId) {
-                            media.setFlagged(!media.isFlagged());
+                            media.setFlag(!media.getFlag());
                             media.save();
                             break;
                         }
@@ -200,7 +196,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
         for (Media media : getMediaList()) {
 
             if (media.getId() == mediaId) {
-                media.setSelected(!media.isSelected());
+                media.setSelected(!media.getSelected());
                 media.save();
                 break;
             }
@@ -270,7 +266,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
         if (this.isEditMode) {
             Media mediaToDismiss = data.get(pos);
             data.remove(mediaToDismiss);
-            mediaToDismiss.status = Media.STATUS_LOCAL;
+            mediaToDismiss.setStatus(Media.STATUS_LOCAL);
             mediaToDismiss.save();
         }
 
@@ -321,7 +317,7 @@ public class MediaAdapter extends RecyclerView.Adapter {
                     while (it.hasNext())
                     {
                         Media mediaDelete = it.next();
-                        if (mediaDelete.isSelected()) {
+                        if (mediaDelete.getSelected()) {
                             data.remove(mediaDelete);
                             mediaDelete.delete();
                         }

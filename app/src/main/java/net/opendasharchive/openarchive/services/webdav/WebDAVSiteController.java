@@ -29,12 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -185,13 +180,13 @@ public class WebDAVSiteController extends SiteController {
 
             String projectFolderPath = projectFolderBuilder.toString();
 
-            if (media.contentLength == 0) {
+            if (media.getContentLength() == 0) {
                 File fileMedia = new File(mediaUri.getPath());
                 if (fileMedia.exists())
-                    media.contentLength = fileMedia.length();
+                    media.setContentLength(fileMedia.length());
             }
 
-            if (media.mediaHash == null) {
+            if (media.getMediaHash() == null) {
 
             }
 
@@ -208,7 +203,7 @@ public class WebDAVSiteController extends SiteController {
                 finalMediaPath = projectFolderPath + '/' + fileName;
 
                 if (!sardine.exists(finalMediaPath)) {
-                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false,
+                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getContentLength(), media.getMimeType(), false,
                             new SardineListener() {
 
                         long lastBytes = 0;
@@ -264,7 +259,7 @@ public class WebDAVSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
         String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
-        String folderName = dateFormat.format(media.updateDate);
+        String folderName = dateFormat.format(media.getUpdateDate());
 
         String chunkFolderPath = media.getServerUrl() + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName);
 
@@ -278,11 +273,11 @@ public class WebDAVSiteController extends SiteController {
 
         String projectFolderPath = projectFolderBuilder.toString();
 
-        if (media.contentLength == 0)
+        if (media.getContentLength() == 0)
         {
             File fileMedia = new File(mediaUri.getPath());
             if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
+                media.setContentLength(fileMedia.length());
         }
 
 
@@ -301,7 +296,7 @@ public class WebDAVSiteController extends SiteController {
 
             InputStream is = mContext.getContentResolver().openInputStream(mediaUri);
 
-            while (chunkStartIdx < media.contentLength) {
+            while (chunkStartIdx < media.getContentLength()) {
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

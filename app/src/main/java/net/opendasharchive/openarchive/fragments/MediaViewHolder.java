@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.derlio.waveform.SimpleWaveformView;
 import com.github.derlio.waveform.soundfile.SoundFile;
 import com.squareup.picasso.Picasso;
@@ -19,12 +21,9 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.util.FileUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MediaViewHolder extends RecyclerView.ViewHolder {
 
@@ -85,7 +84,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         mView.setTag(currentMedia.getId());
 
-        if (currentMedia.isSelected() && isBatchMode)
+        if (currentMedia.getSelected() && isBatchMode)
         {
             mView.setBackgroundResource(R.color.oablue);
         }
@@ -96,7 +95,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         final String mediaPath = currentMedia.getOriginalFilePath();
 
-        if (currentMedia.status == Media.STATUS_PUBLISHED || currentMedia.status == Media.STATUS_UPLOADED) {
+        if (currentMedia.getStatus() == Media.STATUS_PUBLISHED || currentMedia.getStatus() == Media.STATUS_UPLOADED) {
             ivIcon.setAlpha(1f);
         }
         else
@@ -206,11 +205,11 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
             }
             else {
 
-                if (currentMedia.contentLength == -1)
+                if (currentMedia.getContentLength() == -1)
                 {
                     try {
                         InputStream is = mContext.getContentResolver().openInputStream(Uri.parse(currentMedia.getOriginalFilePath()));
-                        currentMedia.contentLength = is.available();
+                        currentMedia.setContentLength(is.available());
                         currentMedia.save();
                         is.close();
                     } catch (Exception e) {
@@ -219,8 +218,8 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
                 }
 
-                if (currentMedia.contentLength > 0)
-                    tvCreateDate.setText(readableFileSize(currentMedia.contentLength));
+                if (currentMedia.getContentLength() > 0)
+                    tvCreateDate.setText(readableFileSize(currentMedia.getContentLength()));
                 else
                     tvCreateDate.setText(currentMedia.getFormattedCreateDate());
             }
@@ -230,7 +229,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
 
         StringBuffer sbTitle = new StringBuffer();
 
-        if (currentMedia.status == Media.STATUS_ERROR) {
+        if (currentMedia.getStatus() == Media.STATUS_ERROR) {
             sbTitle.append(mContext.getString(R.string.status_error));
 
             if (progressBar != null)
@@ -241,11 +240,11 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                 tvProgress.setText(0 + "%");
             }
 
-            if (!TextUtils.isEmpty(currentMedia.statusMessage))
-                tvCreateDate.setText(currentMedia.statusMessage);
+            if (!TextUtils.isEmpty(currentMedia.getStatusMessage()))
+                tvCreateDate.setText(currentMedia.getStatusMessage());
 
         }
-        else if (currentMedia.status == Media.STATUS_QUEUED) {
+        else if (currentMedia.getStatus() == Media.STATUS_QUEUED) {
             sbTitle.append(mContext.getString(R.string.status_waiting));
 
             if (progressBar != null)
@@ -257,13 +256,13 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                 tvProgress.setText(0 + "%");
             }
 
-        } else if (currentMedia.status == Media.STATUS_UPLOADING || currentMedia.status == Media.STATUS_UPLOADED) {
+        } else if (currentMedia.getStatus() == Media.STATUS_UPLOADING || currentMedia.getStatus() == Media.STATUS_UPLOADED) {
             sbTitle.append(mContext.getString(R.string.status_uploading));
 
              int perc = 0;
 
-             if (currentMedia.contentLength > 0)
-                perc = (int)(((float)currentMedia.progress) / ((float)currentMedia.contentLength) * 100f);
+             if (currentMedia.getContentLength() > 0)
+                perc = (int)(((float)currentMedia.getProgress()) / ((float)currentMedia.getContentLength()) * 100f);
 
              if (progressBar != null)
              {
@@ -302,7 +301,7 @@ public class MediaViewHolder extends RecyclerView.ViewHolder {
                 ivEditNotes.setImageResource(R.drawable.ic_edit_unselected);
 
         if (ivEditFlag != null)
-        if (currentMedia.isFlagged())
+        if (currentMedia.getFlag())
             ivEditFlag.setImageResource(R.drawable.ic_flag_selected);
         else
             ivEditFlag.setImageResource(R.drawable.ic_flag_unselected);
