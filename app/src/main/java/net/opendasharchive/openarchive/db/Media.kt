@@ -34,10 +34,6 @@ data class Media(
         var selected: Boolean = false
 ) : SugarRecord() {
 
-    private val WHERE_NOT_DELETED = arrayOf(STATUS_UPLOADED.toString() + "")
-    private val PRIORITY_DESC = "priority DESC"
-    private val ORDER_STATUS_AND_PRIORITY = "STATUS, PRIORITY DESC"
-
     enum class MEDIA_TYPE {
         AUDIO, IMAGE, VIDEO, FILE
     }
@@ -88,6 +84,9 @@ data class Media(
         //public final static int STATUS_ARCHIVED = 5;
 
         const val ORDER_PRIORITY = "PRIORITY DESC"
+        private val WHERE_NOT_DELETED = arrayOf(STATUS_UPLOADED.toString() + "")
+        private val PRIORITY_DESC = "priority DESC"
+        private val ORDER_STATUS_AND_PRIORITY = "STATUS, PRIORITY DESC"
 
 
         fun getMediaByProjectAndCollection(projectId: Long, collectionId: Long): List<Media>? {

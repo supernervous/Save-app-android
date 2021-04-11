@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         snack_view.addView(new ProgressBar(this));
 
         if (mSpace != null) {
-            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+            List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
             if (listProjects.size() > 0)
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private void refreshProjects ()
     {
         if (mSpace != null) {
-            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+            List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter = new ProjectAdapter(this, getSupportFragmentManager());
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
@@ -281,13 +281,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 new IntentFilter(INTENT_FILTER_NAME));
         mAvatar.setImageResource(R.drawable.avatar_default);
 
-        Space spaceCurrent = Space.getCurrentSpace();
+        Space spaceCurrent = Space.Companion.getCurrentSpace();
 
         if (spaceCurrent != null)
         {
             if (mSpace != null) {
 
-                List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+                List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
 
                 if (mSpace.getId() != spaceCurrent.getId())
                 {
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             refreshCurrentProject();
         }
 
-        if (mSpace == null || TextUtils.isEmpty(mSpace.host))
+        if (mSpace == null || TextUtils.isEmpty(mSpace.getHost()))
         {
             Intent intent = new Intent(this, OAAppIntro.class);
             startActivity(intent);
@@ -337,15 +337,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     {
         mSpace = space;
 
-        if (mSpace != null &&(!TextUtils.isEmpty(mSpace.name)))
-            setTitle(mSpace.name);
+        if (mSpace != null &&(!TextUtils.isEmpty(mSpace.getName())))
+            setTitle(mSpace.getName());
         else {
 
-            Iterator<Space> listSpaces = Space.getAllAsList();
+            Iterator<Space> listSpaces = Space.Companion.getAllAsList();
             if (listSpaces.hasNext())
             {
                 mSpace = listSpaces.next();
-                setTitle(mSpace.name);
+                setTitle(mSpace.getName());
                 Prefs.setCurrentSpaceId(mSpace.getId());
 
 
@@ -355,13 +355,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         }
 
-        if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
+        if (mSpace.getType() == Space.TYPE_INTERNET_ARCHIVE) {
             mAvatar.setImageResource(R.drawable.ialogo128);
         }
         else
         {
             TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(mSpace.name.substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
+                    .buildRound(mSpace.getName().substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
             mAvatar.setImageDrawable(drawable);
         }
     }

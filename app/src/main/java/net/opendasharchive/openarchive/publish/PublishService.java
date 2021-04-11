@@ -166,7 +166,7 @@ public class PublishService extends Service implements Runnable {
                                     coll.setUploadDate(datePublish);
                                     coll.save();
                                     if (proj != null) {
-                                        proj.setOpenCollectionId(-1);
+                                        proj.setOpenCollectionId(-1L);
                                         proj.save();
                                     }
                                 }
@@ -215,21 +215,21 @@ public class PublishService extends Service implements Runnable {
     private boolean uploadMedia (Media media) throws IOException
     {
 
-        Project project = Project.getById(media.getProjectId());
+        Project project = Project.Companion.getById(media.getProjectId());
 
         if (project != null) {
             HashMap<String, String> valueMap = ArchiveSiteController.getMediaMetadata(this, media);
-            media.setServerUrl(project.description);
+            media.setServerUrl(project.getDescription());
             media.setStatus(Media.STATUS_UPLOADING);
             media.save();
             notifyMediaUpdated(media);
 
             Space space = null;
 
-            if (project.spaceId != -1L)
-                space = Space.findById(Space.class, project.spaceId);
+            if (project.getSpaceId() != -1L)
+                space = Space.findById(Space.class, project.getSpaceId());
             else
-                space = Space.getCurrentSpace();
+                space = Space.Companion.getCurrentSpace();
 
 
 
@@ -237,11 +237,11 @@ public class PublishService extends Service implements Runnable {
 
                 SiteController sc = null;
 
-                if (space.type == Space.TYPE_WEBDAV)
+                if (space.getType() == Space.TYPE_WEBDAV)
                     sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
-                else if (space.type == Space.TYPE_INTERNET_ARCHIVE)
+                else if (space.getType() == Space.TYPE_INTERNET_ARCHIVE)
                     sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
-                else if (space.type == Space.TYPE_DROPBOX)
+                else if (space.getType() == Space.TYPE_DROPBOX)
                     sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, new UploaderListener(media), null);
 
                 listControllers.add(sc);

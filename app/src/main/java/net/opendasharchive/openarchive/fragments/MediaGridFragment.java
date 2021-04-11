@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.db.MediaAdapter;
 import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 
 import java.util.HashMap;

@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.projects;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -20,8 +19,6 @@ import net.opendasharchive.openarchive.db.Space;
 
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CreateNewProjectActivity extends AppCompatActivity {
 
@@ -82,21 +79,21 @@ public class CreateNewProjectActivity extends AppCompatActivity {
 
     private boolean createProject (String description)
     {
-        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(), false);
+        List<Project> listProjects = Project.Companion.getAllBySpace(Space.Companion.getCurrentSpace().getId(), false);
 
         //check for duplicate name
         for (Project project : listProjects)
         {
-           if (project.description.equals(description)) {
+           if (project.getDescription().equals(description)) {
                Toast.makeText(this,getString(R.string.error_project_exists),Toast.LENGTH_LONG).show();
                return false;
            }
         }
 
         Project project = new Project ();
-        project.created = new Date();
-        project.description = description;
-        project.spaceId = Space.getCurrentSpace().getId();
+        project.setCreated(new Date());
+        project.setDescription(description);
+        project.setSpaceId(Space.Companion.getCurrentSpace().getId());
         project.save();
 
         return true;

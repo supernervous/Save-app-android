@@ -29,7 +29,7 @@ public class AddProjectActivity extends AppCompatActivity {
 
     public void onNewProjectClicked (View view) {
 
-        Space space = Space.getCurrentSpace();
+        Space space = Space.Companion.getCurrentSpace();
         if (space != null) {
             Intent intent = new Intent(this, CreateNewProjectActivity.class);
             startActivityForResult(intent, 1000);
@@ -43,7 +43,7 @@ public class AddProjectActivity extends AppCompatActivity {
 
     public void onBrowseProjects (View view) {
 
-        Space space = Space.getCurrentSpace();
+        Space space = Space.Companion.getCurrentSpace();
         if (space != null) {
             Intent intent = new Intent(this, BrowseProjectsActivity.class);
             startActivityForResult(intent, 1001);

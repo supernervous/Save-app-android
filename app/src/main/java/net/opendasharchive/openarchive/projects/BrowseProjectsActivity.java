@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -96,12 +95,12 @@ public class BrowseProjectsActivity extends AppCompatActivity {
 
     private boolean projectExists (String name)
     {
-        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId(), false);
+        List<Project> listProjects = Project.Companion.getAllBySpace(Space.Companion.getCurrentSpace().getId(), false);
 
         //check for duplicate name
         for (Project project : listProjects)
         {
-            if (project.description.equals(name)) {
+            if (project.getDescription().equals(name)) {
                 return true;
             }
         }
@@ -112,9 +111,9 @@ public class BrowseProjectsActivity extends AppCompatActivity {
     private void createProject (String description)
     {
         Project project = new Project ();
-        project.created = new Date();
-        project.description = description;
-        project.spaceId = Space.getCurrentSpace().getId();
+        project.setCreated(new Date());
+        project.setDescription(description);
+        project.setSpaceId(Space.Companion.getCurrentSpace().getId());
         project.save();
     }
 
@@ -123,18 +122,18 @@ public class BrowseProjectsActivity extends AppCompatActivity {
     {
         SiteController sc = null;
 
-        Space space = Space.getCurrentSpace();
+        Space space = Space.Companion.getCurrentSpace();
 
         if (space != null) {
 
-            if (space.type == Space.TYPE_WEBDAV)
+            if (space.getType() == Space.TYPE_WEBDAV)
                 sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, null, null);
-            else if (space.type == Space.TYPE_DROPBOX)
+            else if (space.getType() == Space.TYPE_DROPBOX)
                 sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, null, null);
 
             if (sc != null) {
                 try {
-                    listFolders = sc.getFolders(space, space.host);
+                    listFolders = sc.getFolders(space, space.getHost());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

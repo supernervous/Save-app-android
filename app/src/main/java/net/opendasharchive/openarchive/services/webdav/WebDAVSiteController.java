@@ -121,8 +121,8 @@ public class WebDAVSiteController extends SiteController {
     public void startAuthentication(Space space) {
 
         if (sardine != null) {
-            sardine.setCredentials(space.username, space.password);
-            server = space.host;
+            sardine.setCredentials(space.getUsername(), space.getPassword());
+            server = space.getHost();
         }
     }
 
@@ -175,7 +175,7 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(space.username).append('/');
+            projectFolderBuilder.append(space.getUsername()).append('/');
             projectFolderBuilder.append(basePath);
 
             String projectFolderPath = projectFolderBuilder.toString();
@@ -268,7 +268,7 @@ public class WebDAVSiteController extends SiteController {
         if (!server.endsWith("/"))
             projectFolderBuilder.append('/');
         projectFolderBuilder.append("uploads/");
-        projectFolderBuilder.append(space.username).append('/');
+        projectFolderBuilder.append(space.getUsername()).append('/');
         projectFolderBuilder.append(chunkFolderPath);
 
         String projectFolderPath = projectFolderBuilder.toString();
@@ -354,7 +354,7 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(space.username)).append('/');
+            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(space.getUsername())).append('/');
             projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(media.getServerUrl()));
 
             projectFolderPath = projectFolderBuilder.toString();
@@ -398,7 +398,7 @@ public class WebDAVSiteController extends SiteController {
     {
 
         //update to the latest project license
-        Project project = Project.getById(media.getProjectId());
+        Project project = Project.Companion.getById(media.getProjectId());
         media.setLicenseUrl(project.getLicenseUrl());
 
         String urlMeta = basePath + '/' + fileName + ".meta.json";
@@ -538,7 +538,7 @@ public class WebDAVSiteController extends SiteController {
         StringBuffer sbFolderPath = new StringBuffer();
         sbFolderPath.append(path);
         sbFolderPath.append(FILE_BASE);
-        sbFolderPath.append(space.username).append('/');
+        sbFolderPath.append(space.getUsername()).append('/');
 
         String baseFolderPath = sbFolderPath.toString();
         List<DavResource> listFolders = sardine.list(baseFolderPath);

@@ -126,7 +126,7 @@ public class ArchiveSiteController extends SiteController {
 	public void startRegistration(Space space) {
 		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
 		intent.putExtra("register",true);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.password);
+		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
 		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
 		// FIXME not a safe cast, context might be a service
 	}
@@ -134,7 +134,7 @@ public class ArchiveSiteController extends SiteController {
 	@Override
 	public void startAuthentication(Space space) {
 		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.password);
+		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
 		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
 		// FIXME not a safe cast, context might be a service
 	}
@@ -203,7 +203,7 @@ public class ArchiveSiteController extends SiteController {
             headersBuilder.add("x-archive-auto-make-bucket","1");
             headersBuilder.add("x-amz-auto-make-bucket", "1");
             headersBuilder.add("x-archive-meta-language", "eng"); // FIXME set based on locale or selected
-            headersBuilder.add("authorization", "LOW " + space.username + ":" + space.password);
+            headersBuilder.add("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
 
             if(!TextUtils.isEmpty(author)) {
                 headersBuilder.add("x-archive-meta-author", author);
@@ -398,7 +398,7 @@ public class ArchiveSiteController extends SiteController {
                 .addHeader("Accept", "*/*")
                 .addHeader("x-archive-cascade-delete", "1")
                 .addHeader("x-archive-keep-old-version", "0")
-                .addHeader("authorization", "LOW " + space.username + ":" + space.password);
+                .addHeader("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
 
         Request request = builder.build();
 

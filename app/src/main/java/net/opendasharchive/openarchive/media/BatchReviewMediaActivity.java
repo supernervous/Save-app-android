@@ -26,7 +26,6 @@ import com.stfalcon.frescoimageviewer.ImageViewer;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.util.Globals;
 
@@ -262,7 +261,7 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
 
     private void setLicense (Media media)
     {
-        Project project = Project.getById(media.getProjectId());
+        Project project = Project.Companion.getById(media.getProjectId());
         media.setLicenseUrl(project.getLicenseUrl());
     }
 

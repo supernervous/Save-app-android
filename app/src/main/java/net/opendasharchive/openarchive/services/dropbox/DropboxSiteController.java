@@ -31,6 +31,8 @@ import java.util.HashMap;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
 
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST;
+
 public class DropboxSiteController extends SiteController {
 
 
@@ -62,9 +64,9 @@ public class DropboxSiteController extends SiteController {
     @Override
     public void startAuthentication(Space space) {
 
-        space.host = "dropbox.com";
+        space.setHost(DROPBOX_HOST);
 
-        String accessToken = space.password;
+        String accessToken = space.getPassword();
 
         if (!TextUtils.isEmpty(accessToken)) {
             dbClient = new DropboxClientFactory();

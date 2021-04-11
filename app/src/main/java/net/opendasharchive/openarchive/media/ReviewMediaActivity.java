@@ -40,7 +40,6 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
@@ -295,7 +294,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void setLicense ()
     {
 
-        Project project = Project.getById(mMedia.getProjectId());
+        Project project = Project.Companion.getById(mMedia.getProjectId());
         mMedia.setLicenseUrl(project.getLicenseUrl());
     }
 
@@ -480,7 +479,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void uploadMedia ()
     {
         
-        Space space = Space.getCurrentSpace();
+        Space space = Space.Companion.getCurrentSpace();
 
 
         // if user doesn't have an account
