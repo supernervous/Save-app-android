@@ -8,9 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.orm.SugarRecord.find
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.fragments.MediaListFragment
-import net.opendasharchive.openarchive.fragments.MediaListFragment.OnStartDragListener
 import net.opendasharchive.openarchive.media.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.media.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.Globals
@@ -27,11 +28,12 @@ class MediaAdapter(
     private var doImageFade = true
     private var isEditMode = false
     private var mActionMode: ActionMode? = null
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layoutResourceId, parent, false)
 
-        val mvh = MediaViewHolder(mContext, view)
+        val mvh = MediaViewHolder(mContext, view, scope)
         mvh.doImageFade = doImageFade
 
         view.setOnClickListener { v ->
@@ -58,7 +60,7 @@ class MediaAdapter(
             true
         }
 
-        if (mvh.ivEditFlag != null) mvh.ivEditFlag.setOnClickListener {
+        mvh.ivEditFlag?.setOnClickListener {
             showFirstTimeFlag()
 
             //toggle flag
@@ -82,15 +84,13 @@ class MediaAdapter(
 
         holder.bindData(data[position], mActionMode != null)
 
-        if (holder.handleView != null) {
-            if (isEditMode) holder.handleView.visibility = View.VISIBLE else holder.handleView.visibility = View.GONE
-            holder.handleView.setOnTouchListener { v, event ->
-                if (MotionEventCompat.getActionMasked(event) ==
-                        MotionEvent.ACTION_DOWN) {
-                    if (mDragStartListener != null) mDragStartListener.onStartDrag(holder)
-                }
-                false
+        if (isEditMode) holder.handleView?.visibility = View.VISIBLE else holder.handleView?.visibility = View.GONE
+        holder.handleView?.setOnTouchListener { v, event ->
+            if (MotionEventCompat.getActionMasked(event) ==
+                    MotionEvent.ACTION_DOWN) {
+                mDragStartListener?.onStartDrag(holder)
             }
+            false
         }
     }
 
@@ -180,7 +180,7 @@ class MediaAdapter(
         notifyDataSetChanged()
     }
 
-    private val mActionModeCallback = object: ActionMode.Callback {
+    private val mActionModeCallback = object : ActionMode.Callback {
 
         // Called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
@@ -221,6 +221,7 @@ class MediaAdapter(
             mode?.menuInflater?.inflate(R.menu.menu_batch_edit_media, menu)
             return true
         }
+
         // Called each time the action mode is shown. Always called after onCreateActionMode, but
         // may be called multiple times if the mode is invalidated.
         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {

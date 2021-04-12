@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
-import com.github.derlio.waveform.soundfile.SoundFile;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
@@ -369,13 +368,6 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
         }
         else if (media.getMimeType().startsWith("audio")) {
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
-
-            SoundFile soundFile = MediaViewHolder.mSoundFileCache.get( media.getOriginalFilePath());
-            if (soundFile != null) {
-              //  swMedia.setAudioFile(soundFile);
-               // swMedia.setVisibility(View.VISIBLE);
-               // ivMedia.setVisibility(View.GONE);
-            }
         }
         else
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.no_thumbnail));

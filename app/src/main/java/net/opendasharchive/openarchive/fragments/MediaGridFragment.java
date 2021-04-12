@@ -14,15 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaAdapter;
 import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Dispatchers;
 
 public class MediaGridFragment extends MediaListFragment {
 
     private int numberOfColumns = 4;
-    private HashMap<Long,MediaAdapter> mAdapters;
+    private HashMap<Long, MediaAdapter> mAdapters;
     private HashMap<Long,SectionViewHolder> mSection;
 
     private View mMainView;
@@ -107,11 +112,9 @@ public class MediaGridFragment extends MediaListFragment {
 
         setSectionHeaders(coll, listMedia, holder);
 
-        MediaAdapter mediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square, listMedia, rView, new OnStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        ArrayList<Media> listMediaArray = new ArrayList<>(listMedia);
+        MediaAdapter mediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_square, listMediaArray, rView, viewHolder -> {
 
-            }
         });
         rView.setAdapter(mediaAdapter);
         mAdapters.put(coll.getId(),mediaAdapter);
@@ -141,9 +144,11 @@ public class MediaGridFragment extends MediaListFragment {
             MediaAdapter adapter = mAdapters.get(coll.getId());
             SectionViewHolder holder = mSection.get(coll.getId());
 
+            ArrayList listMediaArray = new ArrayList(listMedia);
+
             if (adapter != null)
             {
-                adapter.updateData(listMedia);
+                adapter.updateData(listMediaArray);
 
                 setSectionHeaders(coll, listMedia, holder);
 

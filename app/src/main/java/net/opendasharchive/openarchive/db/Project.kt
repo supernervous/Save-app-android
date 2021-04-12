@@ -9,7 +9,7 @@ data class Project(
         var created: Date? = null,
         var spaceId: Long? = null,
         var archived: Boolean = false,
-        var openCollectionId: Long? = null,
+        var openCollectionId: Long = -1,
         var licenseUrl: String? = null
 ) : SugarRecord() {
 

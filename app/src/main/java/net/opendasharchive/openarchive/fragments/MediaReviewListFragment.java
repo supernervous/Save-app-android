@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +36,8 @@ public class MediaReviewListFragment extends MediaListFragment {
         if (mMediaAdapter != null)
         {
             List<Media> listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
-            mMediaAdapter.updateData(listMedia);
+            ArrayList listMediaArray = new ArrayList(listMedia);
+            mMediaAdapter.updateData(listMediaArray);
 
         }
 
@@ -58,11 +61,9 @@ public class MediaReviewListFragment extends MediaListFragment {
 
         List<Media> listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMedia, rView, new OnStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        ArrayList listMediaArray = new ArrayList(listMedia);
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMediaArray, rView, (OnStartDragListener) viewHolder -> {
 
-            }
         });
 
 

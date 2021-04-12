@@ -38,6 +38,7 @@ import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaViewHolder;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
