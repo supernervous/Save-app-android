@@ -6,13 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +21,7 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.util.Constants;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.List;
@@ -31,6 +30,7 @@ import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
 
 import static io.scal.secureshareui.controller.ArchiveSiteController.ARCHIVE_BASE_URL;
+import static net.opendasharchive.openarchive.util.Constants.EMPTY_STRING;
 
 /**
  * A login screen that offers login via email/password.
@@ -67,9 +67,9 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
         if (mSpace == null) {
             mSpace = new Space();
-            mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
-            mSpace.host = ARCHIVE_BASE_URL;
-            mSpace.name = getString(R.string.label_ia);
+            mSpace.setType(Space.TYPE_INTERNET_ARCHIVE);
+            mSpace.setHost(ARCHIVE_BASE_URL);
+            mSpace.setName(getString(R.string.label_ia));
             mSpace.save();
         }
 
@@ -78,8 +78,8 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
         mAccessKeyView = findViewById(R.id.accesskey);
         mSecretKeyView = findViewById(R.id.secretkey);
 
-        if (!TextUtils.isEmpty(mSpace.username))
-            mAccessKeyView.setText(mSpace.username);
+        if (!TextUtils.isEmpty(mSpace.getUsername()))
+            mAccessKeyView.setText(mSpace.getUsername());
 
         mSecretKeyView.setOnEditorActionListener((textView, id, keyEvent) -> {
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -127,17 +127,17 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
             if (resultCode == android.app.Activity.RESULT_OK) {
 
                 String credentials = intent.getStringExtra(SiteController.EXTRAS_KEY_CREDENTIALS);
-                mSpace.password = (credentials != null ? credentials : "");
+                mSpace.setPassword((credentials != null ? credentials : EMPTY_STRING));
 
                 String username = intent.getStringExtra(SiteController.EXTRAS_KEY_USERNAME);
-                mSpace.username = (username != null ? username : "");
+                mSpace.setUsername((username != null ? username : EMPTY_STRING));
 
                 mAccessKeyView.setText(username);
 
                 mSecretKeyView.setText(credentials);
-                mSpace.name = getString(R.string.label_ia);
+                mSpace.setName(getString(R.string.label_ia));
 
-                mSpace.type = Space.TYPE_INTERNET_ARCHIVE;
+                mSpace.setType(Space.TYPE_INTERNET_ARCHIVE);
 
                 mSpace.save();
 
@@ -311,12 +311,12 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
     private void confirmRemoveSpace () {
         mSpace.delete();
 
-        List<Project> listProjects = Project.getAllBySpace(mSpace.getId());
+        List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId());
 
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

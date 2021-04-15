@@ -20,18 +20,14 @@ import java.util.Date;
 
 //import info.guardianproject.onionkit.ui.OrbotHelper;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -40,8 +36,6 @@ import android.webkit.CookieSyncManager;
 import android.webkit.MimeTypeMap;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import net.opendasharchive.openarchive.db.Media;
 
 import androidx.fragment.app.FragmentActivity;
 

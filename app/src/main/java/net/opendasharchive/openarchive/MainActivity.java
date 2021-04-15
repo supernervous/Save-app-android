@@ -67,6 +67,7 @@ import java.util.List;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
+import static net.opendasharchive.openarchive.db.Media.ORDER_PRIORITY;
 import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
 import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         snack_view.addView(new ProgressBar(this));
 
         if (mSpace != null) {
-            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+            List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
             if (listProjects.size() > 0)
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private void refreshProjects ()
     {
         if (mSpace != null) {
-            List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+            List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
             mPagerAdapter = new ProjectAdapter(this, getSupportFragmentManager());
             mPagerAdapter.updateData(listProjects);
             mPager.setAdapter(mPagerAdapter);
@@ -280,13 +281,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 new IntentFilter(INTENT_FILTER_NAME));
         mAvatar.setImageResource(R.drawable.avatar_default);
 
-        Space spaceCurrent = Space.getCurrentSpace();
+        Space spaceCurrent = Space.Companion.getCurrentSpace();
 
         if (spaceCurrent != null)
         {
             if (mSpace != null) {
 
-                List<Project> listProjects = Project.getAllBySpace(mSpace.getId(), false);
+                List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId(), false);
 
                 if (mSpace.getId() != spaceCurrent.getId())
                 {
@@ -315,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             refreshCurrentProject();
         }
 
-        if (mSpace == null || TextUtils.isEmpty(mSpace.host))
+        if (mSpace == null || TextUtils.isEmpty(mSpace.getHost()))
         {
             Intent intent = new Intent(this, OAAppIntro.class);
             startActivity(intent);
@@ -336,15 +337,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     {
         mSpace = space;
 
-        if (mSpace != null &&(!TextUtils.isEmpty(mSpace.name)))
-            setTitle(mSpace.name);
+        if (mSpace != null &&(!TextUtils.isEmpty(mSpace.getName())))
+            setTitle(mSpace.getName());
         else {
 
-            Iterator<Space> listSpaces = Space.getAllAsList();
+            Iterator<Space> listSpaces = Space.Companion.getAllAsList();
             if (listSpaces.hasNext())
             {
                 mSpace = listSpaces.next();
-                setTitle(mSpace.name);
+                setTitle(mSpace.getName());
                 Prefs.setCurrentSpaceId(mSpace.getId());
 
 
@@ -354,13 +355,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         }
 
-        if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
+        if (mSpace.getType() == Space.TYPE_INTERNET_ARCHIVE) {
             mAvatar.setImageResource(R.drawable.ialogo128);
         }
         else
         {
             TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(mSpace.name.substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
+                    .buildRound(mSpace.getName().substring(0,1).toUpperCase(), getResources().getColor(R.color.oablue));
             mAvatar.setImageDrawable(drawable);
         }
     }
@@ -496,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     {
         if (mMenuUpload != null) {
             long[] mStatuses = {Media.STATUS_UPLOADING,Media.STATUS_QUEUED,Media.STATUS_ERROR};
-            int uploadCount = Media.getMediaByStatus(mStatuses,Media.ORDER_PRIORITY).size();
+            int uploadCount = Media.Companion.getMediaByStatus(mStatuses, ORDER_PRIORITY).size();
 
             if (uploadCount > 0) {
                 mMenuUpload.setVisible(true);
@@ -622,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (project.getOpenCollectionId() == -1L)
         {
             coll = new Collection();
-            coll.projectId = project.getId();
+            coll.setProjectId(project.getId());
             coll.save();
             project.setOpenCollectionId(coll.getId());
             project.save();
@@ -635,32 +636,32 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     || coll.getUploadDate() != null)
             {
                 coll = new Collection();
-                coll.projectId = project.getId();
+                coll.setProjectId(project.getId());
                 coll.save();
                 project.setOpenCollectionId(coll.getId());
                 project.save();
             }
         }
 
-        media.collectionId = coll.getId();
+        media.setCollectionId(coll.getId());
 
         File fileSource = new File(FileUtils.getMediaPathFromUri(uri, this));
         Date createDate = new Date();
         if (fileSource.exists()) {
             createDate = new Date(fileSource.lastModified());
-            media.contentLength = fileSource.length();
+            media.setContentLength(fileSource.length());
         }
         else
-            media.contentLength = fileImport.length();
+            media.setContentLength(fileImport.length());
 
         media.setOriginalFilePath(Uri.fromFile(fileImport).toString());
         media.setMimeType(mimeType);
         media.setCreateDate(createDate);
         media.setUpdateDate(media.getCreateDate());
-        media.status = Media.STATUS_LOCAL;
+        media.setStatus(Media.STATUS_LOCAL);
 
-        media.mediaHashString =HashUtils.getSHA256FromFileContent(fileImport);
-        media.projectId = project.getId();
+        media.setMediaHashString(HashUtils.getSHA256FromFileContent(fileImport));
+        media.setProjectId(project.getId());
 
         if (title != null)
             media.setTitle(title);

@@ -31,6 +31,8 @@ import java.util.HashMap;
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
 
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST;
+
 public class DropboxSiteController extends SiteController {
 
 
@@ -62,9 +64,9 @@ public class DropboxSiteController extends SiteController {
     @Override
     public void startAuthentication(Space space) {
 
-        space.host = "dropbox.com";
+        space.setHost(DROPBOX_HOST);
 
-        String accessToken = space.password;
+        String accessToken = space.getPassword();
 
         if (!TextUtils.isEmpty(accessToken)) {
             dbClient = new DropboxClientFactory();
@@ -99,10 +101,10 @@ public class DropboxSiteController extends SiteController {
         String folderName = dateFormat.format(media.getCreateDate());
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
-        if (media.contentLength == 0) {
+        if (media.getContentLength() == 0) {
             File fileMedia = new File(mediaUri.getPath());
             if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
+                media.setContentLength(fileMedia.length());
         }
 
         try {

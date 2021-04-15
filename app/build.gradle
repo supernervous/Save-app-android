@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from : '../dependencies.gradle'
 apply from : '../config.gradle'
 
@@ -65,9 +66,18 @@ android {
         }
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
 }
 
 dependencies {
+
+    implementation libraries.kotlin_stdlib
+    implementation libraries.core_ktx
+
+    implementation libraries.coroutines
     implementation libraries.gson
     //noinspection GradleCompatible
     implementation libraries.okhttp

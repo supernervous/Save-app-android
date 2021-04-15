@@ -21,9 +21,7 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 import org.acra.config.CoreConfigurationBuilder;
-import org.acra.config.DialogConfigurationBuilder;
 import org.acra.config.MailSenderConfigurationBuilder;
-import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
@@ -123,10 +121,12 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
 // Mail config
 
+        /**
         builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
                 .setEnabled(true)
                 .setMailTo(getResources().getString(R.string.crashreportemail))
                 .setReportAsFile(true);
+         **/
 
         // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);

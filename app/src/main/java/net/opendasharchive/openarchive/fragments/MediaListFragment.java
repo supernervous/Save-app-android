@@ -5,19 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.db.MediaAdapter;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MediaListFragment extends Fragment {
 
@@ -73,15 +73,17 @@ public class MediaListFragment extends Fragment {
 
             if (mProjectId == -1)
             {
-                listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
+                listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
             }
             else
             {
-                listMedia = Media.getMediaByProject(mProjectId);
+                listMedia = Media.Companion.getMediaByProject(mProjectId);
             }
 
-            mMediaAdapter.updateData(listMedia);
+            ArrayList listMediaArray = new ArrayList(listMedia);
+
+            mMediaAdapter.updateData(listMediaArray);
 
         }
 
@@ -102,34 +104,28 @@ public class MediaListFragment extends Fragment {
 
         mMediaContainer.addView(rView);
 
-        List<Media> listMedia = null;
+        List<Media> listMedia;
 
         if (mProjectId == -1)
         {
-            listMedia = Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
+            listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
         }
         else
         {
-            listMedia = Media.getMediaByProject(mProjectId);
+            listMedia = Media.Companion.getMediaByProject(mProjectId);
 
             for (Media media : listMedia)
             {
-                if (media.status == Media.STATUS_LOCAL)
+                if (media.getStatus() == Media.STATUS_LOCAL)
                 {
-
                     break;
                 }
             }
         }
 
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short, listMedia, rView, new OnStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        ArrayList<Media> listMediaArray = new ArrayList<>(listMedia);
 
-                mItemTouchHelper.startDrag(viewHolder);
-
-            }
-        });
+        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row_short, listMediaArray, rView, viewHolder -> mItemTouchHelper.startDrag(viewHolder));
         mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);
         mItemTouchHelper.attachToRecyclerView(rView);

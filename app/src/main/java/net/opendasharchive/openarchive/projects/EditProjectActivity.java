@@ -50,7 +50,7 @@ public class EditProjectActivity extends AppCompatActivity {
         long projectId = getIntent().getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID,-1L);
 
         if (projectId != -1L) {
-            mProject = Project.getById(projectId);
+            mProject = Project.Companion.getById(projectId);
             if (mProject == null) {
                 finish();
                 return;
@@ -80,8 +80,8 @@ public class EditProjectActivity extends AppCompatActivity {
 
         EditText et = findViewById(R.id.edtProjectName);
 
-        if (!TextUtils.isEmpty(mProject.description)) {
-            et.setText(mProject.description);
+        if (!TextUtils.isEmpty(mProject.getDescription())) {
+            et.setText(mProject.getDescription());
             et.setEnabled(false);
         }
         else {
@@ -92,7 +92,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
                         String newProjectName = et.getText().toString();
                         if (!TextUtils.isEmpty(newProjectName)) {
-                            mProject.description = newProjectName;
+                            mProject.setDescription(newProjectName);
                             mProject.save();
                         }
 
@@ -104,7 +104,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
         TextView tv = findViewById(R.id.action_archive_project);
 
-        if (mProject.isArchived())
+        if (mProject.getArchived())
             tv.setText(R.string.action_unarchive_project);
         else
             tv.setText(R.string.action_archive_project);
@@ -273,12 +273,12 @@ public class EditProjectActivity extends AppCompatActivity {
 
     public void archiveProject (View view) {
 
-        mProject.setArchived(!mProject.isArchived());
+        mProject.setArchived(!mProject.getArchived());
         mProject.save();
 
         TextView tv = findViewById(R.id.action_archive_project);
 
-        if (mProject.isArchived())
+        if (mProject.getArchived())
             tv.setText(R.string.action_unarchive_project);
         else
             tv.setText(R.string.action_archive_project);

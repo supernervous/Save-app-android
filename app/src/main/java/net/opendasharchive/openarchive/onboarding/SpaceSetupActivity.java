@@ -15,7 +15,6 @@ import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
 
 import java.util.Iterator;
-import java.util.List;
 
 import io.scal.secureshareui.controller.SiteController;
 
@@ -76,11 +75,11 @@ public class SpaceSetupActivity extends Activity implements OnEulaAgreedTo {
 
         boolean hasDropbox = false;
 
-        Iterator<Space> itSpaces = Space.getAllAsList();
+        Iterator<Space> itSpaces = Space.Companion.getAllAsList();
 
         while (itSpaces.hasNext()) {
             Space space = itSpaces.next();
-            hasDropbox = space.type == Space.TYPE_DROPBOX;
+            hasDropbox = space.getType() == Space.TYPE_DROPBOX;
         }
 
         findViewById(R.id.dropboxFrame).setVisibility(hasDropbox ? View.GONE : View.VISIBLE);
