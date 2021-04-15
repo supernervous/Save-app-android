@@ -121,10 +121,12 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
 // Mail config
 
+        /**
         builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
                 .setEnabled(true)
                 .setMailTo(getResources().getString(R.string.crashreportemail))
                 .setReportAsFile(true);
+         **/
 
         // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);
