@@ -7,13 +7,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -275,7 +273,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
                 try {
                                         sardine.getQuota(siteUrl.toString());
                     mSpace.save();
-                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
 
                     mHandlerLogin.sendEmptyMessage(0);
@@ -289,7 +287,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
                         //try again?
                         siteUrl.append("remote.php/dav/");
                         sardine.getQuota(siteUrl.toString());
-                        Prefs.setCurrentSpaceId(mSpace.getId());
+                        Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
                         mSpace.save();
 
 
@@ -301,7 +299,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
                     siteUrl.append("remote.php/dav/");
                     sardine.getQuota(siteUrl.toString());
-                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
                     mSpace.save();
 
 

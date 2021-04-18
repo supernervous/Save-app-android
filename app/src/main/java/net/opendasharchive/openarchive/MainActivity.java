@@ -69,7 +69,6 @@ import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRE
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
 import static net.opendasharchive.openarchive.db.Media.ORDER_PRIORITY;
 import static net.opendasharchive.openarchive.util.Globals.REQUEST_FILE_IMPORT;
-import static net.opendasharchive.openarchive.util.Utility.getOutputMediaFile;
 
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
@@ -346,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             {
                 mSpace = listSpaces.next();
                 setTitle(mSpace.getName());
-                Prefs.setCurrentSpaceId(mSpace.getId());
+                Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
 
             }
@@ -597,12 +596,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (uri == null)
             return null;
 
-        String title = Utility.getUriDisplayName(this,uri);
-        String mimeType = Utility.getMimeType(this,uri);
+        String title = Utility.INSTANCE.getUriDisplayName(this,uri);
+        String mimeType = Utility.INSTANCE.getMimeType(this,uri);
 
-        File fileImport = getOutputMediaFile(this, title);
+        File fileImport = Utility.INSTANCE.getOutputMediaFile(this, title);
         try {
-            boolean imported = Utility.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
+            boolean imported = Utility.INSTANCE.writeStreamToFile(getContentResolver().openInputStream(uri),fileImport);
             if (!imported)
                 return null;
         } catch (FileNotFoundException e) {
@@ -645,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         media.setCollectionId(coll.getId());
 
-        File fileSource = new File(FileUtils.getMediaPathFromUri(uri, this));
+        File fileSource = new File(FileUtils.INSTANCE.getMediaPathFromUri(uri, this));
         Date createDate = new Date();
         if (fileSource.exists()) {
             createDate = new Date(fileSource.lastModified());

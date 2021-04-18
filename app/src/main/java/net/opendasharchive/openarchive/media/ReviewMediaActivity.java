@@ -280,7 +280,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void showFirstTimeFlag ()
     {
 
-        if ( !Prefs.getBoolean("ft.flag")) {
+        if ( !Prefs.INSTANCE.getBoolean("ft.flag")) {
             AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
                     .setTitle(R.string.popup_flag_title)
                     .setMessage(R.string.popup_flag_desc);
@@ -288,7 +288,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
             build.create().show();
 
-            Prefs.putBoolean("ft.flag",true);
+            Prefs.INSTANCE.putBoolean("ft.flag",true);
         }
     }
 
@@ -406,7 +406,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         if (currentMediaId >= 0) {
             mMedia = Media.findById(Media.class, currentMediaId);
         } else {
-            Utility.toastOnUiThread(this, getString(R.string.error_no_media));
+            Utility.INSTANCE.toastOnUiThread(this, getString(R.string.error_no_media));
             finish();
             return;
         }

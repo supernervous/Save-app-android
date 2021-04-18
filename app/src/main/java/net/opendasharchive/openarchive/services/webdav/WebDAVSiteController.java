@@ -60,7 +60,7 @@ public class WebDAVSiteController extends SiteController {
 
         dateFormat = new SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT);
 
-        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
+        if (Prefs.INSTANCE.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
 
             StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
             builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
@@ -157,7 +157,7 @@ public class WebDAVSiteController extends SiteController {
         if (sardine == null)
             throw new IOException(("client not init'd"));
 
-        if (Prefs.useNextcloudChunking())
+        if (Prefs.INSTANCE.useNextcloudChunking())
             return uploadUsingChunking(space, media, valueMap);
         else {
             startAuthentication(space);
@@ -377,7 +377,7 @@ public class WebDAVSiteController extends SiteController {
 
             uploadMetadata (media, projectFolderPath, fileName);
 
-            if (Prefs.getUseProofMode())
+            if (Prefs.INSTANCE.getUseProofMode())
                 uploadProof(media, projectFolderPath);
 
 
@@ -414,9 +414,9 @@ public class WebDAVSiteController extends SiteController {
             fos.close();
             sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
-            if (Prefs.getUseProofMode()) {
-                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
-                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
+            if (Prefs.INSTANCE.getUseProofMode()) {
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
                 String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
                 File fileProofDir = ProofMode.getProofDir(metaMediaHash);
