@@ -111,7 +111,7 @@ data class Media(
             return find(Media::class.java, sbWhere.toString(), values, EMPTY_STRING, order, EMPTY_STRING)
         }
 
-        fun getMediaById(mediaId: Long): Media? {
+        fun getMediaById(mediaId: Long): Media {
             return findById(Media::class.java, mediaId)
         }
 

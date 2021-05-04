@@ -8,6 +8,8 @@ import android.view.View;
 import com.github.paolorotolo.appintro.AppIntro;
 
 import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.features.onboarding.CustomOnboardingScreen;
+import net.opendasharchive.openarchive.features.onboarding.CustomSlideBigText;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import androidx.annotation.Nullable;
@@ -33,7 +35,7 @@ public class OAAppIntro extends AppIntro {
 
         // Instead of fragments, you can also use our default slide
         // Just set a title, description, background and image. AppIntro will do the rest.
-        CustomSlideBigText welcome = CustomSlideBigText.newInstance(R.layout.custom_slide_big_text);
+        CustomSlideBigText welcome = CustomSlideBigText.Companion.newInstance(R.layout.custom_slide_big_text);
         welcome.setTitle(getString(R.string.onboarding_intro));
         welcome.setSubTitle(getString(R.string.app_tag_line));
         /**
@@ -47,14 +49,14 @@ public class OAAppIntro extends AppIntro {
 
         addSlide(welcome);
 
-        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1));
-        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2));
-        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
-        addSlide(CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4));
+        addSlide(CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_1), getString(R.string.oa_subtitle_1), R.drawable.onboarding1));
+        addSlide(CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_2), getString(R.string.oa_subtitle_2), R.drawable.onboarding2));
+        addSlide(CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_3), getString(R.string.oa_subtitle_3), R.drawable.onboarding3));
+        addSlide(CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.oa_title_4), getString(R.string.oa_subtitle_4), R.drawable.onboarding4));
 
        if (!OrbotHelper.isOrbotInstalled(this))
        {
-           CustomOnboardingScreen cos = CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.onboarding_archive_over_tor_install_orbot), R.drawable.onboarding5);
+           CustomOnboardingScreen cos = CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.onboarding_archive_over_tor_install_orbot), R.drawable.onboarding5);
            addSlide(cos);
            cos.enableButton(getString(R.string.action_install), new View.OnClickListener() {
                @Override
@@ -66,7 +68,7 @@ public class OAAppIntro extends AppIntro {
 
         }
        else {
-           CustomOnboardingScreen cos = CustomOnboardingScreen.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.archive_over_tor_enable_orbot), R.drawable.onboarding5);
+           CustomOnboardingScreen cos = CustomOnboardingScreen.Companion.newInstance(R.layout.custom_onboarding_main,getString(R.string.onboarding_archive_over_tor), getString(R.string.archive_over_tor_enable_orbot), R.drawable.onboarding5);
            addSlide(cos);
            cos.enableButton(getString(R.string.action_enable), new View.OnClickListener() {
                @Override

@@ -7,4 +7,6 @@ object Constants {
     const val DROPBOX_USERNAME = "dropbox"
     const val DROPBOX_NAME = "dropbox"
 
+    const val SPACE_EXTRA = "space"
+
 }

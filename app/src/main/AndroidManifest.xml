@@ -25,10 +25,6 @@
             android:label="@string/title_activity_upload_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".media.PreviewMediaListActivity"
-            android:label="@string/title_activity_batch_media_review"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".projects.AddProjectActivity"
             android:label="@string/title_activity_new_project"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -70,16 +66,6 @@
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".media.ReviewMediaActivity"
-            android:label="@string/title_activity_view_media"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".media.BatchReviewMediaActivity"
-            android:label="@string/title_activity_batch_view_media"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".services.archivedotorg.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
@@ -95,21 +81,10 @@
         </activity>
 
         <activity
-            android:name=".core.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.MainActivity" />
-        </activity>
-        <activity
             android:name=".onboarding.OAAppIntro"
             android:label="App Intro"
 	        android:screenOrientation="portrait"
             />
-        <activity
-            android:name=".core.SettingsActivity"
-            android:label="App Intro" />
         <activity
             android:name=".services.webdav.WebDAVLoginActivity"
             android:label="@string/title_activity_login" />
@@ -119,20 +94,6 @@
         <activity
             android:name=".services.dropbox.DropboxLoginActivity"
             android:label="@string/title_activity_login" />
-        <activity
-            android:name=".core.SpaceSettingsActivity"
-            android:label="@string/title_activity_space_settings" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="nc" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"

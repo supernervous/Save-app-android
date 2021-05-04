@@ -36,15 +36,15 @@ import com.zhihu.matisse.engine.impl.PicassoEngine;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import net.i2p.android.ext.floatingactionbutton.FloatingActionButton;
-import net.opendasharchive.openarchive.core.SpaceSettingsActivity;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.ProjectAdapter;
 import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.features.core.SpaceSettingsActivity;
+import net.opendasharchive.openarchive.features.media.PreviewMediaListActivity;
+import net.opendasharchive.openarchive.features.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.fragments.MediaListFragment;
-import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
-import net.opendasharchive.openarchive.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.onboarding.OAAppIntro;
 import net.opendasharchive.openarchive.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.publish.UploadManagerActivity;

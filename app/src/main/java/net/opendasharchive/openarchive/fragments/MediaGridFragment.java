@@ -15,14 +15,11 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
-import net.opendasharchive.openarchive.media.PreviewMediaListActivity;
+import net.opendasharchive.openarchive.features.media.PreviewMediaListActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Dispatchers;
 
 public class MediaGridFragment extends MediaListFragment {
 
