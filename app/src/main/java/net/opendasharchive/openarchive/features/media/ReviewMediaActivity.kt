@@ -26,8 +26,8 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals

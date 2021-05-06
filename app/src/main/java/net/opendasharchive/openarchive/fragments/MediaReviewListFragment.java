@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
+import net.opendasharchive.openarchive.features.media.MediaListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +35,11 @@ public class MediaReviewListFragment extends MediaListFragment {
 
     public void refresh ()
     {
-        if (mMediaAdapter != null)
+        if (getMMediaAdapter() != null)
         {
             List<Media> listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
             ArrayList listMediaArray = new ArrayList(listMedia);
-            mMediaAdapter.updateData(listMediaArray);
+            getMMediaAdapter().updateData(listMediaArray);
 
         }
 
@@ -49,7 +51,7 @@ public class MediaReviewListFragment extends MediaListFragment {
         View rootView = inflater.inflate(R.layout.fragment_media_list_simple, container, false);
         rootView.setTag(TAG);
 
-        mMediaContainer = rootView.findViewById(R.id.mediacontainer);
+        LinearLayout mMediaContainer = rootView.findViewById(R.id.mediacontainer);
 
         RecyclerView rView = new RecyclerView(getContext());
         rView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -62,10 +64,11 @@ public class MediaReviewListFragment extends MediaListFragment {
         List<Media> listMedia = Media.Companion.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY);
 
         ArrayList listMediaArray = new ArrayList(listMedia);
-        mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMediaArray, rView, (OnStartDragListener) viewHolder -> {
+        MediaAdapter mMediaAdapter = new MediaAdapter(getActivity(), R.layout.activity_media_list_row, listMediaArray, rView, (OnStartDragListener) viewHolder -> {
 
         });
 
+        setMMediaAdapter(mMediaAdapter);
 
         mMediaAdapter.setDoImageFade(false);
         rView.setAdapter(mMediaAdapter);

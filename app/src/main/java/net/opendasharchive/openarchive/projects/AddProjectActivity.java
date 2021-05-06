@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity;
 
 public class AddProjectActivity extends AppCompatActivity {
 

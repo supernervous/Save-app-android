@@ -23,7 +23,7 @@ import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
-import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity

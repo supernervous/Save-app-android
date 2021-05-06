@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.fragments.MediaListFragment
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
 
@@ -68,7 +67,7 @@ class PreviewMediaListActivity : AppCompatActivity() {
     }
 
     private fun batchUpload() {
-        val listMedia = mFrag?.mediaList ?: listOf()
+        val listMedia = mFrag?.getMediaList() ?: listOf()
         for (media in listMedia) {
             media.status = Media.STATUS_QUEUED
             media.save()

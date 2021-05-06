@@ -62,10 +62,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".onboarding.SpaceSetupActivity"
-            android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".services.archivedotorg.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
@@ -80,11 +76,6 @@
                 android:value="net.opendasharchive.openarchive.onboarding.SpaceSetupActivity" />
         </activity>
 
-        <activity
-            android:name=".onboarding.OAAppIntro"
-            android:label="App Intro"
-	        android:screenOrientation="portrait"
-            />
         <activity
             android:name=".services.webdav.WebDAVLoginActivity"
             android:label="@string/title_activity_login" />

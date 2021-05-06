@@ -15,6 +15,7 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.MediaAdapter;
+import net.opendasharchive.openarchive.features.media.MediaListFragment;
 import net.opendasharchive.openarchive.features.media.PreviewMediaListActivity;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class MediaGridFragment extends MediaListFragment {
         boolean addedView = false;
         for (Collection coll : listCollections) {
 
-            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(mProjectId, coll.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(getProjectId(), coll.getId());
             if (listMedia.size() > 0)
             {
                 if (!addedView)
@@ -136,7 +137,7 @@ public class MediaGridFragment extends MediaListFragment {
 
         for (Collection coll : listCollections) {
 
-            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(mProjectId, coll.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProjectAndCollection(getProjectId(), coll.getId());
 
             MediaAdapter adapter = mAdapters.get(coll.getId());
             SectionViewHolder holder = mSection.get(coll.getId());
