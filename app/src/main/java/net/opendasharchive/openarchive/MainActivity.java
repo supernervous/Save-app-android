@@ -46,7 +46,7 @@ import net.opendasharchive.openarchive.features.media.MediaListFragment;
 import net.opendasharchive.openarchive.features.media.PreviewMediaListActivity;
 import net.opendasharchive.openarchive.features.media.ReviewMediaActivity;
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro;
-import net.opendasharchive.openarchive.projects.AddProjectActivity;
+import net.opendasharchive.openarchive.features.projects.AddProjectActivity;
 import net.opendasharchive.openarchive.publish.UploadManagerActivity;
 import net.opendasharchive.openarchive.ui.BadgeDrawable;
 import net.opendasharchive.openarchive.util.FileUtils;
