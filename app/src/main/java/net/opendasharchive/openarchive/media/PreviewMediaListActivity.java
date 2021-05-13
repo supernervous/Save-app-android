@@ -96,7 +96,7 @@ public class PreviewMediaListActivity extends AppCompatActivity {
     private void showFirstTimeBatch ()
     {
 
-        if ( !Prefs.getBoolean("ft.batch")) {
+        if ( !Prefs.INSTANCE.getBoolean("ft.batch")) {
             AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AlertDialogTheme)
                     .setTitle(R.string.popup_batch_title)
                     .setMessage(R.string.popup_batch_desc);
@@ -104,7 +104,7 @@ public class PreviewMediaListActivity extends AppCompatActivity {
 
             build.create().show();
 
-            Prefs.putBoolean("ft.batch",true);
+            Prefs.INSTANCE.putBoolean("ft.batch",true);
         }
     }
 }

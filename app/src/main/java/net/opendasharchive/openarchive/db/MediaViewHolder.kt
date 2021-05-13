@@ -108,7 +108,7 @@ class MediaViewHolder(
                             doInBackground = {
                                 val fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath))
                                 try {
-                                    val soundFile = SoundFile.create(fileSound.path, object : SoundFile.ProgressListener {
+                                    val soundFile = SoundFile.create(fileSound?.path, object : SoundFile.ProgressListener {
                                         var lastProgress = 0
                                         override fun reportProgress(fractionComplete: Double): Boolean {
                                             val progress = (fractionComplete * 100).toInt()

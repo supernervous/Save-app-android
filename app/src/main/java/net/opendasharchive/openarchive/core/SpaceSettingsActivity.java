@@ -120,7 +120,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Prefs.setCurrentSpaceId(space.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(space.getId());
                     showCurrentSpace();
                 }
             });
@@ -177,7 +177,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             if (listSpaces.hasNext())
             {
                 mSpace = listSpaces.next();
-                Prefs.setCurrentSpaceId(mSpace.getId());
+                Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
             }
         }
 

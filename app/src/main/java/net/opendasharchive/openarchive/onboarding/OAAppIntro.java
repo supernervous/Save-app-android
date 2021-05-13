@@ -59,7 +59,7 @@ public class OAAppIntro extends AppIntro {
            cos.enableButton(getString(R.string.action_install), new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-                   Prefs.setUseTor(true);
+                   Prefs.INSTANCE.setUseTor(true);
                    startActivity(OrbotHelper.getOrbotInstallIntent(OAAppIntro.this));
                }
            });
@@ -71,7 +71,7 @@ public class OAAppIntro extends AppIntro {
            cos.enableButton(getString(R.string.action_enable), new View.OnClickListener() {
                @Override
                public void onClick(View v) {
-                   Prefs.setUseTor(true);
+                   Prefs.INSTANCE.setUseTor(true);
                    OrbotHelper.requestStartTor(OAAppIntro.this);
                    finish();
                    startActivity(new Intent(OAAppIntro.this, SpaceSetupActivity.class));

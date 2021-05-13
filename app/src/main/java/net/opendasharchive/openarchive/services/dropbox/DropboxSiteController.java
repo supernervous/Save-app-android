@@ -122,7 +122,7 @@ public class DropboxSiteController extends SiteController {
 
                         uploadMetadata(media, projectName, folderName, fileName);
 
-                        if (Prefs.getUseProofMode())
+                        if (Prefs.INSTANCE.getUseProofMode())
                             uploadProof(media, projectName, folderName);
                     }
                 }
@@ -192,9 +192,9 @@ public class DropboxSiteController extends SiteController {
 
             uTask.upload(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
 
-            if (Prefs.getUseProofMode()) {
-                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
-                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
+            if (Prefs.INSTANCE.getUseProofMode()) {
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
                 String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
                 File fileProofDir = ProofMode.getProofDir(metaMediaHash);

@@ -21,7 +21,6 @@ import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.util.Constants;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.List;
@@ -239,7 +238,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
             if (success) {
                 if (mSpace != null)
-                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
                 finish();
             } else {
@@ -332,7 +331,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
     private void showFirstTimeIA ()
     {
 
-        if ( !Prefs.getBoolean("ft.ia")) {
+        if ( !Prefs.INSTANCE.getBoolean("ft.ia")) {
             AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AlertDialogTheme)
                     .setTitle(R.string.popup_ia_title)
                     .setMessage(R.string.popup_ia_desc);
@@ -340,7 +339,7 @@ public class ArchiveOrgLoginActivity extends AppCompatActivity {
 
             build.create().show();
 
-            Prefs.putBoolean("ft.ia",true);
+            Prefs.INSTANCE.putBoolean("ft.ia",true);
         }
     }
 
