@@ -81,7 +81,6 @@ end
                ]
            }
        )
-    end
 
      after_all do |lane|
             file_name = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH].gsub(/\/.*\//,"")
