@@ -171,6 +171,7 @@
     <string name="prefs_networking_title">Networking</string>
     <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">If Orbot is installed, use the Tor network</string>
+    <string name="prefs_install_tor_summary">Please install Orbot to enable</string>
     <string name="prefs_upload_wifi_only_title">Upload Only on Wi-Fi</string>
     <string name="prefs_upload_wifi_only_summary">Wait for Wi-Fi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>
