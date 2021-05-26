@@ -12,10 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:allowBackup">
+
         <activity
             android:name=".projects.BrowseProjectsActivity"
             android:label="@string/title_activity_browser_projects"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".publish.UploadManagerActivity"
             android:label="@string/title_activity_upload_manager"
@@ -57,11 +59,11 @@
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".onboarding.SpaceSetupActivity"
+            android:parentActivityName=".features.onboarding.SpaceSetupActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.onboarding.SpaceSetupActivity" />
+                android:value="net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity" />
         </activity>
 
         <activity
@@ -119,10 +121,80 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".features.core.SpaceSettingsActivity"
+            android:label="@string/title_activity_space_settings">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="nc" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".features.media.PreviewMediaListActivity"
+            android:label="@string/title_activity_batch_media_review"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".features.media.ReviewMediaActivity"
+            android:label="@string/title_activity_view_media"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".features.media.BatchReviewMediaActivity"
+            android:label="@string/title_activity_batch_view_media"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".features.core.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.opendasharchive.openarchive.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".features.core.SettingsActivity"
+            android:label="App Intro" />
+
+        <activity
+            android:name=".features.onboarding.SpaceSetupActivity"
+            android:label="@string/title_activity_first_start"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".features.onboarding.OAAppIntro"
+            android:label="App Intro"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".features.projects.CreateNewProjectActivity"
+            android:label="@string/title_activity_create_new_project"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".features.projects.AddProjectActivity"
+            android:label="@string/title_activity_new_project"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".features.projects.EditProjectActivity"
+            android:label="@string/title_activity_new_project"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

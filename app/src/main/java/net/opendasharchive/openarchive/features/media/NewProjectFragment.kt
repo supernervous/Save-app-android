@@ -20,7 +20,6 @@ import net.opendasharchive.openarchive.databinding.FragmentNewProjectBinding
 class NewProjectFragment : Fragment() {
 
     private var _mBinding: FragmentNewProjectBinding? = null
-    private val mBinding: FragmentNewProjectBinding get() = _mBinding!!
 
     private var mListener: OnFragmentInteractionListener? = null
 
@@ -30,7 +29,7 @@ class NewProjectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentNewProjectBinding.inflate(inflater, container, false)
-        return mBinding.root
+        return _mBinding?.root
     }
 
     override fun onAttach(context: Context) {

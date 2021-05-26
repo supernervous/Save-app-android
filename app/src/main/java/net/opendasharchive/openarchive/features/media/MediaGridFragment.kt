@@ -23,7 +23,6 @@ class MediaGridFragment : MediaListFragment() {
     private var mSection = HashMap<Long, SectionViewHolder>()
 
     private var _mBinding: FragmentMediaListBinding? = null
-    private val mBinding: FragmentMediaListBinding get() = _mBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +30,7 @@ class MediaGridFragment : MediaListFragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
-        return mBinding.root
+        return _mBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,24 +42,26 @@ class MediaGridFragment : MediaListFragment() {
         mAdapters = HashMap()
         mSection = HashMap()
 
-        mBinding.root.tag = TAG
+        _mBinding?.let { mBinding ->
+            mBinding.root.tag = TAG
 
-        val listCollections = getAllAsList()
+            val listCollections = getAllAsList()
 
-        var addedView = false
-        listCollections?.forEach { collection ->
-            val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
-            if (!listMedia.isNullOrEmpty()) {
-                if (!addedView) {
-                    mBinding.mediacontainer.removeAllViews()
-                    addedView = true
+            var addedView = false
+            listCollections?.forEach { collection ->
+                val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
+                if (!listMedia.isNullOrEmpty()) {
+                    if (!addedView) {
+                        mBinding.mediacontainer.removeAllViews()
+                        addedView = true
+                    }
+
+                    val view: View? = createMediaList(collection, listMedia)
+                    mBinding.mediacontainer.addView(view)
                 }
-
-                val view: View? = createMediaList(collection, listMedia)
-                mBinding.mediacontainer.addView(view)
             }
+            mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
         }
-        mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
     }
 
     private fun createMediaList(collection: Collection, listMedia: List<Media>): View? {
@@ -119,8 +120,10 @@ class MediaGridFragment : MediaListFragment() {
                 setSectionHeaders(collection, listMedia, holder)
             } else if (!listMedia.isNullOrEmpty()) {
                 val view = createMediaList(collection, listMedia)
-                mBinding.mediacontainer.addView(view, 0)
-                mBinding.addMediaHint.visibility = View.GONE
+                _mBinding?.let { mBinding ->
+                    mBinding.mediacontainer.addView(view, 0)
+                    mBinding.addMediaHint.visibility = View.GONE
+                }
             }
 
         }

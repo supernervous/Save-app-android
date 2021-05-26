@@ -45,7 +45,6 @@ class NavigationDrawerFragment : Fragment() {
     private var mFragmentContainerView: View? = null
 
     private var _mBinding: FragmentNavigationDrawerBinding? = null
-    private val mBinding: FragmentNavigationDrawerBinding get() = _mBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +52,7 @@ class NavigationDrawerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentNavigationDrawerBinding.inflate(inflater, container, false)
-        return mBinding.root
+        return _mBinding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,20 +89,22 @@ class NavigationDrawerFragment : Fragment() {
     }
 
     private fun initLayout() {
-        mBinding.drawerList.setOnItemClickListener { parent, view, position, id ->
-            selectItem(position)
-        }
+        _mBinding?.let { mBinding ->
+            mBinding.drawerList.setOnItemClickListener { parent, view, position, id ->
+                selectItem(position)
+            }
 
-        getActionBar()?.let {
-            mBinding.drawerList.adapter = ArrayAdapter(
-                it.themedContext,
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                resources.getStringArray(R.array.ar_title_menu_sections)
-            )
-        }
+            getActionBar()?.let {
+                mBinding.drawerList.adapter = ArrayAdapter(
+                    it.themedContext,
+                    android.R.layout.simple_list_item_activated_1,
+                    android.R.id.text1,
+                    resources.getStringArray(R.array.ar_title_menu_sections)
+                )
+            }
 
-        mBinding.drawerList.setItemChecked(mCurrentSelectedPosition, true)
+            mBinding.drawerList.setItemChecked(mCurrentSelectedPosition, true)
+        }
     }
 
     fun isDrawerOpen(): Boolean {
@@ -137,7 +138,7 @@ class NavigationDrawerFragment : Fragment() {
 
     private fun selectItem(position: Int) {
         mCurrentSelectedPosition = position
-        mBinding.drawerList.setItemChecked(position, true)
+        _mBinding?.drawerList?.setItemChecked(position, true)
         mDrawerLayout?.closeDrawer(mFragmentContainerView!!)
         mCallbacks?.onNavigationDrawerItemSelected(position)
     }

@@ -19,7 +19,6 @@ class MediaReviewListFragment : MediaListFragment() {
     protected var mStatuses = longArrayOf(Media.STATUS_LOCAL.toLong())
 
     private var _mBinding: FragmentMediaListSimpleBinding? = null
-    private val mBinding: FragmentMediaListSimpleBinding get() = _mBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +26,7 @@ class MediaReviewListFragment : MediaListFragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListSimpleBinding.inflate(layoutInflater, container, false)
-        return mBinding.root
+        return _mBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,29 +35,31 @@ class MediaReviewListFragment : MediaListFragment() {
     }
 
     private fun initLayout() {
-        mBinding.root.tag = TAG
+        _mBinding?.let { mBinding ->
+            mBinding.root.tag = TAG
 
-        mBinding.recyclerview.layoutManager = LinearLayoutManager(activity)
-        mBinding.recyclerview.setHasFixedSize(true)
+            mBinding.recyclerview.layoutManager = LinearLayoutManager(activity)
+            mBinding.recyclerview.setHasFixedSize(true)
 
-        val listMedia: List<Media>? = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+            val listMedia: List<Media>? = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
 
-        val listMediaArray = ArrayList(listMedia)
-        var mediaAdapter = MediaAdapter(requireActivity(),
-            R.layout.activity_media_list_row,
-            listMediaArray,
-            mBinding.recyclerview,
-            object : OnStartDragListener {
-                override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
-                    //NO-OP
+            val listMediaArray = ArrayList(listMedia)
+            var mediaAdapter = MediaAdapter(requireActivity(),
+                R.layout.activity_media_list_row,
+                listMediaArray,
+                mBinding.recyclerview,
+                object : OnStartDragListener {
+                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+                        //NO-OP
+                    }
                 }
-            }
-        )
+            )
 
-        mMediaAdapter = mediaAdapter
+            mMediaAdapter = mediaAdapter
 
-        mediaAdapter.setDoImageFade(false)
-        mBinding.recyclerview.adapter = mediaAdapter
+            mediaAdapter.setDoImageFade(false)
+            mBinding.recyclerview.adapter = mediaAdapter
+        }
     }
 
     override fun setStatus(status: Long) {

@@ -54,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
         const val KEY_NETWORKING = "networking"
 
         class SettingsFragment : PreferenceFragmentCompat() {
-            override fun onCreatePreferences(bundle: Bundle, s: String) {
+            override fun onCreatePreferences(bundle: Bundle?, s: String?) {
                 // Load the Preferences from the XML file
                 val type = requireActivity().intent.getStringExtra(KEY_TYPE)
                 if (type.isNullOrEmpty() || type == KEY_DATAUSE) {

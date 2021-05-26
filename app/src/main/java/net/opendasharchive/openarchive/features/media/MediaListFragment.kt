@@ -27,7 +27,6 @@ open class MediaListFragment : Fragment() {
     open var mMediaAdapter: MediaAdapter? = null
 
     private var _mBinding: FragmentMediaListBinding? = null
-    private val mBinding: FragmentMediaListBinding get() = _mBinding!!
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -56,8 +55,8 @@ open class MediaListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
-        mBinding.root.tag = TAG
-        return mBinding.root
+        _mBinding?.root?.tag = TAG
+        return _mBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +68,7 @@ open class MediaListFragment : Fragment() {
         val rView = RecyclerView(requireContext())
         rView.layoutManager = LinearLayoutManager(activity)
         rView.setHasFixedSize(true)
-        mBinding.mediacontainer.addView(rView)
+        _mBinding?.mediacontainer?.addView(rView)
         val listMedia: List<Media>?
 
         if (mProjectId == -1L) {
