@@ -143,6 +143,11 @@ open class MediaListFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        refresh()
+    }
+
     interface OnStartDragListener {
         /**
          * Called when a view is requesting a start of a drag.

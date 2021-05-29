@@ -16,3 +16,15 @@ fun <R> CoroutineScope.executeAsyncTask(
     }
     onPostExecute(result)
 }
+
+fun <R> CoroutineScope.executeAsyncTaskWithList(
+    onPreExecute: () -> Unit,
+    doInBackground: () -> List<R>,
+    onPostExecute: (List<R>) -> Unit
+) = launch {
+    onPreExecute()
+    val result = withContext(Dispatchers.Default) {
+        doInBackground()
+    }
+    onPostExecute(result)
+}

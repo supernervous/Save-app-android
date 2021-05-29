@@ -14,11 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.bumptech.glide.Glide
 import com.orm.SugarRecord.findById
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
 import net.opendasharchive.openarchive.BuildConfig
-import net.opendasharchive.openarchive.MainActivity
+import net.opendasharchive.openarchive.MainActivity.Companion.INTENT_FILTER_NAME
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityReviewMediaBinding
@@ -258,7 +259,7 @@ class ReviewMediaActivity : AppCompatActivity() {
             return
         }
         if (mMedia.mimeType.startsWith("image")) {
-            mPicasso?.load(Uri.parse(mMedia.originalFilePath))?.fit()?.centerCrop()?.into(mBinding.ivMedia)
+            Glide.with(mBinding.ivMedia.context).load(Uri.parse(mMedia.originalFilePath)).fitCenter().into(mBinding.ivMedia)
         } else if (mMedia.mimeType.startsWith("video")) {
             mPicasso?.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.originalFilePath)?.fit()?.centerCrop()?.into(mBinding.ivMedia)
         } else if (mMedia.mimeType.startsWith("audio")) {
@@ -270,8 +271,8 @@ class ReviewMediaActivity : AppCompatActivity() {
                 mBinding.ivMedia.visibility = View.GONE
             }
         } else mBinding.ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_thumbnail))
-        mBinding.swMedia.setOnClickListener(View.OnClickListener { showMedia() })
-        mBinding.ivMedia.setOnClickListener(View.OnClickListener { showMedia() })
+        mBinding.swMedia.setOnClickListener { showMedia() }
+        mBinding.ivMedia.setOnClickListener { showMedia() }
     }
 
     private fun showMedia() {
@@ -367,7 +368,7 @@ class ReviewMediaActivity : AppCompatActivity() {
         init()
         bindMedia()
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                IntentFilter(MainActivity.INTENT_FILTER_NAME))
+                IntentFilter(INTENT_FILTER_NAME))
     }
 
     private fun showSuccess() {
@@ -401,7 +402,6 @@ class ReviewMediaActivity : AppCompatActivity() {
                 }
                 .setPositiveButton(R.string.dialog_ok) { dialog, which ->
                     deleteMedia(deleteLocalFile = false, deleteRemoteFile = false)
-                    finish()
                 }
         build.create().show()
     }
@@ -412,11 +412,13 @@ class ReviewMediaActivity : AppCompatActivity() {
             mMedia.save()
             //start upload queue, which will also handle the deletes
             (application as OpenArchiveApp).uploadQueue()
+            finish()
         } else {
             val media: Media = findById<Media>(Media::class.java, currentMediaId)
             if (media != null) {
                 val success: Boolean = findById<Media>(Media::class.java, currentMediaId).delete()
                 Log.d("OAMedia", "Item deleted: $success")
+                finish()
             }
         }
     }

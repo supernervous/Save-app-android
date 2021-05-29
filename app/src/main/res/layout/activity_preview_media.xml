@@ -22,7 +22,7 @@
 
     <fragment
             android:id="@+id/fragUploadManager"
-            class="net.opendasharchive.openarchive.fragments.MediaReviewListFragment"
+            class="net.opendasharchive.openarchive.features.media.MediaReviewListFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />

@@ -138,6 +138,10 @@ dependencies {
     //alerter
     implementation libraries.alerter
 
+    //glide
+    implementation libraries.glide
+    annotationProcessor libraries.glideAnnotate
+
 }
 
 configurations {
