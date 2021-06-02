@@ -61,7 +61,6 @@ public class ArchiveSiteController extends SiteController {
 	public static final MediaType MEDIA_TYPE = MediaType.parse("");
 
     private OkHttpClient client;
-    private boolean waiting = true;
 
 	public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
 		super(context, listener, jobId);
@@ -71,7 +70,7 @@ public class ArchiveSiteController extends SiteController {
 	private void initClient (Context context)
     {
 
-        if (!Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context))
+        if (!Prefs.INSTANCE.getUseTor() && OrbotHelper.isOrbotInstalled(context))
         {
             this.client = new OkHttpClient.Builder().build();
         }
@@ -83,41 +82,29 @@ public class ArchiveSiteController extends SiteController {
                 builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
                     @Override
                     public void onConnected(OkHttpClient okHttpClient) {
-
                         Log.i("NetCipherClient", "Connection to orbot established!");
                         client = okHttpClient;
-                        waiting = false;                    }
-
+                    }
 
                     @Override
                     public void onConnectionException(Exception exc) {
                         Log.e("NetCipherClient", "onConnectionException()", exc);
-                        waiting = false;
                     }
 
                     @Override
                     public void onTimeout() {
                         Log.e("NetCipherClient", "onTimeout()");
-                        waiting = false;
                     }
 
                     @Override
                     public void onInvalid() {
                         Log.e("NetCipherClient", "onInvalid()");
-                        waiting = false;
                     }
                 });
 
 
             } catch (Exception exc) {
                 Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
-                waiting = false;
-            }
-
-            while (waiting)
-            {
-                try { Thread.sleep(500);}
-                catch (Exception e){}
             }
         }
     }

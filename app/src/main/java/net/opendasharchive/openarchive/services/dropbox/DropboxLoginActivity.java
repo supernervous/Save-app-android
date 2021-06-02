@@ -120,7 +120,7 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
                         mSpace.setPassword(accessToken);
                         mSpace.save();
-                        Prefs.setCurrentSpaceId(mSpace.getId());
+                        Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
 
                         return true;

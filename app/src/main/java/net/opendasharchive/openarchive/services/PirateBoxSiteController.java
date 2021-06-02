@@ -86,7 +86,7 @@ public class PirateBoxSiteController extends SiteController {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("upfile", name,
-                        InputStreamRequestBody.create(MediaType.parse(media.getMimeType()), is))
+                        InputStreamRequestBody.Companion.create(MediaType.parse(media.getMimeType()), is))
                 .build();
 
         Request request = new Request.Builder()

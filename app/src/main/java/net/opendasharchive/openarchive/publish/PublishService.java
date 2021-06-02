@@ -99,7 +99,7 @@ public class PublishService extends Service implements Runnable {
 
     private boolean shouldPublish ()
     {
-        if (Prefs.getUploadWifiOnly())
+        if (Prefs.INSTANCE.getUploadWifiOnly())
         {
             if ( isNetworkAvailable(true))
                 return true;
