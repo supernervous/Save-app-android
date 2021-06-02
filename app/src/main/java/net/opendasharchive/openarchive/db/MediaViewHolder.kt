@@ -119,7 +119,7 @@ class MediaViewHolder(
                             val fileSound = FileUtils.getFile(mContext, Uri.parse(mediaPath))
                             try {
                                 val soundFile = SoundFile.create(
-                                    fileSound.path,
+                                    fileSound?.path,
                                     object : SoundFile.ProgressListener {
                                         var lastProgress = 0
                                         override fun reportProgress(fractionComplete: Double): Boolean {

@@ -51,10 +51,7 @@ import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
 import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.ui.BadgeDrawable
-import net.opendasharchive.openarchive.util.FileUtils
-import net.opendasharchive.openarchive.util.Globals
-import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.Utility
+import net.opendasharchive.openarchive.util.*
 import net.opendasharchive.openarchive.util.extensions.createSnackBar
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTaskWithList
@@ -316,9 +313,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     private fun importMedia(uri: Uri?): Media? {
         if (uri == null) return null
-        val title = Utility.getUriDisplayName(this, uri)
+        val title = Utility.getUriDisplayName(this, uri) ?: Constants.EMPTY_STRING
         val mimeType = Utility.getMimeType(this, uri)
-        val fileImport = Utility.getOutputMediaFile(this, title)
+        val fileImport = Utility.getOutputMediaFileByCache(this, title)
         try {
             val imported = Utility.writeStreamToFile(
                 contentResolver.openInputStream(uri), fileImport
@@ -355,9 +352,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         if (fileSource.exists()) {
             createDate = Date(fileSource.lastModified())
             media.contentLength = fileSource.length()
-        } else media.contentLength = fileImport.length()
+        } else media.contentLength = fileImport?.length() ?: 0
         media.originalFilePath = Uri.fromFile(fileImport).toString()
-        media.mimeType = mimeType
+        media.mimeType = mimeType ?: Constants.EMPTY_STRING
         media.createDate = createDate
         media.updateDate = media.createDate
         media.status = Media.STATUS_LOCAL
