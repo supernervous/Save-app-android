@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.features.media.MediaListFragment
-import net.opendasharchive.openarchive.features.media.ReviewMediaActivity
+import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 

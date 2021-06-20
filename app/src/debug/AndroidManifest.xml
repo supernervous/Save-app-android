@@ -25,7 +25,7 @@
             android:label="@string/title_activity_upload_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".features.media.PreviewMediaListActivity"
+            android:name=".features.media.preview.PreviewMediaListActivity"
             android:label="@string/title_activity_batch_media_review"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -70,7 +70,7 @@
             android:label="@string/title_activity_first_start"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".features.media.ReviewMediaActivity"
+            android:name=".features.media.review.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />

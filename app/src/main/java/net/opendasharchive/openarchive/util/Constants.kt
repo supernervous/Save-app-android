@@ -9,4 +9,7 @@ object Constants {
 
     const val SPACE_EXTRA = "space"
 
+    const val UPLOADING_URI = "UPLOADING_URI"
+    const val UPLOADING_MEDIA = "UPLOADING_MEDIA"
+
 }

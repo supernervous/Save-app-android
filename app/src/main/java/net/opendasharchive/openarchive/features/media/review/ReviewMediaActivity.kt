@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media
+package net.opendasharchive.openarchive.features.media.review
 
 import android.content.*
 import android.net.Uri
@@ -13,7 +13,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.orm.SugarRecord.findById
 import com.squareup.picasso.Picasso
@@ -29,7 +32,6 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
@@ -49,6 +51,8 @@ class ReviewMediaActivity : AppCompatActivity() {
     private var menuShare: MenuItem? = null
     private var currentMediaId: Long = -1
 
+    private lateinit var viewModel: ReviewMediaViewModel
+
     // Our handler for received Intents. This will be called whenever an Intent
     // with an action named "custom-event-name" is broadcasted.
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -64,7 +68,33 @@ class ReviewMediaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityReviewMediaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        val application = requireNotNull(application)
+        val viewModelFactory = ReviewMediaViewModelFactory(application)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ReviewMediaViewModel::class.java)
         initLayout()
+        observeValues()
+    }
+
+    private fun observeValues() {
+        viewModel.workState.observe(this, Observer { workInfo ->
+            workInfo.forEach {
+                when (it.state) {
+                    WorkInfo.State.RUNNING -> {
+                        Log.e("WorkManager", "Loading")
+                        finish()
+                    }
+                    WorkInfo.State.SUCCEEDED -> {
+                        Log.e("WorkManager", "Succeed")
+                    }
+                    WorkInfo.State.FAILED -> {
+                        Log.e("WorkManager", "Failed")
+                    }
+                    else -> {
+                        Log.d("WorkManager", "workInfo is null")
+                    }
+                }
+            }
+        })
     }
 
     private fun initLayout() {
@@ -293,8 +323,7 @@ class ReviewMediaActivity : AppCompatActivity() {
             mMedia.status = Media.STATUS_QUEUED
             saveMedia()
             bindMedia()
-            startService(Intent(this, PublishService::class.java))
-            finish()
+            viewModel.applyMedia()
         } else {
             val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
             startActivity(firstStartIntent)

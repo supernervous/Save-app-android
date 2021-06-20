@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.R
 
@@ -31,17 +32,13 @@ class CustomSlideBigText : Fragment() {
         mButtonListener = buttonListener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
             if (it.containsKey(ARG_LAYOUT_RES_ID)) {
                 layoutResId = it.getInt(ARG_LAYOUT_RES_ID)
             }
         }
-    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(layoutResId, container, false)
         (view.findViewById(R.id.custom_slide_big_text) as TextView).text = mTitle
 
@@ -63,10 +60,10 @@ class CustomSlideBigText : Fragment() {
     companion object {
         private const val ARG_LAYOUT_RES_ID = "layoutResId"
 
-        fun newInstance(layoutResId: Int): CustomSlideBigText = CustomSlideBigText().also {
-            it.arguments?.apply {
-                putInt(ARG_LAYOUT_RES_ID, layoutResId)
-            }
+        fun newInstance(@LayoutRes layoutResId: Int): CustomSlideBigText = CustomSlideBigText().also {
+            val bundle = Bundle()
+            bundle.putInt(ARG_LAYOUT_RES_ID, layoutResId)
+            it.arguments = bundle
         }
 
     }

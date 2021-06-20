@@ -1,15 +1,18 @@
-package net.opendasharchive.openarchive.features.media
+package net.opendasharchive.openarchive.features.media.preview
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.publish.PublishService
+import net.opendasharchive.openarchive.features.media.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
 
 class PreviewMediaListActivity : AppCompatActivity() {
@@ -17,12 +20,43 @@ class PreviewMediaListActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityPreviewMediaBinding
     private var mFrag: MediaListFragment? = null
 
+    private lateinit var viewModel: PreviewMediaListViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityPreviewMediaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        val context = requireNotNull(application)
+        val repository = MediaRepositoryImpl(context)
+        val viewModelFactory = PreviewMediaListViewModelFactory(repository, context)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         initLayout()
         showFirstTimeBatch()
+        observeValues()
+    }
+
+    private fun observeValues() {
+        viewModel.workState.observe(this, Observer { workInfo ->
+            workInfo.forEach {
+                when (it.state) {
+                    WorkInfo.State.RUNNING -> {
+                        Log.e("WorkManager", "Loading")
+                        finish()
+                    }
+                    WorkInfo.State.SUCCEEDED -> {
+                        Log.e("WorkManager", "Succeed")
+                    }
+                    WorkInfo.State.FAILED -> {
+                        Log.e("WorkManager", "Failed")
+                    }
+                    else -> {
+                        Log.d("WorkManager", "workInfo is null")
+                    }
+                }
+            }
+        })
     }
 
     private fun initLayout() {
@@ -31,7 +65,8 @@ class PreviewMediaListActivity : AppCompatActivity() {
             title = resources.getString(R.string.title_activity_batch_media_review)
             setDisplayHomeAsUpEnabled(true)
         }
-        mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? MediaListFragment
+        mFrag =
+            supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? MediaListFragment
     }
 
     override fun onResume() {
@@ -72,15 +107,15 @@ class PreviewMediaListActivity : AppCompatActivity() {
             media.status = Media.STATUS_QUEUED
             media.save()
         }
-        startService(Intent(this, PublishService::class.java))
-        finish()
+        //viewModel.uploadFiles()
+        viewModel.applyMedia()
     }
 
     private fun showFirstTimeBatch() {
         if (!Prefs.getBoolean("ft.batch")) {
             AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                    .setTitle(R.string.popup_batch_title)
-                    .setMessage(R.string.popup_batch_desc).create().show()
+                .setTitle(R.string.popup_batch_title)
+                .setMessage(R.string.popup_batch_desc).create().show()
             Prefs.putBoolean("ft.batch", true)
         }
     }

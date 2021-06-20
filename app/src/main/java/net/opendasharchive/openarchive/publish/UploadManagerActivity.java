@@ -103,8 +103,6 @@ public class UploadManagerActivity extends AppCompatActivity {
         else {
             mMenuEdit.setTitle(R.string.menu_edit);
             startService(new Intent(this, PublishService.class));
-
-
         }
     }
 

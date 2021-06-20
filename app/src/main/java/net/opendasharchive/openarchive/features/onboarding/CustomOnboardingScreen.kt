@@ -75,7 +75,7 @@ class CustomOnboardingScreen : Fragment() {
         private const val ARG_LAYOUT_IMAGE = "layoutImage"
 
         fun newInstance(layoutResId: Int, title: String, subtitle: String, image: Int): CustomOnboardingScreen = CustomOnboardingScreen().also {
-            it.arguments?.apply {
+            it.arguments = Bundle().apply {
                 putInt(ARG_LAYOUT_RES_ID, layoutResId)
                 putString(ARG_LAYOUT_TITLE, title)
                 putString(ARG_LAYOUT_SUBTITLE, subtitle)
