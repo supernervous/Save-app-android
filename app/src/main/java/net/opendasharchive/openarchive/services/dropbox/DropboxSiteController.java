@@ -24,13 +24,14 @@ import org.witness.proofmode.ProofMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.scal.secureshareui.controller.SiteController;
 import io.scal.secureshareui.controller.SiteControllerListener;
+
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST;
 
 public class DropboxSiteController extends SiteController {
 
@@ -63,9 +64,9 @@ public class DropboxSiteController extends SiteController {
     @Override
     public void startAuthentication(Space space) {
 
-        space.host = "dropbox.com";
+        space.setHost(DROPBOX_HOST);
 
-        String accessToken = space.password;
+        String accessToken = space.getPassword();
 
         if (!TextUtils.isEmpty(accessToken)) {
             dbClient = new DropboxClientFactory();
@@ -97,13 +98,13 @@ public class DropboxSiteController extends SiteController {
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
 
         String projectName = media.getServerUrl();
-        String folderName = dateFormat.format(media.updateDate);
+        String folderName = dateFormat.format(media.getCreateDate());
         String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
-        if (media.contentLength == 0) {
+        if (media.getContentLength() == 0) {
             File fileMedia = new File(mediaUri.getPath());
             if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
+                media.setContentLength(fileMedia.length());
         }
 
         try {
@@ -121,7 +122,7 @@ public class DropboxSiteController extends SiteController {
 
                         uploadMetadata(media, projectName, folderName, fileName);
 
-                        if (Prefs.getUseProofMode())
+                        if (Prefs.INSTANCE.getUseProofMode())
                             uploadProof(media, projectName, folderName);
                     }
                 }
@@ -191,9 +192,9 @@ public class DropboxSiteController extends SiteController {
 
             uTask.upload(Uri.fromFile(fileMetaData).toString(),metadataFileName, folderName, projectName);
 
-            if (Prefs.getUseProofMode()) {
-                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
-                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
+            if (Prefs.INSTANCE.getUseProofMode()) {
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
                 String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
                 File fileProofDir = ProofMode.getProofDir(metaMediaHash);

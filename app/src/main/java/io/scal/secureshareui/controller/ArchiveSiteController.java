@@ -12,21 +12,16 @@ import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
-import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
-import com.thegrizzlylabs.sardineandroid.impl.SardineException;
 import com.thegrizzlylabs.sardineandroid.impl.handler.ResponseHandler;
-import com.thegrizzlylabs.sardineandroid.impl.handler.VoidResponseHandler;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
-import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -43,7 +38,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.internal.http.ExchangeCodec;
 
 public class ArchiveSiteController extends SiteController {
 
@@ -67,7 +61,6 @@ public class ArchiveSiteController extends SiteController {
 	public static final MediaType MEDIA_TYPE = MediaType.parse("");
 
     private OkHttpClient client;
-    private boolean waiting = true;
 
 	public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
 		super(context, listener, jobId);
@@ -77,7 +70,7 @@ public class ArchiveSiteController extends SiteController {
 	private void initClient (Context context)
     {
 
-        if (!Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context))
+        if (!Prefs.INSTANCE.getUseTor() && OrbotHelper.isOrbotInstalled(context))
         {
             this.client = new OkHttpClient.Builder().build();
         }
@@ -89,41 +82,29 @@ public class ArchiveSiteController extends SiteController {
                 builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
                     @Override
                     public void onConnected(OkHttpClient okHttpClient) {
-
                         Log.i("NetCipherClient", "Connection to orbot established!");
                         client = okHttpClient;
-                        waiting = false;                    }
-
+                    }
 
                     @Override
                     public void onConnectionException(Exception exc) {
                         Log.e("NetCipherClient", "onConnectionException()", exc);
-                        waiting = false;
                     }
 
                     @Override
                     public void onTimeout() {
                         Log.e("NetCipherClient", "onTimeout()");
-                        waiting = false;
                     }
 
                     @Override
                     public void onInvalid() {
                         Log.e("NetCipherClient", "onInvalid()");
-                        waiting = false;
                     }
                 });
 
 
             } catch (Exception exc) {
                 Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc);
-                waiting = false;
-            }
-
-            while (waiting)
-            {
-                try { Thread.sleep(500);}
-                catch (Exception e){}
             }
         }
     }
@@ -132,7 +113,7 @@ public class ArchiveSiteController extends SiteController {
 	public void startRegistration(Space space) {
 		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
 		intent.putExtra("register",true);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.password);
+		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
 		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
 		// FIXME not a safe cast, context might be a service
 	}
@@ -140,7 +121,7 @@ public class ArchiveSiteController extends SiteController {
 	@Override
 	public void startAuthentication(Space space) {
 		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.password);
+		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
 		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
 		// FIXME not a safe cast, context might be a service
 	}
@@ -172,7 +153,7 @@ public class ArchiveSiteController extends SiteController {
 
 
             MediaType mediaType = mimeType == null ? null : MediaType.parse(mimeType);
-            RequestBody requestBody = RequestBodyUtil.create(mContext.getContentResolver(), Uri.parse(mediaUri), media.contentLength, mediaType, new RequestListener() {
+            RequestBody requestBody = RequestBodyUtil.create(mContext.getContentResolver(), Uri.parse(mediaUri), media.getContentLength(), mediaType, new RequestListener() {
 
 
                 long lastBytes = 0;
@@ -209,7 +190,7 @@ public class ArchiveSiteController extends SiteController {
             headersBuilder.add("x-archive-auto-make-bucket","1");
             headersBuilder.add("x-amz-auto-make-bucket", "1");
             headersBuilder.add("x-archive-meta-language", "eng"); // FIXME set based on locale or selected
-            headersBuilder.add("authorization", "LOW " + space.username + ":" + space.password);
+            headersBuilder.add("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
 
             if(!TextUtils.isEmpty(author)) {
                 headersBuilder.add("x-archive-meta-author", author);
@@ -404,7 +385,7 @@ public class ArchiveSiteController extends SiteController {
                 .addHeader("Accept", "*/*")
                 .addHeader("x-archive-cascade-delete", "1")
                 .addHeader("x-archive-keep-old-version", "0")
-                .addHeader("authorization", "LOW " + space.username + ":" + space.password);
+                .addHeader("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
 
         Request request = builder.build();
 

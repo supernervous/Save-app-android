@@ -13,13 +13,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
 import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.util.Prefs;
 
 import org.witness.proofmode.crypto.PgpUtils;
 
 import java.io.IOException;
+
+import info.guardianproject.netcipher.proxy.OrbotHelper;
+
+import static net.opendasharchive.openarchive.util.Prefs.PREF_USE_TOR;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -78,9 +82,19 @@ public class SettingsActivity extends AppCompatActivity {
                 });
 
             }
-            else if (type.equals(KEY_NETWORKING))
+            else if (type.equals(KEY_NETWORKING)) {
                 addPreferencesFromResource(R.xml.app_prefs_networking);
-
+                SwitchPreferenceCompat useTor = findPreference(PREF_USE_TOR);
+                if (useTor != null) {
+                    if (OrbotHelper.isOrbotInstalled(getActivity())) {
+                        useTor.setEnabled(true);
+                        useTor.setSummary(R.string.prefs_use_tor_summary);
+                    }else {
+                        useTor.setEnabled(false);
+                        useTor.setSummary(R.string.prefs_install_tor_summary);
+                    }
+                }
+            }
         }
 
 

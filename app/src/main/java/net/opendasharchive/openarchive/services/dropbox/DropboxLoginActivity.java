@@ -27,6 +27,10 @@ import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.List;
 
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST;
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME;
+import static net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -60,15 +64,15 @@ public class DropboxLoginActivity extends AppCompatActivity {
             mSpace = Space.findById(Space.class, getIntent().getLongExtra("space", -1L));
             findViewById(R.id.action_remove_space).setVisibility(View.VISIBLE);
 
-            if (!TextUtils.isEmpty(mSpace.username))
-                mEmailView.setText(mSpace.username);
+            if (!TextUtils.isEmpty(mSpace.getUsername()))
+                mEmailView.setText(mSpace.getUsername());
 
         }
         else {
             isNewSpace = true;
             mSpace = new Space();
-            mSpace.type = Space.TYPE_DROPBOX;
-            if (TextUtils.isEmpty(mSpace.password))
+            mSpace.setType(Space.TYPE_DROPBOX);
+            if (TextUtils.isEmpty(mSpace.getPassword()))
                 attemptLogin();
 
         }
@@ -106,17 +110,17 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
                         try {
                             String email = client.users().getCurrentAccount().getEmail();
-                            mSpace.username = email;
+                            mSpace.setUsername(email);
 
                         } catch (DbxException e) {
 
-                            mSpace.username = Auth.getUid();
+                            mSpace.setUsername(Auth.getUid());
                             e.printStackTrace();
                         }
 
-                        mSpace.password = accessToken;
+                        mSpace.setPassword(accessToken);
                         mSpace.save();
-                        Prefs.setCurrentSpaceId(mSpace.getId());
+                        Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
 
                         return true;
@@ -139,9 +143,9 @@ public class DropboxLoginActivity extends AppCompatActivity {
 
 
         // Store values at the time of the login attempt.
-        mSpace.username = "dropbox";
-        mSpace.name = "dropbox";
-        mSpace.host = "dropbox.com";
+        mSpace.setUsername(DROPBOX_USERNAME);
+        mSpace.setName(DROPBOX_NAME);
+        mSpace.setHost(DROPBOX_HOST);
 
         boolean cancel = false;
         View focusView = null;
@@ -212,12 +216,12 @@ public class DropboxLoginActivity extends AppCompatActivity {
     private void confirmRemoveSpace () {
         mSpace.delete();
 
-        List<Project> listProjects = Project.getAllBySpace(mSpace.getId());
+        List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId());
 
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

@@ -29,12 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,7 +60,7 @@ public class WebDAVSiteController extends SiteController {
 
         dateFormat = new SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT);
 
-        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
+        if (Prefs.INSTANCE.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
 
             StrongOkHttpClientBuilder builder = new StrongOkHttpClientBuilder(context);
             builder.withBestProxy().build(new StrongBuilder.Callback<OkHttpClient>() {
@@ -126,8 +121,8 @@ public class WebDAVSiteController extends SiteController {
     public void startAuthentication(Space space) {
 
         if (sardine != null) {
-            sardine.setCredentials(space.username, space.password);
-            server = space.host;
+            sardine.setCredentials(space.getUsername(), space.getPassword());
+            server = space.getHost();
         }
     }
 
@@ -162,7 +157,7 @@ public class WebDAVSiteController extends SiteController {
         if (sardine == null)
             throw new IOException(("client not init'd"));
 
-        if (Prefs.useNextcloudChunking())
+        if (Prefs.INSTANCE.useNextcloudChunking())
             return uploadUsingChunking(space, media, valueMap);
         else {
             startAuthentication(space);
@@ -171,7 +166,7 @@ public class WebDAVSiteController extends SiteController {
 
             String basePath = media.getServerUrl();
 
-            String folderName = dateFormat.format(media.updateDate);
+            String folderName = dateFormat.format(media.getCreateDate());
             String fileName = getUploadFileName(media.getTitle(), media.getMimeType());
 
             StringBuffer projectFolderBuilder = new StringBuffer();//server + '/' + basePath;
@@ -180,18 +175,18 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(space.username).append('/');
+            projectFolderBuilder.append(space.getUsername()).append('/');
             projectFolderBuilder.append(basePath);
 
             String projectFolderPath = projectFolderBuilder.toString();
 
-            if (media.contentLength == 0) {
+            if (media.getContentLength() == 0) {
                 File fileMedia = new File(mediaUri.getPath());
                 if (fileMedia.exists())
-                    media.contentLength = fileMedia.length();
+                    media.setContentLength(fileMedia.length());
             }
 
-            if (media.mediaHash == null) {
+            if (media.getMediaHash() == null) {
 
             }
 
@@ -208,7 +203,7 @@ public class WebDAVSiteController extends SiteController {
                 finalMediaPath = projectFolderPath + '/' + fileName;
 
                 if (!sardine.exists(finalMediaPath)) {
-                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.contentLength, media.getMimeType(), false,
+                    sardine.put(mContext.getContentResolver(), finalMediaPath, mediaUri, media.getContentLength(), media.getMimeType(), false,
                             new SardineListener() {
 
                         long lastBytes = 0;
@@ -264,7 +259,7 @@ public class WebDAVSiteController extends SiteController {
 
         Uri mediaUri = Uri.parse(valueMap.get(VALUE_KEY_MEDIA_PATH));
         String fileName = getUploadFileName(media.getTitle(),media.getMimeType());
-        String folderName = dateFormat.format(media.updateDate);
+        String folderName = dateFormat.format(media.getUpdateDate());
 
         String chunkFolderPath = media.getServerUrl() + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName);
 
@@ -273,16 +268,16 @@ public class WebDAVSiteController extends SiteController {
         if (!server.endsWith("/"))
             projectFolderBuilder.append('/');
         projectFolderBuilder.append("uploads/");
-        projectFolderBuilder.append(space.username).append('/');
+        projectFolderBuilder.append(space.getUsername()).append('/');
         projectFolderBuilder.append(chunkFolderPath);
 
         String projectFolderPath = projectFolderBuilder.toString();
 
-        if (media.contentLength == 0)
+        if (media.getContentLength() == 0)
         {
             File fileMedia = new File(mediaUri.getPath());
             if (fileMedia.exists())
-                media.contentLength = fileMedia.length();
+                media.setContentLength(fileMedia.length());
         }
 
 
@@ -301,7 +296,7 @@ public class WebDAVSiteController extends SiteController {
 
             InputStream is = mContext.getContentResolver().openInputStream(mediaUri);
 
-            while (chunkStartIdx < media.contentLength) {
+            while (chunkStartIdx < media.getContentLength()) {
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -359,7 +354,7 @@ public class WebDAVSiteController extends SiteController {
             if (!server.endsWith("/"))
                 projectFolderBuilder.append('/');
             projectFolderBuilder.append("files/");
-            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(space.username)).append('/');
+            projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(space.getUsername())).append('/');
             projectFolderBuilder.append(UrlEscapers.urlFragmentEscaper().escape(media.getServerUrl()));
 
             projectFolderPath = projectFolderBuilder.toString();
@@ -382,7 +377,7 @@ public class WebDAVSiteController extends SiteController {
 
             uploadMetadata (media, projectFolderPath, fileName);
 
-            if (Prefs.getUseProofMode())
+            if (Prefs.INSTANCE.getUseProofMode())
                 uploadProof(media, projectFolderPath);
 
 
@@ -403,7 +398,7 @@ public class WebDAVSiteController extends SiteController {
     {
 
         //update to the latest project license
-        Project project = Project.getById(media.getProjectId());
+        Project project = Project.Companion.getById(media.getProjectId());
         media.setLicenseUrl(project.getLicenseUrl());
 
         String urlMeta = basePath + '/' + fileName + ".meta.json";
@@ -419,9 +414,9 @@ public class WebDAVSiteController extends SiteController {
             fos.close();
             sardine.put(urlMeta, fileMetaData, "text/plain", false, null);
 
-            if (Prefs.getUseProofMode()) {
-                Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
-                Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
+            if (Prefs.INSTANCE.getUseProofMode()) {
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
 
                 String metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData));
                 File fileProofDir = ProofMode.getProofDir(metaMediaHash);
@@ -543,7 +538,7 @@ public class WebDAVSiteController extends SiteController {
         StringBuffer sbFolderPath = new StringBuffer();
         sbFolderPath.append(path);
         sbFolderPath.append(FILE_BASE);
-        sbFolderPath.append(space.username).append('/');
+        sbFolderPath.append(space.getUsername()).append('/');
 
         String baseFolderPath = sbFolderPath.toString();
         List<DavResource> listFolders = sardine.list(baseFolderPath);

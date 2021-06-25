@@ -17,16 +17,21 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
-import net.opendasharchive.openarchive.db.Space;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import net.opendasharchive.openarchive.MainActivity;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
+import net.opendasharchive.openarchive.util.Constants;
 import net.opendasharchive.openarchive.util.Prefs;
 
 import java.io.IOException;
@@ -34,14 +39,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.orm.query.Condition;
-import com.orm.query.Select;
 
 import io.scal.secureshareui.controller.ArchiveSiteController;
 import io.scal.secureshareui.controller.SiteController;
@@ -102,7 +99,7 @@ public class PublishService extends Service implements Runnable {
 
     private boolean shouldPublish ()
     {
-        if (Prefs.getUploadWifiOnly())
+        if (Prefs.INSTANCE.getUploadWifiOnly())
         {
             if ( isNetworkAvailable(true))
                 return true;
@@ -149,15 +146,15 @@ public class PublishService extends Service implements Runnable {
 
                 for (Media media: results) {
 
-                    Collection coll = Collection.findById(Collection.class, media.collectionId);
-                    Project proj = Project.findById(Project.class, coll.projectId);
+                    Collection coll = Collection.findById(Collection.class, media.getCollectionId());
+                    Project proj = Project.findById(Project.class, coll.getProjectId());
 
                     if (proj != null) {
-                        if (media.status != Media.STATUS_UPLOADING) {
-                            media.uploadDate = datePublish;
-                            media.progress = 0; //should we reset this?
-                            media.status = Media.STATUS_UPLOADING;
-                            media.statusMessage = "";
+                        if (media.getStatus() != Media.STATUS_UPLOADING) {
+                            media.setUploadDate(datePublish);
+                            media.setProgress(0); //should we reset this?
+                            media.setStatus(Media.STATUS_UPLOADING);
+                            media.setStatusMessage(Constants.EMPTY_STRING);
                         }
 
                         media.setLicenseUrl(proj.getLicenseUrl());
@@ -166,10 +163,10 @@ public class PublishService extends Service implements Runnable {
                             boolean success = uploadMedia(media);
                             if (success) {
                                 if (coll != null) {
-                                    coll.uploadDate = datePublish;
+                                    coll.setUploadDate(datePublish);
                                     coll.save();
                                     if (proj != null) {
-                                        proj.setOpenCollectionId(-1);
+                                        proj.setOpenCollectionId(-1L);
                                         proj.save();
                                     }
                                 }
@@ -181,7 +178,7 @@ public class PublishService extends Service implements Runnable {
 
                             media.setStatusMessage(err);
 
-                            media.status = Media.STATUS_ERROR;
+                            media.setStatus(Media.STATUS_ERROR);
                             media.save();
 
                         }
@@ -189,7 +186,7 @@ public class PublishService extends Service implements Runnable {
                     else
                     {
                         //project was deleted, so we should stop uploading
-                        media.status = Media.STATUS_LOCAL;
+                        media.setStatus(Media.STATUS_LOCAL);
 
                     }
 
@@ -218,21 +215,21 @@ public class PublishService extends Service implements Runnable {
     private boolean uploadMedia (Media media) throws IOException
     {
 
-        Project project = Project.getById(media.projectId);
+        Project project = Project.Companion.getById(media.getProjectId());
 
         if (project != null) {
             HashMap<String, String> valueMap = ArchiveSiteController.getMediaMetadata(this, media);
-            media.serverUrl = project.description;
-            media.status = Media.STATUS_UPLOADING;
+            media.setServerUrl(project.getDescription());
+            media.setStatus(Media.STATUS_UPLOADING);
             media.save();
             notifyMediaUpdated(media);
 
             Space space = null;
 
-            if (project.spaceId != -1L)
-                space = Space.findById(Space.class, project.spaceId);
+            if (project.getSpaceId() != -1L)
+                space = Space.findById(Space.class, project.getSpaceId());
             else
-                space = Space.getCurrentSpace();
+                space = Space.Companion.getCurrentSpace();
 
 
 
@@ -240,11 +237,11 @@ public class PublishService extends Service implements Runnable {
 
                 SiteController sc = null;
 
-                if (space.type == Space.TYPE_WEBDAV)
+                if (space.getType() == Space.TYPE_WEBDAV)
                     sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, new UploaderListener(media), null);
-                else if (space.type == Space.TYPE_INTERNET_ARCHIVE)
+                else if (space.getType() == Space.TYPE_INTERNET_ARCHIVE)
                     sc = SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new UploaderListener(media), null);
-                else if (space.type == Space.TYPE_DROPBOX)
+                else if (space.getType() == Space.TYPE_DROPBOX)
                     sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, new UploaderListener(media), null);
 
                 listControllers.add(sc);
@@ -300,9 +297,9 @@ public class PublishService extends Service implements Runnable {
         @Override
         public void success(Message msg) {
 
-            uploadMedia.progress = uploadMedia.contentLength;
+            uploadMedia.setProgress(uploadMedia.getContentLength());
             notifyMediaUpdated(uploadMedia);
-            uploadMedia.status = Media.STATUS_UPLOADED;
+            uploadMedia.setStatus(Media.STATUS_UPLOADED);
             uploadMedia.save();
             notifyMediaUpdated(uploadMedia);
 
@@ -313,9 +310,9 @@ public class PublishService extends Service implements Runnable {
             Bundle data = msg.getData();
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
 
-            Log.d("OAPublish",uploadMedia.getId() + " uploaded: " + contentLengthUploaded + "/" + uploadMedia.contentLength );
+            Log.d("OAPublish",uploadMedia.getId() + " uploaded: " + contentLengthUploaded + "/" + uploadMedia.getContentLength() );
 
-            uploadMedia.progress = contentLengthUploaded;
+            uploadMedia.setProgress(contentLengthUploaded);
 
             notifyMediaUpdated(uploadMedia);
 
@@ -337,7 +334,7 @@ public class PublishService extends Service implements Runnable {
              Log.d("OAPublish", "upload error: " + error);
 
              uploadMedia.setStatusMessage(error);
-            uploadMedia.status = Media.STATUS_ERROR;
+            uploadMedia.setStatus(Media.STATUS_ERROR);
             uploadMedia.save();
 
             notifyMediaUpdated(uploadMedia);
@@ -398,7 +395,7 @@ public class PublishService extends Service implements Runnable {
             String error = "Error " + errorCode + ": " + errorMessage;
             //  showError(error);
             // Log.d(TAG, "upload error: " + error);
-            deleteMedia.status = Media.STATUS_ERROR;
+            deleteMedia.setStatus(Media.STATUS_ERROR);
             deleteMedia.setStatusMessage(error);
             notifyMediaUpdated(deleteMedia);
 
@@ -431,8 +428,8 @@ public class PublishService extends Service implements Runnable {
         Intent intent = new Intent(MainActivity.INTENT_FILTER_NAME);
         // You can also include some extra data.
         intent.putExtra(MESSAGE_KEY_MEDIA_ID, media.getId());
-        intent.putExtra(MESSAGE_KEY_STATUS,media.status);
-        intent.putExtra(MESSAGE_KEY_PROGRESS,media.progress);
+        intent.putExtra(MESSAGE_KEY_STATUS,media.getStatus());
+        intent.putExtra(MESSAGE_KEY_PROGRESS,media.getProgress());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

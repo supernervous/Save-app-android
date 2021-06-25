@@ -7,13 +7,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +28,6 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Prefs;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -76,7 +72,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         }
         else {
             mSpace = new Space();
-            mSpace.type = Space.TYPE_WEBDAV;
+            mSpace.setType(Space.TYPE_WEBDAV);
         }
 
         // Set up the login form.
@@ -85,26 +81,23 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         mServerView = findViewById(R.id.server);
 
 
-        if (!TextUtils.isEmpty(mSpace.name))
-            mNameView.setText(mSpace.name);
+        if (!TextUtils.isEmpty(mSpace.getName()))
+            mNameView.setText(mSpace.getName());
 
-        if (!TextUtils.isEmpty(mSpace.host))
-            mServerView.setText(mSpace.host);
+        if (!TextUtils.isEmpty(mSpace.getHost()))
+            mServerView.setText(mSpace.getHost());
 
 
-        if (!TextUtils.isEmpty(mSpace.username))
-            mEmailView.setText(mSpace.username);
+        if (!TextUtils.isEmpty(mSpace.getUsername()))
+            mEmailView.setText(mSpace.getUsername());
 
         mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
 
         mLoginFormView = findViewById(R.id.login_form);
@@ -132,10 +125,10 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         super.onPause();
 
 
-        if (mSpace != null && (!TextUtils.isEmpty(mSpace.name))) {
-            if (!mNameView.getText().toString().equals(mSpace.name))
+        if (mSpace != null && (!TextUtils.isEmpty(mSpace.getName()))) {
+            if (!mNameView.getText().toString().equals(mSpace.getName()))
             {
-                mSpace.name = mNameView.getText().toString();
+                mSpace.setName(mNameView.getText().toString());
                 mSpace.save();
             }
         }
@@ -159,44 +152,46 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        mSpace.name = mNameView.getText().toString();
-        mSpace.username = mEmailView.getText().toString();
-        mSpace.password = mPasswordView.getText().toString();
-        mSpace.host = mServerView.getText().toString();
+        mSpace.setName(mNameView.getText().toString());
+        mSpace.setUsername(mEmailView.getText().toString());
+        mSpace.setPassword(mPasswordView.getText().toString());
+        mSpace.setHost(mServerView.getText().toString());
 
-        if (TextUtils.isEmpty(mSpace.name))
-            mSpace.name = mSpace.host;
+        if (TextUtils.isEmpty(mSpace.getName()))
+            mSpace.setName(mSpace.getHost());
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(mSpace.password) && !isPasswordValid(mSpace.password)) {
+        if (!TextUtils.isEmpty(mSpace.getPassword()) && !isPasswordValid(mSpace.getPassword())) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(mSpace.username)) {
+        if (TextUtils.isEmpty(mSpace.getUsername())) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(mSpace.username)) {
+        } else if (!isEmailValid(mSpace.getUsername())) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }
 
-        if (!mSpace.host.toLowerCase().startsWith("http"))
+        String hostStr = "";
+        if (!mSpace.getHost().toLowerCase().startsWith("http"))
         {
             //auto add nextcloud defaults
-            mSpace.host = "https://" + mSpace.host + "/remote.php/dav/";
+            hostStr = "https://" + mSpace.getHost() + "/remote.php/dav/";
         }
-        else if (!mSpace.host.contains("/dav"))
+        else if (!mSpace.getHost().contains("/dav"))
         {
-            mSpace.host += "/remote.php/dav/";
+            hostStr = mSpace.getHost() + "/remote.php/dav/";
         }
+        mSpace.setHost(hostStr);
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -256,29 +251,29 @@ public class WebDAVLoginActivity extends AppCompatActivity {
         @Override
         public void run () {
 
-            if (TextUtils.isEmpty(mSpace.host))
+            if (TextUtils.isEmpty(mSpace.getHost()))
                 return;
 
             try {
-                new URL(mSpace.host).toURI();
+                new URL(mSpace.getHost()).toURI();
             } catch (MalformedURLException | URISyntaxException malformedURLException) {
                 //not a valid URL
                 return;
             }
 
             StringBuffer siteUrl = new StringBuffer();
-            siteUrl.append(mSpace.host);
-            if (!mSpace.host.endsWith("/"))
+            siteUrl.append(mSpace.getHost());
+            if (!mSpace.getHost().endsWith("/"))
                 siteUrl.append("/");
 
             Sardine sardine = new OkHttpSardine();
-            sardine.setCredentials(mSpace.username,mSpace.password);
+            sardine.setCredentials(mSpace.getUsername(),mSpace.getPassword());
 
             try {
                 try {
                                         sardine.getQuota(siteUrl.toString());
                     mSpace.save();
-                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
 
 
                     mHandlerLogin.sendEmptyMessage(0);
@@ -292,7 +287,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
                         //try again?
                         siteUrl.append("remote.php/dav/");
                         sardine.getQuota(siteUrl.toString());
-                        Prefs.setCurrentSpaceId(mSpace.getId());
+                        Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
                         mSpace.save();
 
 
@@ -304,7 +299,7 @@ public class WebDAVLoginActivity extends AppCompatActivity {
 
                     siteUrl.append("remote.php/dav/");
                     sardine.getQuota(siteUrl.toString());
-                    Prefs.setCurrentSpaceId(mSpace.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
                     mSpace.save();
 
 
@@ -395,12 +390,12 @@ public class WebDAVLoginActivity extends AppCompatActivity {
     private void confirmRemoveSpace () {
         mSpace.delete();
 
-        List<Project> listProjects = Project.getAllBySpace(mSpace.getId());
+        List<Project> listProjects = Project.Companion.getAllBySpace(mSpace.getId());
 
         for (Project project : listProjects)
         {
 
-            List<Media> listMedia = Media.getMediaByProject(project.getId());
+            List<Media> listMedia = Media.Companion.getMediaByProject(project.getId());
 
             for (Media media : listMedia)
             {

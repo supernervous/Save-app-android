@@ -19,14 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
-import com.github.derlio.waveform.soundfile.SoundFile;
 import com.squareup.picasso.Picasso;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Project;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.util.Globals;
 
@@ -135,25 +133,25 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
     private void updateFlagState ()
     {
         for (Media media : mediaList)
-            media.setFlagged(!mediaList.get(0).isFlagged());
+            media.setFlag(!mediaList.get(0).getFlag());
 
         updateFlagState(mediaList.get(0));
     }
 
     private void updateFlagState (Media media)
     {
-        if (media.isFlagged())
+        if (media.getFlag())
             ivEditFlag.setImageResource(R.drawable.ic_flag_selected);
         else
             ivEditFlag.setImageResource(R.drawable.ic_flag_unselected);
 
-        if (media.isFlagged())
+        if (media.getFlag())
             tvFlagged.setText(R.string.status_flagged);
         else
             tvFlagged.setText(R.string.hint_flag);
 
-        if ((media.status != Media.STATUS_LOCAL
-                && media.status != Media.STATUS_NEW) && (!media.isFlagged()))
+        if ((media.getStatus() != Media.STATUS_LOCAL
+                && media.getStatus() != Media.STATUS_NEW) && (!media.getFlag()))
         {
             ivEditFlag.setVisibility(View.GONE);
             tvFlagged.setVisibility(View.GONE);
@@ -196,20 +194,20 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
         tvAuthor.setText(media.getAuthor());
         tvLicenseUrl.setText(media.getLicenseUrl());
 
-        if (media.status != Media.STATUS_LOCAL
-                && media.status != Media.STATUS_NEW)
+        if (media.getStatus() != Media.STATUS_LOCAL
+                && media.getStatus() != Media.STATUS_NEW)
         {
 
-            if (media.status == Media.STATUS_UPLOADED||media.status == Media.STATUS_PUBLISHED) {
+            if (media.getStatus() == Media.STATUS_UPLOADED||media.getStatus() == Media.STATUS_PUBLISHED) {
             //    tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + media.getServerUrl() + "\">" + media.getServerUrl() + "</a>"));
              //   tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
               //  tvUrl.setVisibility(View.VISIBLE);
             }
-            else if (media.status == Media.STATUS_QUEUED) {
+            else if (media.getStatus() == Media.STATUS_QUEUED) {
                 tvUrl.setText("Waiting for upload...");
                 tvUrl.setVisibility(View.VISIBLE);
             }
-            else if (media.status == Media.STATUS_UPLOADING) {
+            else if (media.getStatus() == Media.STATUS_UPLOADING) {
                 tvUrl.setText("Uploading now...");
                 tvUrl.setVisibility(View.VISIBLE);
             }
@@ -262,7 +260,7 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
 
     private void setLicense (Media media)
     {
-        Project project = Project.getById(media.getProjectId());
+        Project project = Project.Companion.getById(media.getProjectId());
         media.setLicenseUrl(project.getLicenseUrl());
     }
 
@@ -293,8 +291,8 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
 
         setLicense(media);
 
-        if (media.status == Media.STATUS_NEW)
-            media.status = Media.STATUS_LOCAL;
+        if (media.getStatus() == Media.STATUS_NEW)
+            media.setStatus(Media.STATUS_LOCAL);
 
         media.save();
     }
@@ -339,7 +337,7 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
 
         mediaList = new ArrayList<Media>();
         for (long mediaId : mediaIds)
-            mediaList.add(Media.getMediaById(mediaId));
+            mediaList.add(Media.Companion.getMediaById(mediaId));
 
         // get default metadata sharing values
         SharedPreferences sharedPref = this.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE);
@@ -370,13 +368,6 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
         }
         else if (media.getMimeType().startsWith("audio")) {
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.audio_waveform));
-
-            SoundFile soundFile = MediaViewHolder.mSoundFileCache.get( media.getOriginalFilePath());
-            if (soundFile != null) {
-              //  swMedia.setAudioFile(soundFile);
-               // swMedia.setVisibility(View.VISIBLE);
-               // ivMedia.setVisibility(View.GONE);
-            }
         }
         else
             ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.no_thumbnail));
@@ -388,7 +379,7 @@ public class BatchReviewMediaActivity extends AppCompatActivity {
     private void showMedia (Media media)
     {
 
-        if (media.mimeType.startsWith("image"))
+        if (media.getMimeType().startsWith("image"))
         {
             ArrayList<Uri> list = new ArrayList<>();
             list.add(Uri.parse(media.getOriginalFilePath()));

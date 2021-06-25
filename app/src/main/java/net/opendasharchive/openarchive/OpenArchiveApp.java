@@ -21,9 +21,6 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 import org.acra.config.CoreConfigurationBuilder;
-import org.acra.config.DialogConfigurationBuilder;
-import org.acra.config.MailSenderConfigurationBuilder;
-import org.acra.config.ToastConfigurationBuilder;
 import org.acra.data.StringFormat;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
@@ -56,7 +53,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     public void onCreate() {
         super.onCreate();
 
-        Prefs.setContext(this);
+        Prefs.INSTANCE.setContext(this);
 
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
@@ -71,7 +68,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putBoolean("trackLocation",false);
 
-        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(this))
+        if (Prefs.INSTANCE.getUseTor() && OrbotHelper.isOrbotInstalled(this))
             initNetCipher(this);
 
         initCrashReporting();
@@ -123,10 +120,12 @@ public class OpenArchiveApp extends com.orm.SugarApp {
 
 // Mail config
 
+        /**
         builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
                 .setEnabled(true)
                 .setMailTo(getResources().getString(R.string.crashreportemail))
                 .setReportAsFile(true);
+         **/
 
         // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);
@@ -248,7 +247,7 @@ public class OpenArchiveApp extends com.orm.SugarApp {
     {
         if (mCurrentSpace == null) {
 
-            long spaceId = Prefs.getCurrentSpaceId();
+            long spaceId = Prefs.INSTANCE.getCurrentSpaceId();
             if (spaceId != -1L) {
                 mCurrentSpace = Space.findById(Space.class,spaceId);
             }

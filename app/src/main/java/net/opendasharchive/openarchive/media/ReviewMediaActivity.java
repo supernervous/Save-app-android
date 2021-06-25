@@ -21,6 +21,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.github.derlio.waveform.SimpleWaveformView;
 import com.github.derlio.waveform.soundfile.SoundFile;
 import com.squareup.picasso.Picasso;
@@ -30,9 +38,9 @@ import net.opendasharchive.openarchive.BuildConfig;
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.MediaViewHolder;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.fragments.MediaViewHolder;
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler;
 import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
 import net.opendasharchive.openarchive.publish.PublishService;
@@ -42,14 +50,6 @@ import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
 
@@ -154,18 +154,18 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
     private void updateFlagState ()
     {
-        if (mMedia.isFlagged())
+        if (mMedia.getFlag())
             ivEditFlag.setImageResource(R.drawable.ic_flag_selected);
         else
             ivEditFlag.setImageResource(R.drawable.ic_flag_unselected);
 
-        if (mMedia.isFlagged())
+        if (mMedia.getFlag())
             tvFlagged.setText(R.string.status_flagged);
         else
             tvFlagged.setText(R.string.hint_flag);
 
-        if ((mMedia.status != Media.STATUS_LOCAL
-                && mMedia.status != Media.STATUS_NEW) && (!mMedia.isFlagged()))
+        if ((mMedia.getStatus() != Media.STATUS_LOCAL
+                && mMedia.getStatus() != Media.STATUS_NEW) && (!mMedia.getFlag()))
         {
             ivEditFlag.setVisibility(View.GONE);
             tvFlagged.setVisibility(View.GONE);
@@ -198,20 +198,20 @@ public class ReviewMediaActivity extends AppCompatActivity {
         tvAuthor.setText(mMedia.getAuthor());
         tvLicenseUrl.setText(mMedia.getLicenseUrl());
 
-        if (mMedia.status != Media.STATUS_LOCAL
-                && mMedia.status != Media.STATUS_NEW)
+        if (mMedia.getStatus() != Media.STATUS_LOCAL
+                && mMedia.getStatus() != Media.STATUS_NEW)
         {
 
-            if (mMedia.status == Media.STATUS_UPLOADED||mMedia.status == Media.STATUS_PUBLISHED) {
+            if (mMedia.getStatus() == Media.STATUS_UPLOADED||mMedia.getStatus() == Media.STATUS_PUBLISHED) {
             //    tvUrl.setText(Html.fromHtml(getString(R.string.your_media_is_available) + " <a href=\"" + mMedia.getServerUrl() + "\">" + mMedia.getServerUrl() + "</a>"));
              //   tvUrl.setMovementMethod(LinkMovementMethod.getInstance());
               //  tvUrl.setVisibility(View.VISIBLE);
             }
-            else if (mMedia.status == Media.STATUS_QUEUED) {
+            else if (mMedia.getStatus() == Media.STATUS_QUEUED) {
                 tvUrl.setText("Waiting for upload...");
                 tvUrl.setVisibility(View.VISIBLE);
             }
-            else if (mMedia.status == Media.STATUS_UPLOADING) {
+            else if (mMedia.getStatus() == Media.STATUS_UPLOADING) {
                 tvUrl.setText("Uploading now...");
                 tvUrl.setVisibility(View.VISIBLE);
             }
@@ -253,7 +253,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
                     showFirstTimeFlag();
 
-                    mMedia.setFlagged(!mMedia.isFlagged());
+                    mMedia.setFlag(!mMedia.getFlag());
 
                     updateFlagState();
                 }
@@ -263,7 +263,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         }
 
         if (menuPublish != null) {
-            if (mMedia.status == Media.STATUS_LOCAL) {
+            if (mMedia.getStatus() == Media.STATUS_LOCAL) {
                 menuPublish.setVisible(true);
                 menuShare.setVisible(false);
 
@@ -280,7 +280,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void showFirstTimeFlag ()
     {
 
-        if ( !Prefs.getBoolean("ft.flag")) {
+        if ( !Prefs.INSTANCE.getBoolean("ft.flag")) {
             AlertDialog.Builder build = new AlertDialog.Builder(ReviewMediaActivity.this, R.style.AlertDialogTheme)
                     .setTitle(R.string.popup_flag_title)
                     .setMessage(R.string.popup_flag_desc);
@@ -288,14 +288,14 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
             build.create().show();
 
-            Prefs.putBoolean("ft.flag",true);
+            Prefs.INSTANCE.putBoolean("ft.flag",true);
         }
     }
 
     private void setLicense ()
     {
 
-        Project project = Project.getById(mMedia.getProjectId());
+        Project project = Project.Companion.getById(mMedia.getProjectId());
         mMedia.setLicenseUrl(project.getLicenseUrl());
     }
 
@@ -320,8 +320,8 @@ public class ReviewMediaActivity extends AppCompatActivity {
 
         setLicense();
 
-        if (mMedia.status == Media.STATUS_NEW)
-            mMedia.status = Media.STATUS_LOCAL;
+        if (mMedia.getStatus() == Media.STATUS_NEW)
+            mMedia.setStatus(Media.STATUS_LOCAL);
 
         mMedia.save();
     }
@@ -341,7 +341,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         menuShare = menu.findItem(R.id.menu_item_share);
         menuPublish = menu.findItem(R.id.menu_upload);
 
-        if (mMedia.status != Media.STATUS_UPLOADED)
+        if (mMedia.getStatus() != Media.STATUS_UPLOADED)
             menuPublish.setVisible(true);
         else {
             menuShare.setVisible(true);
@@ -406,7 +406,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
         if (currentMediaId >= 0) {
             mMedia = Media.findById(Media.class, currentMediaId);
         } else {
-            Utility.toastOnUiThread(this, getString(R.string.error_no_media));
+            Utility.INSTANCE.toastOnUiThread(this, getString(R.string.error_no_media));
             finish();
             return;
         }
@@ -450,7 +450,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void showMedia ()
     {
 
-        if (mMedia.mimeType.startsWith("image"))
+        if (mMedia.getMimeType().startsWith("image"))
         {
             ArrayList<Uri> list = new ArrayList<>();
             list.add(Uri.parse(mMedia.getOriginalFilePath()));
@@ -480,14 +480,14 @@ public class ReviewMediaActivity extends AppCompatActivity {
     private void uploadMedia ()
     {
         
-        Space space = Space.getCurrentSpace();
+        Space space = Space.Companion.getCurrentSpace();
 
 
         // if user doesn't have an account
         if (space != null) {
 
             //mark queued
-            mMedia.status = Media.STATUS_QUEUED;
+            mMedia.setStatus(Media.STATUS_QUEUED);
             saveMedia();
             bindMedia();
             startService(new Intent(this, PublishService.class));
@@ -686,7 +686,7 @@ public class ReviewMediaActivity extends AppCompatActivity {
     {
         if (deleteRemoteFile)
         {
-            mMedia.status = Media.STATUS_DELETE_REMOTE;
+            mMedia.setStatus(Media.STATUS_DELETE_REMOTE);
             mMedia.save();
             //start upload queue, which will also handle the deletes
             ((OpenArchiveApp)getApplication()).uploadQueue();

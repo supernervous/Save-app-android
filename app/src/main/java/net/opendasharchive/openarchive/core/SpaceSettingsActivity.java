@@ -15,22 +15,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.opendasharchive.openarchive.R;
-import net.opendasharchive.openarchive.db.Project;
-import net.opendasharchive.openarchive.db.ProjectListAdapter;
-import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity;
-import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
-import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
-import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
-import net.opendasharchive.openarchive.util.Prefs;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.abdularis.civ.AvatarImageView;
+
+import net.opendasharchive.openarchive.R;
+import net.opendasharchive.openarchive.db.Project;
+import net.opendasharchive.openarchive.db.ProjectListAdapter;
+import net.opendasharchive.openarchive.db.Space;
+import net.opendasharchive.openarchive.onboarding.SpaceSetupActivity;
+import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity;
+import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity;
+import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity;
+import net.opendasharchive.openarchive.util.Prefs;
 
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +97,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     private void loadSpaces ()
     {
-        Iterator<Space> listSpaces = Space.getAllAsList();
+        Iterator<Space> listSpaces = Space.Companion.getAllAsList();
 
         LinearLayout viewSpace = findViewById(R.id.spaceview);
         viewSpace.removeAllViews();
@@ -120,7 +120,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Prefs.setCurrentSpaceId(space.getId());
+                    Prefs.INSTANCE.setCurrentSpaceId(space.getId());
                     showCurrentSpace();
                 }
             });
@@ -135,15 +135,15 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
         image.setAvatarBackgroundColor(getResources().getColor(R.color.oablue));
 
-        if (space.type == Space.TYPE_INTERNET_ARCHIVE) {
+        if (space.getType() == Space.TYPE_INTERNET_ARCHIVE) {
             image.setImageResource(R.drawable.ialogo128);
             image.setState(AvatarImageView.SHOW_IMAGE);
         }
         else {
-            if (TextUtils.isEmpty(space.name))
-                space.name = space.username;
+            if (TextUtils.isEmpty(space.getName()))
+                space.setName(space.getUsername());
 
-            image.setText(space.name.substring(0, 1).toUpperCase());
+            image.setText(space.getName().substring(0, 1).toUpperCase());
             image.setState(AvatarImageView.SHOW_INITIAL);
         }
 
@@ -170,14 +170,14 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     private void showCurrentSpace () {
 
-        mSpace = Space.getCurrentSpace();
+        mSpace = Space.Companion.getCurrentSpace();
         if (mSpace == null)
         {
-            Iterator<Space> listSpaces = Space.getAllAsList();
+            Iterator<Space> listSpaces = Space.Companion.getAllAsList();
             if (listSpaces.hasNext())
             {
                 mSpace = listSpaces.next();
-                Prefs.setCurrentSpaceId(mSpace.getId());
+                Prefs.INSTANCE.setCurrentSpaceId(mSpace.getId());
             }
         }
 
@@ -185,40 +185,34 @@ public class SpaceSettingsActivity extends AppCompatActivity {
         TextView txtSpaceUser = findViewById(R.id.txtSpaceUser);
 
         if (mSpace != null) {
-            Uri uriServer = Uri.parse(mSpace.host);
+            Uri uriServer = Uri.parse(mSpace.getHost());
 
-            if (!TextUtils.isEmpty(mSpace.name))
-                txtSpaceName.setText(mSpace.name);
+            if (!TextUtils.isEmpty(mSpace.getName()))
+                txtSpaceName.setText(mSpace.getName());
             else
                 txtSpaceName.setText(uriServer.getHost());
 
-            txtSpaceUser.setText(mSpace.username);
+            txtSpaceUser.setText(mSpace.getUsername());
 
             updateProjects();
 
             AvatarImageView image = findViewById(R.id.space_avatar);
             image.setAvatarBackgroundColor(getResources().getColor(R.color.oablue));
-            if (mSpace.type == Space.TYPE_INTERNET_ARCHIVE) {
+            if (mSpace.getType() == Space.TYPE_INTERNET_ARCHIVE) {
                 image.setImageResource(R.drawable.ialogo128);
                 image.setState(AvatarImageView.SHOW_IMAGE);
 
             }
             else {
-                String spaceName = mSpace.name;
+                String spaceName = mSpace.getName();
                 if (TextUtils.isEmpty(spaceName))
-                    spaceName = mSpace.host;
+                    spaceName = mSpace.getHost();
 
                 image.setText(spaceName.substring(0, 1).toUpperCase());
                 image.setState(AvatarImageView.SHOW_INITIAL);
             }
 
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   startSpaceAuthActivity ();
-
-                }
-            });
+            image.setOnClickListener(v -> startSpaceAuthActivity ());
 
 
         }
@@ -230,9 +224,9 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
             Intent intent = null;
 
-            if (mSpace.type == Space.TYPE_WEBDAV)
+            if (mSpace.getType() == Space.TYPE_WEBDAV)
                 intent = new Intent(SpaceSettingsActivity.this, WebDAVLoginActivity.class);
-            else if (mSpace.type == Space.TYPE_DROPBOX)
+            else if (mSpace.getType() == Space.TYPE_DROPBOX)
                 intent = new Intent(SpaceSettingsActivity.this, DropboxLoginActivity.class);
             else
                 intent = new Intent(SpaceSettingsActivity.this, ArchiveOrgLoginActivity.class);
@@ -247,7 +241,7 @@ public class SpaceSettingsActivity extends AppCompatActivity {
 
     public void updateProjects ()
     {
-        List<Project> listProjects = Project.getAllBySpace(Space.getCurrentSpace().getId());
+        List<Project> listProjects = Project.Companion.getAllBySpace(Space.Companion.getCurrentSpace().getId());
 
         ProjectListAdapter adapter = new ProjectListAdapter(this,listProjects, mProjectList);
 
