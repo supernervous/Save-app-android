@@ -71,7 +71,7 @@ public class PreviewMediaListActivity extends AppCompatActivity {
         for (Media media : listMedia)
         {
             media.setPriority(priority++);
-            media.status = Media.STATUS_QUEUED;
+            media.setStatus(Media.STATUS_QUEUED);
             media.save();
         }
 
