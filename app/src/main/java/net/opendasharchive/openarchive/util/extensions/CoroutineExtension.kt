@@ -6,9 +6,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 fun <R> CoroutineScope.executeAsyncTask(
-        onPreExecute: () -> Unit,
-        doInBackground: () -> R,
-        onPostExecute: (R) -> Unit
+    onPreExecute: () -> Unit,
+    doInBackground: () -> R,
+    onPostExecute: (R) -> Unit
 ) = launch {
     onPreExecute()
     val result = withContext(Dispatchers.Default) {
@@ -27,4 +27,12 @@ fun <R> CoroutineScope.executeAsyncTaskWithList(
         doInBackground()
     }
     onPostExecute(result)
+}
+
+fun CoroutineScope.runOnBackground(
+    block: suspend () -> Unit
+) = launch {
+    withContext(Dispatchers.Default) {
+        block()
+    }
 }

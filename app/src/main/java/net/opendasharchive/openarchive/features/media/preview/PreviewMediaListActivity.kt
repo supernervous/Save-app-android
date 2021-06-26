@@ -28,8 +28,7 @@ class PreviewMediaListActivity : AppCompatActivity() {
         setContentView(mBinding.root)
 
         val context = requireNotNull(application)
-        val repository = MediaRepositoryImpl(context)
-        val viewModelFactory = PreviewMediaListViewModelFactory(repository, context)
+        val viewModelFactory = PreviewMediaListViewModelFactory(context)
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         initLayout()

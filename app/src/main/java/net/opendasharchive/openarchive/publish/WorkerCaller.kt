@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import net.opendasharchive.openarchive.features.media.MediaWorker
 
 fun applyMedia(context: Context, owner: LifecycleOwner) {
 

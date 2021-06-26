@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import net.opendasharchive.openarchive.publish.MediaWorker
+import net.opendasharchive.openarchive.features.media.MediaWorker
 
 class ReviewMediaViewModel(
     private val application: Application

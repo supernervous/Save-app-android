@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.github.derlio.waveform.SimpleWaveformView
 import com.github.derlio.waveform.soundfile.SoundFile
@@ -90,7 +91,15 @@ class MediaViewHolder(
 
         if (lastMediaPath == null || lastMediaPath != mediaPath) {
             if (currentMedia.mimeType.startsWith("image")) {
-                Glide.with(ivIcon.context).load(Uri.parse(currentMedia.originalFilePath)).fitCenter().into(ivIcon)
+
+                val circularProgress = CircularProgressDrawable(mContext)
+                circularProgress.apply {
+                    strokeWidth = 5f
+                    centerRadius = 30f
+                    start()
+                }
+
+                Glide.with(ivIcon.context).load(Uri.parse(currentMedia.originalFilePath)).placeholder(circularProgress).fitCenter().into(ivIcon)
                 ivIcon.visibility = View.VISIBLE
                 tvWave?.visibility = View.GONE
                 ivIsVideo?.visibility = View.GONE

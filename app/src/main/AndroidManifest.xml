@@ -148,7 +148,7 @@
             android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".MainActivity"/>
         <activity
-            android:name=".features.media.BatchReviewMediaActivity"
+            android:name=".features.media.batch.BatchReviewMediaActivity"
             android:label="@string/title_activity_batch_view_media"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"

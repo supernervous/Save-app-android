@@ -1,20 +1,15 @@
 package net.opendasharchive.openarchive.features.media.preview
 
 import android.app.Application
-import android.content.Context
-import android.widget.Toast
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.publish.MediaWorker
+import net.opendasharchive.openarchive.features.media.MediaWorker
 
 class PreviewMediaListViewModel(
-    private val repository: MediaRepository,
     private val application: Application
 ) : ViewModel() {
 
@@ -30,33 +25,6 @@ class PreviewMediaListViewModel(
     init {
         workState = workManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
     }
-
-
-    fun uploadFiles() {
-        _uiState.value = UIState.Loading
-
-        try {
-            viewModelScope.launch {
-
-                val mediaList = getFilesOnBackground()
-                val result = mediaList.map { media ->
-                    uploadFilesOnBackgroundThread(media)
-                }
-                _uiState.value = UIState.Success("Succesful")
-            }
-        } catch (ex: Exception) {
-            _uiState.value = UIState.Error(ex.message ?: "Something happened")
-        }
-    }
-
-    private suspend fun getFilesOnBackground() = withContext(Dispatchers.Default) {
-        repository.getMedia()
-    }
-
-    private suspend fun uploadFilesOnBackgroundThread(media: Media) =
-        withContext(Dispatchers.Default) {
-            repository.uploadMedia(media)
-        }
 
     fun applyMedia() {
         val mediaWorker = OneTimeWorkRequestBuilder<MediaWorker>().addTag(TAG_MEDIA_UPLOADING).build()
