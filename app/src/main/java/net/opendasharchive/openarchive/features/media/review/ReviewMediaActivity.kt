@@ -266,7 +266,7 @@ class ReviewMediaActivity : AppCompatActivity() {
             R.id.menu_upload -> uploadMedia()
             R.id.menu_item_share_link -> shareLink()
             R.id.menu_item_open_link -> openLink()
-            R.id.menu_delete -> deleteMedia()
+            R.id.menu_delete -> showDeleteMediaDialog()
             else -> {
             }
         }
@@ -422,7 +422,7 @@ class ReviewMediaActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun deleteMedia() {
+    private fun showDeleteMediaDialog() {
         val build = AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
                 .setTitle(R.string.popup_remove_title)
                 .setMessage(R.string.popup_remove_desc)
@@ -430,25 +430,23 @@ class ReviewMediaActivity : AppCompatActivity() {
                     //do nothing
                 }
                 .setPositiveButton(R.string.dialog_ok) { dialog, which ->
-                    deleteMedia(deleteLocalFile = false, deleteRemoteFile = false)
+                    deleteMedia()
                 }
         build.create().show()
     }
 
-    private fun deleteMedia(deleteLocalFile: Boolean, deleteRemoteFile: Boolean) {
-        if (deleteRemoteFile) {
+    private fun deleteMedia() {
+        val media: Media = findById<Media>(Media::class.java, currentMediaId)
+        if (!media.serverUrl.isNullOrEmpty() || media.status == Media.STATUS_UPLOADED || media.status == Media.STATUS_PUBLISHED) {
             mMedia.status = Media.STATUS_DELETE_REMOTE
             mMedia.save()
             //start upload queue, which will also handle the deletes
             (application as OpenArchiveApp).uploadQueue()
             finish()
         } else {
-            val media: Media = findById<Media>(Media::class.java, currentMediaId)
-            if (media != null) {
-                val success: Boolean = findById<Media>(Media::class.java, currentMediaId).delete()
-                Log.d("OAMedia", "Item deleted: $success")
-                finish()
-            }
+            val success: Boolean = findById<Media>(Media::class.java, currentMediaId).delete()
+            Log.d("OAMedia", "Item deleted: $success")
+            finish()
         }
     }
 
