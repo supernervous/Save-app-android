@@ -12,7 +12,7 @@ import androidx.work.WorkInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.features.media.MediaListFragment
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
 
 class PreviewMediaListActivity : AppCompatActivity() {

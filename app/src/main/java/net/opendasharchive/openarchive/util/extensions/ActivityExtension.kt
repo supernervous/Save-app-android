@@ -11,7 +11,3 @@ fun FragmentActivity.routeTo(fragment: Fragment, containerId: Int) {
             .addToBackStack(fragment::class.java.canonicalName)
             .commit()
 }
-
-fun View.createSnackBar(message: String, duration: Int): Snackbar {
-    return Snackbar.make(this, message, duration)
-}

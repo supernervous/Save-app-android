@@ -12,4 +12,5 @@ object Constants {
     const val UPLOADING_URI = "UPLOADING_URI"
     const val UPLOADING_MEDIA = "UPLOADING_MEDIA"
 
+    const val EMPTY_ID = -1L
 }

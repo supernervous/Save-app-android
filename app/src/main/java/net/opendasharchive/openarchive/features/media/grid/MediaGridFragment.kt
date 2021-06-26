@@ -16,7 +16,7 @@ import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProjectAndCollection
 import net.opendasharchive.openarchive.db.MediaAdapter
-import net.opendasharchive.openarchive.features.media.MediaListFragment
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 

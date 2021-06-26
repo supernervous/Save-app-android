@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.databinding.FragmentMediaListSimpleBindin
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.MediaAdapter
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import java.util.*
 
 class MediaReviewListFragment : MediaListFragment() {

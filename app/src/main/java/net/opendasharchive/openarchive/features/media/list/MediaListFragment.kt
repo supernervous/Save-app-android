@@ -1,10 +1,12 @@
-package net.opendasharchive.openarchive.features.media
+package net.opendasharchive.openarchive.features.media.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +16,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.MediaAdapter
-import java.util.*
+import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 
 open class MediaListFragment : Fragment() {
 
@@ -27,6 +29,7 @@ open class MediaListFragment : Fragment() {
     open var mMediaAdapter: MediaAdapter? = null
 
     private var _mBinding: FragmentMediaListBinding? = null
+    private lateinit var viewModel: MediaListViewModel
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -56,33 +59,32 @@ open class MediaListFragment : Fragment() {
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         _mBinding?.root?.tag = TAG
+        viewModel = ViewModelProvider(this).get(MediaListViewModel::class.java)
+        observeData()
+        viewModel.getMediaList(mProjectId, mStatuses)
         return _mBinding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initLayout()
+    private fun observeData() {
+        viewModel.mediaList.observe(viewLifecycleOwner, Observer {
+            if (mProjectId != EMPTY_ID) {
+                it?.forEach { media ->
+                    if (media.status == Media.STATUS_LOCAL) {
+                        return@forEach
+                    }
+                }
+                initLayout(it ?: listOf())
+            }
+        })
     }
 
-    private fun initLayout() {
+    private fun initLayout(mediaList: List<Media>) {
         val rView = RecyclerView(requireContext())
         rView.layoutManager = LinearLayoutManager(activity)
         rView.setHasFixedSize(true)
         _mBinding?.mediacontainer?.addView(rView)
-        val listMedia: List<Media>?
 
-        if (mProjectId == -1L) {
-            listMedia = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
-        } else {
-            listMedia = getMediaByProject(mProjectId)
-            listMedia?.forEach { media ->
-                if (media.status == Media.STATUS_LOCAL) {
-                    return@forEach
-                }
-            }
-        }
-
-        val listMediaArray = ArrayList(listMedia)
+        val listMediaArray = ArrayList(mediaList)
 
         mMediaAdapter =
             MediaAdapter(

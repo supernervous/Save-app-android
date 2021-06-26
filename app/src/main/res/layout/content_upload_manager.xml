@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/fragUploadManager"
-        class="net.opendasharchive.openarchive.features.media.MediaListFragment"
+        class="net.opendasharchive.openarchive.features.media.list.MediaListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
