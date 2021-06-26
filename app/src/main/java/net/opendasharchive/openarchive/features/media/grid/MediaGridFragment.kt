@@ -1,10 +1,12 @@
-package net.opendasharchive.openarchive.features.media
+package net.opendasharchive.openarchive.features.media.grid
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
@@ -14,8 +16,9 @@ import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProjectAndCollection
 import net.opendasharchive.openarchive.db.MediaAdapter
+import net.opendasharchive.openarchive.features.media.MediaListFragment
+import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
-import java.util.*
 
 class MediaGridFragment : MediaListFragment() {
 
@@ -24,6 +27,7 @@ class MediaGridFragment : MediaListFragment() {
     private var mSection = HashMap<Long, SectionViewHolder>()
 
     private var _mBinding: FragmentMediaListBinding? = null
+    private lateinit var viewModel: MediaGridViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,22 +35,26 @@ class MediaGridFragment : MediaListFragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(MediaGridViewModel::class.java)
+        observeData()
+        viewModel.getAllCollection()
         return _mBinding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initLayout()
+    private fun observeData() {
+
+        viewModel.collections.observe(viewLifecycleOwner, Observer {
+            initLayout(it)
+        })
+
     }
 
-    private fun initLayout() {
+    private fun initLayout(listCollections: List<Collection>?) {
         mAdapters = HashMap()
         mSection = HashMap()
 
         _mBinding?.let { mBinding ->
             mBinding.root.tag = TAG
-
-            val listCollections = getAllAsList()
 
             var addedView = false
             listCollections?.forEach { collection ->

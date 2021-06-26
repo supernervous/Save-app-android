@@ -7,7 +7,7 @@ import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.media.MediaGridFragment
+import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.media.NewProjectFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 
