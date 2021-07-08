@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             val progress = intent.getLongExtra(SiteController.MESSAGE_KEY_PROGRESS, -1)
             val status = intent.getIntExtra(SiteController.MESSAGE_KEY_STATUS, -1)
             if (status == Media.STATUS_UPLOADED) {
-                mSnackBar?.dismiss()
                 mBinding.pager.let {
                     if (mBinding.pager.currentItem > 0) {
                         val frag =
@@ -97,7 +96,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                     }
                 }
             } else if (status == Media.STATUS_UPLOADING) {
-                mSnackBar?.show()
                 mBinding.pager.let {
                     if (mediaId != -1L && mBinding.pager.currentItem > 0) {
                         val frag =

@@ -20,6 +20,8 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.FileUtils
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
+import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
 import java.text.DecimalFormat
 import java.util.*
@@ -38,6 +40,7 @@ class MediaViewHolder(
     private var progressBar: ProgressBar? = itemView.findViewById(R.id.progressBar)
     private var tvProgress: TextView ?= itemView.findViewById(R.id.txtProgress)
     private var mPicasso: Picasso? = null
+    private var mImageProgress: ProgressBar? = itemView.findViewById(R.id.progressImageUpload)
 
     var doImageFade = true
     private var lastMediaPath: String? = null
@@ -87,6 +90,13 @@ class MediaViewHolder(
             ivIcon.alpha = 1f
         } else {
             if (doImageFade) ivIcon.alpha = 0.5f else ivIcon.alpha = 1f
+        }
+
+        //Uploading animation
+        if (currentMedia.status == Media.STATUS_UPLOADING || currentMedia.status == Media.STATUS_QUEUED) {
+            startImageUploadProgress()
+        } else {
+            stopImageUploadProgress()
         }
 
         if (lastMediaPath == null || lastMediaPath != mediaPath) {
@@ -238,6 +248,14 @@ class MediaViewHolder(
         if (currentMedia.flag) ivEditFlag?.setImageResource(R.drawable.ic_flag_selected) else ivEditFlag?.setImageResource(
             R.drawable.ic_flag_unselected
         )
+    }
+
+    private fun startImageUploadProgress() {
+        mImageProgress?.show()
+    }
+
+    private fun stopImageUploadProgress() {
+        mImageProgress?.hide()
     }
 
     companion object {
