@@ -13,4 +13,6 @@ object Constants {
     const val UPLOADING_MEDIA = "UPLOADING_MEDIA"
 
     const val EMPTY_ID = -1L
+
+    const val LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 }
