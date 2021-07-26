@@ -345,7 +345,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             }
         }
         media.collectionId = coll.id
-        val fileSource = File(FileUtils.getMediaPathFromUri(uri, this))
+        val fileSource = File(uri.path)
         var createDate = Date()
         if (fileSource.exists()) {
             createDate = Date(fileSource.lastModified())

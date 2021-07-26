@@ -19,7 +19,7 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.publish.UploaderListenerV2
-import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
+import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
 import java.util.*
@@ -95,7 +95,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                                         null
                                     ) else if (space.type == Space.TYPE_DROPBOX) sc =
                                     SiteController.getSiteController(
-                                        DropboxSiteController.SITE_KEY,
+                                        SITE_KEY,
                                         ctx,
                                         UploaderListenerV2(media, ctx),
                                         null

@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.orm.SugarRecord
-import com.orm.SugarRecord.*
+import com.orm.SugarRecord.find
+import com.orm.SugarRecord.findById
 import io.scal.secureshareui.controller.ArchiveSiteController
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.MainActivity
@@ -14,7 +14,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.publish.UploaderListenerV2
-import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
+import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
 import java.util.*
@@ -87,7 +87,7 @@ class MediaRepositoryImpl(
                                 )
                             Space.TYPE_DROPBOX -> sc =
                                 SiteController.getSiteController(
-                                    DropboxSiteController.SITE_KEY,
+                                    SITE_KEY,
                                     ctx,
                                     UploaderListenerV2(media, ctx),
                                     null

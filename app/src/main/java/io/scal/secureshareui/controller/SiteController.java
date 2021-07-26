@@ -13,12 +13,15 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
+import net.opendasharchive.openarchive.util.Constants;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.SITE_KEY;
 
 public abstract class SiteController {
     private OnEventListener mPublishEventListener;
@@ -102,7 +105,7 @@ public abstract class SiteController {
                return null;
            }
        }
-       else if (site.equals(DropboxSiteController.SITE_KEY))
+       else if (site.equals(SITE_KEY))
        {
            try {
                return new DropboxSiteController(context,listener,jobId);
