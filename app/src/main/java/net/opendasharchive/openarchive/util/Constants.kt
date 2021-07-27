@@ -14,5 +14,7 @@ object Constants {
 
     const val EMPTY_ID = -1L
 
+    const val PROJECT_ID = "PROJECT_ID"
+
     const val LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 }

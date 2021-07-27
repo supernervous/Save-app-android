@@ -21,12 +21,15 @@ import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
 import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
+import static net.opendasharchive.openarchive.util.Constants.EMPTY_ID;
+import static net.opendasharchive.openarchive.util.Constants.PROJECT_ID;
 
 
 public class UploadManagerActivity extends AppCompatActivity {
 
     MediaListFragment mFrag;
     MenuItem mMenuEdit;
+    private long projectId = EMPTY_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,10 @@ public class UploadManagerActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.title_uploads));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mFrag = (MediaListFragment)getSupportFragmentManager().findFragmentById(R.id.fragUploadManager);
+        projectId = getIntent().getLongExtra(PROJECT_ID, EMPTY_ID);
+
+        mFrag = (MediaListFragment) getSupportFragmentManager().findFragmentById(R.id.fragUploadManager);
+        ((MediaListFragment) mFrag).setProjectId(projectId);
     }
 
 
@@ -69,16 +75,14 @@ public class UploadManagerActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             Log.d("receiver", "Updating media");
 
-            int status = intent.getIntExtra(MESSAGE_KEY_STATUS,-1);
+            int status = intent.getIntExtra(MESSAGE_KEY_STATUS, -1);
             if (status == (Media.STATUS_UPLOADED))
                 mFrag.refresh();
-            else if (status == (Media.STATUS_UPLOADING))
-            {
-                long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID,-1);
-                long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS,-1);
+            else if (status == (Media.STATUS_UPLOADING)) {
+                long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID, -1);
+                long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS, -1);
 
-                if (mediaId != -1)
-                {
+                if (mediaId != -1) {
                     mFrag.updateItem(mediaId, progress);
                 }
 
@@ -89,8 +93,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
     boolean isEditMode = false;
 
-    public void toggleEditMode ()
-    {
+    public void toggleEditMode() {
         isEditMode = !isEditMode;
         mFrag.setEditMode(isEditMode);
         mFrag.refresh();
@@ -99,8 +102,7 @@ public class UploadManagerActivity extends AppCompatActivity {
             mMenuEdit.setTitle(R.string.menu_done);
             stopService(new Intent(this, PublishService.class));
 
-        }
-        else {
+        } else {
             mMenuEdit.setTitle(R.string.menu_edit);
             startService(new Intent(this, PublishService.class));
         }
