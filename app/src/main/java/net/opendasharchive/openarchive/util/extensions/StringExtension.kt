@@ -9,3 +9,7 @@ fun String.isEmailValid(): Boolean {
 fun String.isPasswordValid(): Boolean {
     return this.isNotEmpty()
 }
+
+fun String.isPasswordLengthValid(): Boolean {
+    return this.isNotEmpty()
+}
