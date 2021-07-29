@@ -30,12 +30,12 @@ class DropboxSiteController : SiteController {
 
     private var mContinueUpload = true
 
-    private var dbClient: DropboxClientFactory? = null
+    private var dbClient = DropboxClientFactory()
     private var uTask: UploadFileTask? = null
 
     private var dateFormat: SimpleDateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
-    constructor(context: Context, listener: SiteControllerListener, jobId: String) : super(
+    constructor(context: Context, listener: SiteControllerListener, jobId: String?) : super(
         context,
         listener,
         jobId
@@ -53,7 +53,7 @@ class DropboxSiteController : SiteController {
 
             if (!accessToken.isNullOrEmpty()) {
                 dbClient = DropboxClientFactory()
-                dbClient?.init(mContext, accessToken)
+                dbClient.init(mContext, accessToken)
             }
         }
     }
@@ -80,8 +80,8 @@ class DropboxSiteController : SiteController {
 
         return try {
             uTask =
-                UploadFileTask(mContext, dbClient!!.getClient(), object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata) {
+                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                    override fun onUploadComplete(result: FileMetadata?) {
                         if (result != null) {
                             val finalMediaPath = result.pathDisplay
                             media.serverUrl = finalMediaPath
@@ -92,11 +92,11 @@ class DropboxSiteController : SiteController {
                         }
                     }
 
-                    override fun onError(e: Exception) {
+                    override fun onError(e: Exception?) {
                         jobFailed(
                             e,
                             -1,
-                            e.message
+                            e?.message
                         )
                     }
 
@@ -169,9 +169,9 @@ class DropboxSiteController : SiteController {
     private fun uploadProof(media: Media, projectName: String, folderName: String): Boolean {
         try {
             val uTask =
-                UploadFileTask(mContext, dbClient?.getClient(), object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata) {}
-                    override fun onError(e: java.lang.Exception) {}
+                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                    override fun onUploadComplete(result: FileMetadata?) {}
+                    override fun onError(e: Exception?) {}
                     override fun onProgress(progress: Long) {}
                 })
             if (media.mediaHash != null) {
@@ -192,7 +192,7 @@ class DropboxSiteController : SiteController {
                 }
                 return true
             }
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             //proof upload failed
             Log.e(
                 TAG,
@@ -219,9 +219,9 @@ class DropboxSiteController : SiteController {
             fos.flush()
             fos.close()
             var uTask =
-                UploadFileTask(mContext, dbClient?.getClient(), object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata) {}
-                    override fun onError(e: java.lang.Exception) {}
+                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                    override fun onUploadComplete(result: FileMetadata?) {}
+                    override fun onError(e: Exception?) {}
                     override fun onProgress(progress: Long) {}
                 })
             uTask.upload(
@@ -240,10 +240,10 @@ class DropboxSiteController : SiteController {
                     filesProof?.forEach { fileProof ->
                         uTask = UploadFileTask(
                             mContext,
-                            dbClient?.getClient(),
+                            dbClient.getClient()!!,
                             object : UploadFileTask.Callback {
-                                override fun onUploadComplete(result: FileMetadata) {}
-                                override fun onError(e: java.lang.Exception) {}
+                                override fun onUploadComplete(result: FileMetadata?) {}
+                                override fun onError(e: Exception?) {}
                                 override fun onProgress(progress: Long) {}
                             })
                         uTask.upload(
