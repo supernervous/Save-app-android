@@ -339,4 +339,7 @@
     <string name="batch_waiting_for_upload">Waiting for upload...</string>
     <string name="batch_uploading_now">Uploading now...</string>
     <string name="login_activity_logging_message">Logging in...</string>
+    <string name="web_dav_connection_exception">\"Unable to connect to Orbot/Tor: \"</string>
+    <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
+    <string name="web_dav_connection_exception_invalid">Unable to connect to Orbot/Tor: INVALID</string>
 </resources>

@@ -13,7 +13,6 @@ import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
-import net.opendasharchive.openarchive.util.Constants;
 
 import java.io.File;
 import java.io.IOException;
