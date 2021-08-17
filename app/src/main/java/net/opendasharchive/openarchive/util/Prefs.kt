@@ -13,6 +13,7 @@ object Prefs{
     const val PREF_USE_PROOFMODE = "use_proofmode"
     const val PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
     const val PREF_CURRENT_SPACE_ID = "current_space"
+    const val TRACK_LOCATION = "trackLocation"
 
     private var prefs: SharedPreferences? = null
 
