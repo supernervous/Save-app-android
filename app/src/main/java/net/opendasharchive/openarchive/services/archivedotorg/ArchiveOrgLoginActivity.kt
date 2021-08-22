@@ -80,7 +80,6 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                 space.host = ArchiveSiteController.ARCHIVE_BASE_URL
                 space.name = getString(R.string.label_ia)
             }
-            mSpace?.save()
         }
     }
 
@@ -235,6 +234,7 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                 if (result) {
                     mSpace?.let {
                         setCurrentSpaceId(it.id)
+                        it.save()
                         finish()
                     }
                 } else {
