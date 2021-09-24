@@ -463,6 +463,7 @@ object FileUtils {
         val cur = cr.query(Uri.parse(uri.toString()), projection, null, null, null)
         if (cur != null) {
             if (cur.moveToFirst()) {
+                val curColumn = cur.getColumnName(0)
                 return cur.getString(0)
             }
             cur.close()

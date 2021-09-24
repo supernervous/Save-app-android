@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
-import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
 import java.io.File;
@@ -28,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 import io.scal.secureshareui.controller.SiteController;
+
+import static net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.SITE_KEY;
 
 public class BrowseProjectsActivity extends AppCompatActivity {
 
@@ -129,7 +130,7 @@ public class BrowseProjectsActivity extends AppCompatActivity {
             if (space.getType() == Space.TYPE_WEBDAV)
                 sc = SiteController.getSiteController(WebDAVSiteController.SITE_KEY, this, null, null);
             else if (space.getType() == Space.TYPE_DROPBOX)
-                sc = SiteController.getSiteController(DropboxSiteController.SITE_KEY, this, null, null);
+                sc = SiteController.getSiteController(SITE_KEY, this, null, null);
 
             if (sc != null) {
                 try {
