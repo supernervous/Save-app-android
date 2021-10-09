@@ -80,7 +80,9 @@ class MediaGridFragment : MediaListFragment() {
             }
         }
 
-        SectionViewHolder().apply {
+        val holder = SectionViewHolder()
+
+        holder.apply {
             mediaSection = layoutInflater.inflate(R.layout.fragment_media_list_section, null)
             val rView: RecyclerView? = mediaSection?.findViewById(R.id.recyclerview)
             if (rView != null) {
@@ -91,7 +93,6 @@ class MediaGridFragment : MediaListFragment() {
                 sectionTimestamp = mediaSection?.findViewById(R.id.sectiontimestamp)
                 action = mediaSection?.findViewById(R.id.action_next)
                 setSectionHeaders(collection, listMedia, this)
-
                 val listMediaArray = ArrayList(listMedia)
                 val mediaAdapter = MediaAdapter(
                     requireContext(),
@@ -106,11 +107,9 @@ class MediaGridFragment : MediaListFragment() {
                 rView.adapter = mediaAdapter
                 mAdapters[collection.id] = mediaAdapter
                 mSection[collection.id] = this
-
-                return this.mediaSection
             }
         }
-        return null
+        return holder.mediaSection
     }
 
     override fun updateItem(mediaId: Long, progress: Long) {
@@ -146,7 +145,7 @@ class MediaGridFragment : MediaListFragment() {
         listMedia?.forEach { media ->
             if (media.status == Media.STATUS_LOCAL) {
                 holder?.let {
-                    holder.sectionStatus?.setText(R.string.status_ready_to_upload)
+                    holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
                     holder.sectionTimestamp?.text =
                         "${listMedia.size} ${getString(R.string.label_items)}"
                     holder.action?.visibility = View.VISIBLE
@@ -162,7 +161,7 @@ class MediaGridFragment : MediaListFragment() {
                 return@forEach
             } else if (media.status == Media.STATUS_QUEUED || media.status == Media.STATUS_UPLOADING) {
                 holder?.let {
-                    holder.sectionStatus?.setText(R.string.header_uploading)
+                    holder.sectionStatus?.text = getString(R.string.header_uploading)
                     var uploadedCount = 0
                     listMedia.forEach { localMedia ->
                         if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++

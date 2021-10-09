@@ -37,51 +37,50 @@
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             style="@style/AppTheme.TabLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="fill"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/oablue"
             app:tabTextAppearance="@style/CustomTextAppearanceTab"
             app:tabTextColor="@color/light_grey" />
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <RelativeLayout xmlns:fab="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize">
-
-        <LinearLayout
-            android:id="@+id/pagerparent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <net.opendasharchive.openarchive.util.SelectiveViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
+        <net.opendasharchive.openarchive.util.SelectiveViewPager
+            android:id="@+id/pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabs" />
 
         <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="16dp"
-            fab:fab_colorNormal="@color/oablue"
-            fab:fab_colorPressed="@color/colorPrimaryDark"
-            fab:fab_icon="@drawable/baseline_add_white_24"
-            fab:fab_labelStyle="@style/menu_labels_style"
-            fab:fab_labelsPosition="left" />
+            app:fab_colorNormal="@color/oablue"
+            app:fab_colorPressed="@color/colorPrimaryDark"
+            app:fab_icon="@drawable/baseline_add_white_24"
+            app:fab_labelStyle="@style/menu_labels_style"
+            app:fab_labelsPosition="left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
