@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="top"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.opendasharchive.openarchive.projects.BrowseProjectsActivity"
+    tools:context="net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity"
     tools:showIn="@layout/activity_browse_projects"
     android:padding="10dp"
     android:layout_marginTop="48dp"
