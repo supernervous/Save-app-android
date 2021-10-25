@@ -39,7 +39,7 @@ import java.util.*
 
 class WebDAVSiteController : SiteController {
 
-    constructor(context: Context, listener: SiteControllerListener, jobId: String?) : super(
+    constructor(context: Context, listener: SiteControllerListener?, jobId: String?) : super(
         context,
         listener,
         jobId
@@ -50,7 +50,7 @@ class WebDAVSiteController : SiteController {
     private var chunkStartIdx: Int = 0
     private val FILE_BASE = "files/"
 
-    private fun init(context: Context, listener: SiteControllerListener, jobId: String?) {
+    private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
@@ -67,7 +67,7 @@ class WebDAVSiteController : SiteController {
                         MESSAGE_KEY_MESSAGE,
                         context.getString(R.string.web_dav_connection_exception) + e.message
                     )
-                    listener.failure(msg)
+                    listener?.failure(msg)
                 }
 
                 override fun onTimeout() {
@@ -77,7 +77,7 @@ class WebDAVSiteController : SiteController {
                         MESSAGE_KEY_MESSAGE,
                         context.getString(R.string.web_dav_connection_exception_timeout)
                     )
-                    listener.failure(msg)
+                    listener?.failure(msg)
                 }
 
                 override fun onInvalid() {
@@ -87,7 +87,7 @@ class WebDAVSiteController : SiteController {
                         MESSAGE_KEY_MESSAGE,
                         context.getString(R.string.web_dav_connection_exception_invalid)
                     )
-                    listener.failure(msg)
+                    listener?.failure(msg)
                 }
             })
             while (sardine == null) {

@@ -8,8 +8,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.projects.BrowseProjectsActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 
 class AddProjectActivity : AppCompatActivity() {

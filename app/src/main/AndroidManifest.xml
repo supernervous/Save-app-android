@@ -14,7 +14,7 @@
         tools:replace="android:icon,android:allowBackup">
 
         <activity
-            android:name=".projects.BrowseProjectsActivity"
+            android:name=".features.media.browse.BrowseProjectsActivity"
             android:label="@string/title_activity_browser_projects"
             android:theme="@style/AppTheme.NoActionBar" />
 
