@@ -207,7 +207,7 @@ class MediaViewHolder(
                 progressBar.visibility = View.GONE
                 tvProgress?.visibility = View.GONE
                 progressBar.progress = 0
-                tvProgress?.text = 0.toString() + "%"
+                tvProgress?.text = "0%"
             }
             if (!TextUtils.isEmpty(currentMedia.statusMessage)) tvCreateDate?.text =
                 currentMedia.statusMessage
@@ -217,7 +217,7 @@ class MediaViewHolder(
                 progressBar.visibility = View.VISIBLE
                 tvProgress?.visibility = View.VISIBLE
                 progressBar.progress = 0
-                tvProgress?.text = 0.toString() + "%"
+                tvProgress?.text = "0%"
             }
         } else if (currentMedia.status == Media.STATUS_UPLOADING || currentMedia.status == Media.STATUS_UPLOADED) {
             sbTitle.append(mContext.getString(R.string.status_uploading))
