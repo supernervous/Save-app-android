@@ -69,8 +69,7 @@ public class PublishService extends Service implements Runnable {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (mUploadThread == null || (!mUploadThread.isAlive()))
-        {
+        if (mUploadThread == null || (!mUploadThread.isAlive())) {
             mUploadThread = new Thread(this);
             mUploadThread.start();
         }
@@ -97,15 +96,11 @@ public class PublishService extends Service implements Runnable {
         return null;
     }
 
-    private boolean shouldPublish ()
-    {
-        if (Prefs.INSTANCE.getUploadWifiOnly())
-        {
-            if ( isNetworkAvailable(true))
+    private boolean shouldPublish() {
+        if (Prefs.INSTANCE.getUploadWifiOnly()) {
+            if (isNetworkAvailable(true))
                 return true;
-        }
-        else if (isNetworkAvailable(false))
-        {
+        } else if (isNetworkAvailable(false)) {
             return true;
         }
 
@@ -115,8 +110,7 @@ public class PublishService extends Service implements Runnable {
         return false;
     }
 
-    public void run ()
-    {
+    public void run() {
         if (!isRunning)
             doPublish();
 
@@ -124,8 +118,7 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private boolean doPublish ()
-    {
+    private boolean doPublish() {
         isRunning = true;
         boolean publishing = false;
 
@@ -140,11 +133,11 @@ public class PublishService extends Service implements Runnable {
             Date datePublish = new Date();
 
             String where = "status = ? OR status = ?";
-            String[] whereArgs = {Media.STATUS_QUEUED+"", Media.STATUS_UPLOADING+""};
+            String[] whereArgs = {Media.STATUS_QUEUED + "", Media.STATUS_UPLOADING + ""};
 
-            while ((results = Media.find(Media.class,where ,whereArgs,null,"priority DESC",null)).size() > 0 && keepUploading) {
+            while ((results = Media.find(Media.class, where, whereArgs, null, "priority DESC", null)).size() > 0 && keepUploading) {
 
-                for (Media media: results) {
+                for (Media media : results) {
 
                     Collection coll = Collection.findById(Collection.class, media.getCollectionId());
                     Project proj = Project.findById(Project.class, coll.getProjectId());
@@ -182,9 +175,7 @@ public class PublishService extends Service implements Runnable {
                             media.save();
 
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //project was deleted, so we should stop uploading
                         media.setStatus(Media.STATUS_LOCAL);
 
@@ -212,8 +203,7 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private boolean uploadMedia (Media media) throws IOException
-    {
+    private boolean uploadMedia(Media media) throws IOException {
 
         Project project = Project.Companion.getById(media.getProjectId());
 
@@ -230,7 +220,6 @@ public class PublishService extends Service implements Runnable {
                 space = Space.findById(Space.class, project.getSpaceId());
             else
                 space = Space.Companion.getCurrentSpace();
-
 
 
             if (space != null) {
@@ -254,9 +243,7 @@ public class PublishService extends Service implements Runnable {
             }
 
             return true;
-        }
-        else
-        {
+        } else {
             media.delete();
             return false;
 
@@ -264,33 +251,31 @@ public class PublishService extends Service implements Runnable {
 
     }
 
-    private void deleteMedia (Media media)
-    {
+    private void deleteMedia(Media media) {
 
         /**
-        // if user doesn't have an account
-        if(account.isAuthenticated()) {
-            ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new DeleteListener(media), null);
+         // if user doesn't have an account
+         if(account.isAuthenticated()) {
+         ArchiveSiteController siteController = (ArchiveSiteController)SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, new DeleteListener(media), null);
 
-            if (media.getServerUrl() != null) {
-                String bucketName = Uri.parse(media.getServerUrl()).getLastPathSegment();
-                String fileName = ArchiveSiteController.getTitleFileName(media);
-                if (fileName != null)
-                    siteController.delete(account, bucketName, fileName);
+         if (media.getServerUrl() != null) {
+         String bucketName = Uri.parse(media.getServerUrl()).getLastPathSegment();
+         String fileName = ArchiveSiteController.getTitleFileName(media);
+         if (fileName != null)
+         siteController.delete(account, bucketName, fileName);
 
-                siteController.delete(account, bucketName, ArchiveSiteController.THUMBNAIL_PATH);
-            }
+         siteController.delete(account, bucketName, ArchiveSiteController.THUMBNAIL_PATH);
+         }
 
-            media.delete();
-        }**/
+         media.delete();
+         }**/
     }
 
     public class UploaderListener implements SiteControllerListener {
 
         private Media uploadMedia;
 
-        public UploaderListener (Media media)
-        {
+        public UploaderListener(Media media) {
             uploadMedia = media;
         }
 
@@ -310,7 +295,7 @@ public class PublishService extends Service implements Runnable {
             Bundle data = msg.getData();
             long contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS);
 
-            Log.d("OAPublish",uploadMedia.getId() + " uploaded: " + contentLengthUploaded + "/" + uploadMedia.getContentLength() );
+            Log.d("OAPublish", uploadMedia.getId() + " uploaded: " + contentLengthUploaded + "/" + uploadMedia.getContentLength());
 
             uploadMedia.setProgress(contentLengthUploaded);
 
@@ -331,23 +316,24 @@ public class PublishService extends Service implements Runnable {
             String errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE);
             String error = "Error " + errorCode + ": " + errorMessage;
 
-             Log.d("OAPublish", "upload error: " + error);
+            Log.d("OAPublish", "upload error: " + error);
 
-             uploadMedia.setStatusMessage(error);
+            uploadMedia.setStatusMessage(error);
             uploadMedia.setStatus(Media.STATUS_ERROR);
             uploadMedia.save();
 
             notifyMediaUpdated(uploadMedia);
 
         }
-    };
+    }
+
+    ;
 
     public class DeleteListener implements SiteControllerListener {
 
         private Media deleteMedia;
 
-        public DeleteListener (Media media)
-        {
+        public DeleteListener(Media media) {
             deleteMedia = media;
         }
 
@@ -360,7 +346,7 @@ public class PublishService extends Service implements Runnable {
 
             int messageType = data.getInt(SiteController.MESSAGE_KEY_TYPE);
             String result = data.getString(SiteController.MESSAGE_KEY_RESULT);
-           // String resultUrl = getDetailsUrlFromResult(result);
+            // String resultUrl = getDetailsUrlFromResult(result);
 
             deleteMedia.delete();
             notifyMediaUpdated(deleteMedia);
@@ -400,8 +386,9 @@ public class PublishService extends Service implements Runnable {
             notifyMediaUpdated(deleteMedia);
 
         }
-    };
+    }
 
+    ;
 
 
     private boolean isNetworkAvailable(boolean requireWifi) {
@@ -428,8 +415,8 @@ public class PublishService extends Service implements Runnable {
         Intent intent = new Intent(MainActivity.INTENT_FILTER_NAME);
         // You can also include some extra data.
         intent.putExtra(MESSAGE_KEY_MEDIA_ID, media.getId());
-        intent.putExtra(MESSAGE_KEY_STATUS,media.getStatus());
-        intent.putExtra(MESSAGE_KEY_PROGRESS,media.getProgress());
+        intent.putExtra(MESSAGE_KEY_STATUS, media.getStatus());
+        intent.putExtra(MESSAGE_KEY_PROGRESS, media.getProgress());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -454,8 +441,7 @@ public class PublishService extends Service implements Runnable {
     private final static String NOTIFICATION_CHANNEL_ID = "oasave_channel_1";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createNotificationChannel ()
-    {
+    private void createNotificationChannel() {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 // The id of the channel

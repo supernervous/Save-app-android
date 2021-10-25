@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.SITE_KEY;
+
 public abstract class SiteController {
     private OnEventListener mPublishEventListener;
     protected Context mContext;
@@ -102,7 +104,7 @@ public abstract class SiteController {
                return null;
            }
        }
-       else if (site.equals(DropboxSiteController.SITE_KEY))
+       else if (site.equals(SITE_KEY))
        {
            try {
                return new DropboxSiteController(context,listener,jobId);
