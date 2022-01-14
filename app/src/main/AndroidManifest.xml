@@ -16,17 +16,22 @@
         <activity
             android:name=".features.media.browse.BrowseProjectsActivity"
             android:label="@string/title_activity_browser_projects"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"
+            />
 
         <activity
             android:name=".publish.UploadManagerActivity"
             android:label="@string/title_activity_upload_manager"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,12 +60,16 @@
             android:name=".services.archivedotorg.ArchiveSettingsActivity"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsTheme"
+            android:exported="false"
+            />
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".features.onboarding.SpaceSetupActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity" />
@@ -109,7 +118,9 @@
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true"
+            >
             <intent-filter>
 
                 <!-- Change this to be db- followed by your app key -->
@@ -124,14 +135,15 @@
 
         <activity
             android:name=".features.settings.SpaceSettingsActivity"
-            android:label="@string/title_activity_space_settings">
+            android:label="@string/title_activity_space_settings"
+            android:exported="true"
+            >
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="nc" />
             </intent-filter>
         </activity>

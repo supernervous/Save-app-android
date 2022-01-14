@@ -14,10 +14,6 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-    dexOptions {
-        javaMaxHeapSize "3g"
-        preDexLibraries true
-    }
 
     signingConfigs {
     }
@@ -86,7 +82,7 @@ dependencies {
     implementation libraries.gson
     //noinspection GradleCompatible
     implementation libraries.okhttp
-    implementation libraries.okio
+   // implementation libraries.okio
 
     implementation libraries.satyan_sugar
     implementation libraries.i2p_floating_action
@@ -102,10 +98,23 @@ dependencies {
     implementation libraries.circular_imageview
     implementation libraries.netCipher
     implementation libraries.netCipherOkHttp
-    implementation libraries.open_timestamps
 
     //from here: https://github.com/guardianproject/proofmode
-    implementation libraries.android_libproofmode
+    implementation (libraries.android_libproofmode) {
+
+        transitive = false
+
+        exclude group: 'org.bitcoinj'
+        exclude group: 'com.google.protobuf'
+        exclude group: 'org.slf4j'
+        exclude group: 'net.jcip'
+        exclude group: 'commons-cli'
+        exclude group: 'org.json'
+        exclude group: 'com.google.guava'
+        exclude group: 'com.google.guava', module: 'guava-jdk5'
+        exclude group: 'com.google.code.findbugs', module: 'annotations'
+        exclude group: "com.squareup.okio", module: "okio"
+    }
 
     //  implementation 'com.github.WrathChaos:MediaPickerLib:0.1.4'
     implementation libraries.matisse
@@ -143,10 +152,11 @@ dependencies {
     implementation libraries.glide
     annotationProcessor libraries.glideAnnotate
 
-    implementation "androidx.work:work-runtime-ktx:2.5.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
 
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
 }
 

@@ -357,7 +357,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         media.createDate = createDate
         media.updateDate = media.createDate
         media.status = Media.STATUS_LOCAL
-        media.mediaHashString = HashUtils.getSHA256FromFileContent(fileImport)
+        media.mediaHashString = HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
         media.projectId = project.id
         if (title != null) media.title = title
         media.save()

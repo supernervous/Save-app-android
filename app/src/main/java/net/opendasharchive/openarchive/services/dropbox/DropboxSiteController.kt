@@ -177,7 +177,7 @@ class DropboxSiteController : SiteController {
             if (media.mediaHash != null) {
                 val mediaHash = String(media.mediaHash)
                 if (!TextUtils.isEmpty(mediaHash)) {
-                    val fileProofDir = ProofMode.getProofDir(mediaHash)
+                    val fileProofDir = ProofMode.getProofDir(mContext, mediaHash)
                     if (fileProofDir != null && fileProofDir.exists()) {
                         val filesProof = fileProofDir.listFiles()
                         filesProof?.forEach { fileProof ->
@@ -234,7 +234,7 @@ class DropboxSiteController : SiteController {
                 putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
                 putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
                 val metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData))
-                val fileProofDir = ProofMode.getProofDir(metaMediaHash)
+                val fileProofDir = ProofMode.getProofDir(mContext, metaMediaHash)
                 if (fileProofDir != null && fileProofDir.exists()) {
                     val filesProof = fileProofDir.listFiles()
                     filesProof?.forEach { fileProof ->

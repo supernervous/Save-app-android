@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 class PreviewMediaListViewModelFactory(
     private val context: Application
 ) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PreviewMediaListViewModel::class.java)) {
             return PreviewMediaListViewModel(context) as T
         }

@@ -108,7 +108,7 @@ public class PirateBoxSiteController extends SiteController {
                 if (media.getMediaHash() != null) {
                     String mediaHash = new String(media.getMediaHash());
                     if (!TextUtils.isEmpty(mediaHash)) {
-                        File fileProofDir = ProofMode.getProofDir(mediaHash);
+                        File fileProofDir = ProofMode.getProofDir(mContext, mediaHash);
                         if (fileProofDir != null && fileProofDir.exists()) {
                             File[] filesProof = fileProofDir.listFiles();
                             for (File fileProof : filesProof) {

@@ -43,6 +43,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivitySpaceSettingsBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(SpaceSettingsViewModel::class.java)
+
         setContentView(mBinding.root)
         initLayout()
         observeData()
