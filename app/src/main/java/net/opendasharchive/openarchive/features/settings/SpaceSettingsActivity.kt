@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.core
+package net.opendasharchive.openarchive.features.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -14,15 +14,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.abdularis.civ.AvatarImageView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSettingsBinding
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
+import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
@@ -30,18 +30,22 @@ import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 import net.opendasharchive.openarchive.util.Prefs
+import java.util.*
 
 class SpaceSettingsActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivitySpaceSettingsBinding
+    private lateinit var viewModel: SpaceSettingsViewModel
 
     private var mSpace: Space? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivitySpaceSettingsBinding.inflate(layoutInflater)
+        viewModel = ViewModelProvider(this).get(SpaceSettingsViewModel::class.java)
         setContentView(mBinding.root)
         initLayout()
+        observeData()
     }
 
     private fun initLayout() {
@@ -52,7 +56,8 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
 
         mBinding.apply {
-            contentSpaceLayout.listProjects.layoutManager = LinearLayoutManager(this@SpaceSettingsActivity)
+            contentSpaceLayout.listProjects.layoutManager =
+                LinearLayoutManager(this@SpaceSettingsActivity)
             contentSpaceLayout.listProjects.setHasFixedSize(false)
 
             contentSpaceLayout.sectionSpace.setOnClickListener {
@@ -91,26 +96,36 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadSpaces() {
-        val listSpaces = getAllAsList()
+    private fun observeData() {
+        viewModel.spaceList.observe(this, Observer {
+            loadSpaces(it)
+        })
+        viewModel.currentSpace.observe(this, Observer {
+            showCurrentSpace(it)
+        })
+        viewModel.projects.observe(this, Observer {
+            updateProjects(it)
+        })
+    }
+
+    private fun loadSpaces(list: List<Space>?) {
         mBinding.spaceview.removeAllViews()
         var actionBarHeight = 80
 
         // Calculate ActionBar height
         val tv = TypedValue()
         if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            actionBarHeight =
+                TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
         }
-        listSpaces?.let {
-            while (listSpaces.hasNext()) {
-                val space = listSpaces.next()
-                val image: ImageView? = getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
-                image?.setOnClickListener {
-                    Prefs.setCurrentSpaceId(space.id)
-                    showCurrentSpace()
-                }
-                mBinding.spaceview.addView(image)
+        list?.forEach { space ->
+            val image: ImageView? =
+                getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
+            image?.setOnClickListener {
+                Prefs.setCurrentSpaceId(space.id)
+                showCurrentSpace(space)
             }
+            mBinding.spaceview.addView(image)
         }
     }
 
@@ -126,7 +141,10 @@ class SpaceSettingsActivity : AppCompatActivity() {
             image.state = AvatarImageView.SHOW_INITIAL
         }
         val margin = 6
-        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         lp.setMargins(margin, margin, margin, margin)
         lp.height = iconSize
         lp.width = iconSize
@@ -136,35 +154,31 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        showCurrentSpace()
-        loadSpaces()
+        getInitialData()
         checkSpaceLink()
     }
 
-    private fun showCurrentSpace() {
-        mSpace = getCurrentSpace()
+    private fun getInitialData() {
+        viewModel.getAllSpace()
+        viewModel.getCurrentSpace()
+    }
+
+    private fun showCurrentSpace(space: Space?) {
+        mSpace = space
         if (mSpace == null) {
-            val listSpaces = getAllAsList()
-            listSpaces?.let {
-                if (listSpaces.hasNext()) {
-                    with(listSpaces.next()) {
-                        mSpace = this
-                        Prefs.setCurrentSpaceId(this.id)
-                    }
-                }
-            }
+            viewModel.getLatestSpace()
         }
         mSpace?.let {
             val uriServer = Uri.parse(it.host)
             mBinding.contentSpaceLayout.txtSpaceName.text =
-                    if (it.name.isNotEmpty()) {
-                        it.name
-                    } else {
-                        uriServer.host
-                    }
+                if (it.name.isNotEmpty()) {
+                    it.name
+                } else {
+                    uriServer.host
+                }
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
-            updateProjects()
-            mBinding.contentSpaceLayout.spaceAvatar.avatarBackgroundColor = ContextCompat.getColor(this, R.color.oablue)
+            mBinding.contentSpaceLayout.spaceAvatar.avatarBackgroundColor =
+                ContextCompat.getColor(this, R.color.oablue)
 
             if (it.type == Space.TYPE_INTERNET_ARCHIVE) {
                 mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
@@ -175,10 +189,13 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 } else {
                     it.name
                 }
-                mBinding.contentSpaceLayout.spaceAvatar.setText(spaceName.substring(0, 1).toUpperCase())
+                mBinding.contentSpaceLayout.spaceAvatar.setText(
+                    spaceName.substring(0, 1).toUpperCase(Locale.getDefault())
+                )
                 mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_INITIAL
             }
             mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { v: View? -> startSpaceAuthActivity() }
+            viewModel.getAllProjects(it.id)
         }
     }
 
@@ -198,14 +215,13 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
     }
 
-    fun updateProjects() {
-        getCurrentSpace()?.let {
-            val listProjects = getAllBySpace(it.id)
-            if (listProjects != null) {
-                val adapter = ProjectListAdapter(this, listProjects, mBinding.contentSpaceLayout.listProjects)
-                mBinding.contentSpaceLayout.listProjects.adapter = adapter
-            }
+    private fun updateProjects(list: List<Project>?) {
+        val adapter = if (!list.isNullOrEmpty()) {
+            ProjectListAdapter(this, list, mBinding.contentSpaceLayout.listProjects)
+        } else {
+            ProjectListAdapter(this, listOf(), mBinding.contentSpaceLayout.listProjects)
         }
+        mBinding.contentSpaceLayout.listProjects.adapter = adapter
     }
 
     fun onAboutClick(view: View?) {
@@ -222,8 +238,10 @@ class SpaceSettingsActivity : AppCompatActivity() {
             val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
             startActivity(myIntent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "No application can handle this request."
-                    + " Please install a webbrowser", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this, "No application can handle this request."
+                        + " Please install a webbrowser", Toast.LENGTH_LONG
+            ).show()
             e.printStackTrace()
         }
     }

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.core
+package net.opendasharchive.openarchive.features.settings
 
 import android.app.Activity
 import android.content.Intent
