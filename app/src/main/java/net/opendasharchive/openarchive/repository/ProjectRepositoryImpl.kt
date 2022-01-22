@@ -6,6 +6,10 @@ import net.opendasharchive.openarchive.util.Constants
 
 class ProjectRepositoryImpl : ProjectRepository {
 
+    override suspend fun saveProject(project: Project) {
+        SugarRecord.save(project)
+    }
+
     override suspend fun getAllBySpaceId(spaceId: Long): List<Project>? {
         val whereArgs = arrayOf("$spaceId")
         return SugarRecord.find(

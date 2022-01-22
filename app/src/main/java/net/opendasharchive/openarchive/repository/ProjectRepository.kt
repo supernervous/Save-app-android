@@ -6,4 +6,6 @@ interface ProjectRepository {
 
     suspend fun getAllBySpaceId(spaceId: Long): List<Project>?
 
+    suspend fun saveProject(project: Project)
+
 }
