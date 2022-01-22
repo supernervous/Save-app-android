@@ -55,51 +55,6 @@ data class Media(
         this.tags = tags.replace(' ', ';').replace(',', ';')
     }
 
-    fun getAllMediaAsList(): List<Media>? {
-        return find(
-            Media::class.java,
-            "status <= ?",
-            WHERE_NOT_DELETED,
-            EMPTY_STRING,
-            "ID DESC",
-            EMPTY_STRING
-        )
-    }
-
-    fun getMediaByProjectAndUploadDate(projectId: Long, uploadDate: Long): List<Media>? {
-        val values =
-            arrayOf(projectId.toString() + EMPTY_STRING, uploadDate.toString() + EMPTY_STRING)
-        return find(
-            Media::class.java,
-            "PROJECT_ID = ? AND UPLOAD_DATE = ?",
-            values,
-            EMPTY_STRING,
-            "STATUS, ID DESC",
-            EMPTY_STRING
-        )
-    }
-
-    fun getMediaByProjectAndStatus(
-        projectId: Long,
-        statusMatch: String,
-        status: Long
-    ): List<Media>? {
-        val values = arrayOf(projectId.toString() + EMPTY_STRING, status.toString() + EMPTY_STRING)
-        return find(
-            Media::class.java,
-            "PROJECT_ID = ? AND STATUS $statusMatch ?",
-            values,
-            EMPTY_STRING,
-            "STATUS, ID DESC",
-            EMPTY_STRING
-        )
-    }
-
-    fun deleteMediaById(mediaId: Long): Boolean {
-        val media: Media = findById(Media::class.java, mediaId)
-        return media.delete()
-    }
-
     companion object {
         const val STATUS_NEW = 0
         const val STATUS_LOCAL = 1
@@ -112,9 +67,9 @@ data class Media(
         //public final static int STATUS_ARCHIVED = 5;
 
         const val ORDER_PRIORITY = "PRIORITY DESC"
-        private val WHERE_NOT_DELETED = arrayOf(STATUS_UPLOADED.toString() + "")
-        private val PRIORITY_DESC = "priority DESC"
-        private val ORDER_STATUS_AND_PRIORITY = "STATUS, PRIORITY DESC"
+        val WHERE_NOT_DELETED = arrayOf(STATUS_UPLOADED.toString() + "")
+        const val PRIORITY_DESC = "priority DESC"
+        const val ORDER_STATUS_AND_PRIORITY = "STATUS, PRIORITY DESC"
 
 
         fun getMediaByProjectAndCollection(projectId: Long, collectionId: Long): List<Media>? {
@@ -175,22 +130,6 @@ data class Media(
                 "STATUS, ID DESC",
                 EMPTY_STRING
             )
-        }
-
-        fun serializeToJson(media: Media): String {
-            return try {
-                Gson().toJson(media)
-            } catch (ex: Exception) {
-                EMPTY_STRING
-            }
-        }
-
-        fun deserializeFromJson(json: String): Media? {
-            return try {
-                Gson().fromJson(json, Media::class.java)
-            } catch (ex: Exception) {
-                null
-            }
         }
 
     }

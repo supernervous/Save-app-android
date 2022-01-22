@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
@@ -83,9 +84,16 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     }
 
     private fun bindMedia() {
-        bindMedia(mediaList[0])
+        viewModel.medias.observe(this, androidx.lifecycle.Observer {
+            if (!it.isNullOrEmpty()) {
+                mediaList = it
+                bindMedia(it.first())
+                for (media in it) {
+                    showThumbnail(media)
+                }
+            }
+        })
         mBinding.itemDisplay.removeAllViews()
-        for (media in mediaList) showThumbnail(media)
     }
 
     private fun bindMedia(media: Media) {
@@ -207,10 +215,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     private fun init() {
         val intent = intent
         val mediaIds = intent.getLongArrayExtra(Globals.EXTRA_CURRENT_MEDIA_ID)
-        mediaList = ArrayList()
-        mediaIds?.forEach { mediaId ->
-            mediaList.add(getMediaById(mediaId))
-        }
+        viewModel.getMediaById(mediaIds)
         // get default metadata sharing values
         val sharedPref = getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE)
         bindMedia()

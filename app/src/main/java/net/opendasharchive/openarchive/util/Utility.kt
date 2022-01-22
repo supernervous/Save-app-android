@@ -15,6 +15,8 @@ import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import com.google.gson.Gson
+import net.opendasharchive.openarchive.db.Media
 import java.io.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -296,5 +298,21 @@ object Utility {
             }
         }
         return true
+    }
+
+    fun serializeToJson(media: Media): String {
+        return try {
+            Gson().toJson(media)
+        } catch (ex: java.lang.Exception) {
+            Constants.EMPTY_STRING
+        }
+    }
+
+    fun deserializeFromJson(json: String): Media? {
+        return try {
+            Gson().fromJson(json, Media::class.java)
+        } catch (ex: java.lang.Exception) {
+            null
+        }
     }
 }
