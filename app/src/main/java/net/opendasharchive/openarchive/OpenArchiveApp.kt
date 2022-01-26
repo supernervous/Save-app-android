@@ -1,11 +1,11 @@
 package net.opendasharchive.openarchive
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
-import androidx.multidex.MultiDex
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
@@ -33,11 +33,13 @@ class OpenArchiveApp: SugarApp() {
     var orbotConnected = false
 
 
+    private val mCleanInsightsCirculo = CleanInsightsManager()
+
     private var mCurrentSpace: Space? = null
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        MultiDex.install(this)
+
     }
 
     override fun onCreate() {
@@ -152,6 +154,23 @@ class OpenArchiveApp: SugarApp() {
 
     fun getUseTor(): Boolean {
         return orbotConnected
+    }
+
+    fun hasCleanInsightsConsent () : Boolean {
+        return mCleanInsightsCirculo.hasConsent()
+    }
+    fun showCleanInsightsConsent (activity: Activity) {
+        mCleanInsightsCirculo.getConsent(activity)
+    }
+
+    fun measureView (viewId: String)
+    {
+        mCleanInsightsCirculo.measureView(viewId)
+    }
+
+    fun measureEvent (key: String, value: String)
+    {
+        mCleanInsightsCirculo.measureEvent(key, value)
     }
 
 }

@@ -24,6 +24,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import net.opendasharchive.openarchive.MainActivity;
+import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Collection;
 import net.opendasharchive.openarchive.db.Media;
@@ -384,6 +385,11 @@ public class PublishService extends Service implements Runnable {
             deleteMedia.setStatus(Media.STATUS_ERROR);
             deleteMedia.setStatusMessage(error);
             notifyMediaUpdated(deleteMedia);
+
+            OpenArchiveApp oApp = ((OpenArchiveApp)getApplication());
+
+            if (oApp.hasCleanInsightsConsent())
+                oApp.measureEvent("action","upload-failure");
 
         }
     }

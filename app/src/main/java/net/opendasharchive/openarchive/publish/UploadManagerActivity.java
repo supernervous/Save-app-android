@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment;
@@ -30,6 +31,7 @@ public class UploadManagerActivity extends AppCompatActivity {
     MediaListFragment mFrag;
     MenuItem mMenuEdit;
     private long projectId = EMPTY_ID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,18 @@ public class UploadManagerActivity extends AppCompatActivity {
                 if (mediaId != -1) {
                     mFrag.updateItem(mediaId, progress);
                 }
+
+            }
+            else if (status == Media.STATUS_ERROR) {
+
+                OpenArchiveApp oApp = ((OpenArchiveApp)getApplication());
+
+                if (!oApp.hasCleanInsightsConsent())
+                {
+                    oApp.showCleanInsightsConsent(UploadManagerActivity.this);
+
+                }
+
 
             }
 

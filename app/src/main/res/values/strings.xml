@@ -342,5 +342,10 @@
     <string name="web_dav_connection_exception">\"Unable to connect to Orbot/Tor: \"</string>
     <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
     <string name="web_dav_connection_exception_invalid">Unable to connect to Orbot/Tor: INVALID</string>
-    <string name="dropbox_app_key">gd5sputfo57s1l1</string>
+
+    <!-- Clean Insights measurement -->
+    <string name="clean_insight_consent_prompt">We are trying to understand why uploads fail sometimes, and would like to take some limited, anonymous measurements.</string>
+    <string name="ci_title">Help us make Save better</string>
+    <string name="ci_negative">No way</string>
+    <string name="ci_confirm">Sure</string>
 </resources>
