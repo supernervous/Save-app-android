@@ -426,10 +426,10 @@ class ReviewMediaActivity : AppCompatActivity() {
         val build = AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
                 .setTitle(R.string.popup_remove_title)
                 .setMessage(R.string.popup_remove_desc)
-                .setCancelable(true).setNegativeButton(R.string.dialog_cancel) { dialogInterface, i ->
+                .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { dialogInterface, i ->
                     //do nothing
                 }
-                .setPositiveButton(R.string.dialog_ok) { dialog, which ->
+                .setPositiveButton(R.string.lbl_ok) { dialog, which ->
                     deleteMedia()
                 }
         build.create().show()

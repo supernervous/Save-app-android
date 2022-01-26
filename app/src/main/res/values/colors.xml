@@ -36,5 +36,6 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#B8D5D5</color>
 
+    <color name="float_transparent">#AAAAAAAA</color>
 
 </resources>

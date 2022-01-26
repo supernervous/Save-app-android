@@ -14,8 +14,6 @@ import com.orm.SugarRecord.findById
 import info.guardianproject.netcipher.client.StrongBuilder
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import io.cleaninsights.sdk.CleanInsights
-import io.cleaninsights.sdk.piwik.CleanInsightsApplication
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
@@ -34,7 +32,6 @@ class OpenArchiveApp: SugarApp() {
     @Volatile
     var orbotConnected = false
 
-    private var cleanInsightsApp: CleanInsightsApplication? = null
 
     private var mCurrentSpace: Space? = null
 
@@ -152,38 +149,6 @@ class OpenArchiveApp: SugarApp() {
         return mCurrentSpace
     }
 
-    fun getCleanInsightsApp(): CleanInsightsApplication? {
-        return cleanInsightsApp
-    }
-
-    private fun initInsights() {
-        val cim = CleanInsights.getInstance(this)
-
-        //setup a passthrough application for CleanInsights, since we are already a SugarApp
-        cleanInsightsApp = object : CleanInsightsApplication() {
-            override fun getApplicationContext(): Context {
-                return this@OpenArchiveApp.applicationContext
-            }
-
-            override fun getSharedPreferences(name: String, mode: Int): SharedPreferences {
-                return this@OpenArchiveApp.getSharedPreferences(name, mode)
-            }
-
-            override fun getMeasureUrl(): String {
-                return "https://demo.cleaninsights.io"
-            }
-
-            override fun getMeasureUrlCertificatePin(): String {
-                //generate your own using this tool: https://github.com/scottyab/ssl-pin-generator
-                return "sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I="
-            }
-
-            override fun getSiteId(): Int {
-                return 1
-            }
-        }
-        cim.initPwiki(cleanInsightsApp)
-    }
 
     fun getUseTor(): Boolean {
         return orbotConnected
