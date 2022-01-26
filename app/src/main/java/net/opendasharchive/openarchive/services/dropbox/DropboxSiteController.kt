@@ -35,7 +35,7 @@ class DropboxSiteController : SiteController {
 
     private var dateFormat: SimpleDateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
-    constructor(context: Context, listener: SiteControllerListener, jobId: String?) : super(
+    constructor(context: Context, listener: SiteControllerListener?=null, jobId: String?) : super(
         context,
         listener,
         jobId
