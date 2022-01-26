@@ -14,7 +14,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         )
     }
 
-    fun onNewProjectClicked(view: View?) {
+    fun onNewProjectClicked() {
         promptAddProject()
     }
 
@@ -247,7 +246,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             } else {
                 val drawable = TextDrawable.builder()
                     .buildRound(
-                        it.name.substring(0, 1).toUpperCase(),
+                        it.name.substring(0, 1).uppercase(Locale.getDefault()),
                         resources.getColor(R.color.oablue)
                     )
                 mBinding.spaceAvatar.setImageDrawable(drawable)
@@ -359,7 +358,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         media.status = Media.STATUS_LOCAL
         media.mediaHashString = HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
         media.projectId = project.id
-        if (title != null) media.title = title
+        media.title = title
         media.save()
         return media
     }
@@ -367,11 +366,10 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private fun handleOutsideMedia(intent: Intent?): Media? {
         var media: Media? = null
         if (intent != null && intent.action != null && intent.action == Intent.ACTION_SEND) {
-            val mimeType = intent.type
             var uri = intent.data
             if (uri == null) {
                 uri =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && intent.clipData != null && intent.clipData!!.itemCount > 0) {
+                    if (intent.clipData != null && intent.clipData!!.itemCount > 0) {
                         intent.clipData!!.getItemAt(0).uri
                     } else {
                         return null
@@ -530,8 +528,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                     getString(R.string.importing_media),
                     Snackbar.LENGTH_INDEFINITE
                 )
-                val snack_view = bar?.view as SnackbarLayout
-                snack_view.addView(ProgressBar(this))
+                val snackView = bar.view as SnackbarLayout
+                snackView.addView(ProgressBar(this))
 
                 scope.executeAsyncTaskWithList(
                     onPreExecute = {
