@@ -15,12 +15,6 @@ data class Collection(
         fun getAllAsList(): List<Collection>? {
             return find(Collection::class.java, EMPTY_STRING, arrayOf(), EMPTY_STRING, "ID DESC", EMPTY_STRING)
         }
-
-        fun getAllAsListByProject(projectId: Long): List<Collection>? {
-            val values = arrayOf(projectId.toString() + EMPTY_STRING)
-            return find(Collection::class.java, "PROJECT_ID = ?", values, null, "ID DESC", null)
-        }
-
     }
 
 }

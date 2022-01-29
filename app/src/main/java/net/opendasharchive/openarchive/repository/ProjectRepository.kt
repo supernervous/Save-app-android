@@ -8,4 +8,7 @@ interface ProjectRepository {
 
     suspend fun saveProject(project: Project)
 
+    suspend fun saveProjectId(id: Long)
+
+    suspend fun getProjectId(): Long
 }

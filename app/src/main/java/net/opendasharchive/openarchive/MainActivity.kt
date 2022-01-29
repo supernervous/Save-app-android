@@ -77,6 +77,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     val REQUEST_NEW_PROJECT_NAME = 1001
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
+    private val sharedPreferencesHelper: SharedPreferencesHelper by lazy {
+        SharedPreferencesHelper.newInstance(this)
+    }
 
     // Our handler for received Intents. This will be called whenever an Intent
     // with an action named "custom-event-name" is broadcasted.
@@ -506,10 +509,11 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                 return true
             }
             R.id.menu_upload_manager -> {
+                val projectId = mPagerAdapter.getProject(lastTab)?.id ?: -1
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    val projectId = mPagerAdapter.getProject(lastTab)?.id
                     it.putExtra(PROJECT_ID, projectId)
                 })
+                sharedPreferencesHelper.saveData(SharedPreferencesHelper.KEY_PROJECT_ID, projectId)
                 return true
             }
         }
