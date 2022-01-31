@@ -59,15 +59,18 @@ open class MediaListFragment : Fragment() {
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         _mBinding?.root?.tag = TAG
-        viewModel = ViewModelProvider(this).get(MediaListViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, MediaListViewModelProvider(requireActivity().application)).get(
+                MediaListViewModel::class.java
+            )
         observeData()
-        viewModel.getMediaList(mProjectId, mStatuses)
+        viewModel.getMediaList(mStatuses)
         return _mBinding?.root
     }
 
     private fun observeData() {
         viewModel.mediaList.observe(viewLifecycleOwner, Observer {
-            if (mProjectId != EMPTY_ID) {
+            if (viewModel.projectId != EMPTY_ID) {
                 it?.forEach { media ->
                     if (media.status == Media.STATUS_LOCAL) {
                         return@forEach
@@ -109,14 +112,6 @@ open class MediaListFragment : Fragment() {
 
     open fun setStatus(status: Long) {
         mStatus = status
-    }
-
-    open fun getProjectId(): Long {
-        return mProjectId
-    }
-
-    fun setProjectId(projectId: Long) {
-        mProjectId = projectId
     }
 
     open fun updateItem(mediaId: Long, progress: Long) {

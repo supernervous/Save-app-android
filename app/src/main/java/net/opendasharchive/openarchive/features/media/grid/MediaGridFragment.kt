@@ -59,7 +59,7 @@ class MediaGridFragment : MediaListFragment() {
 
             var addedView = false
             listCollections?.forEach { collection ->
-                val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
+                val listMedia = getMediaByProjectAndCollection(viewModel.projectId, collection.id)
                 if (!listMedia.isNullOrEmpty()) {
                     if (!addedView) {
                         mBinding.mediacontainer.removeAllViews()
@@ -120,7 +120,7 @@ class MediaGridFragment : MediaListFragment() {
     override fun refresh() {
         val listCollections = getAllAsList()
         listCollections?.forEach { collection ->
-            val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
+            val listMedia = getMediaByProjectAndCollection(viewModel.projectId, collection.id)
             val adapter = mAdapters[collection.id]
             val holder: SectionViewHolder? = mSection[collection.id]
             val listMediaArray = ArrayList(listMedia)

@@ -52,6 +52,7 @@ import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.ui.BadgeDrawable
 import net.opendasharchive.openarchive.util.*
+import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import net.opendasharchive.openarchive.util.extensions.createSnackBar
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
@@ -509,7 +510,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                 return true
             }
             R.id.menu_upload_manager -> {
-                val projectId = mPagerAdapter.getProject(lastTab)?.id ?: -1
+                val projectId = mPagerAdapter.getProject(lastTab)?.id ?: EMPTY_ID
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
                     it.putExtra(PROJECT_ID, projectId)
                 })

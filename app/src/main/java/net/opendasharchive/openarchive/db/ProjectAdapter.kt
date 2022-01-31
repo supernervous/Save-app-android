@@ -7,13 +7,18 @@ import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.media.NewProjectFragment
+import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
+import net.opendasharchive.openarchive.util.SharedPreferencesHelper
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 
 class ProjectAdapter( private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
     private var data: List<Project>? = null
+
+    private val sharedPreferencesHelper: SharedPreferencesHelper by lazy {
+        SharedPreferencesHelper.newInstance(context)
+    }
 
     override fun getItem(position: Int): Fragment {
         return if (position == 0) {
@@ -21,7 +26,7 @@ class ProjectAdapter( private val context: Context, fragmentManager: FragmentMan
         } else {
             MediaGridFragment().also { fragment ->
                 getProject(position)?.let { project ->
-                    fragment.setProjectId(project.id)
+                    sharedPreferencesHelper.saveData(SharedPreferencesHelper.KEY_PROJECT_ID, project.id)
                 }
                 fragment.arguments = Bundle()
             }

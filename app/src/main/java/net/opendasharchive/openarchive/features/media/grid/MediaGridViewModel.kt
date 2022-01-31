@@ -18,6 +18,8 @@ class MediaGridViewModel(
         ProjectRepositoryImpl(SharedPreferencesHelper.newInstance(context))
     }
 
+    val projectId = projectRepository.getProjectId()
+
     private val _collections = MutableLiveData<List<Collection>?>()
     val collections: LiveData<List<Collection>?>
         get() = _collections
@@ -40,7 +42,7 @@ class MediaGridViewModel(
         viewModelScope.launch {
             _currentCollection.value = collection
             _mediaList.value = mediaRepository.getMediaByProjectAndCollection(
-                projectRepository.getProjectId(),
+                projectId,
                 collection.id
             )
         }

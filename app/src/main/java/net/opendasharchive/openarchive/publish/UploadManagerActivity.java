@@ -16,6 +16,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment;
+import net.opendasharchive.openarchive.util.SharedPreferencesHelper;
 
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
@@ -30,6 +31,7 @@ public class UploadManagerActivity extends AppCompatActivity {
     MediaListFragment mFrag;
     MenuItem mMenuEdit;
     private long projectId = EMPTY_ID;
+    private SharedPreferencesHelper sharedPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +41,11 @@ public class UploadManagerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.title_uploads));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        sharedPreferencesHelper = SharedPreferencesHelper.Companion.newInstance(this);
         projectId = getIntent().getLongExtra(PROJECT_ID, EMPTY_ID);
 
         mFrag = (MediaListFragment) getSupportFragmentManager().findFragmentById(R.id.fragUploadManager);
-        ((MediaListFragment) mFrag).setProjectId(projectId);
+        sharedPreferencesHelper.saveData(SharedPreferencesHelper.KEY_PROJECT_ID, projectId);
     }
 
 

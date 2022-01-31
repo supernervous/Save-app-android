@@ -26,7 +26,7 @@ class ProjectRepositoryImpl(
         )
     }
 
-    override suspend fun getProjectId(): Long {
+    override fun getProjectId(): Long {
         return sharedPreferencesHelper?.getLongData(KEY_PROJECT_ID) ?: -1
     }
 
