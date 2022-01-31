@@ -8,6 +8,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import net.opendasharchive.openarchive.features.media.MediaWorker
+import net.opendasharchive.openarchive.repository.MediaRepository
+import net.opendasharchive.openarchive.repository.MediaRepositoryImpl
+import net.opendasharchive.openarchive.repository.ProjectRepository
+import net.opendasharchive.openarchive.repository.ProjectRepositoryImpl
 
 class PreviewMediaListViewModel(
     private val application: Application
@@ -21,6 +25,8 @@ class PreviewMediaListViewModel(
 
     private val workManager = WorkManager.getInstance(application)
     private val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
+
+    private val mediaRepository: MediaRepository = MediaRepositoryImpl(application.applicationContext)
 
     init {
         workState = workManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)

@@ -32,12 +32,13 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
+import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
 import java.io.File
-import java.util.*
+
 
 class ReviewMediaActivity : AppCompatActivity() {
 
@@ -179,7 +180,7 @@ class ReviewMediaActivity : AppCompatActivity() {
 
                 if (mMedia.location.isEmpty()) {
                     reviewMetadata.ivEditLocation.visibility = View.GONE
-                    reviewMetadata.tvLocationLbl.hint = ""
+                    reviewMetadata.tvLocationLbl.hint = Constants.EMPTY_STRING
                 }
 
                 reviewMetadata.tvTagsLbl.isEnabled = false
@@ -323,7 +324,8 @@ class ReviewMediaActivity : AppCompatActivity() {
             mMedia.status = Media.STATUS_QUEUED
             saveMedia()
             bindMedia()
-            viewModel.applyMedia()
+            startService(Intent(this, PublishService::class.java))
+            finish()
         } else {
             val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
             startActivity(firstStartIntent)

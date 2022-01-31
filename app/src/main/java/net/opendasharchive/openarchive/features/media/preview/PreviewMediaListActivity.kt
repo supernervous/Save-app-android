@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.media.preview
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,7 +14,9 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
+
 
 class PreviewMediaListActivity : AppCompatActivity() {
 
@@ -33,7 +36,6 @@ class PreviewMediaListActivity : AppCompatActivity() {
             ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         initLayout()
         showFirstTimeBatch()
-        observeValues()
     }
 
     private fun observeValues() {
@@ -106,8 +108,8 @@ class PreviewMediaListActivity : AppCompatActivity() {
             media.status = Media.STATUS_QUEUED
             media.save()
         }
-        //viewModel.uploadFiles()
-        viewModel.applyMedia()
+        startService(Intent(this, PublishService::class.java))
+        finish()
     }
 
     private fun showFirstTimeBatch() {

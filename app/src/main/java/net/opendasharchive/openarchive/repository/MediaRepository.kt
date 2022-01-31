@@ -28,4 +28,8 @@ interface MediaRepository {
 
     suspend fun saveMedia(media: Media)
 
+    suspend fun getMedia(): List<Media>
+
+    suspend fun uploadMedia(media: Media)
+
 }
