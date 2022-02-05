@@ -22,15 +22,13 @@ class BrowseProjectsViewModel: ViewModel() {
         viewModelScope.launch {
             if (siteController != null) {
                 try {
-                    val value =
                         withContext(Dispatchers.IO) {
-                            siteController.getFolders(
+                            val files = siteController.getFolders(
                                 space,
                                 space.host
                             )
+                            _fileList.postValue(files)
                         }
-                    _fileList.value = value
-
                 } catch (e: IOException) {
                     _fileList.value = arrayListOf()
                     e.printStackTrace()
