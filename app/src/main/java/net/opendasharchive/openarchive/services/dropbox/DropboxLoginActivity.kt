@@ -76,6 +76,7 @@ class DropboxLoginActivity : AppCompatActivity() {
                                 val email =
                                     client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
                                 space.username = email
+                                binding.email.text = email
                             } catch (e: Exception) {
                                 space.username = Auth.getUid()
                                 e.printStackTrace()
