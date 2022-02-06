@@ -1,7 +1,9 @@
 package net.opendasharchive.openarchive.features.settings
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -13,11 +15,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.github.abdularis.civ.AvatarImageView
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
+import com.zhihu.matisse.engine.impl.GlideEngine
+import com.zhihu.matisse.internal.entity.CaptureStrategy
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSettingsBinding
 import net.opendasharchive.openarchive.db.Project
@@ -26,9 +34,11 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
+import net.opendasharchive.openarchive.services.dropbox.UriHelpers
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
+import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import java.util.*
 
@@ -38,6 +48,9 @@ class SpaceSettingsActivity : AppCompatActivity() {
     private lateinit var viewModel: SpaceSettingsViewModel
 
     private var mSpace: Space? = null
+
+    // Calculate ActionBar height
+    private var mActionBarHeight: Int = 80
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +67,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
             it.title = Constants.EMPTY_STRING
             it.setDisplayHomeAsUpEnabled(true)
         }
+
+        val tv = TypedValue()
+        mActionBarHeight = if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        } else 80
 
         mBinding.apply {
             contentSpaceLayout.listProjects.layoutManager =
@@ -80,6 +98,10 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
                 intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_NETWORKING)
                 startActivity(intent)
+            }
+
+            contentSpaceLayout.btnAddIcon.setOnClickListener {
+                importMedia()
             }
         }
 
@@ -110,17 +132,9 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     private fun loadSpaces(list: List<Space>?) {
         mBinding.spaceview.removeAllViews()
-        var actionBarHeight = 80
-
-        // Calculate ActionBar height
-        val tv = TypedValue()
-        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight =
-                TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-        }
         list?.forEach { space ->
             val image: ImageView? =
-                getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
+                getSpaceIcon(space, (mActionBarHeight.toFloat() * .7f).toInt())
             image?.setOnClickListener {
                 Prefs.setCurrentSpaceId(space.id)
                 showCurrentSpace(space)
@@ -129,16 +143,35 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun addIcon(imageView: AvatarImageView, path: String?) {
+        val localFile = UriHelpers.getFileForUri(this, Uri.parse(path))
+        Glide.with(this).load(localFile).into(imageView)
+        imageView.state = AvatarImageView.SHOW_IMAGE
+    }
+
     private fun getSpaceIcon(space: Space, iconSize: Int): ImageView? {
         val image = AvatarImageView(this)
         image.avatarBackgroundColor = ContextCompat.getColor(this, R.color.oablue)
         if (space.type == Space.TYPE_INTERNET_ARCHIVE) {
-            image.setImageResource(R.drawable.ialogo128)
+            if (!space.icon.isNullOrEmpty()) {
+                addIcon(image, space.icon)
+            } else {
+                image.setImageResource(R.drawable.ialogo128)
+                image.state = AvatarImageView.SHOW_IMAGE
+            }
+        } else if (space.type == Space.TYPE_WEBDAV) {
+            Glide.with(this)
+                .load("${space.host}/index.php/apps/theming/image/logo?useSvg=1&v=9")
+                .into(image)
             image.state = AvatarImageView.SHOW_IMAGE
         } else {
-            if (space.name.isEmpty()) space.name = space.username
-            image.setText(space.name.substring(0, 1).toUpperCase())
-            image.state = AvatarImageView.SHOW_INITIAL
+            if (!space.icon.isNullOrEmpty()) {
+                addIcon(image, space.icon)
+            } else {
+                if (space.name.isEmpty()) space.name = space.username
+                image.setText(space.name.substring(0, 1).toUpperCase())
+                image.state = AvatarImageView.SHOW_INITIAL
+            }
         }
         val margin = 6
         val lp = LinearLayout.LayoutParams(
@@ -149,6 +182,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         lp.height = iconSize
         lp.width = iconSize
         image.layoutParams = lp
+        image.tag = space.id
         return image
     }
 
@@ -171,9 +205,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         mSpace?.let {
             val uriServer = Uri.parse(it.host)
             mBinding.contentSpaceLayout.txtSpaceName.text =
-                if (it.name.isNotEmpty()) {
-                    it.name
-                } else {
+                it.name.ifEmpty {
                     uriServer.host
                 }
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
@@ -181,18 +213,29 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.oablue)
 
             if (it.type == Space.TYPE_INTERNET_ARCHIVE) {
-                mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
+                if (!it.icon.isNullOrEmpty()) {
+                    addIcon(mBinding.contentSpaceLayout.spaceAvatar, it.icon)
+                } else {
+                    mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
+                    mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_IMAGE
+                }
+            } else if (it.type == Space.TYPE_WEBDAV) {
+                Glide.with(this)
+                    .load("${it.host}/index.php/apps/theming/image/logo?useSvg=1&v=9")
+                    .into(mBinding.contentSpaceLayout.spaceAvatar)
                 mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_IMAGE
             } else {
-                val spaceName = if (it.name.isEmpty()) {
-                    it.host
+                if (!it.icon.isNullOrEmpty()) {
+                    addIcon(mBinding.contentSpaceLayout.spaceAvatar, it.icon)
                 } else {
-                    it.name
+                    val spaceName = it.name.ifEmpty {
+                        it.host
+                    }
+                    mBinding.contentSpaceLayout.spaceAvatar.setText(
+                        spaceName.substring(0, 1).toUpperCase(Locale.getDefault())
+                    )
+                    mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_INITIAL
                 }
-                mBinding.contentSpaceLayout.spaceAvatar.setText(
-                    spaceName.substring(0, 1).toUpperCase(Locale.getDefault())
-                )
-                mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_INITIAL
             }
             mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { v: View? -> startSpaceAuthActivity() }
             viewModel.getAllProjects(it.id)
@@ -282,5 +325,83 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 2)
+            2 -> importMedia()
+        }
+    }
+
+    private fun importMedia() {
+        if (!askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 1)) {
+            Matisse.from(this)
+                .choose(MimeType.ofImage(), false)
+                .countable(true)
+                .maxSelectable(1)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                .thumbnailScale(0.85f)
+                .imageEngine(GlideEngine())
+                .capture(true)
+                .captureStrategy(CaptureStrategy(true, "$packageName.provider", "capture"))
+                .forResult(Globals.REQUEST_FILE_IMPORT)
+        }
+    }
+
+
+    private fun askForPermission(permission: String, requestCode: Int): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                permission
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    permission
+                )
+            ) {
+                //This is called if user has denied the permission before
+                //In this case I am just asking the permission again
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(permission),
+                    requestCode
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(permission),
+                    requestCode
+                )
+            }
+            return true
+        }
+        return false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Globals.REQUEST_FILE_IMPORT) {
+            if (resultCode == RESULT_OK && data != null) {
+                val selectedImage = Matisse.obtainResult(data)
+                if (selectedImage.isNotEmpty()) {
+                    onImageTaken(selectedImage[0])
+                }
+            }
+        }
+    }
+
+    private fun onImageTaken(uri: Uri) {
+        mSpace?.let {
+            it.icon = uri.toString()
+            it.save()
+            getSpaceIcon(it, (mActionBarHeight.toFloat() * .7f).toInt())
+        }
+    }
 
 }

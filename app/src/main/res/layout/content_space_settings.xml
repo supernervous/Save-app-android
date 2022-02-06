@@ -1,159 +1,146 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    android:gravity="top"
-    tools:context=".core.SpaceSettingsActivity">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        tools:context=".core.SpaceSettingsActivity">
 
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="24dp"
-        android:id="@+id/section_space"
-        >
-    <com.github.abdularis.civ.AvatarImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/avatar_default"
-        android:id="@+id/space_avatar"
+        <RelativeLayout
+            android:id="@+id/section_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp">
 
-        />
-    <TextView
-        android:id="@+id/txtSpaceName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_toRightOf="@+id/space_avatar"
-        android:layout_marginTop="6dp"
-        android:layout_marginLeft="6dp"
+            <com.github.abdularis.civ.AvatarImageView
+                android:id="@+id/space_avatar"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/avatar_default" />
 
-        />
+            <TextView
+                android:id="@+id/txtSpaceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_toRightOf="@+id/space_avatar"
+                android:text=""
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/txtSpaceUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:layout_toEndOf="@+id/space_avatar"
-        android:layout_below="@+id/txtSpaceName"
-        android:layout_marginLeft="6dp"
+            <TextView
+                android:id="@+id/txtSpaceUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtSpaceName"
+                android:layout_marginLeft="6dp"
+                android:layout_toEndOf="@+id/space_avatar"
+                android:text=""
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-        />
-    </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/header_projects"
+            android:textColor="@color/oablue"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listProjects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_projects"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:textColor="@color/oablue"
-        android:layout_marginTop="18dp"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/header_settings"
+            android:textColor="@color/oablue"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listProjects"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/btnMetadata"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/metadata"
+            android:textSize="22dp" />
 
+        <TextView
+            android:id="@+id/btnDataUse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/action_data_use"
+            android:textSize="22dp" />
 
+        <TextView
+            android:id="@+id/btnNetworking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/networking"
+            android:textSize="22dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_settings"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:textColor="@color/oablue"
-        android:layout_marginTop="18dp"
-        />
+        <TextView
+            android:id="@+id/btnAddIcon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/add_icon"
+            android:textSize="22dp" />
 
-    <TextView
-        android:id="@+id/btnMetadata"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/metadata"
-        android:textSize="22dp"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/header_info"
+            android:textColor="@color/oablue"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
-        android:layout_marginTop="6dp"
-        />
-    <TextView
-        android:id="@+id/btnDataUse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_data_use"
-        android:textSize="22dp"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider" />
 
-        android:layout_marginTop="6dp"
-        />
-    <TextView
-        android:id="@+id/btnNetworking"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/networking"
-        android:textSize="22dp"
-        android:layout_marginTop="6dp"
-        />
+        <TextView
+            android:id="@+id/btnPrivacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:onClick="onPrivacyClick"
+            android:text="@string/action_privacy"
+            android:textSize="22dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_info"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:textColor="@color/oablue"
-        android:layout_marginTop="18dp"
+        <TextView
+            android:id="@+id/btnAcount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:onClick="onAboutClick"
+            android:text="@string/action_about"
+            android:textSize="22dp" />
 
-        />
+        <TextView
+            android:id="@+id/txtVersion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="Save for Android v0.0.0"
+            android:textSize="12dp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider" />
-    <TextView
-        android:id="@+id/btnPrivacy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_privacy"
-        android:textSize="22dp"
-        android:onClick="onPrivacyClick"
-        android:layout_marginTop="3dp"
-        />
-
-
-    <TextView
-        android:id="@+id/btnAcount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/action_about"
-        android:textSize="22dp"
-        android:onClick="onAboutClick"
-        android:layout_marginTop="3dp"
-        />
-
-    <TextView
-        android:id="@+id/txtVersion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save for Android v0.0.0"
-        android:textSize="12dp"
-        android:layout_marginTop="22dp"
-
-        />
-
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>

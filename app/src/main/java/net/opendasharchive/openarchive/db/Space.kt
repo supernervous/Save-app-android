@@ -10,7 +10,8 @@ data class Space(
         var name: String = EMPTY_STRING,
         var username: String = EMPTY_STRING,
         var password: String = EMPTY_STRING,
-        var host: String = EMPTY_STRING
+        var host: String = EMPTY_STRING,
+        var icon: String? = null
 ) : SugarRecord() {
 
     companion object {

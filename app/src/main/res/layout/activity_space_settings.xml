@@ -18,12 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.core.widget.NestedScrollView
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="right|end"
                 android:layout_marginEnd="48dp"
                 android:fillViewport="true"
+                android:scrollbars="none"
                 android:gravity="right|end">
 
                 <LinearLayout
@@ -35,7 +36,7 @@
                     android:orientation="horizontal"
                     android:padding="3dp" />
 
-            </androidx.core.widget.NestedScrollView>
+            </HorizontalScrollView>
 
             <ImageView
                 android:layout_width="36dp"
