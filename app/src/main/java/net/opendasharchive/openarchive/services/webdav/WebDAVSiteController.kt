@@ -27,7 +27,10 @@ import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Request
 import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.PgpUtils
 import java.io.ByteArrayOutputStream
@@ -36,6 +39,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class WebDAVSiteController : SiteController {
 
@@ -126,6 +130,24 @@ class WebDAVSiteController : SiteController {
     override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String>?): Boolean {
 
         if (sardine == null) throw IOException("client not init'd")
+
+        val protocols: List<Protocol?> = object : ArrayList<Protocol?>() {
+            init {
+                add(Protocol.HTTP_1_1)
+            }
+        }
+
+        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(cacheInterceptor)
+                .connectTimeout(20L, TimeUnit.SECONDS)
+                .writeTimeout(20L, TimeUnit.SECONDS)
+                .readTimeout(20L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .protocols(protocols as List<Protocol>)
+                .build()
+
+        sardine = OkHttpSardine(okHttpClient)
+
 
         return if (useNextcloudChunking()) {
             uploadUsingChunking(space, media, valueMap)
@@ -477,5 +499,12 @@ class WebDAVSiteController : SiteController {
         const val SITE_KEY = "webdav"
         const val TAG = "WebDAVSC"
     }
+
+    private val cacheInterceptor: Interceptor = Interceptor { chain ->
+        val request: Request =
+                chain.request().newBuilder().addHeader("Connection", "close").build()
+        chain.proceed(request)
+    }
+
 
 }

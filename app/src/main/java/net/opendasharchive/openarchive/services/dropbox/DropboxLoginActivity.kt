@@ -118,11 +118,11 @@ class DropboxLoginActivity : AppCompatActivity() {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView?.requestFocus()
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            Auth.startOAuth2Authentication(this@DropboxLoginActivity, getString(R.string.dropbox_key))
-        }
+            } else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                Auth.startOAuth2Authentication(this@DropboxLoginActivity, "dd")
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
