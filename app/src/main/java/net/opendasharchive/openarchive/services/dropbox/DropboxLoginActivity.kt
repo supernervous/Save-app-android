@@ -121,7 +121,7 @@ class DropboxLoginActivity : AppCompatActivity() {
             } else {
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
-                Auth.startOAuth2Authentication(this@DropboxLoginActivity, "dd")
+                Auth.startOAuth2Authentication(this@DropboxLoginActivity, getString(R.string.dropbox_key))
             }
     }
 
