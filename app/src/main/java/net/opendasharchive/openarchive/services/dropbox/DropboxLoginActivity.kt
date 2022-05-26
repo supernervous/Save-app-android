@@ -65,34 +65,35 @@ class DropboxLoginActivity : AppCompatActivity() {
 
         if (isNewSpace) {
             scope.executeAsyncTask(
-                onPreExecute = {},
-                doInBackground = {
-                    val accessToken = Auth.getOAuth2Token()
-                    if (!accessToken.isNullOrEmpty() && mSpace != null) {
-                        mSpace?.let { space ->
-                            val client =
-                                DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
-                            try {
-                                val email =
-                                    client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
-                                space.username = email
-                            } catch (e: Exception) {
-                                space.username = Auth.getUid()
-                                e.printStackTrace()
-                            }
+                    onPreExecute = {},
+                    doInBackground = {
+                        val accessToken = Auth.getOAuth2Token()
+                        if (!accessToken.isNullOrEmpty() && mSpace != null) {
+                            mSpace?.let { space ->
+                                val client =
+                                        DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
+                                try {
+                                    val email =
+                                            client?.users()?.currentAccount?.email
+                                                    ?: Constants.EMPTY_STRING
+                                    space.username = email
+                                } catch (e: Exception) {
+                                    space.username = Auth.getUid()
+                                    e.printStackTrace()
+                                }
 
-                            space.password = accessToken
-                            space.save()
-                            setCurrentSpaceId(space.id)
+                                space.password = accessToken
+                                space.save()
+                                setCurrentSpaceId(space.id)
+                            }
+                            true
                         }
-                        true
+                        false
+                    },
+                    onPostExecute = { result ->
+                        if (result)
+                            finish()
                     }
-                    false
-                },
-                onPostExecute = { result ->
-                    if (result)
-                        finish()
-                }
             )
         }
 
@@ -118,11 +119,11 @@ class DropboxLoginActivity : AppCompatActivity() {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView?.requestFocus()
-            } else {
-                // Show a progress spinner, and kick off a background task to
-                // perform the user login attempt.
-                Auth.startOAuth2Authentication(this@DropboxLoginActivity, getString(R.string.dropbox_key))
-            }
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            Auth.startOAuth2Authentication(this@DropboxLoginActivity, getString(R.string.dropbox_key))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -139,22 +140,22 @@ class DropboxLoginActivity : AppCompatActivity() {
 
     fun removeProject(view: View?) {
         val dialogClickListener =
-            DialogInterface.OnClickListener { dialog, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes button clicked
-                        confirmRemoveSpace()
-                        finish()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
+                DialogInterface.OnClickListener { dialog, which ->
+                    when (which) {
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            //Yes button clicked
+                            confirmRemoveSpace()
+                            finish()
+                        }
+                        DialogInterface.BUTTON_NEGATIVE -> {
+                        }
                     }
                 }
-            }
         val message = getString(R.string.confirm_remove_space)
         val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
         builder.setTitle(R.string.remove_from_app)
-            .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-            .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
+                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+                .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
     }
 
     private fun confirmRemoveSpace() {
