@@ -36,19 +36,19 @@ android {
     }
 
     flavorDimensions "free"
-    buildTypes {
-        debug {
-            buildConfigField "String", "dropbox_key", getDropboxKey()
-            resValue 'string', "dropbox_key", getDropboxKey()
-        }
-
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "dropbox_key", getDropboxKey()
-            resValue 'string', "dropbox_key", getDropboxKey()
-        }
-    }
+//    buildTypes {
+//        debug {
+//            buildConfigField "String", "dropbox_key", getDropboxKey()
+//            resValue 'string', "dropbox_key", getDropboxKey()
+//        }
+//
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            buildConfigField "String", "dropbox_key", getDropboxKey()
+//            resValue 'string', "dropbox_key", getDropboxKey()
+//        }
+//    }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'

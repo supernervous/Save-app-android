@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit
 
 class WebDAVSiteController : SiteController {
 
+    lateinit var okHttpBaseClient: OkHTTPBaseClient
     constructor(context: Context, listener: SiteControllerListener?, jobId: String?) : super(
         context,
         listener,
@@ -56,12 +57,13 @@ class WebDAVSiteController : SiteController {
 
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
+        okHttpBaseClient = OkHTTPBaseClient()
 
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             val builder = StrongOkHttpClientBuilder(context)
             builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
                 override fun onConnected(okHttpClient: OkHttpClient?) {
-                    sardine = OkHttpSardine(okHttpClient)
+                    sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
                 }
 
                 override fun onConnectionException(e: Exception) {
@@ -102,7 +104,7 @@ class WebDAVSiteController : SiteController {
                 Log.d(TAG, "waiting for Tor-enabled Sardine to init")
             }
         } else {
-            sardine = OkHttpSardine()
+            sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
         }
 
     }
@@ -130,24 +132,6 @@ class WebDAVSiteController : SiteController {
     override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String>?): Boolean {
 
         if (sardine == null) throw IOException("client not init'd")
-
-        val protocols: List<Protocol?> = object : ArrayList<Protocol?>() {
-            init {
-                add(Protocol.HTTP_1_1)
-            }
-        }
-
-        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(cacheInterceptor)
-                .connectTimeout(20L, TimeUnit.SECONDS)
-                .writeTimeout(20L, TimeUnit.SECONDS)
-                .readTimeout(20L, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .protocols(protocols as List<Protocol>)
-                .build()
-
-        sardine = OkHttpSardine(okHttpClient)
-
 
         return if (useNextcloudChunking()) {
             uploadUsingChunking(space, media, valueMap)
@@ -493,18 +477,10 @@ class WebDAVSiteController : SiteController {
         return false
     }
 
-
     companion object {
         const val SITE_NAME = "WebDAV"
         const val SITE_KEY = "webdav"
         const val TAG = "WebDAVSC"
     }
-
-    private val cacheInterceptor: Interceptor = Interceptor { chain ->
-        val request: Request =
-                chain.request().newBuilder().addHeader("Connection", "close").build()
-        chain.proceed(request)
-    }
-
 
 }
