@@ -1,5 +1,12 @@
 package net.opendasharchive.openarchive.publish;
 
+import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
+import static net.opendasharchive.openarchive.util.Constants.EMPTY_ID;
+import static net.opendasharchive.openarchive.util.Constants.PROJECT_ID;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
+import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,13 +24,6 @@ import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment;
-
-import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
-import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
-import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
-import static net.opendasharchive.openarchive.MainActivity.INTENT_FILTER_NAME;
-import static net.opendasharchive.openarchive.util.Constants.EMPTY_ID;
-import static net.opendasharchive.openarchive.util.Constants.PROJECT_ID;
 
 
 public class UploadManagerActivity extends AppCompatActivity {
@@ -78,30 +78,32 @@ public class UploadManagerActivity extends AppCompatActivity {
             Log.d("receiver", "Updating media");
 
             int status = intent.getIntExtra(MESSAGE_KEY_STATUS, -1);
-            if (status == (Media.STATUS_UPLOADED))
+            if (status == (Media.STATUS_UPLOADED)) {
+                if (mFrag.getUploadingCounter() == 0) {
+                    getSupportActionBar().setTitle(getString(R.string.title_uploads));
+                }
                 mFrag.refresh();
-            else if (status == (Media.STATUS_UPLOADING)) {
+            } else if (status == (Media.STATUS_QUEUED)) {
+                getSupportActionBar().setTitle(getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)");
+            } else if (status == (Media.STATUS_UPLOADING)) {
                 long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID, -1);
                 long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS, -1);
-
                 if (mediaId != -1) {
                     mFrag.updateItem(mediaId, progress);
                 }
-
-            }
-            else if (status == Media.STATUS_ERROR) {
-
-                OpenArchiveApp oApp = ((OpenArchiveApp)getApplication());
-
-                if (!oApp.hasCleanInsightsConsent())
-                {
-                    oApp.showCleanInsightsConsent(UploadManagerActivity.this);
-
+                String progressToolbarTitle;
+                if (mFrag.getUploadingCounter() == 0) {
+                    progressToolbarTitle = getString(R.string.title_uploading);
+                } else {
+                    progressToolbarTitle = getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)";
                 }
-
-
+                getSupportActionBar().setTitle(progressToolbarTitle);
+            } else if (status == Media.STATUS_ERROR) {
+                OpenArchiveApp oApp = ((OpenArchiveApp) getApplication());
+                if (!oApp.hasCleanInsightsConsent()) {
+                    oApp.showCleanInsightsConsent(UploadManagerActivity.this);
+                }
             }
-
         }
     };
 
@@ -143,12 +145,9 @@ public class UploadManagerActivity extends AppCompatActivity {
                 finish();
                 return true;
 
-
             case R.id.menu_edit:
                 toggleEditMode();
                 return true;
-
-
         }
 
         return super.onOptionsItemSelected(item);

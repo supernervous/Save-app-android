@@ -6,11 +6,12 @@
     android:toDegrees="270" >
 
     <shape
+        android:thickness="4dp"
         android:shape="ring"
         android:useLevel="false" >
         <gradient
             android:centerY="0.5"
-            android:endColor="#FFFFFF"
+            android:endColor="@color/oablue"
             android:startColor="#333333"
             android:type="sweep"
             android:useLevel="false" />
