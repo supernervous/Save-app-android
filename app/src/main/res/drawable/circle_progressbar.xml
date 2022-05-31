@@ -3,12 +3,12 @@
     android:fromDegrees="-90"
     android:pivotX="50%"
     android:pivotY="50%"
-    android:toDegrees="270" >
+    android:toDegrees="270">
 
     <shape
-        android:thickness="4dp"
         android:shape="ring"
-        android:useLevel="false" >
+        android:thickness="4dp"
+        android:useLevel="false">
         <gradient
             android:centerY="0.5"
             android:endColor="@color/oablue"
