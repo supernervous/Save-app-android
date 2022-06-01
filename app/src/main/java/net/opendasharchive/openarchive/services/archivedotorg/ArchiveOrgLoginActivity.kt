@@ -24,6 +24,7 @@ import net.opendasharchive.openarchive.databinding.ActivityArchiveKeyLoginBindin
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Prefs.getBoolean
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
@@ -204,7 +205,7 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                 }
                 project.delete()
             }
-            finish()
+            SpaceChecker.navigateToHome(this)
         }
     }
 
