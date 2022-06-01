@@ -281,7 +281,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         mMenuUpload?.let {
             val mStatuses = longArrayOf(
                 Media.STATUS_UPLOADING.toLong(),
-                Media.STATUS_QUEUED.toLong(), Media.STATUS_ERROR.toLong()
+                Media.STATUS_QUEUED.toLong()
             )
             val uploadCount = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)?.size ?: 0
             if (uploadCount > 0) {
