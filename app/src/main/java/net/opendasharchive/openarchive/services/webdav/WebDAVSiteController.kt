@@ -27,7 +27,10 @@ import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Request
 import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.PgpUtils
 import java.io.ByteArrayOutputStream
@@ -36,9 +39,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class WebDAVSiteController : SiteController {
 
+    lateinit var okHttpBaseClient: OkHTTPBaseClient
     constructor(context: Context, listener: SiteControllerListener?, jobId: String?) : super(
         context,
         listener,
@@ -52,12 +57,13 @@ class WebDAVSiteController : SiteController {
 
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
+        okHttpBaseClient = OkHTTPBaseClient()
 
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             val builder = StrongOkHttpClientBuilder(context)
             builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
                 override fun onConnected(okHttpClient: OkHttpClient?) {
-                    sardine = OkHttpSardine(okHttpClient)
+                    sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
                 }
 
                 override fun onConnectionException(e: Exception) {
@@ -98,7 +104,7 @@ class WebDAVSiteController : SiteController {
                 Log.d(TAG, "waiting for Tor-enabled Sardine to init")
             }
         } else {
-            sardine = OkHttpSardine()
+            sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
         }
 
     }
@@ -470,7 +476,6 @@ class WebDAVSiteController : SiteController {
         }
         return false
     }
-
 
     companion object {
         const val SITE_NAME = "WebDAV"
