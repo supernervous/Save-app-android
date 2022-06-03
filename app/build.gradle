@@ -11,8 +11,8 @@ def getDropboxKey() {
 
 android {
     compileOptions {
-        JavaVersion.VERSION_11
-        JavaVersion.VERSION_11
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
     signingConfigs {
@@ -64,7 +64,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
 
     buildFeatures {
