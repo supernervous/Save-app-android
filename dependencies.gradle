@@ -1,6 +1,7 @@
 ext {
     versions = [
             gradle_tools                  : '7.0.4',
+            neenbedankt_gradle_plugin     : '1.8',
             testdroid_gradle              : '2.63.1',
             browserstack_gradle_plugin    : '2.3.1',
             gson                          : '2.8.6',
