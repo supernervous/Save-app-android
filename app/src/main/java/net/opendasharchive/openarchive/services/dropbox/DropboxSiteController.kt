@@ -20,6 +20,7 @@ import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import org.witness.proofmode.ProofMode
+import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -231,9 +232,14 @@ class DropboxSiteController : SiteController {
                 projectName
             )
             if (getUseProofMode()) {
+                var metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath),media.mediaHashString)
+                if(metaMediaHash == null){
+                    val proofHash = HashUtils.getSHA256FromFileContent(mContext.contentResolver.openInputStream(Uri.parse(media.originalFilePath)));
+                    metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath),proofHash)
+                }
                 putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
                 putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData))
+
                 val fileProofDir = ProofMode.getProofDir(mContext, metaMediaHash)
                 if (fileProofDir != null && fileProofDir.exists()) {
                     val filesProof = fileProofDir.listFiles()
