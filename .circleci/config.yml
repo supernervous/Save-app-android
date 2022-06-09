@@ -18,7 +18,6 @@ jobs:
           command: |
             cat > ./local.properties
             dropbox_key="foo"
-            cat ./local.properties
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
