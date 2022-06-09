@@ -5,7 +5,7 @@ apply from : '../config.gradle'
 
 def getDropboxKey() {
     Properties properties = new Properties()
-    //properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    properties.load(project.rootProject.file('local-sample.properties').newDataInputStream())
     return properties.getProperty("dropbox_key");
 }
 
@@ -36,19 +36,19 @@ android {
     }
 
     flavorDimensions "free"
-//    buildTypes {
-//        debug {
-//            buildConfigField "String", "dropbox_key", getDropboxKey()
-//            resValue 'string', "dropbox_key", getDropboxKey()
-//        }
-//
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            buildConfigField "String", "dropbox_key", getDropboxKey()
-//            resValue 'string', "dropbox_key", getDropboxKey()
-//        }
-//    }
+    buildTypes {
+        debug {
+            buildConfigField "String", "dropbox_key", getDropboxKey()
+            resValue 'string', "dropbox_key", getDropboxKey()
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "dropbox_key", getDropboxKey()
+            resValue 'string', "dropbox_key", getDropboxKey()
+        }
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
