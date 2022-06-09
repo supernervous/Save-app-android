@@ -15,7 +15,9 @@ jobs:
 #         command: sudo chmod +x ./gradlew
       - run:
           name: Create local.properties
-          command: touch local.properties
+          command: |
+            cat > touch.properties
+            dropbox_key="foo"
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
