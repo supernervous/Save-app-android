@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Create local.properties
           command: |
-            cat > touch.properties
+            cat > local.properties
             dropbox_key="foo"
       - run:
           name: Download Dependencies
