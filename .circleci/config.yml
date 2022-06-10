@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-30
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
@@ -14,8 +14,14 @@ jobs:
 #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
 #         command: sudo chmod +x ./gradlew
       - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
+          name: Create local.properties
+          command: touch local.properties
+      - run:
+          name: Create local.properties
+          command: touch local.properties
+      - run:
+          name: Add dummy api Key
+          command: echo "dropbox_key=\"foo\"" >> local.properties
       - save_cache:
           paths:
             - ~/.gradle
