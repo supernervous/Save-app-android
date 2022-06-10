@@ -74,8 +74,7 @@ class DropboxLoginActivity : AppCompatActivity() {
                                         DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
                                 try {
                                     val email =
-                                            client?.users()?.currentAccount?.email
-                                                    ?: Constants.EMPTY_STRING
+                                            client?.users()?.currentAccount?.email?: Constants.EMPTY_STRING
                                     space.username = email
                                 } catch (e: Exception) {
                                     space.username = Auth.getUid()
@@ -85,14 +84,19 @@ class DropboxLoginActivity : AppCompatActivity() {
                                 space.password = accessToken
                                 space.save()
                                 setCurrentSpaceId(space.id)
+                                true
                             }
-                            true
+                        } else {
+                            false
                         }
-                        false
                     },
                     onPostExecute = { result ->
-                        if (result)
-                            finish()
+                        result?.let {
+                            if (it) {
+                                binding.email.text = mSpace?.username
+                                binding.actionRemoveSpace.show()
+                            }
+                        }
                     }
             )
         }
