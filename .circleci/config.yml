@@ -15,12 +15,13 @@ jobs:
 #         command: sudo chmod +x ./gradlew
       - run:
           name: Create local.properties
-          command: |
-            cat > ./local.properties
-            dropbox_key="foo"
+          command: touch local.properties
       - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
+          name: Create local.properties
+          command: touch local.properties
+      - run:
+          name: Add dummy api Key
+          command: echo "dropbox_key=\"foo\"" >> local.properties
       - save_cache:
           paths:
             - ~/.gradle
