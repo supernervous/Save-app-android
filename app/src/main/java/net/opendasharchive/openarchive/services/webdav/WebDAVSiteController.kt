@@ -418,14 +418,10 @@ class WebDAVSiteController : SiteController {
             fos.close()
             sardine?.put(urlMeta, fileMetaData, "text/plain", false, null)
             if (getUseProofMode()) {
-                var metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath),media.mediaHashString)
-                if(metaMediaHash == null){
-                    val proofHash = HashUtils.getSHA256FromFileContent(mContext.contentResolver.openInputStream(Uri.parse(media.originalFilePath)));
-                    metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath),proofHash)
-                }
+                val metaHash = getMetaMediaHash(media)
                 putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
                 putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val fileProofDir = ProofMode.getProofDir(mContext, metaMediaHash)
+                val fileProofDir = ProofMode.getProofDir(mContext, metaHash)
                 if (fileProofDir != null && fileProofDir.exists()) {
                     val filesProof = fileProofDir.listFiles()
                     filesProof?.forEach { fileProof ->
