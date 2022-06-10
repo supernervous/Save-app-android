@@ -17,10 +17,7 @@ jobs:
           name: Create local.properties
           command: touch local.properties
       - run:
-          name: Create local.properties
-          command: touch local.properties
-      - run:
-          name: Add dummy api Key
+          name: Add dummy api key
           command: echo "dropbox_key=\"foo\"" >> local.properties
       - save_cache:
           paths:
