@@ -14,7 +14,11 @@ import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController;
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController;
 
+import org.witness.proofmode.ProofMode;
+import org.witness.proofmode.crypto.HashUtils;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -146,6 +150,16 @@ public abstract class SiteController {
     	String fileExtension = MimeTypeMap.getFileExtensionFromUrl(fileUri.toString());
     	return MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
     }
+
+    public String getMetaMediaHash(Media media) throws FileNotFoundException {
+        String metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.getOriginalFilePath()),media.getMediaHashString());
+        if(metaMediaHash == null){
+            String proofHash = HashUtils.getSHA256FromFileContent(mContext.getContentResolver().openInputStream(Uri.parse(media.getOriginalFilePath())));
+            metaMediaHash = ProofMode.generateProof(mContext, Uri.parse(media.getOriginalFilePath()),proofHash);
+        }
+        return metaMediaHash;
+    }
+
 
     public OnEventListener getOnPublishEventListener() {
         return this.mPublishEventListener;

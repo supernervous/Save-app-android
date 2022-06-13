@@ -20,6 +20,7 @@ import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import org.witness.proofmode.ProofMode
+import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -35,10 +36,10 @@ class DropboxSiteController : SiteController {
 
     private var dateFormat: SimpleDateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
-    constructor(context: Context, listener: SiteControllerListener?=null, jobId: String?) : super(
-        context,
-        listener,
-        jobId
+    constructor(context: Context, listener: SiteControllerListener? = null, jobId: String?) : super(
+            context,
+            listener,
+            jobId
     )
 
     override fun startRegistration(space: Space?) {
@@ -80,30 +81,30 @@ class DropboxSiteController : SiteController {
 
         return try {
             uTask =
-                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata?) {
-                        if (result != null) {
-                            val finalMediaPath = result.pathDisplay
-                            media.serverUrl = finalMediaPath
-                            media.save()
-                            jobSucceeded(finalMediaPath)
-                            uploadMetadata(media, projectName, folderName, fileName)
-                            if (getUseProofMode()) uploadProof(media, projectName, folderName)
+                    UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                        override fun onUploadComplete(result: FileMetadata?) {
+                            if (result != null) {
+                                val finalMediaPath = result.pathDisplay
+                                media.serverUrl = finalMediaPath
+                                media.save()
+                                jobSucceeded(finalMediaPath)
+                                uploadMetadata(media, projectName, folderName, fileName)
+                                if (getUseProofMode()) uploadProof(media, projectName, folderName)
+                            }
                         }
-                    }
 
-                    override fun onError(e: Exception?) {
-                        jobFailed(
-                            e,
-                            -1,
-                            e?.message
-                        )
-                    }
+                        override fun onError(e: Exception?) {
+                            jobFailed(
+                                    e,
+                                    -1,
+                                    e?.message
+                            )
+                        }
 
-                    override fun onProgress(progress: Long) {
-                        jobProgress(progress, "")
-                    }
-                })
+                        override fun onProgress(progress: Long) {
+                            jobProgress(progress, "")
+                        }
+                    })
             uTask?.upload(mediaUri.toString(), fileName, folderName, projectName)
             true
         } catch (e: Exception) {
@@ -156,10 +157,10 @@ class DropboxSiteController : SiteController {
         ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
         if (TextUtils.isEmpty(ext)) {
             ext =
-                if (mimeType.startsWith("image")) "jpg" else if (mimeType.startsWith("video")) "mp4" else if (mimeType.startsWith(
-                        "audio"
-                    )
-                ) "m4a" else "txt"
+                    if (mimeType.startsWith("image")) "jpg" else if (mimeType.startsWith("video")) "mp4" else if (mimeType.startsWith(
+                                    "audio"
+                            )
+                    ) "m4a" else "txt"
         }
         result.append(UrlEscapers.urlFragmentEscaper().escape(title))
         if (!ext.isNullOrEmpty() && !title.endsWith(ext)) result.append('.').append(ext)
@@ -169,11 +170,11 @@ class DropboxSiteController : SiteController {
     private fun uploadProof(media: Media, projectName: String, folderName: String): Boolean {
         try {
             val uTask =
-                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata?) {}
-                    override fun onError(e: Exception?) {}
-                    override fun onProgress(progress: Long) {}
-                })
+                    UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                        override fun onUploadComplete(result: FileMetadata?) {}
+                        override fun onError(e: Exception?) {}
+                        override fun onProgress(progress: Long) {}
+                    })
             if (media.mediaHash != null) {
                 val mediaHash = String(media.mediaHash)
                 if (!TextUtils.isEmpty(mediaHash)) {
@@ -182,10 +183,10 @@ class DropboxSiteController : SiteController {
                         val filesProof = fileProofDir.listFiles()
                         filesProof?.forEach { fileProof ->
                             uTask.upload(
-                                Uri.fromFile(fileProof).toString(),
-                                fileProof.name,
-                                folderName,
-                                projectName
+                                    Uri.fromFile(fileProof).toString(),
+                                    fileProof.name,
+                                    folderName,
+                                    projectName
                             )
                         }
                     }
@@ -195,18 +196,18 @@ class DropboxSiteController : SiteController {
         } catch (e: Exception) {
             //proof upload failed
             Log.e(
-                TAG,
-                "Failed proof upload: $media", e
+                    TAG,
+                    "Failed proof upload: $media", e
             )
         }
         return false
     }
 
     private fun uploadMetadata(
-        media: Media,
-        projectName: String,
-        folderName: String,
-        fileName: String
+            media: Media,
+            projectName: String,
+            folderName: String,
+            fileName: String
     ): Boolean {
         val metadataFileName = "$fileName.meta.json"
         //String urlMeta = basePath + '/' + metadataFileName;
@@ -219,38 +220,38 @@ class DropboxSiteController : SiteController {
             fos.flush()
             fos.close()
             var uTask =
-                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata?) {}
-                    override fun onError(e: Exception?) {}
-                    override fun onProgress(progress: Long) {}
-                })
+                    UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
+                        override fun onUploadComplete(result: FileMetadata?) {}
+                        override fun onError(e: Exception?) {}
+                        override fun onProgress(progress: Long) {}
+                    })
             uTask.upload(
-                Uri.fromFile(fileMetaData).toString(),
-                metadataFileName,
-                folderName,
-                projectName
+                    Uri.fromFile(fileMetaData).toString(),
+                    metadataFileName,
+                    folderName,
+                    projectName
             )
             if (getUseProofMode()) {
+                val metaHash = getMetaMediaHash(media)
                 putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
                 putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData))
-                val fileProofDir = ProofMode.getProofDir(mContext, metaMediaHash)
+                val fileProofDir = ProofMode.getProofDir(mContext, metaHash)
                 if (fileProofDir != null && fileProofDir.exists()) {
                     val filesProof = fileProofDir.listFiles()
                     filesProof?.forEach { fileProof ->
                         uTask = UploadFileTask(
-                            mContext,
-                            dbClient.getClient()!!,
-                            object : UploadFileTask.Callback {
-                                override fun onUploadComplete(result: FileMetadata?) {}
-                                override fun onError(e: Exception?) {}
-                                override fun onProgress(progress: Long) {}
-                            })
+                                mContext,
+                                dbClient.getClient()!!,
+                                object : UploadFileTask.Callback {
+                                    override fun onUploadComplete(result: FileMetadata?) {}
+                                    override fun onError(e: Exception?) {}
+                                    override fun onProgress(progress: Long) {}
+                                })
                         uTask.upload(
-                            Uri.fromFile(fileProof).toString(),
-                            fileProof.name,
-                            folderName,
-                            projectName
+                                Uri.fromFile(fileProof).toString(),
+                                fileProof.name,
+                                folderName,
+                                projectName
                         )
                     }
                 }
@@ -258,8 +259,8 @@ class DropboxSiteController : SiteController {
             return true
         } catch (e: IOException) {
             Log.e(
-                TAG,
-                "Failed primary media upload: $metadataFileName", e
+                    TAG,
+                    "Failed primary media upload: $metadataFileName", e
             )
             jobFailed(e, -1, metadataFileName)
         }
