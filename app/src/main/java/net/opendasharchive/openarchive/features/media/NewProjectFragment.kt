@@ -1,13 +1,16 @@
 package net.opendasharchive.openarchive.features.media
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import net.opendasharchive.openarchive.MainActivity.Companion.REQUEST_NEW_PROJECT_NAME
 import net.opendasharchive.openarchive.databinding.FragmentNewProjectBinding
+import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +32,12 @@ class NewProjectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentNewProjectBinding.inflate(inflater, container, false)
+        _mBinding?.tvAddProject?.setOnClickListener {
+            activity?.startActivityForResult(
+                    Intent(activity, AddProjectActivity::class.java),
+                    REQUEST_NEW_PROJECT_NAME
+            )
+        }
         return _mBinding?.root
     }
 
