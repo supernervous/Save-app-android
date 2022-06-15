@@ -17,4 +17,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize" />
 
+    <ProgressBar
+        android:layout_gravity="center"
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:visibility="gone"
+        android:id="@+id/tvProjectsEmpty"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:text="@string/title_no_projects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.media.browse
 import android.R
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -105,6 +106,11 @@ class BrowseProjectsActivity : AppCompatActivity() {
         viewModel.fileList.observe(this, Observer {
             setupProjectList(it)
         })
+
+        viewModel.progressBarFlag.observe(this, {
+            mBinding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+        })
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
