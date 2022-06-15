@@ -223,6 +223,7 @@
 
     <string name="sign_in_private_btn">Private Server</string>
     <string name="importing_media">Importing media…</string>
+    <string name="title_no_projects">There are no projects</string>
 
     <string name="setup_nearby">Nearby</string>
     <string name="title_activity_space_settings">Your Space</string>

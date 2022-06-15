@@ -17,10 +17,12 @@ class BrowseProjectsViewModel: ViewModel() {
     private val _fileList = MutableLiveData<ArrayList<File>>()
     val fileList: LiveData<ArrayList<File>>
         get() = _fileList
+        val progressBarFlag = MutableLiveData(false)
 
     fun getFileList(siteController: SiteController?, space: Space) {
         viewModelScope.launch {
             if (siteController != null) {
+                progressBarFlag.value = true
                 try {
                     val value =
                         withContext(Dispatchers.IO) {
@@ -30,8 +32,9 @@ class BrowseProjectsViewModel: ViewModel() {
                             )
                         }
                     _fileList.value = value
-
+                    progressBarFlag.value = false
                 } catch (e: IOException) {
+                    progressBarFlag.value = false
                     _fileList.value = arrayListOf()
                     e.printStackTrace()
                 }
