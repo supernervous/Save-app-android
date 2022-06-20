@@ -26,11 +26,11 @@ data class Space(
         }
 
         fun getSpaceForCurrentUsername(email : String): Int {
-            var totalNoOfExistingSpace = 0
+            var totalNoOfExistingSpaces = 0
             getAllAsList()?.asSequence()?.toList()?.let {
-                totalNoOfExistingSpace = it.count { e -> e.username == email }
+                totalNoOfExistingSpaces = it.count { e -> e.username == email }
             }
-            return totalNoOfExistingSpace
+            return totalNoOfExistingSpaces
         }
 
         fun getCurrentSpace(): Space? {

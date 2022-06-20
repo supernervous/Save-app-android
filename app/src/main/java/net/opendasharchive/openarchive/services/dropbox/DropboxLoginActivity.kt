@@ -88,17 +88,17 @@ class DropboxLoginActivity : AppCompatActivity() {
                             mSpace?.let { space ->
                                 val client =
                                         DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
-                                var totalNoOfExistingSpace = 0
+                                var totalNoOfExistingSpaces = 0
                                 lateinit var email: String
 
                                 try {
                                     email = client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
-                                    totalNoOfExistingSpace = Space.getSpaceForCurrentUsername(email)
+                                    totalNoOfExistingSpaces = Space.getSpaceForCurrentUsername(email)
                                 } catch (e: Exception) {
                                     space.username = Auth.getUid()
                                     e.printStackTrace()
                                 }
-                                if (totalNoOfExistingSpace == 0) {
+                                if (totalNoOfExistingSpaces == 0) {
                                     space.username = email
                                     space.password = accessToken
                                     space.save()
