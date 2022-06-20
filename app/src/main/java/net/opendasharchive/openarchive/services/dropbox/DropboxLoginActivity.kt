@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
@@ -27,11 +28,18 @@ import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.show
 
+enum class DropboxResult {
+    Success,
+    Error,
+    AccountAlreadyExist
+}
+
 class DropboxLoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginDropboxBinding
     private var mSpace: Space? = null
     private var isNewSpace: Boolean = false
+    private var tokenExist: Boolean = false
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -53,6 +61,9 @@ class DropboxLoginActivity : AppCompatActivity() {
 
         } else {
             isNewSpace = true
+            if(Auth.getOAuth2Token() != null){
+                tokenExist = true
+            }
             mSpace = Space()
             mSpace?.type = Space.TYPE_DROPBOX
             if (mSpace?.password.isNullOrEmpty()) attemptLogin()
@@ -60,10 +71,15 @@ class DropboxLoginActivity : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        tokenExist = false
+    }
+
     override fun onResume() {
         super.onResume()
 
-        if (isNewSpace) {
+        if (isNewSpace && !tokenExist) {
             scope.executeAsyncTask(
                     onPreExecute = {},
                     doInBackground = {
@@ -72,29 +88,41 @@ class DropboxLoginActivity : AppCompatActivity() {
                             mSpace?.let { space ->
                                 val client =
                                         DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
+                                var totalNoOfExistingSpaces = 0
+                                lateinit var email: String
+
                                 try {
-                                    val email =
-                                            client?.users()?.currentAccount?.email?: Constants.EMPTY_STRING
-                                    space.username = email
+                                    email = client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
+                                    totalNoOfExistingSpaces = Space.getSpaceForCurrentUsername(email)
                                 } catch (e: Exception) {
                                     space.username = Auth.getUid()
                                     e.printStackTrace()
                                 }
-
-                                space.password = accessToken
-                                space.save()
-                                setCurrentSpaceId(space.id)
-                                true
+                                if (totalNoOfExistingSpaces == 0) {
+                                    space.username = email
+                                    space.password = accessToken
+                                    space.save()
+                                    setCurrentSpaceId(space.id)
+                                    DropboxResult.Success
+                                } else {
+                                    DropboxResult.AccountAlreadyExist
+                                }
                             }
                         } else {
-                            false
+                            DropboxResult.Error
                         }
                     },
                     onPostExecute = { result ->
                         result?.let {
-                            if (it) {
+                            if (it == DropboxResult.Success) {
                                 binding.email.text = mSpace?.username
                                 binding.actionRemoveSpace.show()
+                            } else if (it == DropboxResult.AccountAlreadyExist) {
+                                Toast.makeText(
+                                        this,
+                                        getString(R.string.login_you_have_already_space),
+                                        Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
