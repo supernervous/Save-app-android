@@ -25,6 +25,14 @@ data class Space(
             return findAll(Space::class.java)
         }
 
+        fun getSpaceForCurrentUsername(email : String): Int {
+            var totalNoOfExistingSpace = 0
+            getAllAsList()?.asSequence()?.toList()?.let {
+                totalNoOfExistingSpace = it.count { e -> e.username == email }
+            }
+            return totalNoOfExistingSpace
+        }
+
         fun getCurrentSpace(): Space? {
             val spaceId = Prefs.getCurrentSpaceId()
             if (spaceId != null) {

@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
@@ -231,9 +232,20 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 try {
                     try {
                         sardine.getQuota(siteUrl.toString())
-                        space.save()
-                        setCurrentSpaceId(space.id)
-                        mHandlerLogin.sendEmptyMessage(0)
+                        if (Space.getSpaceForCurrentUsername(space.username) == 0) {
+                            space.save()
+                            setCurrentSpaceId(space.id)
+                            mHandlerLogin.sendEmptyMessage(0)
+                        }else{
+                            runOnUiThread {
+                                mSnackbar.dismiss()
+                                Toast.makeText(
+                                        this@WebDAVLoginActivity,
+                                        getString(R.string.login_you_have_already_space),
+                                        Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
                     } catch (se: SardineException) {
                         if (se.statusCode == 401) {
                             //unauthorized
@@ -346,7 +358,9 @@ class WebDAVLoginActivity : AppCompatActivity() {
         mSpace?.let { space ->
             if (!space.name.isNullOrEmpty() && binding.servername.text?.toString() != space.name) {
                 space.name = binding.servername.text?.toString() ?: Constants.EMPTY_STRING
-                space.save()
+                if (Space.getSpaceForCurrentUsername(space.username) == 0) {
+                    space.save()
+                }
             }
         }
     }
