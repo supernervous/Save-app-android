@@ -151,12 +151,11 @@ class OpenArchiveApp: SugarApp() {
         return mCurrentSpace
     }
 
-
     fun getUseTor(): Boolean {
         return orbotConnected
     }
 
-    fun hasCleanInsightsConsent () : Boolean {
+    fun hasCleanInsightsConsent () : Boolean? {
         return mCleanInsightsCirculo.hasConsent()
     }
     fun showCleanInsightsConsent (activity: Activity) {

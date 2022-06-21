@@ -6,20 +6,18 @@ import static net.opendasharchive.openarchive.util.Constants.PROJECT_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_MEDIA_ID;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_PROGRESS;
 import static io.scal.secureshareui.controller.SiteController.MESSAGE_KEY_STATUS;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import net.opendasharchive.openarchive.OpenArchiveApp;
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
@@ -31,7 +29,7 @@ public class UploadManagerActivity extends AppCompatActivity {
     MediaListFragment mFrag;
     MenuItem mMenuEdit;
     private long projectId = EMPTY_ID;
-
+    boolean isEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +39,15 @@ public class UploadManagerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.title_uploads));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         projectId = getIntent().getLongExtra(PROJECT_ID, EMPTY_ID);
-
         mFrag = (MediaListFragment) getSupportFragmentManager().findFragmentById(R.id.fragUploadManager);
         ((MediaListFragment) mFrag).setProjectId(projectId);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-
         mFrag.refresh();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(INTENT_FILTER_NAME));
     }
@@ -63,7 +56,6 @@ public class UploadManagerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
@@ -79,35 +71,37 @@ public class UploadManagerActivity extends AppCompatActivity {
 
             int status = intent.getIntExtra(MESSAGE_KEY_STATUS, -1);
             if (status == (Media.STATUS_UPLOADED)) {
-                if (mFrag.getUploadingCounter() == 0) {
-                    getSupportActionBar().setTitle(getString(R.string.title_uploads));
-                }
+                new Handler().post(() -> {
+                    String progressToolbarTitle;
+                    if (mFrag.getUploadingCounter() == 0) {
+                        progressToolbarTitle = getString(R.string.title_uploads);
+                    } else {
+                        progressToolbarTitle = getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)";
+                    }
+                    getSupportActionBar().setTitle(progressToolbarTitle);
+                });
                 mFrag.refresh();
             } else if (status == (Media.STATUS_QUEUED)) {
-                getSupportActionBar().setTitle(getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)");
-            } else if (status == (Media.STATUS_UPLOADING)) {
+                new Handler().post(() -> {
+                    getSupportActionBar().setTitle(getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)");
+                });
+            }else if (status == (Media.STATUS_UPLOADING)) {
                 long mediaId = intent.getLongExtra(MESSAGE_KEY_MEDIA_ID, -1);
                 long progress = intent.getLongExtra(MESSAGE_KEY_PROGRESS, -1);
                 if (mediaId != -1) {
                     mFrag.updateItem(mediaId, progress);
                 }
-                String progressToolbarTitle;
-                if (mFrag.getUploadingCounter() == 0) {
-                    progressToolbarTitle = getString(R.string.title_uploading);
-                } else {
-                    progressToolbarTitle = getString(R.string.title_uploading) + " (" + mFrag.getUploadingCounter() + " left)";
-                }
-                getSupportActionBar().setTitle(progressToolbarTitle);
+
             } else if (status == Media.STATUS_ERROR) {
                 OpenArchiveApp oApp = ((OpenArchiveApp) getApplication());
-                if (!oApp.hasCleanInsightsConsent()) {
+                Boolean hasCleanInsightsConsent = oApp.hasCleanInsightsConsent();
+                if (hasCleanInsightsConsent != null && !hasCleanInsightsConsent) {
                     oApp.showCleanInsightsConsent(UploadManagerActivity.this);
                 }
             }
         }
     };
 
-    boolean isEditMode = false;
 
     public void toggleEditMode() {
         isEditMode = !isEditMode;
@@ -134,13 +128,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 finish();
                 return true;

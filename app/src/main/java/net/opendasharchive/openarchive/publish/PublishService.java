@@ -387,15 +387,11 @@ public class PublishService extends Service implements Runnable {
             notifyMediaUpdated(deleteMedia);
 
             OpenArchiveApp oApp = ((OpenArchiveApp)getApplication());
-
-            if (oApp.hasCleanInsightsConsent())
+            Boolean hasCleanInsightsConsent = oApp.hasCleanInsightsConsent();
+            if (hasCleanInsightsConsent != null && hasCleanInsightsConsent)
                 oApp.measureEvent("action","upload-failure");
-
         }
     }
-
-    ;
-
 
     private boolean isNetworkAvailable(boolean requireWifi) {
         ConnectivityManager manager =
