@@ -1,9 +1,28 @@
 package net.opendasharchive.openarchive.db
 
+import android.content.Intent
 import android.text.TextUtils
+import androidx.appcompat.app.AppCompatActivity
 import com.orm.SugarRecord
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Prefs
+
+class SpaceChecker {
+    companion object {
+        ///check if space is available or not
+        fun navigateToHome(activity: AppCompatActivity) {
+            val listSpaces = Space.getAllAsList()
+            if (listSpaces?.hasNext() == true) {
+                activity.finish()
+            } else {
+                val intent = Intent(activity, SpaceSetupActivity::class.java)
+                activity.finishAffinity()
+                activity.startActivity(intent)
+            }
+        }
+    }
+}
 
 data class Space(
         var type: Int = 0,
@@ -42,9 +61,7 @@ data class Space(
                         if (TextUtils.isEmpty(space.name)) space.name = space.username
                         return space
                     }
-                }
-                catch (e2 : Exception)
-                {
+                } catch (e2: Exception) {
                     //handle exception that may accure when current space id is null
                     return null
                 }
