@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.Request
 import org.witness.proofmode.ProofMode
+import org.witness.proofmode.crypto.HashUtils
 import org.witness.proofmode.crypto.PgpUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -189,7 +190,6 @@ class WebDAVSiteController : SiteController {
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
                     uploadMetadata(media, projectFolderPath, fileName)
-                    uploadProof(media, projectFolderPath)
                 } else {
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
@@ -418,10 +418,10 @@ class WebDAVSiteController : SiteController {
             fos.close()
             sardine?.put(urlMeta, fileMetaData, "text/plain", false, null)
             if (getUseProofMode()) {
+                val metaHash = getMetaMediaHash(media)
                 putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
                 putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val metaMediaHash = ProofMode.generateProof(mContext, Uri.fromFile(fileMetaData))
-                val fileProofDir = ProofMode.getProofDir(mContext, metaMediaHash)
+                val fileProofDir = ProofMode.getProofDir(mContext, metaHash)
                 if (fileProofDir != null && fileProofDir.exists()) {
                     val filesProof = fileProofDir.listFiles()
                     filesProof?.forEach { fileProof ->

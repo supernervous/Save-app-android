@@ -223,6 +223,7 @@
 
     <string name="sign_in_private_btn">Private Server</string>
     <string name="importing_media">Importing media…</string>
+    <string name="title_no_projects">There are no projects</string>
 
     <string name="setup_nearby">Nearby</string>
     <string name="title_activity_space_settings">Your Space</string>
@@ -337,9 +338,11 @@
     <string name="archive_over_tor_enable_orbot">To enable advanced network security, you should enable the \"Use Orbot\" option now or later in settings</string>
     <string name="action_install">Install</string>
     <string name="action_enable">Enable</string>
+    <string name="action_start">Start</string>
     <string name="batch_waiting_for_upload">Waiting for upload...</string>
     <string name="batch_uploading_now">Uploading now...</string>
     <string name="login_activity_logging_message">Logging in...</string>
+    <string name="login_you_have_already_space">You\'ve already got a space with these credentials</string>
     <string name="web_dav_connection_exception">\"Unable to connect to Orbot/Tor: \"</string>
     <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
     <string name="web_dav_connection_exception_invalid">Unable to connect to Orbot/Tor: INVALID</string>

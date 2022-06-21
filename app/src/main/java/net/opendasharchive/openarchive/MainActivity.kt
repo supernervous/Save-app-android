@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
 
-    val REQUEST_NEW_PROJECT_NAME = 1001
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -558,6 +557,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         }
     }
     companion object {
+        const val REQUEST_NEW_PROJECT_NAME = 1001
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 

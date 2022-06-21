@@ -96,7 +96,7 @@ class OAAppIntro : AppIntro() {
                 R.drawable.onboarding5
             )
             addSlide(cos)
-            cos.enableButton(getString(R.string.action_enable), View.OnClickListener {
+            cos.enableButton(getString(R.string.action_start), View.OnClickListener {
                 Prefs.setUseTor(true)
                 OrbotHelper.requestStartTor(this@OAAppIntro)
                 finish()
