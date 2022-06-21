@@ -37,8 +37,8 @@ open class CleanInsightsManager {
         }
     }
 
-    fun hasConsent() : Boolean {
-        return mMeasure!!.isCampaignCurrentlyGranted(CI_CAMPAIGN!!)
+    fun hasConsent() : Boolean? {
+        return mMeasure?.isCampaignCurrentlyGranted(CI_CAMPAIGN)
     }
 
     public fun getConsent(context: Activity) {

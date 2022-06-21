@@ -67,7 +67,7 @@
                 android:indeterminate="false"
                 android:max="100"
                 android:padding="10dp"
-                android:progress="10"
+                android:progress="0"
                 android:progressDrawable="@drawable/circle_progressbar"
                 android:secondaryProgress="0" />
 
