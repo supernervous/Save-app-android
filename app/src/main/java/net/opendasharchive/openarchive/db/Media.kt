@@ -52,7 +52,7 @@ data class Media(
 
     fun setTags(tags: String) {
         // repace spaces and commas with semicolons
-        this.tags = tags.replace(' ', ';').replace(',', ';')
+        this.tags = tags
     }
 
     fun getAllMediaAsList(): List<Media>? {
