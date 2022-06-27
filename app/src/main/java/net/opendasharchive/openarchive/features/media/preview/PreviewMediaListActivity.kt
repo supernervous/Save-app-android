@@ -31,31 +31,9 @@ class PreviewMediaListActivity : AppCompatActivity() {
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        viewModel.observeValuesForWorkState(this)
         initLayout()
         showFirstTimeBatch()
-        observeValues()
-    }
-
-    private fun observeValues() {
-        viewModel.workState.observe(this, Observer { workInfo ->
-            workInfo.forEach {
-                when (it.state) {
-                    WorkInfo.State.RUNNING -> {
-                        Log.e("WorkManager", "Loading")
-                        finish()
-                    }
-                    WorkInfo.State.SUCCEEDED -> {
-                        Log.e("WorkManager", "Succeed")
-                    }
-                    WorkInfo.State.FAILED -> {
-                        Log.e("WorkManager", "Failed")
-                    }
-                    else -> {
-                        Log.d("WorkManager", "workInfo is null")
-                    }
-                }
-            }
-        })
     }
 
     private fun initLayout() {
