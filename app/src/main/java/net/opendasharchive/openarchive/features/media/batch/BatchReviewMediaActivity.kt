@@ -1,39 +1,51 @@
 package net.opendasharchive.openarchive.features.media.batch
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
+import com.orm.SugarRecord
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
+import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
+import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
-import java.util.*
 
 class BatchReviewMediaActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityBatchReviewMediaBinding
     private lateinit var viewModel: BatchReviewMediaViewModel
+    private lateinit var previewMediaListViewModel: PreviewMediaListViewModel
 
     private var mediaList: ArrayList<Media> = arrayListOf()
     private var mPicasso: Picasso? = null
+    private var menuPublish: MenuItem? = null
+    private var menuDelete: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +54,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(BatchReviewMediaViewModel::class.java)
         initLayout()
     }
+
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
@@ -57,6 +70,12 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                 .addRequestHandler(videoRequestHandler)
                 .build()
         }
+
+        val context = requireNotNull(application)
+        val viewModelFactory = PreviewMediaListViewModelFactory(context)
+        previewMediaListViewModel =
+            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        previewMediaListViewModel.observeValuesForWorkState(this)
 
     }
 
@@ -194,14 +213,36 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_review_media, menu)
+        menuPublish = menu?.findItem(R.id.menu_upload)
+        menuDelete = menu?.findItem(R.id.menu_delete)
+        menuPublish?.isVisible = true
+        menuDelete?.isVisible = false
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
+            R.id.menu_upload -> uploadMedia()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun uploadMedia() {
+        val space = Space.getCurrentSpace()
+        if (space != null) {
+            val listMedia = mediaList
+            for (media in listMedia) {
+                media.status = Media.STATUS_QUEUED
+                media.save()
+            }
+            val operation = previewMediaListViewModel.applyMedia()
+            print(operation.result.get())
+        } else {
+            val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
+            startActivity(firstStartIntent)
+        }
     }
 
     private fun init() {
