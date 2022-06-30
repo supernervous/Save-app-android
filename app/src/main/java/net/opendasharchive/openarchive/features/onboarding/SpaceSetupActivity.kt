@@ -42,18 +42,6 @@ class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
         //No-Op
     }
 
-    override fun onResume() {
-        super.onResume()
-        var hasDropbox = false
-        val itSpaces = getAllAsList()
-        itSpaces?.let {
-            while (itSpaces.hasNext()) {
-                val (type) = itSpaces.next()
-                hasDropbox = type == Space.TYPE_DROPBOX
-            }
-        }
-        mBinding.dropboxFrame.visibility = if (hasDropbox) View.GONE else View.VISIBLE
-    }
 
     fun onSignInArchiveButtonClick(v: View?) {
         startActivity(Intent(this, ArchiveOrgLoginActivity::class.java))
