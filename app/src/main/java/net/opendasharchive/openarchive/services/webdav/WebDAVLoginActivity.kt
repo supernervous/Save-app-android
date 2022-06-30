@@ -233,7 +233,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 try {
                     try {
                         sardine.getQuota(siteUrl.toString())
-                        if (Space.getSpaceForCurrentUsername(space.username) == 0) {
+                        if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
                             space.save()
                             setCurrentSpaceId(space.id)
                             mHandlerLogin.sendEmptyMessage(0)
@@ -359,7 +359,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
         mSpace?.let { space ->
             if (!space.name.isNullOrEmpty() && binding.servername.text?.toString() != space.name) {
                 space.name = binding.servername.text?.toString() ?: Constants.EMPTY_STRING
-                if (Space.getSpaceForCurrentUsername(space.username) == 0) {
+                if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
                     space.save()
                 }
             }

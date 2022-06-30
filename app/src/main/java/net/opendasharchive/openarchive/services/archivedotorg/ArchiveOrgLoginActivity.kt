@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
@@ -136,7 +137,6 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == SiteController.CONTROLLER_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val credentials = data?.getStringExtra(SiteController.EXTRAS_KEY_CREDENTIALS)
@@ -148,7 +148,6 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                     binding.secretkey.setText(credentials)
                     it.name = getString(R.string.label_ia)
                     it.type = Space.TYPE_INTERNET_ARCHIVE
-                    it.save()
                 }
             }
         }
@@ -234,9 +233,19 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
             onPostExecute = { result ->
                 if (result) {
                     mSpace?.let {
-                        setCurrentSpaceId(it.id)
-                        it.save()
-                        finish()
+                        if (Space.getSpaceForCurrentUsername(it.username,Space.TYPE_INTERNET_ARCHIVE) == 0) {
+                            it.save()
+                            setCurrentSpaceId(it.id)
+                            finish()
+                        }else{
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@ArchiveOrgLoginActivity,
+                                    getString(R.string.login_you_have_already_space),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
                     }
                 } else {
                     binding.secretkey.error = getString(R.string.error_incorrect_password)
