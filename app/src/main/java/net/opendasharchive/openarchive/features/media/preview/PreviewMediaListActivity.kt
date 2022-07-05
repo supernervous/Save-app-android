@@ -1,26 +1,15 @@
 package net.opendasharchive.openarchive.features.media.preview
 
-import android.Manifest
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
-import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.util.Prefs
 
 class PreviewMediaListActivity : AppCompatActivity() {

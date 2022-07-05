@@ -4,7 +4,6 @@ import android.Manifest.permission.*
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.Menu
@@ -21,7 +20,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.orm.SugarRecord.findById
-import com.permissionx.guolindev.PermissionX
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
 import net.opendasharchive.openarchive.BuildConfig
@@ -38,7 +36,6 @@ import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Utility
 import java.io.File
 import java.util.*
