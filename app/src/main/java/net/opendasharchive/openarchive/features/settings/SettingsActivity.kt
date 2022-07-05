@@ -1,13 +1,18 @@
 package net.opendasharchive.openarchive.features.settings
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.*
+import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.util.Constants
@@ -63,11 +68,49 @@ class SettingsActivity : AppCompatActivity() {
                     addPreferencesFromResource(R.xml.app_prefs_metadata)
                     val myPref = findPreference<Preference>("share_proofmode")
                     myPref?.let {
-                        it.onPreferenceClickListener = Preference.OnPreferenceClickListener { //open browser or intent here
-                            shareKey(requireActivity())
-                            true
-                        }
+                        it.onPreferenceClickListener =
+                            Preference.OnPreferenceClickListener { //open browser or intent here
+                                shareKey(requireActivity())
+                                true
+                            }
                     }
+
+                    val useProofMode =
+                        findPreference<Preference>("use_proofmode") as SwitchPreferenceCompat
+                    useProofMode.setOnPreferenceChangeListener { _, newValue ->
+                        if (newValue as Boolean) {
+                            PermissionX.init(this)
+                                .permissions(
+                                    Manifest.permission.READ_PHONE_STATE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                )
+                                .onExplainRequestReason { _, _ ->
+                                    val intent =
+                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    val uri = Uri.fromParts("package", activity?.packageName, null)
+                                    intent.data = uri
+                                    activity?.startActivity(intent)
+                                }
+                                .request { allGranted, _, _ ->
+                                    if (!allGranted) {
+                                        useProofMode.isChecked = false
+                                        Toast.makeText(
+                                            activity,
+                                            "Please allow all permissions",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        val intent =
+                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        val uri =
+                                            Uri.fromParts("package", activity?.packageName, null)
+                                        intent.data = uri
+                                        activity?.startActivity(intent)
+                                    }
+                                }
+                        }
+                        true
+                    }
+
                 } else if (type == KEY_NETWORKING) {
                     addPreferencesFromResource(R.xml.app_prefs_networking)
                 }

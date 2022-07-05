@@ -1,8 +1,10 @@
 package net.opendasharchive.openarchive.features.media.review
 
+import android.Manifest.permission.*
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.Menu
@@ -19,6 +21,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.orm.SugarRecord.findById
+import com.permissionx.guolindev.PermissionX
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
 import net.opendasharchive.openarchive.BuildConfig
@@ -35,9 +38,11 @@ import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Utility
 import java.io.File
 import java.util.*
+
 
 class ReviewMediaActivity : AppCompatActivity() {
 
@@ -107,8 +112,8 @@ class ReviewMediaActivity : AppCompatActivity() {
         if (mPicasso == null) {
             val videoRequestHandler = VideoRequestHandler(this)
             mPicasso = Picasso.Builder(this)
-                    .addRequestHandler(videoRequestHandler)
-                    .build()
+                .addRequestHandler(videoRequestHandler)
+                .build()
         }
 
         mBinding.reviewMetadata.tbCcDeriv.setOnCheckedChangeListener { buttonView, isChecked -> setLicense() }
@@ -118,10 +123,15 @@ class ReviewMediaActivity : AppCompatActivity() {
     }
 
     private fun updateFlagState() {
-        if (mMedia.flag) mBinding.reviewMetadata.ivEditFlag.setImageResource(R.drawable.ic_flag_selected) else mBinding.reviewMetadata.ivEditFlag.setImageResource(R.drawable.ic_flag_unselected)
-        if (mMedia.flag) mBinding.reviewMetadata.tvFlagLbl.setText(R.string.status_flagged) else mBinding.reviewMetadata.tvFlagLbl.setText(R.string.hint_flag)
+        if (mMedia.flag) mBinding.reviewMetadata.ivEditFlag.setImageResource(R.drawable.ic_flag_selected) else mBinding.reviewMetadata.ivEditFlag.setImageResource(
+            R.drawable.ic_flag_unselected
+        )
+        if (mMedia.flag) mBinding.reviewMetadata.tvFlagLbl.setText(R.string.status_flagged) else mBinding.reviewMetadata.tvFlagLbl.setText(
+            R.string.hint_flag
+        )
         if ((mMedia.status != Media.STATUS_LOCAL
-                        && mMedia.status != Media.STATUS_NEW) && !mMedia.flag) {
+                    && mMedia.status != Media.STATUS_NEW) && !mMedia.flag
+        ) {
             mBinding.reviewMetadata.ivEditFlag.visibility = View.GONE
             mBinding.reviewMetadata.tvFlagLbl.visibility = View.GONE
         }
@@ -153,7 +163,8 @@ class ReviewMediaActivity : AppCompatActivity() {
             }
 
             if (mMedia.status != Media.STATUS_LOCAL
-                    && mMedia.status != Media.STATUS_NEW) {
+                && mMedia.status != Media.STATUS_NEW
+            ) {
 
                 if (mMedia.status == Media.STATUS_UPLOADED || mMedia.status == Media.STATUS_PUBLISHED) {
                     //NO-OP
@@ -214,8 +225,8 @@ class ReviewMediaActivity : AppCompatActivity() {
     private fun showFirstTimeFlag() {
         if (!Prefs.getBoolean("ft.flag")) {
             AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-                    .setTitle(R.string.popup_flag_title)
-                    .setMessage(R.string.popup_flag_desc).create().show()
+                .setTitle(R.string.popup_flag_title)
+                .setMessage(R.string.popup_flag_desc).create().show()
             Prefs.putBoolean("ft.flag", true)
         }
     }
@@ -228,7 +239,8 @@ class ReviewMediaActivity : AppCompatActivity() {
     private fun saveMedia() {
         //if deleted
         if (mMedia == null) return
-        if (mBinding.reviewMetadata.tvTitleLbl.text.isNotEmpty()) mMedia.title = mBinding.reviewMetadata.tvTitleLbl.text.toString() else {
+        if (mBinding.reviewMetadata.tvTitleLbl.text.isNotEmpty()) mMedia.title =
+            mBinding.reviewMetadata.tvTitleLbl.text.toString() else {
             //use the file name if the user doesn't set a title
             mMedia.title = File(mMedia.originalFilePath).name
         }
@@ -263,7 +275,7 @@ class ReviewMediaActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> finish()
-            R.id.menu_upload -> uploadMedia()
+            R.id.menu_upload -> checkPermission()
             R.id.menu_item_share_link -> shareLink()
             R.id.menu_item_open_link -> openLink()
             R.id.menu_delete -> showDeleteMediaDialog()
@@ -289,18 +301,30 @@ class ReviewMediaActivity : AppCompatActivity() {
             return
         }
         if (mMedia.mimeType.startsWith("image")) {
-            Glide.with(mBinding.ivMedia.context).load(Uri.parse(mMedia.originalFilePath)).fitCenter().into(mBinding.ivMedia)
+            Glide.with(mBinding.ivMedia.context).load(Uri.parse(mMedia.originalFilePath))
+                .fitCenter().into(mBinding.ivMedia)
         } else if (mMedia.mimeType.startsWith("video")) {
-            mPicasso?.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.originalFilePath)?.fit()?.centerCrop()?.into(mBinding.ivMedia)
+            mPicasso?.load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia.originalFilePath)?.fit()
+                ?.centerCrop()?.into(mBinding.ivMedia)
         } else if (mMedia.mimeType.startsWith("audio")) {
-            mBinding.ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.audio_waveform))
+            mBinding.ivMedia.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.audio_waveform
+                )
+            )
             val soundFile = MediaViewHolder.mSoundFileCache[mMedia.originalFilePath]
             if (soundFile != null) {
                 mBinding.swMedia.setAudioFile(soundFile)
                 mBinding.swMedia.visibility = View.VISIBLE
                 mBinding.ivMedia.visibility = View.GONE
             }
-        } else mBinding.ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_thumbnail))
+        } else mBinding.ivMedia.setImageDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.no_thumbnail
+            )
+        )
         mBinding.swMedia.setOnClickListener { showMedia() }
         mBinding.ivMedia.setOnClickListener { showMedia() }
     }
@@ -310,14 +334,13 @@ class ReviewMediaActivity : AppCompatActivity() {
             val list = ArrayList<Uri>()
             list.add(Uri.parse(mMedia.originalFilePath))
             ImageViewer.Builder(this, list)
-                    .setStartPosition(0)
-                    .show()
+                .setStartPosition(0)
+                .show()
         }
     }
 
-    private fun uploadMedia() {
+    private fun checkPermission() {
         val space = getCurrentSpace()
-        // if user doesn't have an account
         if (space != null) {
             //mark queued
             mMedia.status = Media.STATUS_QUEUED
@@ -340,7 +363,12 @@ class ReviewMediaActivity : AppCompatActivity() {
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mMedia.title)
         sharingIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
-        startActivity(Intent.createChooser(sharingIntent, resources.getString(R.string.share_using)))
+        startActivity(
+            Intent.createChooser(
+                sharingIntent,
+                resources.getString(R.string.share_using)
+            )
+        )
     }
 
     private fun openLink() {
@@ -348,8 +376,10 @@ class ReviewMediaActivity : AppCompatActivity() {
             val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mMedia.serverUrl))
             startActivity(myIntent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "No application can handle this request."
-                    + " Please install a webbrowser", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this, "No application can handle this request."
+                        + " Please install a webbrowser", Toast.LENGTH_LONG
+            ).show()
             e.printStackTrace()
         }
     }
@@ -370,7 +400,12 @@ class ReviewMediaActivity : AppCompatActivity() {
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mMedia.title)
         sharingIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
-        startActivity(Intent.createChooser(sharingIntent, resources.getString(R.string.share_using)))
+        startActivity(
+            Intent.createChooser(
+                sharingIntent,
+                resources.getString(R.string.share_using)
+            )
+        )
     }
 
 
@@ -386,18 +421,27 @@ class ReviewMediaActivity : AppCompatActivity() {
         sharingIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
         var sharedFileUri: Uri? = null
         val mediaPath = mMedia.originalFilePath
-        sharedFileUri = if (mediaPath.startsWith("content:")) Uri.parse(mediaPath) else FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider"
-                , File(mMedia.originalFilePath))
+        sharedFileUri =
+            if (mediaPath.startsWith("content:")) Uri.parse(mediaPath) else FileProvider.getUriForFile(
+                this, BuildConfig.APPLICATION_ID + ".provider", File(mMedia.originalFilePath)
+            )
         sharingIntent.putExtra(Intent.EXTRA_STREAM, sharedFileUri)
-        startActivity(Intent.createChooser(sharingIntent, resources.getString(R.string.share_using)))
+        startActivity(
+            Intent.createChooser(
+                sharingIntent,
+                resources.getString(R.string.share_using)
+            )
+        )
     }
 
     override fun onResume() {
         super.onResume()
         init()
         bindMedia()
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                IntentFilter(INTENT_FILTER_NAME))
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            mMessageReceiver,
+            IntentFilter(INTENT_FILTER_NAME)
+        )
     }
 
     private fun showSuccess() {
@@ -408,10 +452,10 @@ class ReviewMediaActivity : AppCompatActivity() {
         runOnUiThread {
             if (!isFinishing) {
                 AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-                        .setTitle("Upload Error")
-                        .setMessage(message)
-                        .setCancelable(false)
-                        .setPositiveButton("ok") { dialog, which -> finish() }.create().show()
+                    .setTitle("Upload Error")
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton("ok") { dialog, which -> finish() }.create().show()
             }
         }
     }
@@ -424,14 +468,14 @@ class ReviewMediaActivity : AppCompatActivity() {
 
     private fun showDeleteMediaDialog() {
         val build = AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-                .setTitle(R.string.popup_remove_title)
-                .setMessage(R.string.popup_remove_desc)
-                .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { dialogInterface, i ->
-                    //do nothing
-                }
-                .setPositiveButton(R.string.lbl_ok) { dialog, which ->
-                    deleteMedia()
-                }
+            .setTitle(R.string.popup_remove_title)
+            .setMessage(R.string.popup_remove_desc)
+            .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { dialogInterface, i ->
+                //do nothing
+            }
+            .setPositiveButton(R.string.lbl_ok) { dialog, which ->
+                deleteMedia()
+            }
         build.create().show()
     }
 
