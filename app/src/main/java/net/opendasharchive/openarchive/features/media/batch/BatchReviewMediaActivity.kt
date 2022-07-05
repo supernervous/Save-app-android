@@ -68,8 +68,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
         val context = requireNotNull(application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        previewMediaListViewModel =
-            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        previewMediaListViewModel = ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         previewMediaListViewModel.observeValuesForWorkState(this)
 
     }
@@ -224,7 +223,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun uploadMedia() {
+    private fun uploadMedia(){
         val space = Space.getCurrentSpace()
         if (space != null) {
             val listMedia = mediaList

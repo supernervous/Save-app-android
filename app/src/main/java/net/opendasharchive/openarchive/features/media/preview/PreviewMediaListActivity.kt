@@ -1,14 +1,11 @@
 package net.opendasharchive.openarchive.features.media.preview
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
@@ -29,8 +26,7 @@ class PreviewMediaListActivity : AppCompatActivity() {
 
         val context = requireNotNull(application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         viewModel.observeValuesForWorkState(this)
         initLayout()
         showFirstTimeBatch()
@@ -85,7 +81,8 @@ class PreviewMediaListActivity : AppCompatActivity() {
             media.save()
         }
         //viewModel.uploadFiles()
-        viewModel.applyMedia()
+        val operation = viewModel.applyMedia()
+        print(operation.result.get())
     }
 
     private fun showFirstTimeBatch() {
