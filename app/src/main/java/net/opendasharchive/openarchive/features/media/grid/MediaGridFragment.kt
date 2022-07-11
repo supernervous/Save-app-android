@@ -150,7 +150,7 @@ class MediaGridFragment : MediaListFragment() {
                     holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
                     holder.sectionTimestamp?.text =
                         "${listMedia.size} ${getString(R.string.label_items)}"
-                    holder.action?.visibility = View.VISIBLE
+                    holder.action?.visibility = View.INVISIBLE
                     holder.action?.setOnClickListener {
                         startActivity(
                             Intent(
@@ -186,7 +186,7 @@ class MediaGridFragment : MediaListFragment() {
                             uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(
                                 R.string.label_items_uploaded
                             )
-                        holder.action?.visibility = View.VISIBLE
+                        holder.action?.visibility = View.INVISIBLE
                     }
                     if (collection.uploadDate != null) holder.sectionTimestamp?.text =
                         collection.uploadDate?.toLocaleString()
@@ -206,7 +206,7 @@ class MediaGridFragment : MediaListFragment() {
                     }
                     if (collection.uploadDate != null) holder.sectionTimestamp?.text =
                         collection.uploadDate?.toLocaleString()
-                    holder.action?.visibility = View.VISIBLE
+                    holder.action?.visibility = View.INVISIBLE
                 }
             } else {
                 holder?.let {
