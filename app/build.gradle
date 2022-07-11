@@ -117,7 +117,7 @@ dependencies {
     }
 
     //  implementation 'com.github.WrathChaos:MediaPickerLib:0.1.4'
-    implementation libraries.matisse
+    implementation libraries.forked_matisse
 
     //adding web dav support: https://github.com/thegrizzlylabs/sardine-android'
     implementation libraries.sardine_android

@@ -19,6 +19,7 @@ ext {
             netCipher                     : '2.0.0-alpha1',
             android_libproofmode          : '0.16a-library',
             matisse                       : '0.5.3-beta3',
+            forked_matisse                : '0.5.3-20220115',
             sardine_android               : '89f7eae512',
             sectioned_recyclerview_adapter: '2.0.0',
             acra                          : '5.4.0',
@@ -76,8 +77,8 @@ ext {
             glide                         : "com.github.bumptech.glide:glide:$versions.glide",
             glideAnnotate                 : "com.github.bumptech.glide:compiler:$versions.glide",
             guava                         : "com.google.guava:guava:31.0.1-android",
-            sheetsInfo                    : "com.maxkeppeler.sheets:info:2.2.6"
-
+            sheetsInfo                    : "com.maxkeppeler.sheets:info:2.2.6",
+            forked_matisse                : "com.github.lwj1994:Matisse:0.5.3-20220115"
 
 
     ]
