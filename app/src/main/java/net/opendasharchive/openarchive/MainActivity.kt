@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private fun initLayout() {
 
         captureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it != null) {
+            if (it != null && it.data != null) {
                 val mSelected = Matisse.obtainResult(it.data)
 
                 val snackBar = mBinding.pager.createSnackBar(
