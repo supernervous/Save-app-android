@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
@@ -72,7 +73,12 @@ public class ArchiveSiteController extends SiteController {
 
         if (true)
         {
-            this.client = new OkHttpClient.Builder().build();
+            this.client = new OkHttpClient.Builder()
+                    .connectTimeout(20L, TimeUnit.SECONDS)
+                    .writeTimeout(20L, TimeUnit.SECONDS)
+                    .readTimeout(20L, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(false)
+                    .build();
         }
         else {
 

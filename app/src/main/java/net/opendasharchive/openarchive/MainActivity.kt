@@ -15,6 +15,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -64,6 +68,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     private val TAG = "OASAVE:Main"
     private var lastTab = 0
+    var captureLauncher : ActivityResultLauncher<Intent>? = null
 
     private var mMenuUpload: MenuItem? = null
 
@@ -109,12 +114,45 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         initLayout()
     }
 
     private fun initLayout() {
+
+        captureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it != null) {
+                val mSelected = Matisse.obtainResult(it.data)
+
+                val snackBar = mBinding.pager.createSnackBar(
+                    getString(R.string.importing_media),
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                val snackView = snackBar.view as SnackbarLayout
+                snackView.addView(ProgressBar(this))
+
+                scope.executeAsyncTaskWithList(
+                    onPreExecute = {
+                        snackBar.show()
+                    },
+                    doInBackground = {
+                        importMedia(mSelected)
+                    },
+                    onPostExecute = { media ->
+                        snackBar.dismiss()
+                        refreshCurrentProject()
+                        if (media.isNotEmpty()) startActivity(
+                            Intent(
+                                this,
+                                PreviewMediaListActivity::class.java
+                            )
+                        )
+                    }
+                )
+            }
+        };
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -126,7 +164,10 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
 
         mSnackBar =
-            mBinding.pager.createSnackBar(getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE)
+            mBinding.pager.createSnackBar(
+                getString(R.string.importing_media),
+                Snackbar.LENGTH_INDEFINITE
+            )
         val snackView = mSnackBar?.view as? SnackbarLayout
         snackView?.addView(ProgressBar(this))
 
@@ -134,7 +175,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             val listProjects = getAllBySpace(it.id, false)
             mPagerAdapter.updateData(listProjects)
             mBinding.pager.adapter = mPagerAdapter
-            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem = 1 else mBinding.pager.currentItem = 0
+            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem =
+                1 else mBinding.pager.currentItem = 0
             mBinding.tabs.removeOnTabSelectedListener(this)
         } ?: run {
             mBinding.pager.adapter = mPagerAdapter
@@ -159,7 +201,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
-            ) {}
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
                 lastTab = position
@@ -205,7 +248,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
             mPagerAdapter.updateData(listProjects)
             mBinding.pager.adapter = mPagerAdapter
-            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem = 1 else mBinding.pager.currentItem = 0
+            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem =
+                1 else mBinding.pager.currentItem = 0
         }
         updateMenu()
     }
@@ -213,7 +257,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private fun refreshCurrentProject() {
         mBinding.pager.let {
             if (mBinding.pager.currentItem > 0) {
-                val frag = mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as? MediaListFragment
+                val frag =
+                    mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as? MediaListFragment
                 frag?.refresh()
             }
             updateMenu()
@@ -355,7 +400,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         media.createDate = createDate
         media.updateDate = media.createDate
         media.status = Media.STATUS_LOCAL
-        media.mediaHashString = HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
+        media.mediaHashString =
+            HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
         media.projectId = project.id
         media.title = title
         media.save()
@@ -381,6 +427,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
 
     private fun importMedia() {
+
         if (!askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 1)) {
             Matisse.from(this)
                 .choose(MimeType.ofAll(), false)
@@ -391,7 +438,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
                 .imageEngine(PicassoEngine())
                 .capture(true)
                 .captureStrategy(CaptureStrategy(true, "$packageName.provider", "capture"))
-                .forResult(Globals.REQUEST_FILE_IMPORT)
+                .forResult(captureLauncher)
         }
     }
 
@@ -513,49 +560,20 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         return super.onOptionsItemSelected(item)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
         Log.d(TAG, "onActivityResult, requestCode:$requestCode, resultCode: $resultCode")
 
         // Check which request we're responding to
-        if (requestCode == Globals.REQUEST_FILE_IMPORT) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK && resultData != null) {
-                val mSelected = Matisse.obtainResult(resultData)
-
-                val bar = mBinding.pager.createSnackBar(
-                    getString(R.string.importing_media),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                val snackView = bar.view as SnackbarLayout
-                snackView.addView(ProgressBar(this))
-
-                scope.executeAsyncTaskWithList(
-                    onPreExecute = {
-                        bar.show()
-                    },
-                    doInBackground = {
-                        importMedia(mSelected)
-                    },
-                    onPostExecute = { media ->
-                        bar.dismiss()
-                        refreshCurrentProject()
-                        if (media.isNotEmpty()) startActivity(
-                            Intent(
-                                this,
-                                PreviewMediaListActivity::class.java
-                            )
-                        )
-                    }
-                )
-            }
-        } else if (requestCode == REQUEST_NEW_PROJECT_NAME) {
+        if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 refreshProjects()
             }
         }
     }
+
     companion object {
         const val REQUEST_NEW_PROJECT_NAME = 1001
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
