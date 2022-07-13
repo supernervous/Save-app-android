@@ -81,25 +81,32 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                             var sc: SiteController? = null
 
                             try {
-                                if (space.type == Space.TYPE_WEBDAV) sc =
-                                    SiteController.getSiteController(
-                                        WebDAVSiteController.SITE_KEY,
-                                        ctx,
-                                        UploaderListenerV2(media, ctx),
-                                        null
-                                    ) else if (space.type == Space.TYPE_INTERNET_ARCHIVE) sc =
-                                    SiteController.getSiteController(
-                                        ArchiveSiteController.SITE_KEY,
-                                        ctx,
-                                        UploaderListenerV2(media, ctx),
-                                        null
-                                    ) else if (space.type == Space.TYPE_DROPBOX) sc =
-                                    SiteController.getSiteController(
-                                        SITE_KEY,
-                                        ctx,
-                                        UploaderListenerV2(media, ctx),
-                                        null
-                                    )
+                                when (space.type) {
+                                    Space.TYPE_WEBDAV -> sc =
+                                        SiteController.getSiteController(
+                                            WebDAVSiteController.SITE_KEY,
+                                            ctx,
+                                            UploaderListenerV2(media, ctx),
+                                            null
+                                        )
+                                    Space.TYPE_INTERNET_ARCHIVE -> sc =
+                                        SiteController.getSiteController(
+                                            ArchiveSiteController.SITE_KEY,
+                                            ctx,
+                                            UploaderListenerV2(media, ctx),
+                                            null
+                                        )
+                                    Space.TYPE_DROPBOX -> sc =
+                                        SiteController.getSiteController(
+                                            SITE_KEY,
+                                            ctx,
+                                            UploaderListenerV2(media, ctx),
+                                            null
+                                        )
+                                }
+
+
+
                                 val result = sc?.upload(space, media, valueMap)
                                 if (result == true) {
                                     if (coll != null) {
