@@ -9,28 +9,27 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-
 import androidx.annotation.NonNull;
-
+import com.google.common.net.UrlEscapers;
+import com.google.gson.Gson;
 import com.thegrizzlylabs.sardineandroid.impl.handler.ResponseHandler;
-
 import net.opendasharchive.openarchive.R;
 import net.opendasharchive.openarchive.db.Media;
+import net.opendasharchive.openarchive.db.Project;
 import net.opendasharchive.openarchive.db.Space;
 import net.opendasharchive.openarchive.util.Globals;
 import net.opendasharchive.openarchive.util.Prefs;
-
+import org.witness.proofmode.ProofMode;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-
 import info.guardianproject.netcipher.client.StrongBuilder;
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
-import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.scal.secureshareui.lib.Util;
 import io.scal.secureshareui.login.ArchiveLoginActivity;
 import okhttp3.Headers;
@@ -42,12 +41,12 @@ import okhttp3.Response;
 
 public class ArchiveSiteController extends SiteController {
 
-	public static final String SITE_NAME = "Internet Archive";
-	public static final String SITE_KEY = "archive";
+    public static final String SITE_NAME = "Internet Archive";
+    public static final String SITE_KEY = "archive";
 
-	public static final String THUMBNAIL_PATH = "__ia_thumb.jpg";
+    public static final String THUMBNAIL_PATH = "__ia_thumb.jpg";
 
-	private static final String TAG = "ArchiveSiteController";
+    private static final String TAG = "ArchiveSiteController";
     public final static String ARCHIVE_BASE_URL = "https://archive.org/";
 
     private boolean mContinueUpload = true;
@@ -56,31 +55,32 @@ public class ArchiveSiteController extends SiteController {
         METADATA_REQUEST_CODE = 1022783271;
     }
 
-	private static final String ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org";
+    private static final String ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org";
     private final static String ARCHIVE_DETAILS_ENDPOINT = "https://archive.org/details/";
 
-	public static final MediaType MEDIA_TYPE = MediaType.parse("");
+    public static final MediaType MEDIA_TYPE = MediaType.parse("");
 
     private OkHttpClient client;
 
-	public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
-		super(context, listener, jobId);
+    public ArchiveSiteController(Context context, SiteControllerListener listener, String jobId) {
+        super(context, listener, jobId);
         initClient(context);
-	}
+    }
 
-	private void initClient (Context context)
-    {
+    private void initClient(Context context) {
 
-        if (true)
-        {
+        if (true) {
             this.client = new OkHttpClient.Builder()
-                    .connectTimeout(20L, TimeUnit.SECONDS)
-                    .writeTimeout(20L, TimeUnit.SECONDS)
-                    .readTimeout(20L, TimeUnit.SECONDS)
-                    .retryOnConnectionFailure(false)
+                    .addInterceptor(chain -> {
+                        Request request = chain.request().newBuilder().addHeader("Connection", "close").build();
+                        return chain.proceed(request);
+                    })
+                    .connectTimeout(20L, TimeUnit.MINUTES)
+                    .writeTimeout(20L, TimeUnit.MINUTES)
+                    .readTimeout(20L, TimeUnit.MINUTES)
+                    .retryOnConnectionFailure(true)
                     .build();
-        }
-        else {
+        } else {
 
             try {
 
@@ -115,147 +115,265 @@ public class ArchiveSiteController extends SiteController {
         }
     }
 
-	@Override
-	public void startRegistration(Space space) {
-		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
-		intent.putExtra("register",true);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
-		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
-		// FIXME not a safe cast, context might be a service
-	}
-
-	@Override
-	public void startAuthentication(Space space) {
-		Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
-		intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
-		((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
-		// FIXME not a safe cast, context might be a service
-	}
+    @Override
+    public void startRegistration(Space space) {
+        Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
+        intent.putExtra("register", true);
+        intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
+        ((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
+        // FIXME not a safe cast, context might be a service
+    }
 
     @Override
-    public boolean upload(Space space, final Media media, HashMap<String, String> valueMap) {
+    public void startAuthentication(Space space) {
+        Intent intent = new Intent(mContext, ArchiveLoginActivity.class);
+        intent.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, space.getPassword());
+        ((Activity) mContext).startActivityForResult(intent, SiteController.CONTROLLER_REQUEST_CODE);
+        // FIXME not a safe cast, context might be a service
+    }
+
+
+    boolean uploadMedia(Space space, final Media media, HashMap<String, String> valueMap) {
         try {
-            // starting from 3.1+, you can also use content:// URI string instead of absolute file
             String mediaUri = valueMap.get(VALUE_KEY_MEDIA_PATH);
             String mimeType = valueMap.get(VALUE_KEY_MIME_TYPE);
-            String licenseUrl = valueMap.get(VALUE_KEY_LICENSE_URL);
 
             // TODO this should make sure we arn't accidentally using one of archive.org's metadata fields by accident
-            String title = valueMap.get(VALUE_KEY_TITLE);
             String slug = valueMap.get(VALUE_KEY_SLUG);
-            String tags = valueMap.get(VALUE_KEY_TAGS);
-            String author = valueMap.get(VALUE_KEY_AUTHOR);
-            String profileUrl = valueMap.get(VALUE_KEY_PROFILE_URL);
-            String locationName = valueMap.get(VALUE_KEY_LOCATION_NAME);
-            String body = valueMap.get(VALUE_KEY_BODY);
-
-            String uploadBasePath;
-            String uploadPath;
 
             String randomString = new Util.RandomString(4).nextString();
-            uploadBasePath = slug + "-" + randomString;
+            String uploadBasePath = slug + "-" + randomString;
 
-             uploadPath = "/" + uploadBasePath + "/" + getTitleFileName(media);
-
+            String uploadPath = "/" + uploadBasePath + "/" + getTitleFileName(media);
 
             MediaType mediaType = mimeType == null ? null : MediaType.parse(mimeType);
-            RequestBody requestBody = RequestBodyUtil.create(mContext.getContentResolver(), Uri.parse(mediaUri), media.getContentLength(), mediaType, new RequestListener() {
-
-
-                long lastBytes = 0;
-
-                @Override
-                public void transferred(long bytes) {
-
-                    if (bytes > lastBytes) {
-                        jobProgress(bytes, null);
-                        lastBytes = bytes;
-                    }
-
-
-                }
-
-                @Override
-                public boolean continueUpload() {
-                    return mContinueUpload;
-                }
-
-                @Override
-                public void transferComplete() {
-
-                    String finalPath = ARCHIVE_DETAILS_ENDPOINT + uploadBasePath;
-                    media.setServerUrl(finalPath);
-                    jobSucceeded(finalPath);
-
-
-                }
-            });
+            RequestBody requestBody = getRequestBody(media, mediaUri, mediaType, uploadBasePath);
 
             Headers.Builder headersBuilder = new Headers.Builder();
-            headersBuilder.add("Accept", "*/*");
-            headersBuilder.add("x-archive-auto-make-bucket","1");
-            headersBuilder.add("x-amz-auto-make-bucket", "1");
-            headersBuilder.add("x-archive-meta-language", "eng"); // FIXME set based on locale or selected
-            headersBuilder.add("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
+            uploadHeader(headersBuilder, space, mimeType, valueMap);
+            put(ARCHIVE_API_ENDPOINT + uploadPath, requestBody, headersBuilder.build());
 
-            if(!TextUtils.isEmpty(author)) {
-                headersBuilder.add("x-archive-meta-author", author);
-                if (profileUrl != null) {
-                    headersBuilder.add("x-archive-meta-authorurl", profileUrl);
+
+            /// upload metadata
+            File fileMetaData = new File("");
+            Project project = Project.Companion.getById(media.getProjectId());
+            media.setLicenseUrl(project.getLicenseUrl());
+            Gson gson = new Gson();
+            String json = gson.toJson(media);
+            String fileName = getUploadFileName(
+                    media.getTitle(),
+                    media.getMimeType()
+            );
+            try {
+                fileMetaData = new File(
+                        mContext.getFilesDir(),
+                        fileName + ".meta.json"
+                );
+                FileOutputStream fos = new FileOutputStream(fileMetaData);
+                fos.write(json.getBytes());
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String randomStringMetaData = new Util.RandomString(4).nextString();
+            String uploadBasePathMetaData = slug + "-" + randomStringMetaData;
+
+            /// upload meta data
+            uploadMetaData(fileMetaData, space, uploadBasePathMetaData, fileName);
+
+            /// upload proof mode
+            if (Prefs.INSTANCE.getUseProofMode()) {
+                String metaHash = getMetaMediaHash(media);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_LOCATION, false);
+                Prefs.INSTANCE.putBoolean(ProofMode.PREF_OPTION_NETWORK, false);
+                File fileProofDir = ProofMode.getProofDir(mContext, metaHash);
+                if (fileProofDir != null && fileProofDir.exists()) {
+                    File[] filesProof = fileProofDir.listFiles();
+                    if (filesProof != null) {
+                        for (File file : filesProof) {
+                            uploadProofFiles(file, space, uploadBasePathMetaData);
+                        }
+                    }
                 }
             }
-
-            if (mimeType != null) {
-                headersBuilder.add("x-archive-meta-mediatype", mimeType);
-                if(mimeType.contains("audio")) {
-                    headersBuilder.add("x-archive-meta-collection", "opensource_audio");
-                } else if (mimeType.contains("image")) {
-                    headersBuilder.add("x-archive-meta-collection", "opensource_media");
-                }
-                else {
-                    headersBuilder.add("x-archive-meta-collection", "opensource_movies");
-                }
-            } else {
-                headersBuilder.add("x-archive-meta-collection", "opensource_media");
-            }
-
-            if (!TextUtils.isEmpty(locationName)) {
-                headersBuilder.add("x-archive-meta-location", locationName);
-            }
-
-            if (!TextUtils.isEmpty(tags)) {
-                String keywords = tags.replace(',', ';').replaceAll(" ", "");
-                headersBuilder.add("x-archive-meta-subject", keywords);
-            }
-
-            if (!TextUtils.isEmpty(body)) {
-                headersBuilder.add("x-archive-meta-description", body);
-            }
-
-            if (!TextUtils.isEmpty(title)) {
-                headersBuilder.add("x-archive-meta-title", title);
-            }
-
-            if (!TextUtils.isEmpty(licenseUrl)) {
-                headersBuilder.add("x-archive-meta-licenseurl", licenseUrl);
-            }
-
-		/*
-		For uploads which need to be available ASAP in the content
-  management system, an interactive user's upload for example,
-  one can request interactive queue priority:
-		 */
-            headersBuilder.add("x-archive-interactive-priority","1");
-
-            put (ARCHIVE_API_ENDPOINT + uploadPath, requestBody, headersBuilder.build());
-
             return true;
-
         } catch (Exception exc) {
             Log.e("AndroidUploadService", exc.getMessage(), exc);
         }
-
         return false;
+    }
+
+    /// upload meta data
+    private void uploadMetaData(File fileMetaData, Space space, String uploadBasePathMetaData, String fileName) throws IOException {
+        String uploadPathMetaData = "/" + uploadBasePathMetaData + "/" + fileName + ".meta.json";
+        MediaType mediaTypeMetaData = MediaType.parse("texts");
+        RequestBody requestBodyMetaData = getRequestBodyMetaData(fileMetaData, Uri.fromFile(fileMetaData).toString(), mediaTypeMetaData, uploadBasePathMetaData);
+        Headers.Builder headersBuilderMetaData = new Headers.Builder();
+        uploadHeaderMetaData(headersBuilderMetaData, space);
+        put(ARCHIVE_API_ENDPOINT + uploadPathMetaData, requestBodyMetaData, headersBuilderMetaData.build());
+    }
+
+    /// upload proof mode
+    private void uploadProofFiles(File uploadFile, Space space, String uploadBasePathMetaData) throws IOException {
+        String uploadPathMetaDataProof = "/" + uploadBasePathMetaData + "/" + uploadFile.getName();
+        MediaType mediaTypeMetaDataProof = MediaType.parse("texts");
+        RequestBody requestBodyMetaData1 = getRequestBodyMetaData(uploadFile, Uri.fromFile(uploadFile).toString(), mediaTypeMetaDataProof, uploadBasePathMetaData);
+        Headers.Builder headersBuilderMetaDataProof = new Headers.Builder();
+        uploadHeaderMetaData(headersBuilderMetaDataProof, space);
+        put(ARCHIVE_API_ENDPOINT + uploadPathMetaDataProof, requestBodyMetaData1, headersBuilderMetaDataProof.build());
+    }
+
+    /// request body
+    private RequestBody getRequestBody(Media media, String mediaUri, MediaType mediaType, String uploadBasePath) {
+        return RequestBodyUtil.create(mContext.getContentResolver(), Uri.parse(mediaUri), media.getContentLength(), mediaType, new RequestListener() {
+            long lastBytes = 0;
+
+            @Override
+            public void transferred(long bytes) {
+                if (bytes > lastBytes) {
+                    jobProgress(bytes, null);
+                    lastBytes = bytes;
+                }
+            }
+
+            @Override
+            public boolean continueUpload() {
+                return mContinueUpload;
+            }
+
+            @Override
+            public void transferComplete() {
+                String finalPath = ARCHIVE_DETAILS_ENDPOINT + uploadBasePath;
+                media.setServerUrl(finalPath);
+                jobSucceeded(finalPath);
+            }
+        });
+    }
+
+    /// request body for meta data
+    private RequestBody getRequestBodyMetaData(File media, String mediaUri, MediaType mediaType, String uploadBasePath) {
+        return RequestBodyUtil.create(mContext.getContentResolver(), Uri.parse(mediaUri), media.length(), mediaType, new RequestListener() {
+            long lastBytes = 0;
+
+            @Override
+            public void transferred(long bytes) {
+                if (bytes > lastBytes) {
+                    jobProgress(bytes, null);
+                    lastBytes = bytes;
+                }
+            }
+
+            @Override
+            public boolean continueUpload() {
+                return mContinueUpload;
+            }
+
+            @Override
+            public void transferComplete() {
+                String finalPath = ARCHIVE_DETAILS_ENDPOINT + uploadBasePath;
+                jobSucceeded(finalPath);
+            }
+        });
+    }
+
+
+    private String getUploadFileName(String title, String mimeType) {
+        StringBuffer result = new StringBuffer();
+        String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+        if (TextUtils.isEmpty(ext)) {
+
+            if (mimeType.startsWith("image"))
+                ext = "jpg";
+            else if (mimeType.startsWith("video"))
+                ext = "mp4";
+            else if (mimeType.startsWith("audio"))
+                ext = "m4a";
+            else
+                ext = "txt";
+        }
+        result.append(UrlEscapers.urlFragmentEscaper().escape(title));
+        if (ext != null && !title.endsWith(ext))
+            result.append('.').append(ext);
+        return result.toString();
+    }
+
+
+    /// headers for jpg
+    public void uploadHeader(Headers.Builder headersBuilder, Space space, String mimeType,
+                             HashMap<String, String> valueMap) {
+
+        String licenseUrl = valueMap.get(VALUE_KEY_LICENSE_URL);
+        String title = valueMap.get(VALUE_KEY_TITLE);
+        String tags = valueMap.get(VALUE_KEY_TAGS);
+        String author = valueMap.get(VALUE_KEY_AUTHOR);
+        String profileUrl = valueMap.get(VALUE_KEY_PROFILE_URL);
+        String locationName = valueMap.get(VALUE_KEY_LOCATION_NAME);
+        String body = valueMap.get(VALUE_KEY_BODY);
+
+        headersBuilder.add("Accept", "*/*");
+        headersBuilder.add("x-archive-auto-make-bucket", "1");
+        headersBuilder.add("x-amz-auto-make-bucket", "1");
+        headersBuilder.add("x-archive-meta-language", "eng"); // FIXME set based on locale or selected
+        headersBuilder.add("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
+
+        if (!TextUtils.isEmpty(author)) {
+            headersBuilder.add("x-archive-meta-author", author);
+            if (profileUrl != null) {
+                headersBuilder.add("x-archive-meta-authorurl", profileUrl);
+            }
+        }
+
+        if (mimeType != null) {
+            headersBuilder.add("x-archive-meta-mediatype", mimeType);
+            if (mimeType.contains("audio")) {
+                headersBuilder.add("x-archive-meta-collection", "opensource_audio");
+            } else if (mimeType.contains("image")) {
+                headersBuilder.add("x-archive-meta-collection", "opensource_media");
+            } else {
+                headersBuilder.add("x-archive-meta-collection", "opensource_movies");
+            }
+        } else {
+            headersBuilder.add("x-archive-meta-collection", "opensource_media");
+        }
+
+        if (!TextUtils.isEmpty(locationName)) {
+            headersBuilder.add("x-archive-meta-location", locationName);
+        }
+
+        if (!TextUtils.isEmpty(tags)) {
+            String keywords = tags.replace(',', ';').replaceAll(" ", "");
+            headersBuilder.add("x-archive-meta-subject", keywords);
+        }
+
+        if (!TextUtils.isEmpty(body)) {
+            headersBuilder.add("x-archive-meta-description", body);
+        }
+
+        if (!TextUtils.isEmpty(title)) {
+            headersBuilder.add("x-archive-meta-title", title);
+        }
+
+        if (!TextUtils.isEmpty(licenseUrl)) {
+            headersBuilder.add("x-archive-meta-licenseurl", licenseUrl);
+        }
+
+        headersBuilder.add("x-archive-interactive-priority", "1");
+    }
+
+    /// headers for meta-data and proof mode
+    public void uploadHeaderMetaData(Headers.Builder headersBuilder, Space space) {
+        headersBuilder.add("x-amz-auto-make-bucket", "1");
+        headersBuilder.add("x-archive-meta-language", "eng"); // FIXME set based on locale or selected
+        headersBuilder.add("authorization", "LOW " + space.getUsername() + ":" + space.getPassword());
+        headersBuilder.add("x-archive-meta-mediatype", "texts");
+        headersBuilder.add("x-archive-meta01-collection", "opensource");
+    }
+
+    @Override
+    public boolean upload(Space space, final Media media, HashMap<String, String> valueMap) {
+        return uploadMedia(space, media, valueMap);
     }
 
     private void put(String url, RequestBody requestBody, @NonNull Headers headers) throws IOException {
@@ -279,11 +397,9 @@ public class ArchiveSiteController extends SiteController {
 
             if (!response.isSuccessful()) {
                 String message = "Error contacting " + response.request().url();
-                throw new IOException(message + " = " + response.code() +": " + response.message());
-            }
-            else
-            {
-                Log.d(TAG,"successful PUT to: " + response.request().url());
+                throw new IOException(message + " = " + response.code() + ": " + response.message());
+            } else {
+                Log.d(TAG, "successful PUT to: " + response.request().url());
             }
 
             return null;
@@ -295,8 +411,7 @@ public class ArchiveSiteController extends SiteController {
         return responseHandler.handleResponse(response);
     }
 
-    private String getArchiveUploadEndpoint (String title, String slug, String mimeType)
-    {
+    private String getArchiveUploadEndpoint(String title, String slug, String mimeType) {
         String urlPath;
         String url;
         String ext;
@@ -305,8 +420,7 @@ public class ArchiveSiteController extends SiteController {
         urlPath = slug + "-" + randomString;
         ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
 
-        if (TextUtils.isEmpty(ext))
-        {
+        if (TextUtils.isEmpty(ext)) {
             if (mimeType.startsWith("image"))
                 ext = "jpg";
             else if (mimeType.startsWith("video"))
@@ -319,11 +433,11 @@ public class ArchiveSiteController extends SiteController {
         }
 
         try {
-            url = "/" + urlPath + "/" + URLEncoder.encode(title,"UTF-8") + '.' + ext;
+            url = "/" + urlPath + "/" + URLEncoder.encode(title, "UTF-8") + '.' + ext;
 
 
         } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Couldn't encode title",e);
+            Log.e(TAG, "Couldn't encode title", e);
             return null;
         }
 
@@ -331,13 +445,12 @@ public class ArchiveSiteController extends SiteController {
 
     }
 
-    public static String getTitleFileName (Media media) {
+    public static String getTitleFileName(Media media) {
         String filename = null;
 
         String ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.getMimeType());
 
-        if (TextUtils.isEmpty(ext))
-        {
+        if (TextUtils.isEmpty(ext)) {
             if (media.getMimeType().startsWith("image"))
                 ext = "jpg";
             else if (media.getMimeType().startsWith("video"))
@@ -350,7 +463,7 @@ public class ArchiveSiteController extends SiteController {
         }
 
         try {
-            filename = URLEncoder.encode(media.getTitle(),"UTF-8") + '.' + ext;
+            filename = URLEncoder.encode(media.getTitle(), "UTF-8") + '.' + ext;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -376,7 +489,7 @@ public class ArchiveSiteController extends SiteController {
         String mediaUrl = null;
 
         try {
-            mediaUrl = ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(title,"UTF-8") + '/' + mediaFile;
+            mediaUrl = ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(title, "UTF-8") + '/' + mediaFile;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return false;
@@ -407,67 +520,63 @@ public class ArchiveSiteController extends SiteController {
     }
 
     /**
-	@Override
-	public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
+     * @Override public boolean upload(Account account, Media media, HashMap<String, String> valueMap) {
+     * <p>
+     * //do nothing for now
+     * String result = uploadNew(media, account, valueMap);
+     * <p>
+     * return (result != null);
+     * }
+     **/
 
-	    //do nothing for now
-        String result = uploadNew(media, account, valueMap);
 
-		return (result != null);
-	}**/
+    class ArchiveServerTask extends AsyncTask<String, String, String> {
+        private OkHttpClient client;
+        private Request request;
+        private Response response;
 
+        public ArchiveServerTask(OkHttpClient client, Request request) {
+            this.client = client;
+            this.request = request;
+        }
 
-	class ArchiveServerTask extends AsyncTask<String, String, String> {
-		private OkHttpClient client;
-		private Request request;
-		private Response response;
+        @Override
+        protected String doInBackground(String... params) {
+            Log.d(TAG, "Begin Upload");
 
-		public ArchiveServerTask(OkHttpClient client, Request request) {
-			this.client = client;
-			this.request = request;
-		}
+            try {
+                /**
+                 int timeout = 60 * 1000 * 2; //2 minute timeout!
 
-		@Override
-		protected String doInBackground(String... params) {
-			Log.d(TAG, "Begin Upload");
+                 client.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+                 client.setWriteTimeout(timeout, TimeUnit.MILLISECONDS);
+                 client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
+                 **/
 
-			try {
-				/**
-			    int timeout = 60 * 1000 * 2; //2 minute timeout!
-
-				client.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
-				client.setWriteTimeout(timeout, TimeUnit.MILLISECONDS);
-                client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
-
-				 	**/
-
-				response = client.newCall(request).execute();
+                response = client.newCall(request).execute();
                 Log.d(TAG, "response: " + response + ", body: " + response.body().string());
-				if (!response.isSuccessful()) {
-					jobFailed(null, 4000001, "Archive upload failed: Unexpected Response Code: " + "response: " + response.code() + ": message=" + response.message());
-				} else {	
-				    jobSucceeded(response.request().toString());
-				}
-			} catch (IOException e) {
-				jobFailed(e, 4000002, "Archive upload failed: IOException");
-				if (response != null && response.body() != null) {
-					try {
-						Log.d(TAG, response.body().string());
-					} catch (IOException e1) {
-						Log.d(TAG, "exception: " + e1.getLocalizedMessage() + ", stacktrace: " + e1.getStackTrace());
-					}
-				}
-				else
-				{
+                if (!response.isSuccessful()) {
+                    jobFailed(null, 4000001, "Archive upload failed: Unexpected Response Code: " + "response: " + response.code() + ": message=" + response.message());
+                } else {
+                    jobSucceeded(response.request().toString());
+                }
+            } catch (IOException e) {
+                jobFailed(e, 4000002, "Archive upload failed: IOException");
+                if (response != null && response.body() != null) {
+                    try {
+                        Log.d(TAG, response.body().string());
+                    } catch (IOException e1) {
+                        Log.d(TAG, "exception: " + e1.getLocalizedMessage() + ", stacktrace: " + e1.getStackTrace());
+                    }
+                } else {
 
 
+                }
+            }
 
-				}
-			}
-
-			return "-1";
-		}
-	}
+            return "-1";
+        }
+    }
 
     @Override
     public void startMetadataActivity(Intent intent) {
