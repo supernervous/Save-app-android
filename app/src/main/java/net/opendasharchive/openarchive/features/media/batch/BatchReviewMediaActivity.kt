@@ -148,7 +148,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                 if (media.status != Media.STATUS_UPLOADED) {
                     mBinding.archiveMetadataLayout.ivEditFlag.show()
                     mBinding.archiveMetadataLayout.tvFlagLbl.show()
-                }else{
+                } else {
                     mBinding.archiveMetadataLayout.ivEditFlag.hide()
                     mBinding.archiveMetadataLayout.tvFlagLbl.hide()
                 }
