@@ -1,21 +1,30 @@
 package net.opendasharchive.openarchive.features.media.batch
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
+import com.orm.SugarRecord
+import com.permissionx.guolindev.PermissionX
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
+import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
@@ -27,6 +36,7 @@ import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
@@ -38,6 +48,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     private lateinit var previewMediaListViewModel: PreviewMediaListViewModel
 
     private var mediaList: ArrayList<Media> = arrayListOf()
+    private lateinit var selectedMedia: Media
     private var mPicasso: Picasso? = null
     private var menuPublish: MenuItem? = null
     private var menuDelete: MenuItem? = null
@@ -68,7 +79,8 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
         val context = requireNotNull(application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        previewMediaListViewModel = ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        previewMediaListViewModel =
+            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
         previewMediaListViewModel.observeValuesForWorkState(this)
 
     }
@@ -81,29 +93,30 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     }
 
     private fun updateFlagState(media: Media) {
-        if (media.flag) mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_selected) else mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(
-            R.drawable.ic_flag_unselected
-        )
-        if (media.flag) mBinding.archiveMetadataLayout.tvFlagLbl.setText(R.string.status_flagged) else mBinding.archiveMetadataLayout.tvFlagLbl.setText(
-            R.string.hint_flag
-        )
-        if ((media.status != Media.STATUS_LOCAL
-                    && media.status != Media.STATUS_NEW) && !media.flag
-        ) {
-            mBinding.archiveMetadataLayout.ivEditFlag.hide()
-            mBinding.archiveMetadataLayout.tvFlagLbl.hide()
+        if (media.flag) {
+            mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_selected)
+        } else {
+            mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_unselected)
         }
+
+        if (media.flag) {
+            mBinding.archiveMetadataLayout.tvFlagLbl.setText(R.string.status_flagged)
+        } else {
+            mBinding.archiveMetadataLayout.tvFlagLbl.setText(R.string.hint_flag)
+        }
+
     }
 
     private fun bindMedia() {
-        bindMedia(mediaList[0])
+        selectedMedia = mediaList[0]
+        bindMedia(selectedMedia)
         mBinding.itemDisplay.removeAllViews()
-        for (media in mediaList) showThumbnail(media)
+        for (media in mediaList) {
+            showThumbnail(media)
+        }
     }
 
     private fun bindMedia(media: Media) {
-        // set values
-
         mBinding.apply {
             archiveMetadataLayout.apply {
                 tvTitleLbl.setText(media.title)
@@ -111,16 +124,33 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                 if (media.description.isNotEmpty()) {
                     tvDescriptionLbl.setText(media.description)
                     ivEditNotes.setImageResource(R.drawable.ic_edit_selected)
+                } else {
+                    tvDescriptionLbl.setText("")
+                    ivEditNotes.setImageResource(R.drawable.ic_edit_unselected)
                 }
 
                 if (media.location.isNotEmpty()) {
                     tvLocationLbl.setText(media.location)
                     ivEditLocation.setImageResource(R.drawable.ic_location_selected)
+                } else {
+                    tvLocationLbl.setText("")
+                    ivEditLocation.setImageResource(R.drawable.ic_location_unselected)
                 }
 
                 if (!media.getTags().isNullOrEmpty()) {
                     tvTagsLbl.setText(media.getTags())
                     ivEditTags.setImageResource(R.drawable.ic_tag_selected)
+                } else {
+                    tvTagsLbl.setText("")
+                    ivEditTags.setImageResource(R.drawable.ic_tag_unselected)
+                }
+
+                if (media.status != Media.STATUS_UPLOADED) {
+                    mBinding.archiveMetadataLayout.ivEditFlag.show()
+                    mBinding.archiveMetadataLayout.tvFlagLbl.show()
+                } else {
+                    mBinding.archiveMetadataLayout.ivEditFlag.hide()
+                    mBinding.archiveMetadataLayout.tvFlagLbl.hide()
                 }
 
                 tvAuthorLbl.setText(media.author)
@@ -140,42 +170,37 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
                 archiveMetadataLayout.apply {
                     tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
-                    tvTitleLbl.isEnabled = false
-                    tvDescriptionLbl.isEnabled = false
+//                    tvTitleLbl.isEnabled = false
+//                    tvDescriptionLbl.isEnabled = false
 
                     if (media.description.isEmpty()) {
-                        ivEditNotes.hide()
                         tvDescriptionLbl.hint = EMPTY_STRING
                     }
-
-                    tvAuthorLbl.isEnabled = false
-                    tvLocationLbl.isEnabled = false
+//                    tvAuthorLbl.isEnabled = false
+//                    tvLocationLbl.isEnabled = false
 
                     if (TextUtils.isEmpty(media.location)) {
-                        ivEditLocation.hide()
                         tvLocationLbl.hint = EMPTY_STRING
                     }
-
-                    tvTagsLbl.isEnabled = false
+//                    tvTagsLbl.isEnabled = false
 
                     if (media.getTags().isNullOrEmpty()) {
-                        ivEditTags.hide()
                         tvTagsLbl.hint = EMPTY_STRING
                     }
-
-                    tvCcLicense.isEnabled = false
-                    groupLicenseChooser.hide()
+//                    tvCcLicense.isEnabled = false
                 }
 
             } else {
-                archiveMetadataLayout.rowFlag.setOnClickListener { updateFlagState() }
+                archiveMetadataLayout.rowFlag.setOnClickListener {
+                    updateFlagState(media)
+                }
             }
             updateFlagState(media)
         }
     }
 
     private fun saveMedia() {
-        for (media in mediaList) saveMedia(media)
+        saveMedia(selectedMedia)
     }
 
     private fun saveMedia(media: Media?) {
@@ -186,7 +211,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
             val title = if (metaDataLayout.tvTitleLbl.text.isNotEmpty())
                 metaDataLayout.tvTitleLbl.text.toString() else {
-                //use the file name if the user doesn't set a title
                 File(media.originalFilePath).name
             }
 
@@ -223,7 +247,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun uploadMedia(){
+    private fun uploadMedia() {
         val space = Space.getCurrentSpace()
         if (space != null) {
             val listMedia = mediaList
@@ -271,6 +295,13 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         } else if (media.mimeType.startsWith("audio")) {
             ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.audio_waveform))
         } else ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_thumbnail))
+
+        ivMedia.setOnClickListener {
+            saveMedia(selectedMedia)
+            selectedMedia = media
+            bindMedia(media)
+        }
+
         mBinding.itemDisplay.addView(ivMedia)
     }
 
