@@ -27,6 +27,7 @@
 
             <HorizontalScrollView
                 android:id="@+id/item_display_scroll"
+                android:fillViewport="true"
                 android:layout_width="match_parent"
                 android:layout_height="300dp">
 
