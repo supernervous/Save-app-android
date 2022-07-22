@@ -293,6 +293,7 @@
     <string name="label_items">item(s)</string>
     <string name="label_items_uploaded">item(s) uploaded</string>
     <string name="label_items_remaining">item(s) failed to upload</string>
+    <string name="login_please_use_username">Login failed. Please try logging in with your username instead of email.</string>
     <string name="label_out_of">out of</string>
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>
