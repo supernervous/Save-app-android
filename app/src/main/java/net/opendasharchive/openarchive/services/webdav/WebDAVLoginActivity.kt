@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services.webdav
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
@@ -162,9 +163,9 @@ class WebDAVLoginActivity : AppCompatActivity() {
             var hostStr: String? = null
             if (!space.host.toLowerCase().startsWith(Constants.PREFIX_HTTP)) {
                 //auto add nextcloud defaults
-              hostStr =  "${Constants.PREFIX_HTTPS}${space.host}${Constants.REMOTE_PHP_ADDRESS}"
+                hostStr = "${Constants.PREFIX_HTTPS}${space.host}${Constants.REMOTE_PHP_ADDRESS}"
             } else if (!space.host.contains(Constants.DAV)) {
-               hostStr = "${space.host}${Constants.REMOTE_PHP_ADDRESS}"
+                hostStr = "${space.host}${Constants.REMOTE_PHP_ADDRESS}"
             }
 
             space.host = hostStr ?: Constants.EMPTY_STRING
@@ -179,25 +180,30 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 mAuthThread = Thread(UserLoginTask())
                 mAuthThread?.start()
             }
-
         }
-
     }
 
-    private val mHandlerLogin: Handler = object : Handler() {
+    private val mHandlerLogin: Handler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
                 0 -> {
                     mSnackbar.dismiss()
-
-                    //success;
                     finish()
                 }
                 1 -> {
                     mSnackbar.dismiss()
                     binding.password.error = getString(R.string.error_incorrect_password)
                     binding.password.requestFocus()
+                }
+                2 -> {
+                    mSnackbar.dismiss()
+                    Toast.makeText(
+                        this@WebDAVLoginActivity,
+                        getString(R.string.login_please_use_username),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 else -> {
                     mSnackbar.dismiss()
@@ -232,63 +238,63 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 sardine.setCredentials(space.username, space.password)
                 try {
                     try {
-                        sardine.getQuota(siteUrl.toString())
+                        sardine.getQuota("https://sam.nl.tab.digital/remote.php/dav/")
+                        sardine.list("https://sam.nl.tab.digital/remote.php/dav/files/"+space.username+"/")
                         if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
                             space.save()
                             setCurrentSpaceId(space.id)
                             mHandlerLogin.sendEmptyMessage(0)
-                        }else{
+                        } else {
                             runOnUiThread {
                                 mSnackbar.dismiss()
                                 Toast.makeText(
-                                        this@WebDAVLoginActivity,
-                                        getString(R.string.login_you_have_already_space),
-                                        Toast.LENGTH_LONG
+                                    this@WebDAVLoginActivity,
+                                    getString(R.string.login_you_have_already_space),
+                                    Toast.LENGTH_LONG
                                 ).show()
                             }
                         }
                     } catch (se: SardineException) {
-                        if (se.statusCode == 401) {
+                        when (se.statusCode) {
+                            401 -> {
+                                Log.e(
+                                    TAG,
+                                    "error on login: $siteUrl", se
+                                )
+                                mHandlerLogin.sendEmptyMessage(1)
+                            }
+                            404 -> {
+                                mHandlerLogin.sendEmptyMessage(2)
+                            }
+                            else -> {
+
+                            }
+                        }
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } catch (se: SardineException) {
+                    when (se.statusCode) {
+                        401 -> {
                             //unauthorized
                             Log.e(
                                 TAG,
-                                "error on login: $siteUrl", se
+                                "unauthorized login: $siteUrl", se
                             )
                             mHandlerLogin.sendEmptyMessage(1)
-                        } else {
-                            //try again?
-                            siteUrl.append(Constants.REMOTE_PHP_ADDRESS)
-                            sardine.getQuota(siteUrl.toString())
-                            setCurrentSpaceId(space.id)
-                            space.save()
+                        }
+                        404 -> {
+                            mHandlerLogin.sendEmptyMessage(2)
+                        }
+                        else -> {
+                            Log.e(
+                                TAG,
+                                "login error: $siteUrl", se
+                            )
                             mHandlerLogin.sendEmptyMessage(0)
                         }
-                    } catch (e: IOException) {
-
-                        //try again?
-                        siteUrl.append(Constants.REMOTE_PHP_ADDRESS)
-                        sardine.getQuota(siteUrl.toString())
-                        setCurrentSpaceId(space.id)
-                        space.save()
-                        mHandlerLogin.sendEmptyMessage(0)
-                    }
-                } catch (se: SardineException) {
-                    if (se.statusCode == 401) {
-                        //unauthorized
-                        Log.e(
-                            TAG,
-                            "unauthorized login: $siteUrl", se
-                        )
-                        mHandlerLogin.sendEmptyMessage(1)
-                    } else {
-                        Log.e(
-                            TAG,
-                            "login error: $siteUrl", se
-                        )
-                        mHandlerLogin.sendEmptyMessage(0)
                     }
                 } catch (e: IOException) {
-
                     //nope that is legit an error
                     Log.e(
                         TAG,
@@ -322,13 +328,15 @@ class WebDAVLoginActivity : AppCompatActivity() {
     private fun confirmRemoveSpace() {
         mSpace?.let { space ->
             space.delete()
-            val listProjects = getAllBySpace(space.id)
-            listProjects?.forEach { project ->
-                val listMedia = getMediaByProject(project.id)
-                listMedia?.forEach { media ->
-                    media.delete()
+            space.id?.let {
+                val listProjects = getAllBySpace(it)
+                listProjects?.forEach { project ->
+                    val listMedia = getMediaByProject(project.id)
+                    listMedia?.forEach { media ->
+                        media.delete()
+                    }
+                    project.delete()
                 }
-                project.delete()
             }
             SpaceChecker.navigateToHome(this)
         }
@@ -351,19 +359,6 @@ class WebDAVLoginActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        mSpace?.let { space ->
-            if (!space.name.isNullOrEmpty() && binding.servername.text?.toString() != space.name) {
-                space.name = binding.servername.text?.toString() ?: Constants.EMPTY_STRING
-                if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
-                    space.save()
-                }
-            }
-        }
     }
 
 }
