@@ -238,8 +238,8 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 sardine.setCredentials(space.username, space.password)
                 try {
                     try {
-                        sardine.getQuota("https://sam.nl.tab.digital/remote.php/dav/")
-                        sardine.list("https://sam.nl.tab.digital/remote.php/dav/files/"+space.username+"/")
+                        sardine.getQuota(space.host)
+                        sardine.list(space.host+ "/files/"+space.username+"/")
                         if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
                             space.save()
                             setCurrentSpaceId(space.id)
