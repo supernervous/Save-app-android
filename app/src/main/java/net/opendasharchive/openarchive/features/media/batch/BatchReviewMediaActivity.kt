@@ -48,7 +48,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     private lateinit var previewMediaListViewModel: PreviewMediaListViewModel
 
     private var mediaList: ArrayList<Media> = arrayListOf()
-    private lateinit var selectedMedia: Media
     private var mPicasso: Picasso? = null
     private var menuPublish: MenuItem? = null
     private var menuDelete: MenuItem? = null
@@ -108,8 +107,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     }
 
     private fun bindMedia() {
-        selectedMedia = mediaList[0]
-        bindMedia(selectedMedia)
+        bindMedia(mediaList[0])
         mBinding.itemDisplay.removeAllViews()
         for (media in mediaList) {
             showThumbnail(media)
@@ -200,7 +198,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
     }
 
     private fun saveMedia() {
-        saveMedia(selectedMedia)
+        for (media in mediaList) saveMedia(media)
     }
 
     private fun saveMedia(media: Media?) {
@@ -297,8 +295,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         } else ivMedia.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_thumbnail))
 
         ivMedia.setOnClickListener {
-            saveMedia(selectedMedia)
-            selectedMedia = media
+            saveMedia()
             bindMedia(media)
         }
 
