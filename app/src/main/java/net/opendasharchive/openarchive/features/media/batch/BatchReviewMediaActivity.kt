@@ -190,6 +190,9 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
             } else {
                 archiveMetadataLayout.rowFlag.setOnClickListener {
+                    mediaList.forEach { media ->
+                        media.flag = !media.flag
+                    }
                     updateFlagState(media)
                 }
             }
