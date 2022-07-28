@@ -16,6 +16,7 @@ object Globals {
 
     // intent extras
     const val EXTRA_FILE_LOCATION = "archive_extra_file_location"
+    const val PREF_NEXTCLOUD_USER_DATA = "next_cloud_user_data"
     const val EXTRA_CURRENT_MEDIA_ID = "archive_extra_current_media_id"
     const val EXTRA_CURRENT_PROJECT_ID = "archive_extra_current_project_id"
 

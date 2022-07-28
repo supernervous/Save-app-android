@@ -3,12 +3,17 @@ package net.opendasharchive.openarchive.features.media.preview
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
 
@@ -76,13 +81,35 @@ class PreviewMediaListActivity : AppCompatActivity() {
 
     private fun batchUpload() {
         val listMedia = mFrag?.getMediaList() ?: listOf()
-        for (media in listMedia) {
-            media.status = Media.STATUS_QUEUED
-            media.save()
+        if (getCurrentSpace()!!.type == Space.TYPE_WEBDAV){
+            val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(),WebDAVModel::class.java)
+
+            var totalUploadsContent = 0.0
+            for (media in listMedia) {
+                totalUploadsContent += media.contentLength
+            }
+
+            val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
+            if(totalStorage < totalUploadsContent){
+                Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
+            }else{
+                for (media in listMedia) {
+                    media.status = Media.STATUS_QUEUED
+                    media.save()
+                }
+                //viewModel.uploadFiles()
+                val operation = viewModel.applyMedia()
+                print(operation.result.get())
+            }
+        }else{
+            for (media in listMedia) {
+                media.status = Media.STATUS_QUEUED
+                media.save()
+            }
+            //viewModel.uploadFiles()
+            val operation = viewModel.applyMedia()
+            print(operation.result.get())
         }
-        //viewModel.uploadFiles()
-        val operation = viewModel.applyMedia()
-        print(operation.result.get())
     }
 
     private fun showFirstTimeBatch() {
