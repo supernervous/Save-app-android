@@ -1,35 +1,29 @@
 package net.opendasharchive.openarchive.features.media.batch
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
-import com.orm.SugarRecord
-import com.permissionx.guolindev.PermissionX
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
-import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
@@ -146,7 +140,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                 if (media.status != Media.STATUS_UPLOADED) {
                     mBinding.archiveMetadataLayout.ivEditFlag.show()
                     mBinding.archiveMetadataLayout.tvFlagLbl.show()
-                } else {
+                }else{
                     mBinding.archiveMetadataLayout.ivEditFlag.hide()
                     mBinding.archiveMetadataLayout.tvFlagLbl.hide()
                 }
@@ -250,17 +244,44 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
     private fun uploadMedia() {
         val space = Space.getCurrentSpace()
-        if (space != null) {
-            val listMedia = mediaList
+        val listMedia = mediaList
+
+        if (space!!.type == Space.TYPE_WEBDAV){
+            val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+
+            var totalUploadsContent = 0.0
             for (media in listMedia) {
-                media.status = Media.STATUS_QUEUED
-                media.save()
+                totalUploadsContent += media.contentLength
             }
-            val operation = previewMediaListViewModel.applyMedia()
-            print(operation.result.get())
-        } else {
-            val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
-            startActivity(firstStartIntent)
+
+            val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
+            if(totalStorage < totalUploadsContent){
+                Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
+            }else{
+                if (space != null) {
+                    for (media in listMedia) {
+                        media.status = Media.STATUS_QUEUED
+                        media.save()
+                    }
+                    val operation = previewMediaListViewModel.applyMedia()
+                    print(operation.result.get())
+                } else {
+                    val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
+                    startActivity(firstStartIntent)
+                }
+            }
+        }else{
+            if (space != null) {
+                for (media in listMedia) {
+                    media.status = Media.STATUS_QUEUED
+                    media.save()
+                }
+                val operation = previewMediaListViewModel.applyMedia()
+                print(operation.result.get())
+            } else {
+                val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
+                startActivity(firstStartIntent)
+            }
         }
     }
 

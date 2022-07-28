@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.orm.SugarRecord.findById
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
@@ -27,14 +28,19 @@ import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.util.Constants
+import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.isEmailValid
 import net.opendasharchive.openarchive.util.extensions.isPasswordLengthValid
 import net.opendasharchive.openarchive.util.extensions.show
+import okhttp3.*
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URISyntaxException
 import java.net.URL
+import java.util.concurrent.TimeUnit
+
 
 /**
  * A login screen that offers login via email/password.
@@ -234,25 +240,30 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 val siteUrl = StringBuffer()
                 siteUrl.append(space.host)
                 if (!space.host.endsWith("/")) siteUrl.append("/")
+
                 val sardine: Sardine = OkHttpSardine()
                 sardine.setCredentials(space.username, space.password)
                 try {
                     try {
-                        sardine.getQuota(space.host)
-                        sardine.list(space.host+ "/files/"+space.username+"/")
-                        if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
-                            space.save()
-                            setCurrentSpaceId(space.id)
-                            mHandlerLogin.sendEmptyMessage(0)
-                        } else {
-                            runOnUiThread {
-                                mSnackbar.dismiss()
-                                Toast.makeText(
-                                    this@WebDAVLoginActivity,
-                                    getString(R.string.login_you_have_already_space),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                        sardine.getQuota("https://sam.nl.tab.digital/remote.php/dav/")
+                        sardine.list("https://sam.nl.tab.digital/remote.php/dav/files/" + space.username + "/")
+                        if (userLogin(space.username, space.password)) {
+                            if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
+                                space.save()
+                                setCurrentSpaceId(space.id)
+                                mHandlerLogin.sendEmptyMessage(0)
+                            } else {
+                                runOnUiThread {
+                                    mSnackbar.dismiss()
+                                    Toast.makeText(
+                                        this@WebDAVLoginActivity,
+                                        getString(R.string.login_you_have_already_space),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
+                        } else {
+                            mHandlerLogin.sendEmptyMessage(1)
                         }
                     } catch (se: SardineException) {
                         when (se.statusCode) {
@@ -304,6 +315,19 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun userLogin(username: String, password: String): Boolean {
+        val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
+        val request: Request = Request.Builder()
+            .url("https://sam.nl.tab.digital/ocs/v1.php/cloud/users/$username")
+            .method("GET", null)
+            .addHeader("OCS-APIRequest", "true")
+            .addHeader("Accept", "application/json")
+            .build()
+        val response: Response = okHttpBaseClient.okHttpClient.newCall(request).execute()
+        Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
+        return response.code == 200
     }
 
     fun removeProject(view: View?) {

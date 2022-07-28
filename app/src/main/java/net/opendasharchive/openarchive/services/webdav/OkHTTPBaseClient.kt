@@ -3,10 +3,9 @@ package net.opendasharchive.openarchive.services.webdav
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import okhttp3.Request
 import java.util.concurrent.TimeUnit
 
-class OkHTTPBaseClient {
+class OkHttpBaseClient(var username: String = "",var password: String = "") {
 
     var okHttpClient: OkHttpClient
 
@@ -17,13 +16,13 @@ class OkHTTPBaseClient {
     }
 
     private val cacheInterceptor = Interceptor { chain ->
-        val request: Request =
-                chain.request().newBuilder().addHeader("Connection", "close").build()
+        val request = chain.request().newBuilder().addHeader("Connection", "close").build()
         chain.proceed(request)
     }
 
     init {
-        okHttpClient = OkHttpClient.Builder()
+        if(username.isEmpty() && password.isEmpty()){
+            okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(cacheInterceptor)
                 .connectTimeout(20L, TimeUnit.SECONDS)
                 .writeTimeout(20L, TimeUnit.SECONDS)
@@ -31,5 +30,16 @@ class OkHTTPBaseClient {
                 .retryOnConnectionFailure(false)
                 .protocols(protocols)
                 .build()
+        }else{
+            okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(cacheInterceptor)
+                .addInterceptor(BasicAuthInterceptor(user = username, password = password))
+                .connectTimeout(20L, TimeUnit.SECONDS)
+                .writeTimeout(20L, TimeUnit.SECONDS)
+                .readTimeout(20L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .protocols(protocols)
+                .build()
+        }
     }
 }

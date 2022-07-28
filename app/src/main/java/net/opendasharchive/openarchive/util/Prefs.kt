@@ -29,6 +29,9 @@ object Prefs{
         return prefs?.getBoolean(key, false) ?: false
     }
 
+    fun getNextCloudModel(): String {
+        return prefs?.getString(Globals.PREF_NEXTCLOUD_USER_DATA, "") ?: ""
+    }
 
     fun putString(key: String?, value: String?) {
         prefs?.edit()?.putString(key, value)?.apply()
