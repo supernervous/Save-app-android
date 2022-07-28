@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit
 
 class WebDAVSiteController : SiteController {
 
-    lateinit var okHttpBaseClient: OkHTTPBaseClient
+    lateinit var okHttpBaseClient: OkHttpBaseClient
     constructor(context: Context, listener: SiteControllerListener?, jobId: String?) : super(
         context,
         listener,
@@ -58,7 +58,7 @@ class WebDAVSiteController : SiteController {
 
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
-        okHttpBaseClient = OkHTTPBaseClient()
+        okHttpBaseClient = OkHttpBaseClient()
 
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             val builder = StrongOkHttpClientBuilder(context)
