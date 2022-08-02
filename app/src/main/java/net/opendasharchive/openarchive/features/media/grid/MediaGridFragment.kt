@@ -104,6 +104,8 @@ class MediaGridFragment : MediaListFragment() {
                         override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
 
                         }
+                    }, onDelete = {
+                        refresh()
                     })
                 rView.adapter = mediaAdapter
                 mAdapters[collection.id] = mediaAdapter
@@ -144,81 +146,75 @@ class MediaGridFragment : MediaListFragment() {
         listMedia: List<Media>?,
         holder: SectionViewHolder?
     ) {
+
+        holder?.sectionStatus?.text = ""
+        holder?.sectionTimestamp?.text = ""
+
         listMedia?.forEach { media ->
-            if (media.status == Media.STATUS_LOCAL) {
-                holder?.let {
-                    holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
-                    holder.sectionTimestamp?.text =
-                        "${listMedia.size} ${getString(R.string.label_items)}"
-                    holder.action?.visibility = View.INVISIBLE
-                    holder.action?.setOnClickListener {
-                        startActivity(
-                            Intent(
-                                requireActivity(),
-                                PreviewMediaListActivity::class.java
-                            )
-                        )
-                    }
-                }
-                return@forEach
-            } else if (media.status == Media.STATUS_QUEUED || media.status == Media.STATUS_UPLOADING) {
-                holder?.let {
-                    holder.sectionStatus?.text = getString(R.string.header_uploading)
-                    var uploadedCount = 0
-                    listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
-                    holder.sectionTimestamp?.text =
-                        uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(
-                            R.string.label_items_uploaded
-                        )
-                    holder.action?.visibility = View.INVISIBLE
-                }
-                return@forEach
-            } else if (media.status == Media.STATUS_UPLOADED) {
-                holder?.let {
-                    var uploadedCount = 0
-                    listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
-                    if (uploadedCount == listMedia.size) {
-                        holder.sectionStatus?.text =
-                            listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
+            when (media.status) {
+                Media.STATUS_LOCAL -> {
+                    holder?.let {
+                        holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
+                        holder.sectionTimestamp?.text = "${listMedia.size} ${getString(R.string.label_items)}"
                         holder.action?.visibility = View.INVISIBLE
-                    } else {
-                        holder.sectionStatus?.text =
-                            uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(
-                                R.string.label_items_uploaded
+                        holder.action?.setOnClickListener {
+                            startActivity(
+                                Intent(
+                                    requireActivity(),
+                                    PreviewMediaListActivity::class.java
+                                )
                             )
+                        }
+                    }
+                    return@forEach
+                }
+                Media.STATUS_QUEUED, Media.STATUS_UPLOADING -> {
+                    holder?.let {
+                        holder.sectionStatus?.text = getString(R.string.header_uploading)
+                        var uploadedCount = 0
+                        listMedia.forEach { localMedia ->if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
+                        holder.sectionTimestamp?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_uploaded)
                         holder.action?.visibility = View.INVISIBLE
                     }
-                    if (collection.uploadDate != null) holder.sectionTimestamp?.text =
-                        collection.uploadDate?.toLocaleString()
+                    return@forEach
                 }
-            } else if (media.status == Media.STATUS_ERROR) {
-                holder?.let {
-                    var uploadedCount = 0
-                    listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_ERROR) uploadedCount++ }
-                    if (uploadedCount == listMedia.size) {
-                        holder.sectionStatus?.text =
-                            listMedia.size.toString() + " " + getString(R.string.label_items_remaining)
-                    } else {
-                        holder.sectionStatus?.text =
-                            uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(
-                                R.string.label_items_remaining
-                            )
+                Media.STATUS_UPLOADED -> {
+                    holder?.let {
+                        var uploadedCount = 0
+                        listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
+                        if (uploadedCount == listMedia.size) {
+                            holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
+                            holder.action?.visibility = View.INVISIBLE
+                        } else {
+                            holder.sectionStatus?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_uploaded)
+                            holder.action?.visibility = View.INVISIBLE
+                        }
+                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
                     }
-                    if (collection.uploadDate != null) holder.sectionTimestamp?.text =
-                        collection.uploadDate?.toLocaleString()
-                    holder.action?.visibility = View.INVISIBLE
                 }
-            } else {
-                holder?.let {
-                    holder.sectionStatus?.text =
-                        listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
-                    if (collection.uploadDate != null) holder.sectionTimestamp?.text =
-                        collection.uploadDate?.toLocaleString()
-                    else if (listMedia.isNotEmpty() && listMedia[0].uploadDate != null) holder.sectionTimestamp?.text =
-                        listMedia[0].uploadDate.toString()
-                    holder.action?.visibility = View.INVISIBLE
+                Media.STATUS_ERROR -> {
+                    holder?.let {
+                        var uploadedCount = 0
+                        listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_ERROR) uploadedCount++ }
+                        if (uploadedCount == listMedia.size) {
+                            holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_remaining)
+                        } else {
+                            holder.sectionStatus?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_remaining)
+                        }
+                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
+                        holder.action?.visibility = View.INVISIBLE
+                    }
+                }
+                else -> {
+                    holder?.let {
+                        holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
+                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
+                        else if (listMedia.isNotEmpty() && listMedia[0].uploadDate != null) holder.sectionTimestamp?.text = listMedia[0].uploadDate.toString()
+                        holder.action?.visibility = View.INVISIBLE
+                    }
                 }
             }
+
         }
     }
 

@@ -26,8 +26,8 @@ open class MediaListFragment : Fragment() {
     private var mProjectId: Long = -1
     private var mStatus = Media.STATUS_UPLOADING.toLong()
     private var mStatuses = longArrayOf(
-            Media.STATUS_UPLOADING.toLong(),
-            Media.STATUS_QUEUED.toLong(), Media.STATUS_ERROR.toLong()
+        Media.STATUS_UPLOADING.toLong(),
+        Media.STATUS_QUEUED.toLong(), Media.STATUS_ERROR.toLong()
     )
     open var mMediaAdapter: MediaAdapter? = null
 
@@ -35,17 +35,17 @@ open class MediaListFragment : Fragment() {
     private lateinit var viewModel: MediaListViewModel
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-            ItemTouchHelper.END or ItemTouchHelper.START
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.END or ItemTouchHelper.START
     ) {
         override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
         ): Boolean {
             mMediaAdapter?.onItemMove(
-                    viewHolder.adapterPosition,
-                    target.adapterPosition
+                viewHolder.adapterPosition,
+                target.adapterPosition
             )
             return true
         }
@@ -56,9 +56,9 @@ open class MediaListFragment : Fragment() {
     })
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         _mBinding?.root?.tag = TAG
@@ -86,12 +86,12 @@ open class MediaListFragment : Fragment() {
         rView.layoutManager = LinearLayoutManager(activity)
         val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         itemDecorator.setDrawable(
-                activity?.let {
-                    ContextCompat.getDrawable(
-                            it,
-                            R.drawable.divider
-                    )
-                }!!
+            activity?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.divider
+                )
+            }!!
         )
         rView.addItemDecoration(itemDecorator)
         rView.setHasFixedSize(true)
@@ -100,17 +100,17 @@ open class MediaListFragment : Fragment() {
         val listMediaArray = ArrayList(mediaList)
 
         mMediaAdapter =
-                MediaAdapter(
-                        requireContext(),
-                        R.layout.activity_media_list_row_short,
-                        listMediaArray,
-                        rView,
-                        object : OnStartDragListener {
-                            override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
-                                if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
-                            }
+            MediaAdapter(
+                requireContext(),
+                R.layout.activity_media_list_row_short,
+                listMediaArray,
+                rView,
+                object : OnStartDragListener {
+                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+                        if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
+                    }
 
-                        })
+                }, onDelete = {})
         mMediaAdapter?.setDoImageFade(false)
         rView.adapter = mMediaAdapter
         mItemTouchHelper.attachToRecyclerView(rView)

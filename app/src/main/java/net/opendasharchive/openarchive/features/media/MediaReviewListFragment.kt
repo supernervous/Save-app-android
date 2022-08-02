@@ -53,7 +53,7 @@ class MediaReviewListFragment : MediaListFragment() {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
                         //NO-OP
                     }
-                }
+                }, onDelete = {}
             )
 
             mMediaAdapter = mediaAdapter
