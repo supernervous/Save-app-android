@@ -22,7 +22,8 @@ class MediaAdapter(
         private val layoutResourceId: Int,
         private var data: ArrayList<Media>,
         private val recyclerView: RecyclerView,
-        private val mDragStartListener: MediaListFragment.OnStartDragListener
+        private val mDragStartListener: MediaListFragment.OnStartDragListener,
+        private val onDelete: () -> Unit
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
     private var doImageFade = true
@@ -209,6 +210,7 @@ class MediaAdapter(
                     }
                     mode?.finish()
                     notifyDataSetChanged()
+                    onDelete()
                     true
                 }
                 else -> false
