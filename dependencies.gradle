@@ -18,8 +18,6 @@ ext {
             frescoimageviewer             : '0.5.0',
             netCipher                     : '2.0.0-alpha1',
             android_libproofmode          : '0.16a-library',
-            matisse                       : '0.5.3-beta3',
-            forked_matisse                : '0.5.3-20220115',
             sardine_android               : '89f7eae512',
             sectioned_recyclerview_adapter: '2.0.0',
             acra                          : '5.4.0',
@@ -35,7 +33,8 @@ ext {
             kotlin                        : '1.6.10',
             core_ktx                      : '1.3.2',
             coroutines                    : '1.3.9',
-            glide                         : '4.12.0'
+            glide                         : '4.12.0',
+            android_image_picker          :'3.0.0-beta1'
     ]
 
     libraries = [
@@ -49,7 +48,6 @@ ext {
             picasso                       : "com.squareup.picasso:picasso:$versions.picasso",
             fresco                        : "com.facebook.fresco:fresco:$versions.fresco",
             frescoimageviewer             : "com.github.stfalcon:frescoimageviewer:$versions.frescoimageviewer",
-            matisse                       : "com.zhihu.android:matisse:$versions.matisse",
             sectioned_recyclerview_adapter: "io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:$versions.sectioned_recyclerview_adapter",
             appcompat                     : "androidx.appcompat:appcompat:$versions.appcompat",
             constraint_layout             : "androidx.constraintlayout:constraintlayout:$versions.constraint_layout",
@@ -78,8 +76,6 @@ ext {
             glideAnnotate                 : "com.github.bumptech.glide:compiler:$versions.glide",
             guava                         : "com.google.guava:guava:31.0.1-android",
             sheetsInfo                    : "com.maxkeppeler.sheets:info:2.2.6",
-            forked_matisse                : "com.github.lwj1994:Matisse:0.5.3-20220115"
-
-
+            android_image_picker          : "com.github.esafirm:android-image-picker:$versions.android_image_picker"
     ]
 }

@@ -7,16 +7,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,15 +24,13 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.amulyakhare.textdrawable.TextDrawable
+import com.esafirm.imagepicker.features.*
+import com.esafirm.imagepicker.model.Image
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.orm.SugarRecord.findById
-import com.zhihu.matisse.Matisse
-import com.zhihu.matisse.MimeType
-import com.zhihu.matisse.engine.impl.PicassoEngine
-import com.zhihu.matisse.internal.entity.CaptureStrategy
 import io.scal.secureshareui.controller.SiteController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,13 +60,12 @@ import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     private val TAG = "OASAVE:Main"
     private var lastTab = 0
-    var captureLauncher : ActivityResultLauncher<Intent>? = null
-
     private var mMenuUpload: MenuItem? = null
 
     private var mSpace: Space? = null
@@ -78,11 +74,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
 
-
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
+    private var launcher: ImagePickerLauncher? = null
 
-    // Our handler for received Intents. This will be called whenever an Intent
-    // with an action named "custom-event-name" is broadcasted.
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // Get extra data included in the Intent
@@ -114,6 +108,37 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        launcher = registerImagePicker { result: List<Image> ->
+            val uriList = ArrayList<Uri>();
+            result.forEach { image ->
+                uriList.add(image.uri)
+            }
+            val bar = mBinding.pager.createSnackBar(
+                getString(R.string.importing_media),
+                Snackbar.LENGTH_INDEFINITE
+            )
+            val snackView = bar.view as SnackbarLayout
+            snackView.addView(ProgressBar(this))
+
+            scope.executeAsyncTaskWithList(
+                onPreExecute = {
+                    bar.show()
+                },
+                doInBackground = {
+                    importMedia(uriList)
+                },
+                onPostExecute = { media ->
+                    bar.dismiss()
+                    refreshCurrentProject()
+                    if (media.isNotEmpty()) startActivity(
+                        Intent(
+                            this,
+                            PreviewMediaListActivity::class.java
+                        )
+                    )
+                }
+            )
+        }
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
@@ -121,38 +146,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     }
 
     private fun initLayout() {
-
-        captureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it != null && it.data != null) {
-                val mSelected = Matisse.obtainResult(it.data)
-
-                val snackBar = mBinding.pager.createSnackBar(
-                    getString(R.string.importing_media),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                val snackView = snackBar.view as SnackbarLayout
-                snackView.addView(ProgressBar(this))
-
-                scope.executeAsyncTaskWithList(
-                    onPreExecute = {
-                        snackBar.show()
-                    },
-                    doInBackground = {
-                        importMedia(mSelected)
-                    },
-                    onPostExecute = { media ->
-                        snackBar.dismiss()
-                        refreshCurrentProject()
-                        if (media.isNotEmpty()) startActivity(
-                            Intent(
-                                this,
-                                PreviewMediaListActivity::class.java
-                            )
-                        )
-                    }
-                )
-            }
-        };
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -427,19 +420,24 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
 
     private fun importMedia() {
-
-        if (!askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 1)) {
-            Matisse.from(this)
-                .choose(MimeType.ofAll(), false)
-                .countable(true)
-                .maxSelectable(100)
-                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .thumbnailScale(0.85f)
-                .imageEngine(PicassoEngine())
-                .capture(true)
-                .captureStrategy(CaptureStrategy(true, "$packageName.provider", "capture"))
-                .forResult(captureLauncher)
+        val config = ImagePickerConfig {
+            mode = ImagePickerMode.MULTIPLE
+            isShowCamera = false
+            language = "en"
+            returnMode = ReturnMode.NONE
+            isFolderMode = true
+            isIncludeVideo = true
+            arrowColor = Color.WHITE
+            folderTitle = "Folder"
+            imageTitle = "Tap to select"
+            doneButtonText = "DONE"
+            limit = 99
+            savePath = ImagePickerSavePath(
+                Environment.getExternalStorageDirectory().path,
+                isRelative = false
+            ) // can be a full path
         }
+        launcher!!.launch(config)
     }
 
 
