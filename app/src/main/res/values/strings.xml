@@ -296,6 +296,7 @@
     <string name="login_please_use_username">Login failed. Please try logging in with your username instead of email.</string>
     <string name="label_out_of">out of</string>
     <string name="upload_files_error">The files you are trying to upload exceeds available storage space.</string>
+    <string name="IA_login_error">Please login with valid Internet Archive credentials.</string>
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>
     <string name="info_archiveorg_keys">Save needs your Internet Archive account\'s API keys to be able to upload to it.</string>
