@@ -124,10 +124,17 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
             focusView = binding.accesskey
             cancel = true
         }
+
+        if(TextUtils.isEmpty(accessKey) || TextUtils.isEmpty(secretKey)){
+            cancel = true
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView?.requestFocus()
+            Toast.makeText(this, getString(R.string.IA_login_error), Toast.LENGTH_SHORT).show()
+
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
