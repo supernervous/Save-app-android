@@ -77,7 +77,7 @@ dependencies {
 
     implementation libraries.kotlin_stdlib
     implementation libraries.core_ktx
-
+    implementation libraries.android_image_picker
     implementation libraries.coroutines
     implementation libraries.gson
     //noinspection GradleCompatible
@@ -117,7 +117,6 @@ dependencies {
     }
 
     //  implementation 'com.github.WrathChaos:MediaPickerLib:0.1.4'
-    implementation libraries.forked_matisse
 
     //adding web dav support: https://github.com/thegrizzlylabs/sardine-android'
     implementation libraries.sardine_android
