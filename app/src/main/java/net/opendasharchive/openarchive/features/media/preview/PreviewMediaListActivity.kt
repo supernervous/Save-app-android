@@ -82,34 +82,44 @@ class PreviewMediaListActivity : AppCompatActivity() {
     private fun batchUpload() {
         val listMedia = mFrag?.getMediaList() ?: listOf()
         if (getCurrentSpace()!!.type == Space.TYPE_WEBDAV){
-            val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(),WebDAVModel::class.java)
 
-            var totalUploadsContent = 0.0
-            for (media in listMedia) {
-                totalUploadsContent += media.contentLength
-            }
-
-            val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
-            if(totalStorage < totalUploadsContent){
-                Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-            }else{
-                for (media in listMedia) {
-                    media.status = Media.STATUS_QUEUED
-                    media.save()
-                }
-                //viewModel.uploadFiles()
-                val operation = viewModel.applyMedia()
-                print(operation.result.get())
-            }
+             if(getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
+                 //currently ticket #319 only supports nextcloud. Need to figure out a solution on the webDAV layer, that works across the board.
+                 val availableSpace = getAvailableStorageSpace(listMedia)
+                 val totalUploadsContent = availableSpace.first
+                 val totalStorage = availableSpace.second
+                 if(totalStorage < totalUploadsContent){
+                     Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
+                 }else{
+                     performBatchUpload(listMedia)
+                 }
+            }else {
+                 //for NON nextcloud providers
+                 performBatchUpload(listMedia)
+             }
         }else{
-            for (media in listMedia) {
-                media.status = Media.STATUS_QUEUED
-                media.save()
-            }
-            //viewModel.uploadFiles()
-            val operation = viewModel.applyMedia()
-            print(operation.result.get())
+            //for non webDAV protocols.
+            performBatchUpload(listMedia)
         }
+    }
+
+    private fun performBatchUpload(listMedia: List<Media>) {
+        for (media in listMedia) {
+            media.status = Media.STATUS_QUEUED
+            media.save()
+        }
+        viewModel.applyMedia()
+    }
+
+    private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
+        val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+        var totalUploadsContent = 0.0
+        for (media in listMedia) {
+            totalUploadsContent += media.contentLength
+        }
+
+        val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
+        return Pair(totalUploadsContent, totalStorage)
     }
 
     private fun showFirstTimeBatch() {
