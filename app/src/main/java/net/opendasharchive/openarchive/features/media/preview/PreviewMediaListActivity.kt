@@ -123,12 +123,14 @@ class PreviewMediaListActivity : AppCompatActivity() {
     }
 
     private fun showFirstTimeBatch() {
-        if (!Prefs.getBoolean("ft.batch")) {
-            AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                .setTitle(R.string.popup_batch_title)
-                .setMessage(R.string.popup_batch_desc).create().show()
-            Prefs.putBoolean("ft.batch", true)
+        val listMedia = mFrag?.getMediaList() ?: listOf()
+        if(listMedia.size > 1) {
+            if (!Prefs.getBoolean("ft.batch")) {
+                AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                    .setTitle(R.string.popup_batch_title)
+                    .setMessage(R.string.popup_batch_desc).create().show()
+                Prefs.putBoolean("ft.batch", true)
+            }
         }
     }
-
 }
