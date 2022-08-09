@@ -75,11 +75,6 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     private fun createMediaList(collection: Collection, listMedia: List<Media>): View? {
-        val lMan: GridLayoutManager = object : GridLayoutManager(activity, numberOfColumns) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
 
         val holder = SectionViewHolder()
 
@@ -88,8 +83,7 @@ class MediaGridFragment : MediaListFragment() {
             val rView: RecyclerView? = mediaSection?.findViewById(R.id.recyclerview)
             if (rView != null) {
                 rView.setHasFixedSize(true)
-                rView.layoutManager = lMan
-
+                rView.layoutManager = GridLayoutManager(activity, numberOfColumns)
                 sectionStatus = mediaSection?.findViewById(R.id.sectionstatus)
                 sectionTimestamp = mediaSection?.findViewById(R.id.sectiontimestamp)
                 action = mediaSection?.findViewById(R.id.action_next)
