@@ -45,18 +45,15 @@ class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
 
     fun onSignInArchiveButtonClick(v: View?) {
         startActivity(Intent(this, ArchiveOrgLoginActivity::class.java))
-        finish()
     }
 
 
     fun onSignInPrivateButtonClick(v: View?) {
         startActivity(Intent(this, WebDAVLoginActivity::class.java))
-        finish()
     }
 
     fun onSetupDropboxButtonClick(v: View?) {
         startActivity(Intent(this, DropboxLoginActivity::class.java))
-        finish()
     }
 
     /**
