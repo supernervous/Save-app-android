@@ -128,8 +128,6 @@ class WebDAVLoginActivity : AppCompatActivity() {
      * errors are presented and no actual login attempt is made.
      */
     private fun attemptLogin() {
-        mSnackbar.show()
-
         //Reset errors
         binding.email.error = null
         binding.password.error = null
@@ -145,23 +143,26 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 space.password = password.text?.toString() ?: Constants.EMPTY_STRING
                 space.host = server.text?.toString() ?: Constants.EMPTY_STRING
 
-                if (space.name.isNullOrEmpty())
+                ///added validation for username, password and web server field
+                if (space.name.isNullOrEmpty()) {
                     space.name = space.host
-
-                // Check for a valid password, if the user entered one.
-                if (!space.password.isNullOrEmpty() && !space.password.isPasswordLengthValid()) {
-                    password.error = getString(R.string.error_invalid_password)
-                    focusView = binding.password
-                    cancel = true
                 }
 
-                // Check for a valid email address.
-                if (space.username.isNullOrEmpty()) {
+
+                if (binding.server.text!!.isEmpty()) {
+                    binding.server.error = getString(R.string.error_field_required)
+                    focusView = binding.server
+                    cancel = true
+                } else if (space.username.isEmpty()) {
                     email.error = getString(R.string.error_field_required)
                     focusView = binding.email
                     cancel = true
                 } else if (!space.username.isEmailValid()) {
                     email.error = getString(R.string.error_invalid_email)
+                    cancel = true
+                } else if (space.password.isEmpty()) {
+                    password.error = getString(R.string.error_field_required)
+                    focusView = binding.password
                     cancel = true
                 }
             }
@@ -183,6 +184,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
             } else {
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
+                mSnackbar.show()
                 mAuthThread = Thread(UserLoginTask())
                 mAuthThread?.start()
             }
@@ -246,9 +248,13 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 try {
                     try {
                         sardine.getQuota(space.host)
-                        sardine.list(space.host+ "/files/"+space.username+"/")
+                        sardine.list(space.host + "/files/" + space.username + "/")
                         if (userLogin(space.host, space.username, space.password)) {
-                            if (Space.getSpaceForCurrentUsername(space.username, Space.TYPE_WEBDAV) == 0) {
+                            if (Space.getSpaceForCurrentUsername(
+                                    space.username,
+                                    Space.TYPE_WEBDAV
+                                ) == 0
+                            ) {
                                 space.save()
                                 setCurrentSpaceId(space.id)
                                 mHandlerLogin.sendEmptyMessage(0)
@@ -319,10 +325,10 @@ class WebDAVLoginActivity : AppCompatActivity() {
 
     fun userLogin(host: String, username: String, password: String): Boolean {
         val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
-                //https://nx27277.your-storageshare.de/
-        val url: String = if(host.contains("https://sam.nl.tab.digital")){
+        //https://nx27277.your-storageshare.de/
+        val url: String = if (host.contains("https://sam.nl.tab.digital")) {
             "https://sam.nl.tab.digital/ocs/v1.php/cloud/users/$username"
-        }else {
+        } else {
             "https://nx27277.your-storageshare.de/$username"
         }
         val request: Request = Request.Builder()
