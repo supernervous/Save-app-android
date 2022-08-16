@@ -338,7 +338,13 @@ class WebDAVLoginActivity : AppCompatActivity() {
             .addHeader("Accept", "application/json")
             .build()
         val response: Response = okHttpBaseClient.okHttpClient.newCall(request).execute()
-        Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
+        Prefs.putString(
+            Globals.PREF_NEXTCLOUD_USER_DATA, if (host.contains("https://sam.nl.tab.digital")) {
+                response.body?.string()
+            } else {
+                ""
+            }
+        )
         return response.code == 200
     }
 
