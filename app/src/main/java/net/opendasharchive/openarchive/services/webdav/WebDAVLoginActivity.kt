@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.services.webdav
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -21,6 +22,7 @@ import com.orm.SugarRecord.findById
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginBinding
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
@@ -257,7 +259,10 @@ class WebDAVLoginActivity : AppCompatActivity() {
                             ) {
                                 space.save()
                                 setCurrentSpaceId(space.id)
-                                mHandlerLogin.sendEmptyMessage(0)
+                                val intent = Intent(this@WebDAVLoginActivity, MainActivity::class.java)
+                                finishAffinity()
+                                startActivity(intent)
+
                             } else {
                                 runOnUiThread {
                                     mSnackbar.dismiss()
