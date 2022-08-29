@@ -1,10 +1,12 @@
 package net.opendasharchive.openarchive.db
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.orm.SugarRecord.find
@@ -18,12 +20,12 @@ import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 
 class MediaAdapter(
-        private val mContext: Context,
-        private val layoutResourceId: Int,
-        private var data: ArrayList<Media>,
-        private val recyclerView: RecyclerView,
-        private val mDragStartListener: MediaListFragment.OnStartDragListener,
-        private val onDelete: () -> Unit
+    private val mContext: Context,
+    private val layoutResourceId: Int,
+    private var data: ArrayList<Media>,
+    private val recyclerView: RecyclerView,
+    private val mDragStartListener: MediaListFragment.OnStartDragListener,
+    private val onDelete: () -> Unit
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
     private var doImageFade = true
@@ -88,7 +90,7 @@ class MediaAdapter(
         if (isEditMode) holder.handleView?.visibility = View.VISIBLE else holder.handleView?.visibility = View.GONE
         holder.handleView?.setOnTouchListener { v, event ->
             if (MotionEventCompat.getActionMasked(event) ==
-                    MotionEvent.ACTION_DOWN) {
+                MotionEvent.ACTION_DOWN) {
                 mDragStartListener?.onStartDrag(holder)
             }
             false
@@ -134,8 +136,8 @@ class MediaAdapter(
     private fun showFirstTimeFlag() {
         if (!Prefs.getBoolean("ft.flag")) {
             val build: AlertDialog.Builder = AlertDialog.Builder(mContext, R.style.AlertDialogTheme)
-                    .setTitle(R.string.popup_flag_title)
-                    .setMessage(R.string.popup_flag_desc)
+                .setTitle(R.string.popup_flag_title)
+                .setMessage(R.string.popup_flag_desc)
             build.create().show()
             Prefs.putBoolean("ft.flag", true)
         }
@@ -200,21 +202,39 @@ class MediaAdapter(
                     true
                 }
                 R.id.menu_delete -> {
-                    val it: Iterator<Media> = java.util.ArrayList(data).iterator()
-                    while (it.hasNext()) {
-                        val mediaDelete = it.next()
-                        if (mediaDelete.selected) {
-                            data.remove(mediaDelete)
-                            mediaDelete.delete()
-                        }
-                    }
-                    mode?.finish()
-                    notifyDataSetChanged()
-                    onDelete()
+                    removeSelectedMedia(mode)
                     true
                 }
                 else -> false
             }
+        }
+
+        fun removeSelectedMedia(mode: ActionMode?) {
+            val builder = AlertDialog.Builder(ContextThemeWrapper(mContext, R.style.AlertDialogCustom))
+            val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        val it: Iterator<Media> = java.util.ArrayList(data).iterator()
+                        while (it.hasNext()) {
+                            val mediaDelete = it.next()
+                            if (mediaDelete.selected) {
+                                data.remove(mediaDelete)
+                                mediaDelete.delete()
+                            }
+                        }
+                        mode?.finish()
+                        notifyDataSetChanged()
+                        onDelete()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        dialog.dismiss()
+                    }
+                }
+            }
+            val message = mContext.getString(R.string.confirm_remove_media)
+            builder
+                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+                .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
         }
 
         // Called when the action mode is created; startActionMode() was called
@@ -244,5 +264,4 @@ class MediaAdapter(
         }
 
     }
-
 }

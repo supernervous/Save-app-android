@@ -317,10 +317,11 @@
     <string name="pref_nextcloud_title">Enable NextCloud Chunking</string>
     <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 
+    <string name="remove_from_app_media">Remove Media</string>
+    <string name="confirm_remove_media">Are you sure you want to remove this Media?</string>
 
     <string name="popup_flag_title">Flag Significant Content</string>
     <string name="popup_flag_desc">When you flag an item, it is routed into a subfolder within the chosen project folder on the private server.</string>
-
 
     <string name="popup_batch_title">Edit Multiple Items</string>
     <string name="popup_batch_desc">To edit multiple items, tap and hold each.</string>
