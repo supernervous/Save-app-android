@@ -9,7 +9,7 @@ import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.impl.handler.ResponseHandler
-import io.scal.secureshareui.lib.Util.RandomString
+import io.scal.secureshareui.lib.Util
 import io.scal.secureshareui.login.ArchiveLoginActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
@@ -132,7 +132,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
 
             // TODO this should make sure we arn't accidentally using one of archive.org's metadata fields by accident
             val slug = valueMap[VALUE_KEY_SLUG]
-            val randomString = RandomString(4).nextString()
+            val randomString = Util.RandomString(4).nextString()
             val uploadBasePath = "$slug-$randomString"
             val uploadPath = "/" + uploadBasePath + "/" + getTitleFileName(media)
             val mediaType: MediaType? = mimeType?.toMediaTypeOrNull()
@@ -164,7 +164,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            val randomStringMetaData = RandomString(4).nextString()
+            val randomStringMetaData = Util.RandomString(4).nextString()
             val uploadBasePathMetaData = "$slug-$randomStringMetaData"
 
             /// upload meta data
