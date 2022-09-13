@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import net.opendasharchive.openarchive.util.Constants
 import java.io.File
 
 /**
@@ -25,7 +24,7 @@ object UriHelpers {
      * @return The file with path pointing to the saved file. It can return null if we can't resolve the uri properly.
      */
 
-    open fun getFileForUri(context: Context, uri: Uri): File? {
+    fun getFileForUri(context: Context, uri: Uri): File? {
         var path: String? = null
         // DocumentProvider
         if (DocumentsContract.isDocumentUri(context, uri)) {
@@ -51,14 +50,19 @@ object UriHelpers {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":").toTypedArray()
                 val type = split[0]
-                var contentUri = if ("image" == type) {
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                } else if ("video" == type) {
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                } else if ("audio" == type) {
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                } else {
-                    Uri.EMPTY
+                val contentUri = when (type) {
+                    "image" -> {
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    }
+                    "video" -> {
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    }
+                    "audio" -> {
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    }
+                    else -> {
+                        Uri.EMPTY
+                    }
                 }
                 val selection = "_id=?"
                 val selectionArgs = arrayOf(

@@ -5,12 +5,12 @@ import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import java.util.Date
 
 data class Project(
-        var description: String? = null,
-        var created: Date? = null,
-        var spaceId: Long? = null,
-        var archived: Boolean = false,
-        var openCollectionId: Long = -1,
-        var licenseUrl: String? = null
+    var description: String? = null,
+    var created: Date? = null,
+    var spaceId: Long? = null,
+    var archived: Boolean = false,
+    var openCollectionId: Long = -1,
+    var licenseUrl: String? = null
 ) : SugarRecord() {
 
     companion object {
@@ -30,12 +30,6 @@ data class Project(
             return findById(Project::class.java, projectId)
         }
 
-        fun deleteById(projectId: Long): Boolean {
-            val project: Project? = findById(Project::class.java, projectId)
-            return project?.let {
-                it.delete()
-            } ?: false
-        }
     }
 
 }

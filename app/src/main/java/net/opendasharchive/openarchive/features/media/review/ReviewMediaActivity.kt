@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.media.review
 
-import android.Manifest.permission.*
 import android.content.*
 import android.net.Uri
 import android.os.Bundle
@@ -37,8 +36,8 @@ import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
+import timber.log.Timber
 import java.io.File
-import java.util.*
 
 
 class ReviewMediaActivity : AppCompatActivity() {
@@ -55,12 +54,9 @@ class ReviewMediaActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ReviewMediaViewModel
 
-    // Our handler for received Intents. This will be called whenever an Intent
-    // with an action named "custom-event-name" is broadcasted.
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            // Get extra data included in the Intent
-            Log.d("receiver", "Updating media")
+            Timber.tag("receiver").d("Updating media")
             mMedia = findById<Media>(Media::class.java, mMedia.id)
             bindMedia()
         }
@@ -82,17 +78,17 @@ class ReviewMediaActivity : AppCompatActivity() {
             workInfo.forEach {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
-                        Log.e("WorkManager", "Loading")
+                        Timber.tag("WorkManager").d("Loading")
                         finish()
                     }
                     WorkInfo.State.SUCCEEDED -> {
-                        Log.e("WorkManager", "Succeed")
+                        Timber.tag("WorkManager").d("Succeed")
                     }
                     WorkInfo.State.FAILED -> {
-                        Log.e("WorkManager", "Failed")
+                        Timber.tag("WorkManager").d("Failed")
                     }
                     else -> {
-                        Log.d("WorkManager", "workInfo is null")
+                        Timber.tag("WorkManager").d("workInfo is null")
                     }
                 }
             }
@@ -293,7 +289,7 @@ class ReviewMediaActivity : AppCompatActivity() {
         if (currentMediaId >= 0) {
             mMedia = findById<Media>(Media::class.java, currentMediaId)
         } else {
-            Utility.toastOnUiThread(this, getString(R.string.error_no_media))
+            Utility.toastOnUiThread(this, getString(R.string.error_no_media),false)
             finish()
             return
         }
@@ -490,5 +486,4 @@ class ReviewMediaActivity : AppCompatActivity() {
             finish()
         }
     }
-
 }

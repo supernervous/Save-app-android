@@ -33,10 +33,6 @@ open class SmartFragmentStatePagerAdapter(fragmentManager: FragmentManager) : Fr
         super.destroyItem(container, position, `object`)
     }
 
-    fun clearRegisteredFragments() {
-        registeredFragments.clear()
-    }
-
     // Returns the fragment for the position (if instantiated)
     fun getRegisteredFragment(position: Int): Fragment? {
         return registeredFragments[position]

@@ -24,16 +24,6 @@ class BrowseProjectsAdapter(
         return fileList.size
     }
 
-    fun getItem(id: Int): File? {
-        return fileList[id]
-    }
-
-    fun refreshData(newList: List<File>) {
-        fileList.clear()
-        fileList.addAll(newList)
-        notifyDataSetChanged()
-    }
-
     inner class BrowseProjectsViewHolder(val binding: RvSimpleRowBinding, val onClick: (fileName: String) -> Unit) :
         RecyclerView.ViewHolder(binding.root){
         fun onBindView(fileName: String) {

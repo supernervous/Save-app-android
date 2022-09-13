@@ -31,7 +31,7 @@ class PreviewMediaListActivity : AppCompatActivity() {
 
         val context = requireNotNull(application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
         viewModel.observeValuesForWorkState(this)
         initLayout()
         showFirstTimeBatch()

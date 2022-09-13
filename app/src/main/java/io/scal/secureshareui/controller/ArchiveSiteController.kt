@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.text.TextUtils
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
@@ -17,17 +15,18 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.witness.proofmode.ProofMode
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
+import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
 class ArchiveSiteController(context: Context, listener: SiteControllerListener?, jobId: String?) : SiteController(context, listener, jobId) {
@@ -36,10 +35,10 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
     private var client: OkHttpClient? = null
 
     init {
-        initClient(context)
+        initClient()
     }
 
-    private fun initClient(context: Context) {
+    private fun initClient() {
         client = OkHttpClient.Builder()
             .addInterceptor(Interceptor { chain: Interceptor.Chain ->
                 val request =
@@ -54,14 +53,11 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
     }
 
     companion object {
-        const val SITE_NAME = "Internet Archive"
         const val SITE_KEY = "archive"
-        const val THUMBNAIL_PATH = "__ia_thumb.jpg"
         private const val TAG = "ArchiveSiteController"
         const val ARCHIVE_BASE_URL = "https://archive.org/"
         private const val ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org"
         private const val ARCHIVE_DETAILS_ENDPOINT = "https://archive.org/details/"
-        val MEDIA_TYPE: MediaType? = "".toMediaTypeOrNull()
         fun getTitleFileName(media: Media): String? {
             var filename: String? = null
             var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mimeType)
@@ -80,15 +76,13 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             return filename
         }
 
-        fun getSlug(title: String): String {
+        private fun getSlug(title: String): String {
             return title.replace("[^A-Za-z0-9]".toRegex(), "-")
         }
 
         @JvmStatic
         fun getMediaMetadata(context: Context, mMedia: Media): HashMap<String, String?> {
             val valueMap = HashMap<String, String?>()
-            val sharedPref =
-                context.getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE)
             valueMap[VALUE_KEY_MEDIA_PATH] = mMedia.originalFilePath
             valueMap[VALUE_KEY_MIME_TYPE] = mMedia.mimeType
             valueMap[VALUE_KEY_SLUG] = getSlug(mMedia.title)
@@ -116,7 +110,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
 
 
 
-    override fun startRegistration(space: Space) {
+    fun startRegistration(space: Space) {
         val intent = Intent(mContext, ArchiveLoginActivity::class.java)
         intent.putExtra("register", true)
         intent.putExtra(EXTRAS_KEY_CREDENTIALS, space.password)
@@ -124,14 +118,14 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
         // FIXME not a safe cast, context might be a service
     }
 
-    override fun startAuthentication(space: Space) {
+    override fun startAuthentication(space: Space?) {
         val intent = Intent(mContext, ArchiveLoginActivity::class.java)
-        intent.putExtra(EXTRAS_KEY_CREDENTIALS, space.password)
+        intent.putExtra(EXTRAS_KEY_CREDENTIALS, space?.password)
         (mContext as Activity).startActivityForResult(intent, CONTROLLER_REQUEST_CODE)
         // FIXME not a safe cast, context might be a service
     }
 
-    fun uploadMedia(space: Space, media: Media, valueMap: HashMap<String, String>): Boolean {
+    private fun uploadMedia(space: Space, media: Media, valueMap: HashMap<String, String?>): Boolean {
         try {
             val mediaUri = valueMap[VALUE_KEY_MEDIA_PATH]
             val mimeType = valueMap[VALUE_KEY_MIME_TYPE]
@@ -193,7 +187,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             }
             return true
         } catch (exc: Exception) {
-            Log.e("AndroidUploadService", exc.message, exc)
+            Timber.tag(TAG).d( "AndroidUploadService ${exc.message}")
         }
         return false
     }
@@ -324,9 +318,9 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
     }
 
     /// headers for jpg
-    fun uploadHeader(
+    private fun uploadHeader(
         headersBuilder: Headers.Builder, space: Space, mimeType: String?,
-        valueMap: HashMap<String, String>
+        valueMap: HashMap<String, String?>
     ) {
         val licenseUrl = valueMap[VALUE_KEY_LICENSE_URL]
         val title = valueMap[VALUE_KEY_TITLE]
@@ -381,7 +375,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
     }
 
     /// headers for meta-data and proof mode
-    fun uploadHeaderMetaData(headersBuilder: Headers.Builder, space: Space) {
+    private fun uploadHeaderMetaData(headersBuilder: Headers.Builder, space: Space) {
         headersBuilder.add("x-amz-auto-make-bucket", "1")
         headersBuilder.add(
             "x-archive-meta-language",
@@ -392,8 +386,8 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
         headersBuilder.add("x-archive-meta01-collection", "opensource")
     }
 
-    override fun upload(space: Space, media: Media, valueMap: HashMap<String, String>): Boolean {
-        return uploadMedia(space, media, valueMap)
+    override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
+        return uploadMedia(space!!, media!!, valueMap)
     }
 
     @Throws(IOException::class)
@@ -417,7 +411,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
                 val message = "Error contacting " + response.request.url
                 throw IOException(message + " = " + response.code + ": " + response.message)
             } else {
-                Log.d(TAG, "successful PUT to: " + response.request.url)
+                Timber.tag(TAG).d( "successful PUT to: ${response.request.url}")
             }
             null
         }
@@ -429,31 +423,9 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
         return responseHandler.handleResponse(response)
     }
 
-    private fun getArchiveUploadEndpoint(title: String, slug: String, mimeType: String): String? {
-        val urlPath: String
-        val url: String
-        var ext: String?
-        val randomString = RandomString(4).nextString()
-        urlPath = "$slug-$randomString"
-        ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-        if (TextUtils.isEmpty(ext)) {
-            ext =
-                if (mimeType.startsWith("image")) "jpg" else if (mimeType.startsWith("video")) "mp4" else if (mimeType.startsWith(
-                        "audio"
-                    )
-                ) "m4a" else "txt"
-        }
-        url = try {
-            "/" + urlPath + "/" + URLEncoder.encode(title, "UTF-8") + '.' + ext
-        } catch (e: UnsupportedEncodingException) {
-            Log.e(TAG, "Couldn't encode title", e)
-            return null
-        }
-        return url
-    }
+    override fun delete(space: Space?, title: String?, mediaFile: String?): Boolean {
+        Timber.tag(TAG).d( "Upload file: Entering upload")
 
-    override fun delete(space: Space, title: String, mediaFile: String): Boolean {
-        Log.d(TAG, "Upload file: Entering upload")
         /**
          *
          * o DELETE normally deletes a single file, additionally all the
@@ -464,30 +436,28 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
          */
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
-        var mediaUrl: String? = null
-        mediaUrl = try {
+        val mediaUrl: String? = try {
             ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(title, "UTF-8") + '/' + mediaFile
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
             return false
         }
-        Log.d(TAG, "deleting url media item: $mediaUrl")
+        Timber.tag(TAG).d( "deleting url media item: $mediaUrl")
         val builder: Request.Builder = Request.Builder()
             .delete()
             .url(mediaUrl!!)
             .addHeader("Accept", "*/*")
             .addHeader("x-archive-cascade-delete", "1")
             .addHeader("x-archive-keep-old-version", "0")
-            .addHeader("authorization", "LOW " + space.username + ":" + space.password)
+            .addHeader("authorization", "LOW " + space?.username + ":" + space?.password)
         val request: Request = builder.build()
-        val deleteFileTask = ArchiveServerTask(client, request)
-        deleteFileTask.execute()
+        archiveServerTask(client, request)
         return true
     }
 
     @Throws(IOException::class)
-    override fun getFolders(space: Space, path: String): ArrayList<File>? {
-        return null
+    override fun getFolders(space: Space?, path: String?): ArrayList<File> {
+        return ArrayList<File>()
     }
 
     /**
@@ -501,14 +471,11 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
      * return (result != null);
      * }
      */
-    internal inner class ArchiveServerTask(
-        private val client: OkHttpClient?,
-        private val request: Request
-    ) : AsyncTask<String?, String?, String>() {
-        private var response: Response? = null
 
-        override fun doInBackground(vararg params: String?): String {
-            Log.d(TAG, "Begin Upload")
+    private fun archiveServerTask(client: OkHttpClient?, request: Request){
+        var response: Response? = null
+        Thread {
+            Timber.tag(TAG).d("Begin Upload")
             try {
                 /**
                  * int timeout = 60 * 1000 * 2; //2 minute timeout!
@@ -518,7 +485,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
                  * client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
                  */
                 response = client!!.newCall(request).execute()
-                Log.d(TAG, "response: " + response + ", body: " + response!!.body!!.string())
+                Timber.tag(TAG).d("response: $response , body: $response!!.body!!.string()")
                 if (!response!!.isSuccessful) {
                     jobFailed(
                         null,
@@ -532,21 +499,12 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
                 jobFailed(e, 4000002, "Archive upload failed: IOException")
                 if (response != null && response!!.body != null) {
                     try {
-                        Log.d(TAG, response!!.body!!.string())
+                        Timber.tag(TAG).d(response!!.body!!.string())
                     } catch (e1: IOException) {
-                        Log.d(
-                            TAG,
-                            "exception: " + e1.localizedMessage + ", stacktrace: " + e1.stackTrace
-                        )
+                        Timber.tag(TAG).d("exception: ${e1.localizedMessage} , stacktrace: ${e1.stackTrace}")
                     }
-                } else {
                 }
             }
-            return "-1"
-        }
-    }
-
-    override fun startMetadataActivity(intent: Intent) {
-//        get the intent extras and launch the new intent with them
+        }.start()
     }
 }

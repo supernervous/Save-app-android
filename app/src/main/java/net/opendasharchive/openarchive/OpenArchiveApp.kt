@@ -3,9 +3,7 @@ package net.opendasharchive.openarchive
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
-import android.util.Log
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
@@ -25,16 +23,14 @@ import org.acra.ReportField
 import org.acra.annotation.AcraCore
 import org.acra.config.CoreConfigurationBuilder
 import org.acra.data.StringFormat
+import timber.log.Timber
 
 @AcraCore(buildConfigClass = BuildConfig::class)
-class OpenArchiveApp: SugarApp() {
+class OpenArchiveApp : SugarApp() {
 
     @Volatile
     var orbotConnected = false
-
-
     private val mCleanInsightsCirculo = CleanInsightsManager()
-
     private var mCurrentSpace: Space? = null
 
     override fun attachBaseContext(base: Context?) {
@@ -83,7 +79,6 @@ class OpenArchiveApp: SugarApp() {
                 ReportField.APPLICATION_LOG,
                 ReportField.BUILD
             )
-        // The following line triggers the initialization of ACRA
         ACRA.init(this, builder)
     }
 
@@ -97,7 +92,7 @@ class OpenArchiveApp: SugarApp() {
 
     fun initNetCipher(context: Context) {
         val LOG_TAG = "NetCipherClient"
-        Log.i(LOG_TAG, "Initializing NetCipher client")
+        Timber.tag(LOG_TAG).d( "Initializing NetCipher client")
         val appContext = context.applicationContext
         val oh = OrbotHelper.get(appContext)
         if (BuildConfig.DEBUG) {
@@ -111,29 +106,26 @@ class OpenArchiveApp: SugarApp() {
                 .build(object : StrongBuilder.Callback<OkHttpClient?> {
                     override fun onConnected(okHttpClient: OkHttpClient?) {
                         orbotConnected = true
-                        Log.i("NetCipherClient", "Connection to orbot established!")
-                        // from now on, you can create upload requests
-                        // as usual, and they will be proxied through TOR.
-                        // Bear in mind that
+                        Timber.tag("NetCipherClient").d( "Connection to orbot established!")
                     }
 
                     override fun onConnectionException(exc: Exception) {
                         orbotConnected = false
-                        Log.e("NetCipherClient", "onConnectionException()", exc)
+                        Timber.tag("NetCipherClient").d( "onConnectionException() $exc")
                     }
 
                     override fun onTimeout() {
                         orbotConnected = false
-                        Log.e("NetCipherClient", "onTimeout()")
+                        Timber.tag("NetCipherClient").d( "onTimeout()")
                     }
 
                     override fun onInvalid() {
                         orbotConnected = false
-                        Log.e("NetCipherClient", "onInvalid()")
+                        Timber.tag("NetCipherClient").d( "onInvalid()")
                     }
                 })
         } catch (exc: Exception) {
-            Log.e("Error", "Error while initializing TOR Proxy OkHttpClient", exc)
+            Timber.tag("Error").d( "Error while initializing TOR Proxy OkHttpClient $exc")
         }
     }
 
@@ -151,24 +143,20 @@ class OpenArchiveApp: SugarApp() {
         return mCurrentSpace
     }
 
+
     fun getUseTor(): Boolean {
         return orbotConnected
     }
 
-    fun hasCleanInsightsConsent () : Boolean? {
+    fun hasCleanInsightsConsent(): Boolean? {
         return mCleanInsightsCirculo.hasConsent()
     }
-    fun showCleanInsightsConsent (activity: Activity) {
+
+    fun showCleanInsightsConsent(activity: Activity) {
         mCleanInsightsCirculo.getConsent(activity)
     }
 
-    fun measureView (viewId: String)
-    {
-        mCleanInsightsCirculo.measureView(viewId)
-    }
-
-    fun measureEvent (key: String, value: String)
-    {
+    fun measureEvent(key: String, value: String) {
         mCleanInsightsCirculo.measureEvent(key, value)
     }
 

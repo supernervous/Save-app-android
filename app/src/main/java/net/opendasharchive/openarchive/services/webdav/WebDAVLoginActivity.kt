@@ -5,9 +5,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +17,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.orm.SugarRecord.findById
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
@@ -34,14 +33,15 @@ import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.isEmailValid
-import net.opendasharchive.openarchive.util.extensions.isPasswordLengthValid
 import net.opendasharchive.openarchive.util.extensions.show
-import okhttp3.*
+import okhttp3.Request
+import okhttp3.Response
+import timber.log.Timber
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URISyntaxException
 import java.net.URL
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 
 /**
@@ -84,21 +84,20 @@ class WebDAVLoginActivity : AppCompatActivity() {
 
         // Set up the login form.
         mSpace?.let { space ->
-            if (!space.name.isNullOrEmpty()) {
+            if (space.name.isNotEmpty()) {
                 binding.servername.setText(space.name)
             }
-            if (!space.host.isNullOrEmpty()) {
+            if (space.host.isNotEmpty()) {
                 binding.server.setText(space.host)
             }
-            if (!space.username.isNullOrEmpty()) {
+            if (space.username.isNotEmpty()) {
                 binding.email.setText(space.username)
             }
         }
 
-        binding.password.setOnEditorActionListener { v, actionId, event ->
+        binding.password.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
                 attemptLogin()
-                true
             }
             false
         }
@@ -146,7 +145,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 space.host = server.text?.toString() ?: Constants.EMPTY_STRING
 
                 ///added validation for username, password and web server field
-                if (space.name.isNullOrEmpty()) {
+                if (space.name.isEmpty()) {
                     space.name = space.host
                 }
 
@@ -170,7 +169,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
             }
 
             var hostStr: String? = null
-            if (!space.host.toLowerCase().startsWith(Constants.PREFIX_HTTP)) {
+            if (!space.host.lowercase(Locale.ROOT).startsWith(Constants.PREFIX_HTTP)) {
                 //auto add nextcloud defaults
                 hostStr = "${Constants.PREFIX_HTTPS}${space.host}${Constants.REMOTE_PHP_ADDRESS}"
             } else if (!space.host.contains(Constants.DAV)) {
@@ -194,7 +193,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
     }
 
     private val mHandlerLogin: Handler = @SuppressLint("HandlerLeak")
-    object : Handler() {
+    object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
@@ -259,6 +258,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                             ) {
                                 space.save()
                                 setCurrentSpaceId(space.id)
+
                                 val intent = Intent(this@WebDAVLoginActivity, MainActivity::class.java)
                                 finishAffinity()
                                 startActivity(intent)
@@ -279,10 +279,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                     } catch (se: SardineException) {
                         when (se.statusCode) {
                             401 -> {
-                                Log.e(
-                                    TAG,
-                                    "error on login: $siteUrl", se
-                                )
+                                Timber.tag(TAG).d("error on login: $siteUrl $se")
                                 mHandlerLogin.sendEmptyMessage(1)
                             }
                             404 -> {
@@ -298,30 +295,19 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 } catch (se: SardineException) {
                     when (se.statusCode) {
                         401 -> {
-                            //unauthorized
-                            Log.e(
-                                TAG,
-                                "unauthorized login: $siteUrl", se
-                            )
+                            Timber.tag(TAG).d("unauthorized login:  $siteUrl $se")
                             mHandlerLogin.sendEmptyMessage(1)
                         }
                         404 -> {
                             mHandlerLogin.sendEmptyMessage(2)
                         }
                         else -> {
-                            Log.e(
-                                TAG,
-                                "login error: $siteUrl", se
-                            )
+                            Timber.tag(TAG).d("login error: $siteUrl $se")
                             mHandlerLogin.sendEmptyMessage(0)
                         }
                     }
                 } catch (e: IOException) {
-                    //nope that is legit an error
-                    Log.e(
-                        TAG,
-                        "error on login: $siteUrl", e
-                    )
+                    Timber.tag(TAG).d("error on login: $siteUrl $e")
                     mHandlerLogin.sendEmptyMessage(1)
                 }
             }

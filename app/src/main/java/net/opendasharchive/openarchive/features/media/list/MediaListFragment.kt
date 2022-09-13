@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.media.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +68,7 @@ open class MediaListFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel.mediaList.observe(viewLifecycleOwner, Observer {
+        viewModel.mediaList.observe(viewLifecycleOwner) {
             if (mProjectId != EMPTY_ID) {
                 it?.forEach { media ->
                     if (media.status == Media.STATUS_LOCAL) {
@@ -78,7 +77,7 @@ open class MediaListFragment : Fragment() {
                 }
                 initLayout(it ?: listOf())
             }
-        })
+        }
     }
 
     private fun initLayout(mediaList: List<Media>) {
@@ -110,7 +109,9 @@ open class MediaListFragment : Fragment() {
                         if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
                     }
 
-                }, onDelete = {})
+                }, onDelete = {
+
+                })
         mMediaAdapter?.setDoImageFade(false)
         rView.adapter = mMediaAdapter
         mItemTouchHelper.attachToRecyclerView(rView)
@@ -163,7 +164,7 @@ open class MediaListFragment : Fragment() {
         }
     }
 
-    open fun getUploadingCounter(): Int {
+    open fun getUploadingCounter() : Int{
         val listMedia: List<Media>? = if (mProjectId == -1L) {
             getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {

@@ -22,8 +22,4 @@ class SelectiveViewPager : ViewPager {
         return super.onTouchEvent(ev)
     }
 
-    fun setPaging(p: Boolean) {
-        paging = p
-    }
-
 }

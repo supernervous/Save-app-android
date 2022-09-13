@@ -1,11 +1,11 @@
 package net.opendasharchive.openarchive.features.projects
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity

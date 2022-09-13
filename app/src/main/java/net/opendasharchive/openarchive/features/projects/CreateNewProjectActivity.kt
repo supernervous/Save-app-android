@@ -65,7 +65,6 @@ class CreateNewProjectActivity : AppCompatActivity() {
     private fun createProject(description: String): Boolean {
         getCurrentSpace()?.let { currentSpace ->
             val listProjects = getAllBySpace(currentSpace.id, false)
-            //check for duplicate name
             listProjects?.forEach { project ->
                 if (project.description == description) {
                     Toast.makeText(

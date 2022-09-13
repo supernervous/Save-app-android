@@ -1,40 +1,29 @@
 package net.opendasharchive.openarchive.features.media.batch
 
-import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.orm.SugarRecord
-import com.permissionx.guolindev.PermissionX
 import com.squareup.picasso.Picasso
-import com.stfalcon.frescoimageviewer.ImageViewer
-import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
-import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
@@ -86,13 +75,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
 
     }
 
-    private fun updateFlagState() {
-        mediaList.forEach { media ->
-            media.flag = !mediaList[0].flag
-        }
-        updateFlagState(mediaList[0])
-    }
-
     private fun updateFlagState(media: Media) {
         if (media.flag) {
             mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_selected)
@@ -137,7 +119,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                     ivEditLocation.setImageResource(R.drawable.ic_location_unselected)
                 }
 
-                if (!media.getTags().isNullOrEmpty()) {
+                if (media.getTags().isNotEmpty()) {
                     tvTagsLbl.setText(media.getTags())
                     ivEditTags.setImageResource(R.drawable.ic_tag_selected)
                 } else {
@@ -184,7 +166,7 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                     }
 //                    tvTagsLbl.isEnabled = false
 
-                    if (media.getTags().isNullOrEmpty()) {
+                    if (media.getTags().isEmpty()) {
                         tvTagsLbl.hint = EMPTY_STRING
                     }
 //                    tvCcLicense.isEnabled = false
@@ -269,28 +251,23 @@ class BatchReviewMediaActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT)
                         .show()
                 } else {
-                    startUpload(space, listMedia)
+                    startUpload(listMedia)
                 }
             } else {
-                startUpload(space, listMedia)
+                startUpload(listMedia)
             }
         } else {
-            startUpload(space, listMedia)
+            startUpload(listMedia)
         }
     }
 
-    private fun startUpload(space: Space, listMedia: ArrayList<Media>) {
-        if (space != null) {
-            for (media in listMedia) {
-                media.status = Media.STATUS_QUEUED
-                media.save()
-            }
-            val operation = previewMediaListViewModel.applyMedia()
-            print(operation.result.get())
-        } else {
-            val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
-            startActivity(firstStartIntent)
+    private fun startUpload(listMedia: ArrayList<Media>) {
+        for (media in listMedia) {
+            media.status = Media.STATUS_QUEUED
+            media.save()
         }
+        val operation = previewMediaListViewModel.applyMedia()
+        print(operation.result.get())
     }
 
     private fun init() {
@@ -300,8 +277,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         mediaIds?.forEach { mediaId ->
             mediaList.add(getMediaById(mediaId))
         }
-        // get default metadata sharing values
-        val sharedPref = getSharedPreferences(Globals.PREF_FILE_KEY, Context.MODE_PRIVATE)
         bindMedia()
     }
 
@@ -334,25 +309,10 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         mBinding.itemDisplay.addView(ivMedia)
     }
 
-    private fun showMedia(media: Media) {
-        if (media.mimeType.startsWith("image")) {
-            val list = ArrayList<Uri>()
-            list.add(Uri.parse(media.originalFilePath))
-            ImageViewer.Builder(this, list)
-                .setStartPosition(0)
-                .show()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         init()
         bindMedia()
-    }
-
-    override fun onDestroy() {
-        // Unregister since the activity is about to be closed.
-        super.onDestroy()
     }
 
     companion object {

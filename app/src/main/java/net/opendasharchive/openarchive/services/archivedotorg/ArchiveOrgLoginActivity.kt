@@ -88,15 +88,18 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
     fun onAcquireKeys(view: View?) {
         val siteController =
             SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null)
-        siteController.setOnEventListener(object : SiteController.OnEventListener {
-            override fun onSuccess(space: Space) {
-                space.save()
+        siteController?.setOnEventListener(object : SiteController.OnEventListener {
+            override fun onSuccess(space: Space?) {
+                space?.save()
             }
 
-            override fun onFailure(space: Space, failureMessage: String) {}
-            override fun onRemove(space: Space) {}
+            override fun onFailure(space: Space?, failureMessage: String?) {
+            }
+
+            override fun onRemove(space: Space?) {
+            }
         })
-        siteController.startAuthentication(mSpace)
+        siteController?.startAuthentication(mSpace)
     }
 
     /**
@@ -262,9 +265,7 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
         )
     }
 
-
     companion object {
         const val TAG = "Login"
     }
-
 }
