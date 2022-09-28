@@ -14,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.abdularis.civ.AvatarImageView
@@ -98,15 +97,15 @@ class SpaceSettingsActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        viewModel.spaceList.observe(this, Observer {
+        viewModel.spaceList.observe(this) {
             loadSpaces(it)
-        })
-        viewModel.currentSpace.observe(this, Observer {
+        }
+        viewModel.currentSpace.observe(this) {
             showCurrentSpace(it)
-        })
-        viewModel.projects.observe(this, Observer {
+        }
+        viewModel.projects.observe(this) {
             updateProjects(it)
-        })
+        }
     }
 
     private fun loadSpaces(list: List<Space>?) {
@@ -120,9 +119,9 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
         }
         list?.forEach { space ->
-            val image: ImageView? =
+            val image: ImageView =
                 getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
-            image?.setOnClickListener {
+            image.setOnClickListener {
                 Prefs.setCurrentSpaceId(space.id)
                 showCurrentSpace(space)
             }
@@ -130,7 +129,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSpaceIcon(space: Space, iconSize: Int): ImageView? {
+    private fun getSpaceIcon(space: Space, iconSize: Int): ImageView {
         val image = AvatarImageView(this)
         image.avatarBackgroundColor = ContextCompat.getColor(this, R.color.oablue)
         if (space.type == Space.TYPE_INTERNET_ARCHIVE) {
@@ -138,7 +137,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
             image.state = AvatarImageView.SHOW_IMAGE
         } else {
             if (space.name.isEmpty()) space.name = space.username
-            image.setText(space.name.substring(0, 1).toUpperCase())
+            image.setText(space.name.substring(0, 1).uppercase(Locale.ROOT))
             image.state = AvatarImageView.SHOW_INITIAL
         }
         val margin = 6
@@ -172,9 +171,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         mSpace?.let {
             val uriServer = Uri.parse(it.host)
             mBinding.contentSpaceLayout.txtSpaceName.text =
-                if (it.name.isNotEmpty()) {
-                    it.name
-                } else {
+                it.name.ifEmpty {
                     uriServer.host
                 }
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
@@ -185,13 +182,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
                 mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_IMAGE
             } else {
-                val spaceName = if (it.name.isEmpty()) {
+                val spaceName = it.name.ifEmpty {
                     it.host
-                } else {
-                    it.name
                 }
                 mBinding.contentSpaceLayout.spaceAvatar.setText(
-                    spaceName.substring(0, 1).toUpperCase(Locale.getDefault())
+                    spaceName.substring(0, 1).uppercase(Locale.getDefault())
                 )
                 mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_INITIAL
             }
@@ -282,6 +277,4 @@ class SpaceSettingsActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

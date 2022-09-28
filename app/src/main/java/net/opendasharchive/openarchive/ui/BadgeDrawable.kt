@@ -8,21 +8,17 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.util.Constants
 import kotlin.math.max
 
-class BadgeDrawable : Drawable {
+class BadgeDrawable(context: Context) : Drawable() {
 
     private var mBadgePaint: Paint? = null
-    private var mBadgePaint1: Paint? = null
     private var mTextPaint: Paint? = null
     private val mTxtRect = Rect()
 
     private var mCount = Constants.EMPTY_STRING
 
-    constructor(context: Context) : super() {
-
+    init {
         val mTextSize = context.resources.getDimension(R.dimen.badge_text_size)
-
         val color = ContextCompat.getColor(context.applicationContext, R.color.oablue)
-
         mBadgePaint = Paint()
         mBadgePaint?.apply {
             this.color = color
@@ -30,8 +26,6 @@ class BadgeDrawable : Drawable {
             this.style = Paint.Style.STROKE
             this.strokeWidth = 5f
         }
-
-
         mTextPaint = Paint()
         mTextPaint?.apply {
             this.color = color
@@ -70,6 +64,4 @@ class BadgeDrawable : Drawable {
         mCount = count
         invalidateSelf()
     }
-
-
 }

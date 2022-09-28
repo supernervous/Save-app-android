@@ -56,7 +56,7 @@ object RequestBodyUtil {
             private fun init() {
                 try {
                     inputStream = if (uri.scheme != null && uri.scheme == "file") FileInputStream(
-                        File(uri.path)
+                        uri.path?.let { File(it) }
                     ) else cr.openInputStream(uri)
                     mListener = listener
                 } catch (e: FileNotFoundException) {
@@ -83,7 +83,7 @@ object RequestBodyUtil {
                     try {
                         var total: Long = 0
                         var read: Long
-                        while (source.read(sink.buffer(), SEGMENT_SIZE.toLong()).also {
+                        while (source.read(sink.buffer, SEGMENT_SIZE.toLong()).also {
                                 read = it
                             } != -1L && mListener != null && mListener!!.continueUpload()) {
                             total += read
@@ -129,7 +129,7 @@ object RequestBodyUtil {
                     try {
                         var total: Long = 0
                         var read: Long
-                        while (source.read(sink.buffer(), SEGMENT_SIZE.toLong())
+                        while (source.read(sink.buffer, SEGMENT_SIZE.toLong())
                                 .also { read = it } != -1L
                         ) {
                             total += read

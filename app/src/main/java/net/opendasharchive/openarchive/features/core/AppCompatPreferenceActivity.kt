@@ -85,7 +85,7 @@ abstract class AppCompatPreferenceActivity : PreferenceActivity() {
     }
 
     private val delegate: AppCompatDelegate
-        private get() {
+         get() {
             if (mDelegate == null) {
                 mDelegate = AppCompatDelegate.create(this, null)
             }

@@ -59,7 +59,6 @@ class UploadFileTask(
             var result: FileMetadata? = null
             try {
 
-                //the only way to see if you need to create a folder, is to list it. kinda crazy, but so it is.
                 try {
                     mDbxClient.files().listFolder(mRemoteProjectPath)
                 } catch (e: Exception) {
@@ -121,7 +120,6 @@ class UploadFileTask(
             return false
         }
         var uploaded = 0L
-        var thrown: DbxException? = null
 
         // Chunked uploads have 3 phases, each of which can accept uploaded bytes:
         //
@@ -187,20 +185,14 @@ class UploadFileTask(
                     return true
                 }
             } catch (ex: RetryException) {
-                thrown = ex
                 // RetryExceptions are never automatically retried by the client for uploads. Must
                 // catch this exception even if DbxRequestConfig.getMaxRetries() > 0.
                 //     sleepQuietly(ex.getBackoffMillis());
                 continue
             } catch (ex: NetworkIOException) {
-                thrown = ex
-                // network issue with Dropbox (maybe a timeout?) try again
                 continue
             } catch (ex: UploadSessionLookupErrorException) {
                 return if (ex.errorValue.isIncorrectOffset) {
-                    thrown = ex
-                    // server offset into the stream doesn't match our offset (uploaded). Seek to
-                    // the expected offset according to the server and try again.
                     uploaded = ex.errorValue
                         .incorrectOffsetValue
                         .correctOffset
@@ -212,9 +204,6 @@ class UploadFileTask(
                 }
             } catch (ex: UploadSessionFinishErrorException) {
                 return if (ex.errorValue.isLookupFailed && ex.errorValue.lookupFailedValue.isIncorrectOffset) {
-                    thrown = ex
-                    // server offset into the stream doesn't match our offset (uploaded). Seek to
-                    // the expected offset according to the server and try again.
                     uploaded = ex.errorValue
                         .lookupFailedValue
                         .incorrectOffsetValue
@@ -243,6 +232,4 @@ class UploadFileTask(
         fun onError(e: Exception?)
         fun onProgress(progress: Long)
     }
-
-
 }

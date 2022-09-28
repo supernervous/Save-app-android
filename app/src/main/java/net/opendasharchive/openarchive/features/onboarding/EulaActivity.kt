@@ -2,17 +2,12 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEulaBinding
 import net.opendasharchive.openarchive.util.Globals
-import java.io.BufferedReader
-import java.io.Closeable
-import java.io.IOException
-import java.io.InputStreamReader
 
 /**
  * Created by micahjlucas on 12/15/14.
@@ -32,7 +27,6 @@ class EulaActivity(private val mActivity: AppCompatActivity) {
 
     //callback to let the activity know when the user has accepted the EULA.
     internal interface OnEulaAgreedTo {
-        //called when the user has accepted the eula and the dialog closes.
         fun onEulaAgreedTo()
     }
 
@@ -60,7 +54,7 @@ class EulaActivity(private val mActivity: AppCompatActivity) {
                     (mActivity as OnEulaAgreedTo).onEulaAgreedTo()
                 }
             }
-            builder.setNegativeButton(R.string.eula_refuse) { dialog, which -> refuse(mActivity) }
+            builder.setNegativeButton(R.string.eula_refuse) { _, _ -> refuse(mActivity) }
             builder.setOnCancelListener {
                 refuse(mActivity)
             }
@@ -76,51 +70,5 @@ class EulaActivity(private val mActivity: AppCompatActivity) {
 
     private fun refuse(activity: Activity) {
         activity.finish()
-    }
-
-    /**
-     * Return whether the EULA was accepted. Use this method in case you don't
-     * wish to show a EULA dialog for the negative condition
-     *
-     * @param context
-     * @return whether the EULA was accepted
-     */
-    fun isAccepted(context: Context): Boolean {
-        val sharedPrefs = context.getSharedPreferences(
-            Globals.PREF_FILE_KEY, Activity.MODE_PRIVATE
-        )
-        return sharedPrefs.getBoolean(Globals.PREF_EULA_ACCEPTED, false)
-    }
-
-    private fun readEula(): CharSequence? {
-        var `in`: BufferedReader? = null
-        return try {
-            `in` = BufferedReader(InputStreamReader(mActivity.assets.open(Globals.ASSET_EULA)))
-            var line: String?
-            val buffer = StringBuilder()
-            while (`in`.readLine().also { line = it } != null) {
-                buffer.append(line).append('\n')
-            }
-            buffer
-        } catch (e: IOException) {
-            ""
-        } finally {
-            closeStream(`in`)
-        }
-    }
-
-    /**
-     * Closes the specified stream.
-     *
-     * @param stream The stream to close.
-     */
-    private fun closeStream(stream: Closeable?) {
-        if (stream != null) {
-            try {
-                stream.close()
-            } catch (e: IOException) {
-                //ignore
-            }
-        }
     }
 }

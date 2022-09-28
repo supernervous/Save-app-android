@@ -14,11 +14,10 @@ import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import java.util.*
 
-class MediaReviewListFragment : MediaListFragment() {
+open class MediaReviewListFragment : MediaListFragment() {
 
-    protected var mStatus = Media.STATUS_LOCAL.toLong()
-    protected var mStatuses = longArrayOf(Media.STATUS_LOCAL.toLong())
-
+    private var mStatus = Media.STATUS_LOCAL.toLong()
+    private var mStatuses = longArrayOf(Media.STATUS_LOCAL.toLong())
     private var _mBinding: FragmentMediaListSimpleBinding? = null
 
     override fun onCreateView(
@@ -53,7 +52,9 @@ class MediaReviewListFragment : MediaListFragment() {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
                         //NO-OP
                     }
-                }, onDelete = {}
+                }, onDelete = {
+
+                }
             )
 
             mMediaAdapter = mediaAdapter
@@ -74,5 +75,4 @@ class MediaReviewListFragment : MediaListFragment() {
             mMediaAdapter?.updateData(listMediaArray)
         }
     }
-
 }

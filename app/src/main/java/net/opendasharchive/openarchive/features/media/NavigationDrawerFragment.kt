@@ -1,5 +1,4 @@
 package net.opendasharchive.openarchive.features.media
-
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.R
@@ -62,13 +60,11 @@ class NavigationDrawerFragment : Fragment() {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION)
             mFromSavedInstanceState = true
         }
-        // Select either the default item (0) or the last selected item.
         selectItem(mCurrentSelectedPosition)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true)
     }
 
@@ -84,7 +80,6 @@ class NavigationDrawerFragment : Fragment() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        // Forward the new configuration the drawer toggle component.
         mDrawerToggle?.onConfigurationChanged(newConfig)
     }
 
@@ -105,35 +100,6 @@ class NavigationDrawerFragment : Fragment() {
 
             mBinding.drawerList.setItemChecked(mCurrentSelectedPosition, true)
         }
-    }
-
-    fun isDrawerOpen(): Boolean {
-        return mDrawerLayout != null && mFragmentContainerView != null && mDrawerLayout?.isDrawerOpen(
-            mFragmentContainerView!!
-        ) == true
-    }
-
-    /**
-     * Users of this fragment must call this method to set up the navigation drawer interactions.
-     *
-     * @param fragmentId   The android:id of this fragment in its activity's layout.
-     * @param drawerLayout The DrawerLayout containing this fragment's UI.
-     */
-    private fun setUp(fragmentId: Int, drawerLayout: DrawerLayout) {
-        mFragmentContainerView = requireActivity().findViewById(fragmentId)
-        mDrawerLayout = drawerLayout
-
-        // set a custom shadow that overlays the main content when the drawer opens
-
-        // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout?.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START)
-        // set up the drawer's list view with items and click listener
-        getActionBar()?.setDisplayHomeAsUpEnabled(true)
-        getActionBar()?.setHomeButtonEnabled(true)
-        // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout?.post { mDrawerToggle?.syncState() }
-
-        mDrawerLayout?.setDrawerListener(mDrawerToggle)
     }
 
     private fun selectItem(position: Int) {
@@ -163,26 +129,11 @@ class NavigationDrawerFragment : Fragment() {
         } else super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Per the navigation drawer design guidelines, updates the action bar to show the global app
-     * 'context', rather than just what's in the current screen.
-     */
-    private fun showGlobalContextActionBar() {
-        val actionBar = getActionBar()
-        actionBar?.let {
-            actionBar.setDisplayShowTitleEnabled(true)
-            actionBar.navigationMode = ActionBar.NAVIGATION_MODE_STANDARD
-            actionBar.setTitle(R.string.app_name)
-        }
-    }
-
     private fun getActionBar(): ActionBar? {
         return (activity as AppCompatActivity).supportActionBar
     }
 
-    //Callbacks interface that all activities using this fragment must implement.
     interface NavigationDrawerCallbacks {
         fun onNavigationDrawerItemSelected(position: Int)
     }
-
 }

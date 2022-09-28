@@ -44,9 +44,9 @@ class MediaGridFragment : MediaListFragment() {
 
     private fun observeData() {
 
-        viewModel.collections.observe(viewLifecycleOwner, Observer {
+        viewModel.collections.observe(viewLifecycleOwner) {
             initLayout(it)
-        })
+        }
 
     }
 
@@ -75,7 +75,6 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     private fun createMediaList(collection: Collection, listMedia: List<Media>): View? {
-
         val holder = SectionViewHolder()
 
         holder.apply {
@@ -84,6 +83,7 @@ class MediaGridFragment : MediaListFragment() {
             if (rView != null) {
                 rView.setHasFixedSize(true)
                 rView.layoutManager = GridLayoutManager(activity, numberOfColumns)
+
                 sectionStatus = mediaSection?.findViewById(R.id.sectionstatus)
                 sectionTimestamp = mediaSection?.findViewById(R.id.sectiontimestamp)
                 action = mediaSection?.findViewById(R.id.action_next)
@@ -119,9 +119,11 @@ class MediaGridFragment : MediaListFragment() {
             val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
             val adapter = mAdapters[collection.id]
             val holder: SectionViewHolder? = mSection[collection.id]
-            val listMediaArray = ArrayList(listMedia)
+            val listMediaArray = listMedia?.let { ArrayList(it) }
             if (adapter != null) {
-                adapter.updateData(listMediaArray)
+                if (listMediaArray != null) {
+                    adapter.updateData(listMediaArray)
+                }
                 setSectionHeaders(collection, listMedia, holder)
             } else if (!listMedia.isNullOrEmpty()) {
                 val view = createMediaList(collection, listMedia)

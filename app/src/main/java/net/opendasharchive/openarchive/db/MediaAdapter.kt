@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.db
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -83,15 +84,14 @@ class MediaAdapter(
 
     override fun getItemCount(): Int = data.size
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
-
         holder.bindData(data[position], mActionMode != null)
-
         if (isEditMode) holder.handleView?.visibility = View.VISIBLE else holder.handleView?.visibility = View.GONE
-        holder.handleView?.setOnTouchListener { v, event ->
-            if (MotionEventCompat.getActionMasked(event) ==
-                MotionEvent.ACTION_DOWN) {
-                mDragStartListener?.onStartDrag(holder)
+        holder.handleView?.setOnTouchListener { _, event ->
+            val action = event.actionMasked
+            if (action == MotionEvent.ACTION_DOWN) {
+                mDragStartListener.onStartDrag(holder)
             }
             false
         }
@@ -264,4 +264,5 @@ class MediaAdapter(
         }
 
     }
+
 }

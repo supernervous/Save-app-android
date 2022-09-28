@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import net.opendasharchive.openarchive.MainActivity
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -20,6 +21,7 @@ import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
+import timber.log.Timber
 
 class UploadManagerActivity : AppCompatActivity() {
 
@@ -56,10 +58,10 @@ class UploadManagerActivity : AppCompatActivity() {
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d("receiver", "Updating media")
+            Timber.tag("receiver").d("Updating media")
             val status = intent.getIntExtra(SiteController.MESSAGE_KEY_STATUS, -1)
             if (status == Media.STATUS_UPLOADED) {
-                Handler().post {
+                Handler(Looper.getMainLooper()).post {
                     val progressToolbarTitle: String = if (mFrag!!.getUploadingCounter() == 0) {
                         getString(R.string.title_uploads)
                     } else {
@@ -69,7 +71,7 @@ class UploadManagerActivity : AppCompatActivity() {
                 }
                 mFrag!!.refresh()
             } else if (status == Media.STATUS_QUEUED) {
-                Handler().post {
+                Handler(Looper.getMainLooper()).post {
                     supportActionBar!!.title =
                         getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
                 }

@@ -11,39 +11,16 @@ import java.util.ArrayList
 open class CleanInsightsManager {
 
     val CI_CAMPAIGN = "upload-failures"
-
     private var mMeasure: CleanInsights? = null
     private var mHasConsent = true
-
-    fun initMeasurement(context : Context) {
-        if (mMeasure == null) {
-            // Instantiate with configuration and directory to write store to, best in an `Application` subclass.
-            try {
-
-                mMeasure = CleanInsights(
-                    context.assets.open("cleaninsights.json").reader().readText(),
-                    context.filesDir
-                )
-
-                mHasConsent = mMeasure!!.isCampaignCurrentlyGranted(CI_CAMPAIGN)
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
-        mMeasure?.testServer {
-            Log.d("Clean Insights", "test server: " + it.toString())
-        }
-    }
 
     fun hasConsent() : Boolean? {
         return mMeasure?.isCampaignCurrentlyGranted(CI_CAMPAIGN)
     }
 
-    public fun getConsent(context: Activity) {
+    fun getConsent(context: Activity) {
 
-        var success = mMeasure!!.requestConsent(CI_CAMPAIGN!!, object : JavaConsentRequestUi {
+        val success = mMeasure!!.requestConsent(CI_CAMPAIGN, object : JavaConsentRequestUi {
             override fun show(
                 s: String,
                 campaign: Campaign,
@@ -96,8 +73,4 @@ open class CleanInsightsManager {
             mMeasure!!.persist()
         }
     }
-
-
-
-
 }

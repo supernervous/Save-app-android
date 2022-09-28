@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.orm.SugarRecord.find
 import com.orm.SugarRecord.findById
@@ -22,34 +21,28 @@ import net.opendasharchive.openarchive.publish.UploaderListenerV2
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
+import timber.log.Timber
 import java.util.*
 
 class MediaWorker(private val ctx: Context, params: WorkerParameters) :
     CoroutineWorker(ctx, params) {
 
-    private var keepLoading = true
-
     override suspend fun doWork(): Result {
-        //get all media items that are set into queued state
-        var results: List<Media>? = null
-
         val datePublish = Date()
 
         val where = "status = ? OR status = ?"
         val whereArgs = arrayOf("${Media.STATUS_QUEUED}", "${Media.STATUS_UPLOADING}")
 
-        var outputData: Data? = null
-
         try {
-            val results = find<Media>(
+            val results = find(
                 Media::class.java, where, whereArgs, null, "priority DESC", null
             )
 
             results?.map { media ->
-                val coll = findById<Collection>(
+                val coll = findById(
                     Collection::class.java, media.collectionId
                 )
-                val proj = findById<Project>(
+                val proj = findById(
                     Project::class.java,
                     coll.projectId
                 )
@@ -72,7 +65,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                         media.save()
                         notifyMediaUpdated(media)
 
-                        var space: Space? = if (project.spaceId != -1L) findById<Space>(
+                        val space: Space? = if (project.spaceId != -1L) findById(
                             Space::class.java, project.spaceId
                         ) else getCurrentSpace()
 
@@ -121,10 +114,8 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                                 }
                             } catch (ex: Exception) {
                                 val err = "error in uploading media: " + ex.message
-                                Log.d(javaClass.name, err, ex)
-
+                                Timber.tag("javaClass.name").d(err)
                                 media.statusMessage = err
-
                                 media.status = Media.STATUS_ERROR
                                 media.save()
                                 Result.failure()
@@ -148,9 +139,8 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
     // Send an Intent with an action named "custom-event-name". The Intent sent should
     // be received by the ReceiverActivity.
     private fun notifyMediaUpdated(media: Media) {
-        Log.d("sender", "Broadcasting message")
+        Timber.tag("sender").d("Broadcasting message")
         val intent = Intent(MainActivity.INTENT_FILTER_NAME)
-        // You can also include some extra data.
         intent.putExtra(SiteController.MESSAGE_KEY_MEDIA_ID, media.id)
         intent.putExtra(SiteController.MESSAGE_KEY_STATUS, media.status)
         intent.putExtra(SiteController.MESSAGE_KEY_PROGRESS, media.progress)

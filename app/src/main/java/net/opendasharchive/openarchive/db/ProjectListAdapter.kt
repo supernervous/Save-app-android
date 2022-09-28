@@ -27,7 +27,6 @@ class ProjectListAdapter (
             reviewProjectIntent.putExtra(Globals.EXTRA_CURRENT_PROJECT_ID, p.id)
             mContext.startActivity(reviewProjectIntent)
         }
-
         return pvh
     }
 

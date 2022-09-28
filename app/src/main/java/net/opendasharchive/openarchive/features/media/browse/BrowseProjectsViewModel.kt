@@ -26,10 +26,7 @@ class BrowseProjectsViewModel: ViewModel() {
                 try {
                     val value =
                         withContext(Dispatchers.IO) {
-                            siteController.getFolders(
-                                space,
-                                space.host
-                            )
+                            siteController.getFolders(space, space.host)
                         }
                     _fileList.value = value
                     progressBarFlag.value = false

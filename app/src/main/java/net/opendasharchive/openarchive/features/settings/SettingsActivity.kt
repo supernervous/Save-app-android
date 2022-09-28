@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.features.settings
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -18,6 +17,7 @@ import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.routeTo
 import org.witness.proofmode.crypto.PgpUtils
+import timber.log.Timber
 import java.io.IOException
 
 class SettingsActivity : AppCompatActivity() {
@@ -43,7 +43,6 @@ class SettingsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                //NavUtils.navigateUpFromSameTask(this);
                 finish()
                 return true
             }
@@ -60,7 +59,6 @@ class SettingsActivity : AppCompatActivity() {
 
         class SettingsFragment : PreferenceFragmentCompat() {
             override fun onCreatePreferences(bundle: Bundle?, s: String?) {
-                // Load the Preferences from the XML file
                 val type = requireActivity().intent.getStringExtra(KEY_TYPE)
                 if (type.isNullOrEmpty() || type == KEY_DATAUSE) {
                     addPreferencesFromResource(R.xml.app_prefs_datause)
@@ -68,25 +66,22 @@ class SettingsActivity : AppCompatActivity() {
                     addPreferencesFromResource(R.xml.app_prefs_metadata)
                     val myPref = findPreference<Preference>("share_proofmode")
                     myPref?.let {
-                        it.onPreferenceClickListener =
-                            Preference.OnPreferenceClickListener { //open browser or intent here
-                                shareKey(requireActivity())
-                                true
-                            }
+                        it.onPreferenceClickListener = Preference.OnPreferenceClickListener { //open browser or intent here
+                            shareKey(requireActivity())
+                            true
+                        }
                     }
 
-                    val useProofMode =
-                        findPreference<Preference>("use_proofmode") as SwitchPreferenceCompat
+                    val useProofMode = findPreference<Preference>("use_proofmode") as SwitchPreferenceCompat
                     useProofMode.setOnPreferenceChangeListener { _, newValue ->
-                        if (newValue as Boolean) {
+                        if(newValue as Boolean){
                             PermissionX.init(this)
                                 .permissions(
                                     Manifest.permission.READ_PHONE_STATE,
                                     Manifest.permission.READ_EXTERNAL_STORAGE
                                 )
                                 .onExplainRequestReason { _, _ ->
-                                    val intent =
-                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                     val uri = Uri.fromParts("package", activity?.packageName, null)
                                     intent.data = uri
                                     activity?.startActivity(intent)
@@ -94,15 +89,9 @@ class SettingsActivity : AppCompatActivity() {
                                 .request { allGranted, _, _ ->
                                     if (!allGranted) {
                                         useProofMode.isChecked = false
-                                        Toast.makeText(
-                                            activity,
-                                            "Please allow all permissions",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        val intent =
-                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                        val uri =
-                                            Uri.fromParts("package", activity?.packageName, null)
+                                        Toast.makeText(activity,"Please allow all permissions",Toast.LENGTH_LONG).show()
+                                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        val uri = Uri.fromParts("package", activity?.packageName, null)
                                         intent.data = uri
                                         activity?.startActivity(intent)
                                     }
@@ -128,7 +117,7 @@ class SettingsActivity : AppCompatActivity() {
                     activity.startActivity(intent)
                 }
             } catch (ioe: IOException) {
-                Log.e("Proofmode", "error publishing key", ioe)
+                Timber.tag("Proofmode").d("error publishing key")
             }
         }
     }

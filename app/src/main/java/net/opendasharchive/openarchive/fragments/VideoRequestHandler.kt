@@ -19,7 +19,7 @@ class VideoRequestHandler(private val mContext: Context) : RequestHandler() {
 
     @Throws(IOException::class)
     override fun load(data: Request, arg1: Int): Result? {
-        var bm: Bitmap? = null
+        val bm: Bitmap?
         try {
             bm = retrieveVideoFrameFromVideo(mContext, Uri.parse(data.uri.toString().substring(6)))
             if (bm != null) return Result(bm, Picasso.LoadedFrom.DISK)
@@ -33,7 +33,7 @@ class VideoRequestHandler(private val mContext: Context) : RequestHandler() {
         const val SCHEME_VIDEO = "video"
         @Throws(Throwable::class)
         fun retrieveVideoFrameFromVideo(context: Context?, videoPath: Uri?): Bitmap? {
-            var bitmap: Bitmap? = null
+            val bitmap: Bitmap?
             var mediaMetadataRetriever: MediaMetadataRetriever? = null
             try {
                 mediaMetadataRetriever = MediaMetadataRetriever()

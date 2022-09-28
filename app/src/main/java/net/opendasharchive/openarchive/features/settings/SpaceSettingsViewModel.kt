@@ -44,7 +44,6 @@ class SpaceSettingsViewModel : ViewModel() {
 
     fun getLatestSpace() {
         viewModelScope.launch {
-            val spaces = spaceRepository.getAll()
             val latestSpace = spaceList.value?.lastOrNull()
             latestSpace?.let {
                 _currentSpace.value = it

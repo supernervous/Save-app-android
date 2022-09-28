@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services.webdav
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -27,39 +28,54 @@ import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
-import okhttp3.Request
 import org.witness.proofmode.ProofMode
-import org.witness.proofmode.crypto.HashUtils
 import org.witness.proofmode.crypto.PgpUtils
+import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
-class WebDAVSiteController : SiteController {
+
+class WebDAVSiteController(
+    context: Context,
+    listener: SiteControllerListener?,
+    jobId: String?
+) : SiteController(
+    context,
+    listener,
+    jobId
+) {
 
     lateinit var okHttpBaseClient: OkHttpBaseClient
-    constructor(context: Context, listener: SiteControllerListener?, jobId: String?) : super(
-        context,
-        listener,
-        jobId
-    ) {
-        init(context, listener, jobId)
-    }
 
     private var chunkStartIdx: Int = 0
     private val FILE_BASE = "files/"
 
+
+    private var sardine: Sardine? = null
+    private var server: String? = null
+    private var mContinueUpload = true
+    private var dateFormat: SimpleDateFormat? = null
+
+
+    companion object {
+        const val SITE_KEY = "webdav"
+        const val TAG = "WebDAVSC"
+    }
+
+    init {
+        init(context, listener, jobId)
+    }
+
+    @SuppressLint("SimpleDateFormat")
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
         okHttpBaseClient = OkHttpBaseClient()
-
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             val builder = StrongOkHttpClientBuilder(context)
             builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
@@ -110,14 +126,6 @@ class WebDAVSiteController : SiteController {
 
     }
 
-    private var sardine: Sardine? = null
-    private var server: String? = null
-    private var mContinueUpload = true
-    private var dateFormat: SimpleDateFormat? = null
-
-    override fun startRegistration(space: Space?) {
-        //NO-Op
-    }
 
     override fun startAuthentication(space: Space?) {
         sardine?.let {
@@ -126,11 +134,7 @@ class WebDAVSiteController : SiteController {
         }
     }
 
-    override fun startMetadataActivity(intent: Intent?) {
-        //No-Op
-    }
-
-    override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String>?): Boolean {
+    override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
 
         if (sardine == null) throw IOException("client not init'd")
 
@@ -138,7 +142,7 @@ class WebDAVSiteController : SiteController {
             uploadUsingChunking(space, media, valueMap)
         } else {
             startAuthentication(space)
-            val mediaUri = Uri.parse(valueMap?.get(VALUE_KEY_MEDIA_PATH) ?: Constants.EMPTY_STRING)
+            val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: Constants.EMPTY_STRING)
             val basePath = media?.serverUrl
             val folderName = dateFormat?.format(media?.createDate ?: Date())
             val fileName: String = getUploadFileName(
@@ -190,6 +194,7 @@ class WebDAVSiteController : SiteController {
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
                     uploadMetadata(media, projectFolderPath, fileName)
+//                    uploadProof(media, projectFolderPath)
                 } else {
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
@@ -251,27 +256,16 @@ class WebDAVSiteController : SiteController {
         mContinueUpload = false
     }
 
-    @Throws(IOException::class)
-    private fun listFolders(url: String) {
-        if (sardine != null) {
-            val listFiles = sardine!!.list(url)
-            for (resource in listFiles) {
-                Log.d(TAG, "resource: " + resource.name + ":" + resource.path)
-            }
-        } else {
-            throw IOException("client not init'd")
-        }
-    }
 
     @Throws(IOException::class)
     fun uploadUsingChunking(
         space: Space?,
         media: Media?,
-        valueMap: HashMap<String, String>?
+        valueMap: HashMap<String, String?>
     ): Boolean {
         if (sardine == null) throw IOException("client not init'd")
         startAuthentication(space)
-        val mediaUri = Uri.parse(valueMap?.get(VALUE_KEY_MEDIA_PATH))
+        val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
         var fileName: String = getUploadFileName(
             media?.title ?: Constants.EMPTY_STRING,
             media?.mimeType ?: Constants.EMPTY_STRING
@@ -372,7 +366,7 @@ class WebDAVSiteController : SiteController {
             true
         } catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
-            Log.w(TAG, "Failed primary media upload: " + tmpMediaPath + ": " + e.message)
+            Timber.tag(TAG).w("Failed primary media upload: $tmpMediaPath : ${e.message}")
             jobFailed(e, -1, tmpMediaPath)
             false
         }
@@ -437,10 +431,7 @@ class WebDAVSiteController : SiteController {
             }
             return true
         } catch (e: IOException) {
-            Log.e(
-                TAG,
-                "Failed primary media upload: $urlMeta", e
-            )
+            Timber.tag(TAG).w("Failed primary media upload: $urlMeta $e")
             jobFailed(e, -1, urlMeta)
         }
         return false
@@ -468,19 +459,11 @@ class WebDAVSiteController : SiteController {
                 return true
             }
         } catch (e: java.lang.Exception) {
-            //proof upload failed
-            Log.e(
-                TAG,
-                "Failed proof upload: $lastUrl", e
-            )
+            Timber.tag(TAG).w("Failed proof upload: $lastUrl $e")
         }
         return false
     }
 
-    companion object {
-        const val SITE_NAME = "WebDAV"
-        const val SITE_KEY = "webdav"
-        const val TAG = "WebDAVSC"
-    }
+
 
 }

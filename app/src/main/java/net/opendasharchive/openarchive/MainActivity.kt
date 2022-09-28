@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -16,8 +15,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -43,28 +40,35 @@ import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
-import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
 import net.opendasharchive.openarchive.features.projects.AddProjectActivity
+import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.ui.BadgeDrawable
-import net.opendasharchive.openarchive.util.*
+import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
+import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.createSnackBar
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTaskWithList
 import org.witness.proofmode.crypto.HashUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
-    private val TAG = "OASAVE:Main"
+    companion object {
+        const val REQUEST_NEW_PROJECT_NAME = 1001
+        const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
+    }
+
     private var lastTab = 0
     private var mMenuUpload: MenuItem? = null
 
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             // Get extra data included in the Intent
-            Log.d("receiver", "Updating media")
+            Timber.tag("receiver").d( "Updating media")
             val mediaId = intent.getLongExtra(SiteController.MESSAGE_KEY_MEDIA_ID, -1)
             val progress = intent.getLongExtra(SiteController.MESSAGE_KEY_PROGRESS, -1)
             val status = intent.getIntExtra(SiteController.MESSAGE_KEY_STATUS, -1)
@@ -109,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         super.onCreate(savedInstanceState)
 
         launcher = registerImagePicker { result: List<Image> ->
-            val uriList = ArrayList<Uri>();
+            val uriList = ArrayList<Uri>()
             result.forEach { image ->
                 uriList.add(image.uri)
             }
@@ -229,10 +233,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             Intent(this, AddProjectActivity::class.java),
             REQUEST_NEW_PROJECT_NAME
         )
-    }
-
-    fun onNewProjectClicked() {
-        promptAddProject()
     }
 
     private fun refreshProjects() {
@@ -382,9 +382,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             }
         }
         media.collectionId = coll.id
-        val fileSource = File(uri.path)
+        val fileSource = uri.path?.let { File(it) }
         var createDate = Date()
-        if (fileSource.exists()) {
+        if (fileSource!!.exists()) {
             createDate = Date(fileSource.lastModified())
             media.contentLength = fileSource.length()
         } else media.contentLength = fileImport?.length() ?: 0
@@ -558,23 +558,13 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
         return super.onOptionsItemSelected(item)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        Log.d(TAG, "onActivityResult, requestCode:$requestCode, resultCode: $resultCode")
-
-        // Check which request we're responding to
+        Timber.tag("onActivityResult").d( "requestCode:$requestCode, resultCode: $resultCode")
         if (requestCode == REQUEST_NEW_PROJECT_NAME) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 refreshProjects()
             }
         }
     }
-
-    companion object {
-        const val REQUEST_NEW_PROJECT_NAME = 1001
-        const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
-    }
-
 }

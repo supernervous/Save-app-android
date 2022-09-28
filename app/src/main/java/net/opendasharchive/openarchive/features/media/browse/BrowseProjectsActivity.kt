@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.media.browse
 
-import android.R
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -8,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
@@ -41,7 +41,7 @@ class BrowseProjectsActivity : AppCompatActivity() {
         title = Constants.EMPTY_STRING
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        val space = Space.getCurrentSpace()
+        val space = getCurrentSpace()
         if (space != null) {
             val siteController = when (space.type) {
                 Space.TYPE_WEBDAV -> {
@@ -103,14 +103,14 @@ class BrowseProjectsActivity : AppCompatActivity() {
     }
 
     private fun registerObservable() {
-        viewModel.fileList.observe(this, Observer {
+        viewModel.fileList.observe(this) {
+            mBinding.tvProjectsEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             setupProjectList(it)
-        })
+        }
 
-        viewModel.progressBarFlag.observe(this, {
+        viewModel.progressBarFlag.observe(this) {
             mBinding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
-        })
-
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
