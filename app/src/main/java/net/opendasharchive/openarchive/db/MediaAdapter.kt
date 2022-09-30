@@ -4,18 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Handler
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.MotionEventCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.orm.SugarRecord.find
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
@@ -26,7 +32,8 @@ class MediaAdapter(
     private var data: ArrayList<Media>,
     private val recyclerView: RecyclerView,
     private val mDragStartListener: MediaListFragment.OnStartDragListener,
-    private val onDelete: () -> Unit
+    private val onDelete: () -> Unit,
+    private val onUpload: (selectedMedia: List<Media>) -> Unit
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
     private var doImageFade = true
@@ -87,7 +94,8 @@ class MediaAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bindData(data[position], mActionMode != null)
-        if (isEditMode) holder.handleView?.visibility = View.VISIBLE else holder.handleView?.visibility = View.GONE
+        if (isEditMode) holder.handleView?.visibility =
+            View.VISIBLE else holder.handleView?.visibility = View.GONE
         holder.handleView?.setOnTouchListener { _, event ->
             val action = event.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
@@ -183,22 +191,33 @@ class MediaAdapter(
         notifyDataSetChanged()
     }
 
-    private val mActionModeCallback = object : ActionMode.Callback {
 
-        // Called when the user selects a contextual menu item
+    private val mActionModeCallback = object : ActionMode.Callback {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
+                R.id.menu_upload -> {
+                    val selectedMedia: List<Media> = find(Media::class.java, "selected = ?", "1")
+                    if(selectedMedia.isNotEmpty()){
+                        onUpload(selectedMedia)
+                    }
+                    Handler().postDelayed({
+                        mode?.finish()
+                    },100)
+                    true
+                }
                 R.id.menu_edit -> {
                     val selectedMedia: List<Media> = find(Media::class.java, "selected = ?", "1")
-                    val selectedMediaIds = LongArray(selectedMedia.size)
-                    var i = 0
-                    while (i < selectedMediaIds.size) {
-                        selectedMediaIds[i] = selectedMedia[i].id
-                        i++
+                    if(selectedMedia.isNotEmpty()){
+                        val selectedMediaIds = LongArray(selectedMedia.size)
+                        var i = 0
+                        while (i < selectedMediaIds.size) {
+                            selectedMediaIds[i] = selectedMedia[i].id
+                            i++
+                        }
+                        val intent = Intent(mContext, BatchReviewMediaActivity::class.java)
+                        intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, selectedMediaIds)
+                        mContext.startActivity(intent)
                     }
-                    val intent = Intent(mContext, BatchReviewMediaActivity::class.java)
-                    intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, selectedMediaIds)
-                    mContext.startActivity(intent)
                     true
                 }
                 R.id.menu_delete -> {
@@ -210,7 +229,8 @@ class MediaAdapter(
         }
 
         fun removeSelectedMedia(mode: ActionMode?) {
-            val builder = AlertDialog.Builder(ContextThemeWrapper(mContext, R.style.AlertDialogCustom))
+            val builder =
+                AlertDialog.Builder(ContextThemeWrapper(mContext, R.style.AlertDialogCustom))
             val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {

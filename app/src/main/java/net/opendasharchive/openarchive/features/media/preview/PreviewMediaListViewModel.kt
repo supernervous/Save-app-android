@@ -36,7 +36,6 @@ class PreviewMediaListViewModel(
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
                         Log.e("WorkManager", "Loading")
-                        activity.finish()
                     }
                     WorkInfo.State.SUCCEEDED -> {
                         Log.e("WorkManager", "Succeed")

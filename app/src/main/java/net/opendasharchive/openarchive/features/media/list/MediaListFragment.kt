@@ -111,6 +111,8 @@ open class MediaListFragment : Fragment() {
 
                 }, onDelete = {
 
+                }, onUpload = {
+
                 })
         mMediaAdapter?.setDoImageFade(false)
         rView.adapter = mMediaAdapter

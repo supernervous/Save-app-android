@@ -3,23 +3,30 @@ package net.opendasharchive.openarchive.features.media.grid
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
+import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProjectAndCollection
-import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.features.media.list.MediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
+import net.opendasharchive.openarchive.util.Prefs
 
 class MediaGridFragment : MediaListFragment() {
 
@@ -29,6 +36,7 @@ class MediaGridFragment : MediaListFragment() {
 
     private var _mBinding: FragmentMediaListBinding? = null
     private lateinit var viewModel: MediaGridViewModel
+    private lateinit var previewViewModel: PreviewMediaListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,17 +45,21 @@ class MediaGridFragment : MediaListFragment() {
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(MediaGridViewModel::class.java)
+
+        val context = requireNotNull(activity?.application)
+        val viewModelFactory = PreviewMediaListViewModelFactory(context)
+        previewViewModel = ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
+        previewViewModel.observeValuesForWorkState(activity as AppCompatActivity)
+
         observeData()
         viewModel.getAllCollection()
         return _mBinding?.root
     }
 
     private fun observeData() {
-
         viewModel.collections.observe(viewLifecycleOwner) {
             initLayout(it)
         }
-
     }
 
     private fun initLayout(listCollections: List<Collection>?) {
@@ -72,6 +84,14 @@ class MediaGridFragment : MediaListFragment() {
             }
             mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
         }
+    }
+
+    private fun performBatchUpload(listMedia: List<Media>) {
+        for (media in listMedia) {
+            media.status = Media.STATUS_QUEUED
+            media.save()
+        }
+        previewViewModel.applyMedia()
     }
 
     private fun createMediaList(collection: Collection, listMedia: List<Media>): View? {
@@ -100,6 +120,25 @@ class MediaGridFragment : MediaListFragment() {
                         }
                     }, onDelete = {
                         refresh()
+                    }, onUpload = {
+                        if (Space.getCurrentSpace()!!.type == Space.TYPE_WEBDAV){
+                            if(Space.getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
+                                val availableSpace = getAvailableStorageSpace(it)
+                                val totalUploadsContent = availableSpace.first
+                                val totalStorage = availableSpace.second
+                                if(totalStorage < totalUploadsContent){
+                                    Toast.makeText(activity, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
+                                }else{
+                                    performBatchUpload(it)
+                                }
+                            }else {
+                                //for NON nextcloud providers
+                                performBatchUpload(it)
+                            }
+                        }else{
+                            //for non webDAV protocols.
+                            performBatchUpload(it)
+                        }
                     })
                 rView.adapter = mediaAdapter
                 mAdapters[collection.id] = mediaAdapter
@@ -107,6 +146,17 @@ class MediaGridFragment : MediaListFragment() {
             }
         }
         return holder.mediaSection
+    }
+
+    private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
+        val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+        var totalUploadsContent = 0.0
+        for (media in listMedia) {
+            totalUploadsContent += media.contentLength
+        }
+
+        val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
+        return Pair(totalUploadsContent, totalStorage)
     }
 
     override fun updateItem(mediaId: Long, progress: Long) {

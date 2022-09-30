@@ -44,7 +44,7 @@ open class MediaReviewListFragment : MediaListFragment() {
             val listMedia: List<Media>? = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
 
             val listMediaArray = ArrayList(listMedia)
-            var mediaAdapter = MediaAdapter(requireActivity(),
+            val mediaAdapter = MediaAdapter(requireActivity(),
                 R.layout.activity_media_list_row,
                 listMediaArray,
                 mBinding.recyclerview,
@@ -53,6 +53,8 @@ open class MediaReviewListFragment : MediaListFragment() {
                         //NO-OP
                     }
                 }, onDelete = {
+
+                }, onUpload = {
 
                 }
             )
