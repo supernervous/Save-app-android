@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.dropbox
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,7 +14,7 @@ import com.dropbox.core.android.Auth
 import com.orm.SugarRecord.findById
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import net.opendasharchive.openarchive.BuildConfig
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginDropboxBinding
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
@@ -29,6 +30,7 @@ import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.show
 
+
 enum class DropboxResult {
     Success,
     Error,
@@ -40,7 +42,8 @@ class DropboxLoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginDropboxBinding
     private var mSpace: Space? = null
     private var isNewSpace: Boolean = false
-    private var tokenExist: Boolean = false
+    private var isTokenExist: Boolean = false
+    private var isSuccessLogin: Boolean = false
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -62,8 +65,8 @@ class DropboxLoginActivity : AppCompatActivity() {
 
         } else {
             isNewSpace = true
-            if(Auth.getOAuth2Token() != null){
-                tokenExist = true
+            if (Auth.getOAuth2Token() != null) {
+                isTokenExist = true
             }
             mSpace = Space()
             mSpace?.type = Space.TYPE_DROPBOX
@@ -74,62 +77,76 @@ class DropboxLoginActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        tokenExist = false
+        isTokenExist = false
     }
 
     override fun onResume() {
         super.onResume()
 
-        if (isNewSpace && !tokenExist) {
+        if (isNewSpace && !isTokenExist) {
             scope.executeAsyncTask(
-                    onPreExecute = {},
-                    doInBackground = {
-                        val accessToken = Auth.getOAuth2Token()
-                        if (!accessToken.isNullOrEmpty() && mSpace != null) {
-                            mSpace?.let { space ->
-                                val client =
-                                        DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
-                                var totalNoOfExistingSpaces = 0
-                                lateinit var email: String
+                onPreExecute = {},
+                doInBackground = {
+                    val accessToken = Auth.getOAuth2Token()
+                    if (!accessToken.isNullOrEmpty() && mSpace != null) {
+                        mSpace?.let { space ->
+                            val client =
+                                DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
+                            var spaceExistCount = 0
+                            lateinit var email: String
+                            try {
+                                email =
+                                    client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
+                                spaceExistCount =
+                                    Space.getSpaceForCurrentUsername(email, Space.TYPE_DROPBOX)
+                            } catch (e: Exception) {
+                                space.username = Auth.getUid()
+                                e.printStackTrace()
+                            }
 
-                                try {
-                                    email = client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
-                                    totalNoOfExistingSpaces = Space.getSpaceForCurrentUsername(email, Space.TYPE_DROPBOX)
-                                } catch (e: Exception) {
-                                    space.username = Auth.getUid()
-                                    e.printStackTrace()
-                                }
-                                if (totalNoOfExistingSpaces == 0) {
-                                    space.username = email
-                                    space.password = accessToken
-                                    space.save()
-                                    setCurrentSpaceId(space.id)
-                                    DropboxResult.Success
-                                } else {
-                                    DropboxResult.AccountAlreadyExist
-                                }
+                            if (spaceExistCount == 0) {
+                                space.username = email
+                                space.password = accessToken
+                                space.save()
+                                setCurrentSpaceId(space.id)
+                                DropboxResult.Success
+                            } else {
+                                DropboxResult.AccountAlreadyExist
                             }
-                        } else {
-                            DropboxResult.Error
+
                         }
-                    },
-                    onPostExecute = { result ->
-                        result?.let {
-                            if (it == DropboxResult.Success) {
-                                binding.email.text = mSpace?.username
-                                binding.actionRemoveSpace.show()
-                            } else if (it == DropboxResult.AccountAlreadyExist) {
-                                Toast.makeText(
-                                        this,
-                                        getString(R.string.login_you_have_already_space),
-                                        Toast.LENGTH_LONG
-                                ).show()
-                            }
+                    } else {
+                        DropboxResult.Error
+                    }
+                },
+                onPostExecute = { result ->
+                    result?.let {
+                        if (it == DropboxResult.Success) {
+                            binding.email.text = mSpace?.username
+                            binding.actionRemoveSpace.show()
+                            isSuccessLogin = true
+                        } else if (it == DropboxResult.AccountAlreadyExist) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.login_you_have_already_space),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
+                }
             )
         }
 
+    }
+
+    override fun onBackPressed() {
+        if (isSuccessLogin) {
+            val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
+            finishAffinity()
+            startActivity(intent)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     /**
@@ -155,7 +172,7 @@ class DropboxLoginActivity : AppCompatActivity() {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            Auth.startOAuth2Authentication(this@DropboxLoginActivity, getString(R.string.dropbox_key))
+            Auth.startOAuth2Authentication(this@DropboxLoginActivity, "gd5sputfo57s1l1")
         }
     }
 
@@ -165,7 +182,13 @@ class DropboxLoginActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            finish()
+            if (isSuccessLogin) {
+                val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
+                finishAffinity()
+                startActivity(intent)
+            } else {
+                finish()
+            }
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -173,22 +196,22 @@ class DropboxLoginActivity : AppCompatActivity() {
 
     fun removeProject(view: View?) {
         val dialogClickListener =
-                DialogInterface.OnClickListener { dialog, which ->
-                    when (which) {
-                        DialogInterface.BUTTON_POSITIVE -> {
-                            //Yes button clicked
-                            confirmRemoveSpace()
-                            finish()
-                        }
-                        DialogInterface.BUTTON_NEGATIVE -> {
-                        }
+            DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        //Yes button clicked
+                        confirmRemoveSpace()
+                        finish()
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
                     }
                 }
+            }
         val message = getString(R.string.confirm_remove_space)
         val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
         builder.setTitle(R.string.remove_from_app)
-                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-                .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
+            .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
+            .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
     }
 
     private fun confirmRemoveSpace() {
@@ -202,6 +225,7 @@ class DropboxLoginActivity : AppCompatActivity() {
                 }
                 project.delete()
             }
+
             SpaceChecker.navigateToHome(this)
         }
     }

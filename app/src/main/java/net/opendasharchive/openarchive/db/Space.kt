@@ -1,4 +1,5 @@
 package net.opendasharchive.openarchive.db
+
 import android.content.Intent
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
@@ -40,23 +41,29 @@ data class Space(
             return findAll(Space::class.java)
         }
 
-        fun getSpaceForCurrentUsername(email : String, type : Int): Int {
+        fun getSpaceForCurrentUsername(email: String, type: Int): Int {
             var totalNoOfExistingSpaces = 0
             getAllAsList()?.asSequence()?.toList()?.let {
-                totalNoOfExistingSpaces = it.count { e -> e.username == email && e.type == type}
+                totalNoOfExistingSpaces = it.count { e -> e.username == email && e.type == type }
             }
             return totalNoOfExistingSpaces
         }
 
         fun getCurrentSpace(): Space? {
-            val spaceId = Prefs.getCurrentSpaceId()
-            return try {
-                val space: Space = findById(Space::class.java, spaceId)
-                if (TextUtils.isEmpty(space.name)) space.name = space.username
-                space
-            } catch (e2: Exception) {
-                null
+            val spaceId: Long? = Prefs.getCurrentSpaceId()
+            if (spaceId != null) {
+                try {
+                    val space: Space? = findById(Space::class.java, spaceId)
+                    if (space != null) {
+                        if (TextUtils.isEmpty(space.name)) space.name = space.username
+                        return space
+                    }
+                } catch (e2: Exception) {
+                    //handle exception that may accure when current space id is null
+                    return null
+                }
             }
+            return null
         }
 
     }

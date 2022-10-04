@@ -20,6 +20,7 @@ import io.scal.secureshareui.controller.ArchiveSiteController
 import io.scal.secureshareui.controller.SiteController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityArchiveKeyLoginBinding
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
@@ -40,6 +41,7 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityArchiveKeyLoginBinding
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
+    private var isSuccessLogin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,6 +160,9 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                     binding.secretkey.setText(credentials)
                     it.name = getString(R.string.label_ia)
                     it.type = Space.TYPE_INTERNET_ARCHIVE
+                    it.save()
+                    setCurrentSpaceId(it.id)
+                    isSuccessLogin = true
                 }
             }
         }
@@ -174,7 +179,13 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
                 attemptLogin()
             }
             android.R.id.home -> {
-                finish()
+                if (isSuccessLogin) {
+                    val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+                    finishAffinity()
+                    startActivity(intent)
+                } else {
+                    super.onBackPressed()
+                }
             }
         }
         return true
@@ -243,19 +254,9 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
             onPostExecute = { result ->
                 if (result) {
                     mSpace?.let {
-                        if (Space.getSpaceForCurrentUsername(it.username,Space.TYPE_INTERNET_ARCHIVE) == 0) {
-                            it.save()
-                            setCurrentSpaceId(it.id)
-                            finish()
-                        }else{
-                            runOnUiThread {
-                                Toast.makeText(
-                                    this@ArchiveOrgLoginActivity,
-                                    getString(R.string.login_you_have_already_space),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
+                        val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+                        finishAffinity()
+                        startActivity(intent)
                     }
                 } else {
                     binding.secretkey.error = getString(R.string.error_incorrect_password)
@@ -265,7 +266,18 @@ class ArchiveOrgLoginActivity : AppCompatActivity() {
         )
     }
 
+    override fun onBackPressed() {
+        if (isSuccessLogin) {
+            val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+            finishAffinity()
+            startActivity(intent)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     companion object {
         const val TAG = "Login"
     }
+
 }
