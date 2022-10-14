@@ -222,11 +222,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     fun onAboutClick(view: View?) {
         // startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
-        openBrowser("https://open-archive.org/about/")
+        openBrowser("https://open-archive.org/about")
     }
 
     fun onPrivacyClick(view: View?) {
-        openBrowser("https://open-archive.org/privacy/")
+        openBrowser("https://open-archive.org/privacy")
     }
 
     private fun openBrowser(link: String) {
