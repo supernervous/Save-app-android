@@ -317,25 +317,19 @@ class WebDAVLoginActivity : AppCompatActivity() {
     fun userLogin(host: String, username: String, password: String): Boolean {
         val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
         //https://nx27277.your-storageshare.de/
-        val url: String = if (host.contains("https://sam.nl.tab.digital")) {
-            "https://sam.nl.tab.digital/ocs/v1.php/cloud/users/$username"
-        } else {
-            "https://nx27277.your-storageshare.de/$username"
-        }
+//        val url: String = if (host.contains("https://sam.nl.tab.digital")) {
+//            "https://sam.nl.tab.digital/ocs/v1.php/cloud/users/$username"
+//        } else {
+//            "https://nx27277.your-storageshare.de/$username"
+//        }
         val request: Request = Request.Builder()
-            .url(url)
+            .url(host)
             .method("GET", null)
             .addHeader("OCS-APIRequest", "true")
             .addHeader("Accept", "application/json")
             .build()
         val response: Response = okHttpBaseClient.okHttpClient.newCall(request).execute()
-        Prefs.putString(
-            Globals.PREF_NEXTCLOUD_USER_DATA, if (host.contains("https://sam.nl.tab.digital")) {
-                response.body?.string()
-            } else {
-                ""
-            }
-        )
+        Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
         return response.code == 200
     }
 
