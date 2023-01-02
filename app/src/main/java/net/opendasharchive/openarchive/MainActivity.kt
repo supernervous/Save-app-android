@@ -11,7 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
+import com.google.android.gms.security.ProviderInstaller;
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ProviderInstaller.installIfNeeded(this)
         launcher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
             result.forEach { image ->
