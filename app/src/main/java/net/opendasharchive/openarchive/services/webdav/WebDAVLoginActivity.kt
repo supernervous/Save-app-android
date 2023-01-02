@@ -250,7 +250,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                     try {
                         sardine.getQuota(space.host)
                         sardine.list(space.host + "/files/" + space.username + "/")
-                        if (userLogin(space.host, space.username, space.password)) {
+                        if (userLogin(space.name, space.username, space.password)) {
                             if (Space.getSpaceForCurrentUsername(
                                     space.username,
                                     Space.TYPE_WEBDAV
@@ -314,16 +314,11 @@ class WebDAVLoginActivity : AppCompatActivity() {
         }
     }
 
-    fun userLogin(host: String, username: String, password: String): Boolean {
+    fun userLogin(spaceName: String, username: String, password: String): Boolean {
         val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
-        //https://nx27277.your-storageshare.de/
-//        val url: String = if (host.contains("https://sam.nl.tab.digital")) {
-//            "https://sam.nl.tab.digital/ocs/v1.php/cloud/users/$username"
-//        } else {
-//            "https://nx27277.your-storageshare.de/$username"
-//        }
+        val url = "$spaceName/$username"
         val request: Request = Request.Builder()
-            .url(host)
+            .url(url)
             .method("GET", null)
             .addHeader("OCS-APIRequest", "true")
             .addHeader("Accept", "application/json")
