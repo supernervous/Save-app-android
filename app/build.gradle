@@ -150,6 +150,7 @@ dependencies {
     //glide
     implementation libraries.glide
     implementation 'com.google.android.gms:play-services-basement:18.1.0'
+    implementation 'com.google.android.gms:play-services-base:18.1.0'
     annotationProcessor libraries.glideAnnotate
 
     implementation "androidx.work:work-runtime-ktx:2.7.1"

@@ -23,6 +23,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.amulyakhare.textdrawable.TextDrawable
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
@@ -62,10 +63,11 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
-class MainActivity : AppCompatActivity(), OnTabSelectedListener {
+class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
 
     companion object {
         const val REQUEST_NEW_PROJECT_NAME = 1001
+        const val ERROR_DIALOG_REQUEST_CODE = 1
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     private var mSpace: Space? = null
     private var mSnackBar: Snackbar? = null
+    private var retryProviderInstall: Boolean = false
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
@@ -112,7 +115,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ProviderInstaller.installIfNeeded(this)
+        ProviderInstaller.installIfNeededAsync(this, this)
         launcher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
             result.forEach { image ->
@@ -566,6 +569,41 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
             if (resultCode == RESULT_OK) {
                 refreshProjects()
             }
+        } else if (requestCode == ERROR_DIALOG_REQUEST_CODE) {
+            retryProviderInstall = true
+
         }
+    }
+
+    override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
+        GoogleApiAvailability.getInstance().apply {
+            if (isUserResolvableError(errorCode)) {
+                // Recoverable error. Show a dialog prompting the user to
+                // install/update/enable Google Play services.
+                showErrorDialogFragment(this@MainActivity, errorCode, ERROR_DIALOG_REQUEST_CODE) {
+                    // The user chose not to take the recovery action. Do we block the user here?
+                    //TODO: Based on input from Benjamin.
+                }
+            } else {
+               //And block here as well?
+                //TODO: Based on input from Benjamin.
+            }
+        }
+
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        if (retryProviderInstall) {
+            // It's safe to retry installation.
+            ProviderInstaller.installIfNeededAsync(this, this)
+        }
+        retryProviderInstall = false
+
+    }
+
+    override fun onProviderInstalled() {
+            //This is triggered if the security provider is uptodate.
+        //TODO: Based on input from Benjamin.
     }
 }
