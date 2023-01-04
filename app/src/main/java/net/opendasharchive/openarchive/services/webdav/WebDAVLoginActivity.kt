@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -319,7 +318,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
         val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
         val fullUrl = "${spaceHost}${"files/"}${username}"
         val request: Request = Request.Builder()
-            .url(fullUrl    )
+            .url(fullUrl)
             .method("GET", null)
             .addHeader("OCS-APIRequest", "true")
             .addHeader("Accept", "application/json")
