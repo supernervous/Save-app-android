@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -81,7 +82,6 @@ class WebDAVLoginActivity : AppCompatActivity() {
     private fun initView() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         // Set up the login form.
         mSpace?.let { space ->
             if (space.name.isNotEmpty()) {
@@ -89,6 +89,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
             }
             if (space.host.isNotEmpty()) {
                 binding.server.setText(space.host)
+
             }
             if (space.username.isNotEmpty()) {
                 binding.email.setText(space.username)
@@ -250,7 +251,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
                     try {
                         sardine.getQuota(space.host)
                         sardine.list(space.host + "/files/" + space.username + "/")
-                        if (userLogin(space.name, space.username, space.password)) {
+                        if (userLogin(space.host, space.username, space.password)) {
                             if (Space.getSpaceForCurrentUsername(
                                     space.username,
                                     Space.TYPE_WEBDAV
@@ -314,11 +315,11 @@ class WebDAVLoginActivity : AppCompatActivity() {
         }
     }
 
-    fun userLogin(spaceName: String, username: String, password: String): Boolean {
+    fun userLogin(spaceHost: String, username: String, password: String): Boolean {
         val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
-        val url = "$spaceName/$username"
+        val fullUrl = "${spaceHost}${"files/"}${username}"
         val request: Request = Request.Builder()
-            .url(url)
+            .url(fullUrl    )
             .method("GET", null)
             .addHeader("OCS-APIRequest", "true")
             .addHeader("Accept", "application/json")
