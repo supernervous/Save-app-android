@@ -13,5 +13,9 @@ data class Collection(
         fun getAllAsList(): List<Collection>? {
             return find(Collection::class.java, EMPTY_STRING, arrayOf(), EMPTY_STRING, "ID DESC", EMPTY_STRING)
         }
+
+        fun getCollectionById(projectId: Long): Collection? {
+            return findById(Collection::class.java, projectId)
+        }
     }
 }

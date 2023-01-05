@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
+import net.opendasharchive.openarchive.db.Collection.Companion.getCollectionById
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
@@ -22,6 +23,7 @@ import net.opendasharchive.openarchive.util.Globals
 class EditProjectActivity : AppCompatActivity() {
 
     private var mProject: Project? = null
+    private var mCollection: net.opendasharchive.openarchive.db.Collection? = null
     private lateinit var mBinding: ActivityEditProjectBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class EditProjectActivity : AppCompatActivity() {
 
         if (projectId != -1L) {
             mProject = getById(projectId)
+            mCollection = getCollectionById(projectId)
             if (mProject == null) {
                 finish()
                 return
@@ -191,6 +194,8 @@ class EditProjectActivity : AppCompatActivity() {
         }
         mProject?.delete()
         mProject = null
+        mCollection?.delete()
+        mCollection = null
         SpaceChecker.navigateToHome(this)
     }
 
