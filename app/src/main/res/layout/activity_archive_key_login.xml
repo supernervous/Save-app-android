@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity">
@@ -62,16 +63,21 @@
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleDrawable="@drawable/show_password_selector"
+                    >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/secretkey"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/secret_key"
-                        android:inputType="textUri"
+                        android:inputType="textPassword"
                         android:maxLines="1"
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
