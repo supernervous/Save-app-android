@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -231,8 +232,6 @@ class WebDAVLoginActivity : AppCompatActivity() {
                 sardine.setCredentials(space.username, space.password)
                 try {
                     try {
-                        sardine.getQuota(space.host)
-                        sardine.list(space.host + "/files/" + space.username + "/")
                         if (loginUserIntoWebDav(space.host, space.username, space.password)) {
                             if (Space.getSpaceForCurrentUsername(
                                     space.username,

@@ -15,6 +15,6 @@ object Constants {
     const val EXTRA_DATA_SERVER = "server"
     const val PREFIX_HTTP = "http"
     const val PREFIX_HTTPS = "https://"
-    const val REMOTE_PHP_ADDRESS = "/remote.php/dav/"
+    const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
     const val DAV = "/dav"
 }
