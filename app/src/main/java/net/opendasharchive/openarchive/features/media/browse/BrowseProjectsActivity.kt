@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.media.browse
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ class BrowseProjectsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         mBinding = ActivityBrowseProjectsBinding.inflate(layoutInflater)
         viewModel = BrowseProjectsViewModel()
         setContentView(mBinding.root)

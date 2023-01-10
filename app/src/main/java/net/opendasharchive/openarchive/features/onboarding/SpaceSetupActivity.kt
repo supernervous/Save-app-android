@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.databinding.ActivitySignInBinding
@@ -18,6 +19,8 @@ class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         mBinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
