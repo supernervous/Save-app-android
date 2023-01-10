@@ -30,7 +30,6 @@ class ArchiveLoginActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-
         setContentView(R.layout.activity_archive_login)
         val doRegister = intent.getBooleanExtra("register", false)
         val useTor = intent.getBooleanExtra("useTor", false)

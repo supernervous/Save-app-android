@@ -22,7 +22,6 @@ class OAAppIntro : AppIntro() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setFadeAnimation()
 
