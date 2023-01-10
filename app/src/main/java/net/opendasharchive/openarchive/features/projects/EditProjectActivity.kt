@@ -23,7 +23,7 @@ import net.opendasharchive.openarchive.util.Globals
 class EditProjectActivity : AppCompatActivity() {
 
     private var mProject: Project? = null
-    private var mCollection: net.opendasharchive.openarchive.db.Collection? = null
+    private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
     private lateinit var mBinding: ActivityEditProjectBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +194,9 @@ class EditProjectActivity : AppCompatActivity() {
         }
         mProject?.delete()
         mProject = null
-        mCollection?.delete()
+        mCollection?.forEach { collection ->
+            collection.delete()
+        }
         mCollection = null
         SpaceChecker.navigateToHome(this)
     }

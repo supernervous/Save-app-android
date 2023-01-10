@@ -2,7 +2,7 @@ package net.opendasharchive.openarchive.db
 
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
-import java.util.Date
+import java.util.*
 
 data class Collection(
     var projectId: Long? = null,
@@ -14,8 +14,9 @@ data class Collection(
             return find(Collection::class.java, EMPTY_STRING, arrayOf(), EMPTY_STRING, "ID DESC", EMPTY_STRING)
         }
 
-        fun getCollectionById(projectId: Long): Collection? {
-            return findById(Collection::class.java, projectId)
+        fun getCollectionById(projectId: Long): List<Collection>? {
+              return find(Collection::class.java, "id=?", arrayOf(projectId.toString()), null, null, EMPTY_STRING)
+
         }
     }
 }
