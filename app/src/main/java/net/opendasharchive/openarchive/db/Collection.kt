@@ -15,7 +15,7 @@ data class Collection(
         }
 
         fun getCollectionById(projectId: Long): List<Collection>? {
-              return find(Collection::class.java, "id=?", arrayOf(projectId.toString()), null, null, EMPTY_STRING)
+              return find(Collection::class.java, "PROJECT_ID=?", arrayOf(projectId.toString()), null, null, EMPTY_STRING)
 
         }
     }
