@@ -11,14 +11,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
+import net.opendasharchive.openarchive.db.Collection.Companion.getCollectionById
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
+import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 
 class EditProjectActivity : AppCompatActivity() {
 
     private var mProject: Project? = null
+    private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
     private lateinit var mBinding: ActivityEditProjectBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,11 +42,11 @@ class EditProjectActivity : AppCompatActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = EMPTY_STRING
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         val projectId = intent.getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID, -1L)
 
         if (projectId != -1L) {
             mProject = getById(projectId)
+            mCollection = getCollectionById(projectId)
             if (mProject == null) {
                 finish()
                 return
@@ -168,8 +173,7 @@ class EditProjectActivity : AppCompatActivity() {
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        mProject?.delete()
-                        mProject = null
+                        confirmRemoveSpace()
                         finish()
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -181,6 +185,20 @@ class EditProjectActivity : AppCompatActivity() {
         builder.setTitle(R.string.remove_from_app)
             .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
             .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
+    }
+
+    private fun confirmRemoveSpace() {
+        val listMedia = Media.getMediaByProject(mProject!!.id)
+        listMedia?.forEach { media ->
+            media.delete()
+        }
+        mProject?.delete()
+        mProject = null
+        mCollection?.forEach { collection ->
+            collection.delete()
+        }
+        mCollection = null
+        SpaceChecker.navigateToHome(this)
     }
 
     fun archiveProject(view: View?) {

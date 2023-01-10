@@ -25,6 +25,8 @@ import com.thegrizzlylabs.sardineandroid.impl.SardineException
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginBinding
+import net.opendasharchive.openarchive.db.Collection
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
@@ -46,6 +48,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var mSnackbar: Snackbar
+    private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
     private var mSpace: Space? = null
     private var mAuthThread: Thread? = null
 
@@ -323,6 +326,12 @@ class WebDAVLoginActivity : AppCompatActivity() {
             space.id?.let {
                 val listProjects = getAllBySpace(it)
                 listProjects?.forEach { project ->
+                    mCollection = Collection.getCollectionById(project.id)
+                    mCollection?.forEach { collection ->
+                        collection.delete()
+                    }
+                    mCollection = null
+
                     val listMedia = getMediaByProject(project.id)
                     listMedia?.forEach { media ->
                         media.delete()
