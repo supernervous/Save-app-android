@@ -581,10 +581,9 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
     override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
         GoogleApiAvailability.getInstance().apply {
             if (isUserResolvableError(errorCode)) {
-                // Recoverable error. Show a dialog prompting the user to
-                // install/update/enable Google Play services.
+
                 showErrorDialogFragment(this@MainActivity, errorCode, ERROR_DIALOG_REQUEST_CODE) {
-                    // The user chose not to take the recovery action. Do we block the user here?
+                    // The user chose not to take the recovery action.
                     showAlertIcon()
                 }
             } else {
@@ -610,7 +609,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
     }
 
     override fun onProviderInstalled() {
-            //This is triggered if the security provider is uptodate.
+        //This is triggered if the security provider is up-to-date.
         mBinding.alertIcon.visibility = View.GONE
 
 
