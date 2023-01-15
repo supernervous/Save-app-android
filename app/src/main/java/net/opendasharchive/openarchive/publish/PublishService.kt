@@ -208,7 +208,6 @@ class PublishService : Service(), Runnable {
         override fun progress(msg: Message?) {
             val data = msg!!.data
             val contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS)
-            Timber.tag("OAPublish").d(uploadMedia.id.toString() + " uploaded: $contentLengthUploaded / ${uploadMedia.contentLength}")
             uploadMedia.progress = contentLengthUploaded
             notifyMediaUpdated(uploadMedia)
         }

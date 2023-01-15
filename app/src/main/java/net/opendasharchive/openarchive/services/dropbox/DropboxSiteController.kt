@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.MimeTypeMap
 import com.dropbox.core.DbxException
 import com.dropbox.core.v2.files.FileMetadata
@@ -183,7 +184,7 @@ class DropboxSiteController(
             }
             return true
         } catch (e: Exception) {
-            Timber.tag(TAG).d("Failed proof upload: $media $e")
+            Log.e(TAG,e.toString())
         }
         return false
     }
@@ -242,7 +243,6 @@ class DropboxSiteController(
             }
             return true
         } catch (e: IOException) {
-            Timber.tag(TAG).d("Failed primary media upload: $metadataFileName $e")
             jobFailed(e, -1, metadataFileName)
         }
         return false

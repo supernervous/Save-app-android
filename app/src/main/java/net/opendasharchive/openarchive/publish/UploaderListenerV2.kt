@@ -27,7 +27,6 @@ class UploaderListenerV2(
     override fun progress(msg: Message?) {
         val data = msg?.data
         val contentLengthUploaded = data?.getLong(SiteController.MESSAGE_KEY_PROGRESS)
-        Timber.tag("OAPublish").d("${uploadMedia.id}  uploaded: $contentLengthUploaded / ${uploadMedia.contentLength}")
         uploadMedia.progress = contentLengthUploaded ?: 0
         notifyMediaUpdated(uploadMedia)
     }
