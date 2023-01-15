@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.MimeTypeMap
 import com.dropbox.core.DbxException
 import com.dropbox.core.v2.files.FileMetadata
@@ -183,6 +184,7 @@ class DropboxSiteController(
             }
             return true
         } catch (e: Exception) {
+            Log.e(TAG,e.toString())
         }
         return false
     }
