@@ -14,6 +14,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
 import java.lang.Exception
@@ -28,6 +29,7 @@ class ArchiveLoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_archive_login)
         val doRegister = intent.getBooleanExtra("register", false)
         val useTor = intent.getBooleanExtra("useTor", false)

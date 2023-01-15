@@ -14,8 +14,12 @@ import android.text.TextUtils
 import com.google.android.gms.security.ProviderInstaller;
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -114,8 +118,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         ProviderInstaller.installIfNeededAsync(this, this)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         launcher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
             result.forEach { image ->
@@ -564,7 +568,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        Timber.tag("onActivityResult").d( "requestCode:$requestCode, resultCode: $resultCode")
         if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             if (resultCode == RESULT_OK) {
                 refreshProjects()
@@ -582,14 +585,18 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
                 // install/update/enable Google Play services.
                 showErrorDialogFragment(this@MainActivity, errorCode, ERROR_DIALOG_REQUEST_CODE) {
                     // The user chose not to take the recovery action. Do we block the user here?
-                    //TODO: Based on input from Benjamin.
+                    showAlertIcon()
                 }
             } else {
-               //And block here as well?
-                //TODO: Based on input from Benjamin.
+                showAlertIcon()
             }
         }
 
+    }
+
+    private fun showAlertIcon() {
+        mBinding.alertIcon.visibility = View.VISIBLE
+        TooltipCompat.setTooltipText(mBinding.alertIcon, getString(R.string.unsecured_internet_connection))
     }
 
     override fun onPostResume() {
@@ -604,6 +611,8 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
 
     override fun onProviderInstalled() {
             //This is triggered if the security provider is uptodate.
-        //TODO: Based on input from Benjamin.
+        mBinding.alertIcon.visibility = View.GONE
+
+
     }
 }
