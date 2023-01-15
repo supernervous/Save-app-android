@@ -9,14 +9,12 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
-        <package android:name="org.torproject.android"/>
+        <package android:name="org.torproject.android" />
     </queries>
 
     <application
@@ -28,26 +26,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:allowBackup">
-
+        <!-- task affinity lets us define within which 'task' does a activity belong to.
+        By default, the activity has the same task affinity as its root
+        Trail of bits ticket: https://github.com/OpenArchive/OA-Trail-of-Bits/issues/23
+        -->
         <activity
             android:name=".features.media.browse.BrowseProjectsActivity"
-            android:label="@string/title_activity_browser_projects"
-            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false"
-            />
+            android:label="@string/title_activity_browser_projects"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".publish.UploadManagerActivity"
+            android:exported="false"
             android:label="@string/title_activity_upload_manager"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"/>
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:exported="true"
-            >
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -74,18 +76,18 @@
         </activity>
         <activity
             android:name=".services.archivedotorg.ArchiveSettingsActivity"
+            android:exported="false"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme"
-            android:exported="false"
-            />
+            android:taskAffinity=""
+            android:theme="@style/SettingsTheme" />
         <activity
             android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
+            android:exported="false"
             android:label="@string/title_activity_login"
             android:parentActivityName=".features.onboarding.SpaceSetupActivity"
             android:screenOrientation="portrait"
-            android:exported="false"
-            >
+            android:taskAffinity="">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity" />
@@ -93,23 +95,126 @@
 
         <activity
             android:name=".services.webdav.WebDAVLoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:taskAffinity="" />
         <activity
             android:name=".services.archivedotorg.ArchiveOrgLoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:taskAffinity="" />
         <activity
             android:name=".services.dropbox.DropboxLoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:taskAffinity="" />
+
+        <activity
+            android:name="com.dropbox.core.android.AuthActivity"
+            android:configChanges="orientation|keyboard"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="">
+            <intent-filter>
+
+                <!-- Change this to be db- followed by your app key -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="db-gd5sputfo57s1l1" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".features.settings.SpaceSettingsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_space_settings"
+            android:taskAffinity="">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="nc" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".features.media.preview.PreviewMediaListActivity"
+            android:label="@string/title_activity_batch_media_review"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".features.media.review.ReviewMediaActivity"
+            android:label="@string/title_activity_view_media"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".features.media.batch.BatchReviewMediaActivity"
+            android:label="@string/title_activity_batch_view_media"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".features.core.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainActivity"
+            android:taskAffinity="">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.opendasharchive.openarchive.MainActivity" />
+        </activity>
+        <activity
+            android:name=".features.settings.SettingsActivity"
+            android:label="App Intro"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".features.onboarding.SpaceSetupActivity"
+            android:label="@string/title_activity_first_start"
+            android:screenOrientation="portrait"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".features.onboarding.OAAppIntro"
+            android:label="App Intro"
+            android:screenOrientation="portrait"
+            android:taskAffinity="" />
+
+        <activity
+            android:name=".features.projects.CreateNewProjectActivity"
+            android:label="@string/title_activity_create_new_project"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".features.projects.AddProjectActivity"
+            android:label="@string/title_activity_new_project"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".features.projects.EditProjectActivity"
+            android:label="@string/title_activity_new_project"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="net.opendasharchive.openarchive.db" />
+
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />
+
         <meta-data
             android:name="DATABASE"
             android:value="openarchive.db" />
+
         <meta-data
             android:name="VERSION"
             android:value="32" />
@@ -127,106 +232,11 @@
         <service
             android:name=".publish.PublishService"
             android:exported="false" />
+
         <service
             android:name=".publish.PublishJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity
-            android:name="com.dropbox.core.android.AuthActivity"
-            android:configChanges="orientation|keyboard"
-            android:launchMode="singleTask"
-            android:exported="true"
-            >
-            <intent-filter>
-
-                <!-- Change this to be db- followed by your app key -->
-                <data android:scheme="db-gd5sputfo57s1l1" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".features.settings.SpaceSettingsActivity"
-            android:label="@string/title_activity_space_settings"
-            android:exported="true"
-            >
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="nc" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".features.media.preview.PreviewMediaListActivity"
-            android:label="@string/title_activity_batch_media_review"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".features.media.review.ReviewMediaActivity"
-            android:label="@string/title_activity_view_media"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".MainActivity"/>
-        <activity
-            android:name=".features.media.batch.BatchReviewMediaActivity"
-            android:label="@string/title_activity_batch_view_media"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".MainActivity"/>
-
-        <activity
-            android:name=".features.core.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.MainActivity" />
-        </activity>
-
-        <activity
-            android:name=".features.settings.SettingsActivity"
-            android:label="App Intro" />
-
-        <activity
-            android:name=".features.onboarding.SpaceSetupActivity"
-            android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".features.onboarding.OAAppIntro"
-            android:label="App Intro"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".features.projects.CreateNewProjectActivity"
-            android:label="@string/title_activity_create_new_project"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".features.projects.AddProjectActivity"
-            android:label="@string/title_activity_new_project"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".features.projects.EditProjectActivity"
-            android:label="@string/title_activity_new_project"
-            android:theme="@style/AppTheme.NoActionBar" />
-
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
 </manifest>

@@ -11,12 +11,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
+import com.google.android.gms.security.ProviderInstaller;
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -24,6 +27,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.amulyakhare.textdrawable.TextDrawable
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
@@ -63,10 +67,11 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
-class MainActivity : AppCompatActivity(), OnTabSelectedListener {
+class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
 
     companion object {
         const val REQUEST_NEW_PROJECT_NAME = 1001
+        const val ERROR_DIALOG_REQUEST_CODE = 1
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 
@@ -75,6 +80,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     private var mSpace: Space? = null
     private var mSnackBar: Snackbar? = null
+    private var retryProviderInstall: Boolean = false
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
@@ -112,6 +118,7 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ProviderInstaller.installIfNeededAsync(this, this)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         launcher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
@@ -561,11 +568,50 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        Timber.tag("onActivityResult").d( "requestCode:$requestCode, resultCode: $resultCode")
         if (requestCode == REQUEST_NEW_PROJECT_NAME) {
             if (resultCode == RESULT_OK) {
                 refreshProjects()
             }
+        } else if (requestCode == ERROR_DIALOG_REQUEST_CODE) {
+            retryProviderInstall = true
+
         }
+    }
+
+    override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
+        GoogleApiAvailability.getInstance().apply {
+            if (isUserResolvableError(errorCode)) {
+
+                showErrorDialogFragment(this@MainActivity, errorCode, ERROR_DIALOG_REQUEST_CODE) {
+                    // The user chose not to take the recovery action.
+                    showAlertIcon()
+                }
+            } else {
+                showAlertIcon()
+            }
+        }
+
+    }
+
+    private fun showAlertIcon() {
+        mBinding.alertIcon.visibility = View.VISIBLE
+        TooltipCompat.setTooltipText(mBinding.alertIcon, getString(R.string.unsecured_internet_connection))
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        if (retryProviderInstall) {
+            // It's safe to retry installation.
+            ProviderInstaller.installIfNeededAsync(this, this)
+        }
+        retryProviderInstall = false
+
+    }
+
+    override fun onProviderInstalled() {
+        //This is triggered if the security provider is up-to-date.
+        mBinding.alertIcon.visibility = View.GONE
+
+
     }
 }
