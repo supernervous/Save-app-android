@@ -4,6 +4,26 @@
     package="net.opendasharchive.openarchive"
     android:installLocation="auto">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <queries>
+        <package android:name="org.torproject.android" />
+    </queries>
+
     <application
         android:name=".OpenArchiveApp"
         android:allowBackup="false"
@@ -107,6 +127,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="db-gd5sputfo57s1l1" />
             </intent-filter>
         </activity>
@@ -201,7 +222,6 @@
             android:name="DATABASE"
             android:value="openarchive.db" />
 
-
         <meta-data
             android:name="VERSION"
             android:value="32" />
@@ -225,28 +245,5 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
-    <queries>
-        <package android:name="org.torproject.android" />
-    </queries>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
-        tools:node="remove" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
 </manifest>
