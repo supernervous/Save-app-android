@@ -183,7 +183,6 @@ class DropboxSiteController(
             }
             return true
         } catch (e: Exception) {
-            Timber.tag(TAG).d("Failed proof upload: $media $e")
         }
         return false
     }
@@ -242,7 +241,6 @@ class DropboxSiteController(
             }
             return true
         } catch (e: IOException) {
-            Timber.tag(TAG).d("Failed primary media upload: $metadataFileName $e")
             jobFailed(e, -1, metadataFileName)
         }
         return false

@@ -366,7 +366,6 @@ class WebDAVSiteController(
             true
         } catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
-            Timber.tag(TAG).w("Failed primary media upload: $tmpMediaPath : ${e.message}")
             jobFailed(e, -1, tmpMediaPath)
             false
         }
@@ -431,7 +430,6 @@ class WebDAVSiteController(
             }
             return true
         } catch (e: IOException) {
-            Timber.tag(TAG).w("Failed primary media upload: $urlMeta $e")
             jobFailed(e, -1, urlMeta)
         }
         return false
@@ -459,7 +457,7 @@ class WebDAVSiteController(
                 return true
             }
         } catch (e: java.lang.Exception) {
-            Timber.tag(TAG).w("Failed proof upload: $lastUrl $e")
+            Log.e(TAG,e.toString())
         }
         return false
     }

@@ -410,8 +410,6 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             if (!response.isSuccessful) {
                 val message = "Error contacting " + response.request.url
                 throw IOException(message + " = " + response.code + ": " + response.message)
-            } else {
-                Timber.tag(TAG).d( "successful PUT to: ${response.request.url}")
             }
             null
         }
@@ -442,7 +440,6 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             e.printStackTrace()
             return false
         }
-        Timber.tag(TAG).d( "deleting url media item: $mediaUrl")
         val builder: Request.Builder = Request.Builder()
             .delete()
             .url(mediaUrl!!)
