@@ -156,7 +156,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         getInitialData()
-        checkSpaceLink()
+
     }
 
     private fun getInitialData() {
@@ -257,25 +257,5 @@ class SpaceSettingsActivity : AppCompatActivity() {
     fun onNewSpaceClicked(view: View?) {
         val myIntent = Intent(this, SpaceSetupActivity::class.java)
         startActivity(myIntent)
-    }
-
-    private fun checkSpaceLink() {
-        val intent = intent
-        if (intent != null && Intent.ACTION_VIEW == intent.action) {
-            val uri = intent.data
-            val queryString = uri.toString()
-            if (queryString.startsWith("nc://login/")) {
-                //user, password, server
-                val queryParts = queryString.substring(11).split("&".toRegex()).toTypedArray()
-                val user = queryParts[0].substring(5)
-                val password = queryParts[1].substring(9)
-                val server = queryParts[2].substring(7)
-                val intentLogin = Intent(this, WebDAVLoginActivity::class.java)
-                intentLogin.putExtra("user", user)
-                intentLogin.putExtra("password", password)
-                intentLogin.putExtra("server", server)
-                startActivity(intentLogin)
-            }
-        }
     }
 }
