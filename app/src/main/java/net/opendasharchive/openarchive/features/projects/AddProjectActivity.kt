@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,14 @@ class AddProjectActivity : AppCompatActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = EMPTY_STRING
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     fun onNewProjectClicked(view: View?) {

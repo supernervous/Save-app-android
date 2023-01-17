@@ -5,10 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -73,6 +70,14 @@ class ReviewMediaActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ReviewMediaViewModel::class.java)
         initLayout()
         observeValues()
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun observeValues() {

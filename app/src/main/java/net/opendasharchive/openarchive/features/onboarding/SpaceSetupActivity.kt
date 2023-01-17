@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -23,6 +24,14 @@ class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         mBinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     override fun onEulaAgreedTo() {

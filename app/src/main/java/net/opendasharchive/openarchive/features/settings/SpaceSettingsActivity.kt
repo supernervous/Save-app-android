@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -47,6 +48,14 @@ class SpaceSettingsActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initLayout()
         observeData()
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun initLayout() {

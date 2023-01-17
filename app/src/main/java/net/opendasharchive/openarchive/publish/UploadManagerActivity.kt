@@ -14,6 +14,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -42,6 +43,14 @@ class UploadManagerActivity : AppCompatActivity() {
         mFrag =
             supportFragmentManager.findFragmentById(R.id.fragUploadManager) as MediaListFragment?
         mFrag!!.setProjectId(projectId)
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     override fun onResume() {

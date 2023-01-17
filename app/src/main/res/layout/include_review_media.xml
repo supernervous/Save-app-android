@@ -1,4 +1,5 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:filterTouchesWhenObscured="true"
     android:theme="@style/AppMediaTheme">
     <TableRow
         android:id="@+id/tr_title"

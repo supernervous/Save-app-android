@@ -2,10 +2,10 @@ package net.opendasharchive.openarchive.features.media.browse
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.R
@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 
+
 class BrowseProjectsActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityBrowseProjectsBinding
@@ -35,6 +36,15 @@ class BrowseProjectsActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initView()
         registerObservable()
+    }
+
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+            if (obscuredTouch) return false
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun initView() {
