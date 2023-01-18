@@ -97,7 +97,7 @@ class DropboxLoginActivity : BaseActivity() {
                                 email =
                                     client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
                                 spaceExistCount =
-                                    Space.getSpaceForCurrentUsername(email, Space.TYPE_DROPBOX)
+                                    Space.getSpaceForCurrentUsername(email, Space.TYPE_DROPBOX,space.host)
                             } catch (e: Exception) {
                                 space.username = Auth.getUid()
                                 e.printStackTrace()

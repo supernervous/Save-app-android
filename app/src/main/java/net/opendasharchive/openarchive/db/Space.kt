@@ -41,10 +41,10 @@ data class Space(
             return findAll(Space::class.java)
         }
 
-        fun getSpaceForCurrentUsername(email: String, type: Int): Int {
+        fun getSpaceForCurrentUsername(email: String, type: Int, host:String): Int {
             var totalNoOfExistingSpaces = 0
             getAllAsList()?.asSequence()?.toList()?.let {
-                totalNoOfExistingSpaces = it.count { e -> e.username == email && e.type == type }
+                totalNoOfExistingSpaces = it.count { e -> e.username == email && e.type == type && e.host == host }
             }
             return totalNoOfExistingSpaces
         }
