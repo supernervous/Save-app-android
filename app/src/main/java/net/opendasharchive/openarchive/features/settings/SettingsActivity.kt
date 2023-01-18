@@ -16,13 +16,14 @@ import androidx.preference.*
 import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.routeTo
 import org.witness.proofmode.crypto.PgpUtils
 import timber.log.Timber
 import java.io.IOException
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityDataUsageBinding
 
@@ -34,13 +35,6 @@ class SettingsActivity : AppCompatActivity() {
         initLayout()
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
-    }
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)

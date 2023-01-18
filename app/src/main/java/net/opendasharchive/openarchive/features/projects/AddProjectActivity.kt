@@ -10,11 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 
-class AddProjectActivity : AppCompatActivity() {
+class AddProjectActivity : BaseActivity() {
 
     private val CREATE_NEW_PROJECT_CODE = 1000
     private val BROWSE_PROJECTS_CODE = 1001
@@ -33,14 +34,6 @@ class AddProjectActivity : AppCompatActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = EMPTY_STRING
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     fun onNewProjectClicked(view: View?) {

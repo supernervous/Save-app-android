@@ -16,10 +16,11 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.db.WebDAVModel
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
 
-class PreviewMediaListActivity : AppCompatActivity() {
+class PreviewMediaListActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityPreviewMediaBinding
     private var mFrag: MediaListFragment? = null
@@ -38,14 +39,6 @@ class PreviewMediaListActivity : AppCompatActivity() {
         viewModel.observeValuesForWorkState(this)
         initLayout()
         showFirstTimeBatch()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun initLayout() {

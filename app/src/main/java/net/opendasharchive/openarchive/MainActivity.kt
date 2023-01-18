@@ -42,6 +42,7 @@ import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
@@ -64,7 +65,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
-class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
+class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
 
     companion object {
         const val REQUEST_NEW_PROJECT_NAME = 1001
@@ -153,15 +154,6 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstall
         setContentView(mBinding.root)
         initLayout()
     }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
-    }
-
 
     private fun initLayout() {
 

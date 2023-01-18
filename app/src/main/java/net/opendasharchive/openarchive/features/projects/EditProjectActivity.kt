@@ -19,10 +19,11 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 
-class EditProjectActivity : AppCompatActivity() {
+class EditProjectActivity : BaseActivity() {
 
     private var mProject: Project? = null
     private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
@@ -36,13 +37,6 @@ class EditProjectActivity : AppCompatActivity() {
         initLayout()
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
-    }
 
     override fun onPause() {
         super.onPause()

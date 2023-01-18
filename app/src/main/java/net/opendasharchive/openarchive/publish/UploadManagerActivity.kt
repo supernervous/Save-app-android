@@ -21,11 +21,12 @@ import androidx.appcompat.widget.Toolbar
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import timber.log.Timber
 
-class UploadManagerActivity : AppCompatActivity() {
+class UploadManagerActivity : BaseActivity() {
 
     var mFrag: MediaListFragment? = null
     var mMenuEdit: MenuItem? = null
@@ -43,14 +44,6 @@ class UploadManagerActivity : AppCompatActivity() {
         mFrag =
             supportFragmentManager.findFragmentById(R.id.fragUploadManager) as MediaListFragment?
         mFrag!!.setProjectId(projectId)
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     override fun onResume() {

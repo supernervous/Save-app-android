@@ -10,11 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.databinding.ActivitySignInBinding
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity
 
-class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
+class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
 
     private lateinit var mBinding: ActivitySignInBinding
 
@@ -24,14 +25,6 @@ class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         mBinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     override fun onEulaAgreedTo() {

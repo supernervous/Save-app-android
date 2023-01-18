@@ -18,10 +18,11 @@ import android.view.View
 import android.view.WindowManager
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import java.lang.Exception
 import java.util.regex.Pattern
 
-class ArchiveLoginActivity : Activity() {
+class ArchiveLoginActivity : BaseActivity() {
 
     private var mAccessResult = RESULT_CANCELED
     private var mAccessKey: String? = null
@@ -44,14 +45,6 @@ class ArchiveLoginActivity : Activity() {
         if (doRegister) login(ARCHIVE_CREATE_ACCOUNT_URL, proxyHost, proxyPort) else login(
             ARCHIVE_LOGIN_URL, proxyHost, proxyPort
         )
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     @SuppressLint("SetJavaScriptEnabled")

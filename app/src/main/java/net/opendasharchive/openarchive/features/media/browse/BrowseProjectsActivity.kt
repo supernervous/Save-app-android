@@ -14,6 +14,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
@@ -23,7 +24,7 @@ import java.net.URLDecoder
 import java.util.*
 
 
-class BrowseProjectsActivity : AppCompatActivity() {
+class BrowseProjectsActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityBrowseProjectsBinding
     private lateinit var viewModel: BrowseProjectsViewModel
@@ -36,15 +37,6 @@ class BrowseProjectsActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initView()
         registerObservable()
-    }
-
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun initView() {

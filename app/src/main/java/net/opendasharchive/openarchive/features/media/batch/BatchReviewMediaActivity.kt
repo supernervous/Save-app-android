@@ -24,6 +24,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.WebDAVModel
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
@@ -34,7 +35,7 @@ import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
 
-class BatchReviewMediaActivity : AppCompatActivity() {
+class BatchReviewMediaActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityBatchReviewMediaBinding
     private lateinit var viewModel: BatchReviewMediaViewModel
@@ -52,14 +53,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         viewModel = ViewModelProvider(this).get(BatchReviewMediaViewModel::class.java)
         initLayout()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun initLayout() {

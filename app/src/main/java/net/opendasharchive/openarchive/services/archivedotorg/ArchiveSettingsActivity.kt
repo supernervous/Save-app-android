@@ -10,13 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.databinding.ActivityArchiveMetadataBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.LICENSE_URL
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 
-class ArchiveSettingsActivity : AppCompatActivity() {
+class ArchiveSettingsActivity : BaseActivity() {
 
     private var mMedia: Media? = null
     private lateinit var binding: ActivityArchiveMetadataBinding
@@ -41,14 +42,6 @@ class ArchiveSettingsActivity : AppCompatActivity() {
         // set up ccLicense link
         binding.tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
 
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun initView(mediaId: Long) {

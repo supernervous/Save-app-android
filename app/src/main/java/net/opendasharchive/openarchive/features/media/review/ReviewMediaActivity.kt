@@ -28,6 +28,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants
@@ -38,7 +39,7 @@ import timber.log.Timber
 import java.io.File
 
 
-class ReviewMediaActivity : AppCompatActivity() {
+class ReviewMediaActivity : BaseActivity() {
 
     private val TAG = "ReviewMediaActivity"
 
@@ -70,14 +71,6 @@ class ReviewMediaActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ReviewMediaViewModel::class.java)
         initLayout()
         observeValues()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun observeValues() {

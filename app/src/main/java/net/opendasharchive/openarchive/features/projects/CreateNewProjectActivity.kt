@@ -13,9 +13,10 @@ import net.opendasharchive.openarchive.databinding.ActivityCreateNewProjectBindi
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import java.util.*
 
-class CreateNewProjectActivity : AppCompatActivity() {
+class CreateNewProjectActivity : BaseActivity() {
 
     private val SPECIAL_CHARS = ".*[\\\\/*\\s]"
 
@@ -29,13 +30,6 @@ class CreateNewProjectActivity : AppCompatActivity() {
         initLayout()
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-        return super.dispatchTouchEvent(event)
-    }
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
