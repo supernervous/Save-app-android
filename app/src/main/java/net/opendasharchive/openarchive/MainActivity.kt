@@ -11,11 +11,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
+import android.view.*
 import com.google.android.gms.security.ProviderInstaller;
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +42,7 @@ import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
@@ -67,7 +65,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
-class MainActivity : AppCompatActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
+class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
 
     companion object {
         const val REQUEST_NEW_PROJECT_NAME = 1001

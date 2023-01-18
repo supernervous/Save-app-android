@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.media.preview
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -15,10 +16,11 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.db.WebDAVModel
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
 
-class PreviewMediaListActivity : AppCompatActivity() {
+class PreviewMediaListActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityPreviewMediaBinding
     private var mFrag: MediaListFragment? = null

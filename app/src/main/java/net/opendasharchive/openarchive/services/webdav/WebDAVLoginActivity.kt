@@ -9,10 +9,7 @@ import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +29,7 @@ import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
@@ -45,7 +43,7 @@ import java.io.IOException
 import java.net.URL
 import java.util.*
 
-class WebDAVLoginActivity : AppCompatActivity() {
+class WebDAVLoginActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var mSnackbar: Snackbar
@@ -68,6 +66,7 @@ class WebDAVLoginActivity : AppCompatActivity() {
         }
         initView()
     }
+
 
     private fun initView() {
         setSupportActionBar(mBinding.toolbar)

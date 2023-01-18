@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,13 +16,14 @@ import androidx.preference.*
 import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.routeTo
 import org.witness.proofmode.crypto.PgpUtils
 import timber.log.Timber
 import java.io.IOException
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityDataUsageBinding
 
@@ -32,6 +34,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initLayout()
     }
+
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)

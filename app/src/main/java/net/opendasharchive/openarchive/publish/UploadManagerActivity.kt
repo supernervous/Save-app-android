@@ -14,17 +14,19 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import timber.log.Timber
 
-class UploadManagerActivity : AppCompatActivity() {
+class UploadManagerActivity : BaseActivity() {
 
     var mFrag: MediaListFragment? = null
     var mMenuEdit: MenuItem? = null

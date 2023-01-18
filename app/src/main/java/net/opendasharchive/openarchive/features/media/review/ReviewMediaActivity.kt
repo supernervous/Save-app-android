@@ -5,10 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +28,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.Constants
@@ -41,7 +39,7 @@ import timber.log.Timber
 import java.io.File
 
 
-class ReviewMediaActivity : AppCompatActivity() {
+class ReviewMediaActivity : BaseActivity() {
 
     private val TAG = "ReviewMediaActivity"
 

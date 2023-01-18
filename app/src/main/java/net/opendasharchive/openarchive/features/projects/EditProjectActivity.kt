@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -18,10 +19,11 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 
-class EditProjectActivity : AppCompatActivity() {
+class EditProjectActivity : BaseActivity() {
 
     private var mProject: Project? = null
     private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
@@ -34,6 +36,7 @@ class EditProjectActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initLayout()
     }
+
 
     override fun onPause() {
         super.onPause()

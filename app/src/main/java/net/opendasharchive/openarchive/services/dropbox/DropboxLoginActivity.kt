@@ -3,10 +3,7 @@ package net.opendasharchive.openarchive.services.dropbox
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +19,7 @@ import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
@@ -38,7 +36,7 @@ enum class DropboxResult {
     AccountAlreadyExist
 }
 
-class DropboxLoginActivity : AppCompatActivity() {
+class DropboxLoginActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLoginDropboxBinding
     private var mSpace: Space? = null

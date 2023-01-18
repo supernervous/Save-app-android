@@ -2,11 +2,12 @@ package net.opendasharchive.openarchive.features.core
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.databinding.ActivityAboutBinding
 
-class AboutActivity : AppCompatActivity(){
+class AboutActivity : BaseActivity(){
 
     private lateinit var mBinding: ActivityAboutBinding
 
@@ -18,5 +19,7 @@ class AboutActivity : AppCompatActivity(){
 
         mBinding.aboutView.movementMethod = LinkMovementMethod.getInstance()
     }
+
+
 
 }

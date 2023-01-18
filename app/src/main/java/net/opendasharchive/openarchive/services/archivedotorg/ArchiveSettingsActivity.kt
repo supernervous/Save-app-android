@@ -4,18 +4,20 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.databinding.ActivityArchiveMetadataBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.LICENSE_URL
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 
-class ArchiveSettingsActivity : AppCompatActivity() {
+class ArchiveSettingsActivity : BaseActivity() {
 
     private var mMedia: Media? = null
     private lateinit var binding: ActivityArchiveMetadataBinding

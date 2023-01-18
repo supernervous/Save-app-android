@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.projects
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -12,9 +13,10 @@ import net.opendasharchive.openarchive.databinding.ActivityCreateNewProjectBindi
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import java.util.*
 
-class CreateNewProjectActivity : AppCompatActivity() {
+class CreateNewProjectActivity : BaseActivity() {
 
     private val SPECIAL_CHARS = ".*[\\\\/*\\s]"
 
@@ -27,6 +29,7 @@ class CreateNewProjectActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initLayout()
     }
+
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)

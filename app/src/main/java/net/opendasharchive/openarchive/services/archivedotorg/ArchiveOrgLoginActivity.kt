@@ -24,6 +24,7 @@ import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Prefs.getBoolean
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
@@ -32,7 +33,7 @@ import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.isPasswordValid
 import net.opendasharchive.openarchive.util.extensions.show
 
-class ArchiveOrgLoginActivity : AppCompatActivity() {
+class ArchiveOrgLoginActivity : BaseActivity() {
 
     private var mSpace: Space? = null
     private lateinit var binding: ActivityArchiveKeyLoginBinding

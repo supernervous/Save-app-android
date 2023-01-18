@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -9,11 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.databinding.ActivitySignInBinding
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity
 
-class SpaceSetupActivity : AppCompatActivity(), EulaActivity.OnEulaAgreedTo {
+class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
 
     private lateinit var mBinding: ActivitySignInBinding
 

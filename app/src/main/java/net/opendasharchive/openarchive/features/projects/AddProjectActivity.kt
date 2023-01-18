@@ -3,17 +3,19 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 
-class AddProjectActivity : AppCompatActivity() {
+class AddProjectActivity : BaseActivity() {
 
     private val CREATE_NEW_PROJECT_CODE = 1000
     private val BROWSE_PROJECTS_CODE = 1001

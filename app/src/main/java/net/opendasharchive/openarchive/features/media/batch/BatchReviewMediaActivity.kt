@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -23,6 +24,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.WebDAVModel
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
@@ -33,7 +35,7 @@ import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
 
-class BatchReviewMediaActivity : AppCompatActivity() {
+class BatchReviewMediaActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityBatchReviewMediaBinding
     private lateinit var viewModel: BatchReviewMediaViewModel
@@ -52,7 +54,6 @@ class BatchReviewMediaActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(BatchReviewMediaViewModel::class.java)
         initLayout()
     }
-
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)

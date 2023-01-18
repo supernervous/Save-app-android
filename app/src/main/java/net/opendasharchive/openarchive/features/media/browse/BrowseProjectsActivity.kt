@@ -2,10 +2,10 @@ package net.opendasharchive.openarchive.features.media.browse
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.R
@@ -14,6 +14,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
@@ -22,7 +23,8 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 
-class BrowseProjectsActivity : AppCompatActivity() {
+
+class BrowseProjectsActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityBrowseProjectsBinding
     private lateinit var viewModel: BrowseProjectsViewModel

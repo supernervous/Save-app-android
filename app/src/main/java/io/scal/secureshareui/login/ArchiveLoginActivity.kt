@@ -13,14 +13,16 @@ import android.webkit.JavascriptInterface
 import android.content.DialogInterface
 import android.content.Intent
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import java.lang.Exception
 import java.util.regex.Pattern
 
-class ArchiveLoginActivity : Activity() {
+class ArchiveLoginActivity : BaseActivity() {
 
     private var mAccessResult = RESULT_CANCELED
     private var mAccessKey: String? = null
