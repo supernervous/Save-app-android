@@ -239,7 +239,8 @@ class WebDAVLoginActivity : BaseActivity() {
                         if (loginUserIntoWebDav(space.host, space.username, space.password)) {
                             if (Space.getSpaceForCurrentUsername(
                                     space.username,
-                                    Space.TYPE_WEBDAV
+                                    Space.TYPE_WEBDAV,
+                                    space.host
                                 ) == 0
                             ) {
                                 space.save()
