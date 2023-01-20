@@ -85,7 +85,12 @@ class DropboxSiteController(
                             media.save()
                             jobSucceeded(finalMediaPath)
                             uploadMetadata(media, projectName!!, folderName, fileName)
-                            if (getUseProofMode()) uploadProof(media, projectName, folderName)
+                            if (getUseProofMode()) {
+                                val uploadedSuccessfully = uploadProof(media, projectName, folderName)
+                                if(!uploadedSuccessfully){
+                                    ///TODO: add message
+                                }
+                            }
                         }
                     }
 
@@ -104,7 +109,7 @@ class DropboxSiteController(
             uTask?.upload(mediaUri.toString(), fileName, folderName, projectName!!)
             true
         } catch (e: Exception) {
-            Timber.tag(TAG).d("Failed primary media upload: ${e.message}" )
+            Timber.tag(TAG).d("Failed primary media upload: ${e.message}")
             jobFailed(e, -1, "Failed primary media upload")
             false
         }
@@ -184,7 +189,8 @@ class DropboxSiteController(
             }
             return true
         } catch (e: Exception) {
-            Log.e(TAG,e.toString())
+            Log.e(TAG, e.toString())
+            return false
         }
         return false
     }

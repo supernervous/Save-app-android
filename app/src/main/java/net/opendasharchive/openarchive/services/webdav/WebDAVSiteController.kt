@@ -362,7 +362,12 @@ class WebDAVSiteController(
             media?.serverUrl = finalMediaPath
             jobSucceeded(finalMediaPath)
             uploadMetadata(media, projectFolderPath, fileName)
-            if (getUseProofMode()) uploadProof(media, projectFolderPath)
+            if (getUseProofMode()) {
+                val uploadedSuccessfully = uploadProof(media, projectFolderPath)
+                if(!uploadedSuccessfully){
+                    ///TODO: add message
+                }
+            }
             true
         } catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
@@ -457,11 +462,11 @@ class WebDAVSiteController(
                 return true
             }
         } catch (e: java.lang.Exception) {
-            Log.e(TAG,e.toString())
+            Log.e(TAG, e.toString())
+            return false
         }
         return false
     }
-
 
 
 }
