@@ -159,6 +159,7 @@ dependencies {
 
     implementation libraries.guava
     implementation libraries.sheetsInfo
+    implementation libraries.netcipher_webview
 
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 

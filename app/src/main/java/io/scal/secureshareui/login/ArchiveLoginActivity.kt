@@ -16,9 +16,12 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import info.guardianproject.netcipher.proxy.OrbotHelper
+import info.guardianproject.netcipher.webkit.WebkitProxy
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.Prefs
 import java.lang.Exception
 import java.util.regex.Pattern
 
@@ -31,7 +34,10 @@ class ArchiveLoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContentView(R.layout.activity_archive_login)
         val doRegister = intent.getBooleanExtra("register", false)
         val useTor = intent.getBooleanExtra("useTor", false)
@@ -54,18 +60,21 @@ class ArchiveLoginActivity : BaseActivity() {
         mWebview!!.visibility = View.VISIBLE
         mWebview!!.addJavascriptInterface(JSInterface(), "htmlout")
 
-        //if Orbot is installed and running, then use it!
-        /**
-         * if (proxyHost != null) {
-         *
-         * try {
-         * WebkitProxy.setProxy("android.app.Application", getApplicationContext(),mWebview,proxyHost,proxyPort) ;
-         * } catch (Exception e) {
-         * Log.e(TAG, "user selected \"use tor\" but an exception was thrown while setting the proxy: " + e.getLocalizedMessage());
-         * return;
-         * }
-         *
-         * } */
+        if (proxyHost != null && Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(this)) {
+            try {
+                WebkitProxy.setProxy(
+                    "android.app.Application",
+                    applicationContext, mWebview, proxyHost, proxyPort
+                )
+            } catch (exception: Exception) {
+                Log.e(
+                    TAG,
+                    "user selected \"use tor\" but an exception was thrown while setting the proxy: " + exception.getLocalizedMessage()
+                );
+                return;
+            }
+
+        }
         mWebview!!.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 //if logged in, hide and redirect to credentials
