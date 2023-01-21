@@ -292,25 +292,30 @@ class MainActivity : AppCompatActivity(), OnTabSelectedListener {
     }
 
     private fun importSharedMedia(data: Intent?) {
-        data?.let {
-            scope.executeAsyncTask(
-                onPreExecute = {
-                    mSnackBar?.show()
-                },
-                doInBackground = {
-                    handleOutsideMedia(data)
-                },
-                onPostExecute = { media ->
-                    if (media != null) {
-                        val reviewMediaIntent =
-                            Intent(this, ReviewMediaActivity::class.java)
-                        reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.id)
-                        startActivity(reviewMediaIntent)
-                    }
-                    mSnackBar?.dismiss()
-                    intent = null
+        if (data != null && data.clipData != null) {
+            val mClipData = data.clipData?.getItemAt(0)?.uri?.path
+            if (mClipData != null && !mClipData.contains(packageName)) {
+                data.let {
+                    scope.executeAsyncTask(
+                        onPreExecute = {
+                            mSnackBar?.show()
+                        },
+                        doInBackground = {
+                            handleOutsideMedia(data)
+                        },
+                        onPostExecute = { media ->
+                            if (media != null) {
+                                val reviewMediaIntent =
+                                    Intent(this, ReviewMediaActivity::class.java)
+                                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.id)
+                                startActivity(reviewMediaIntent)
+                            }
+                            mSnackBar?.dismiss()
+                            intent = null
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
