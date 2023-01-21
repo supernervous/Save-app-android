@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.webdav
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -365,7 +366,7 @@ class WebDAVSiteController(
             if (getUseProofMode()) {
                 val uploadedSuccessfully = uploadProof(media, projectFolderPath)
                 if(!uploadedSuccessfully){
-                    ///TODO: add message
+                    showAlertDialogToUser()
                 }
             }
             true
@@ -374,6 +375,16 @@ class WebDAVSiteController(
             jobFailed(e, -1, tmpMediaPath)
             false
         }
+    }
+
+    private fun showAlertDialogToUser() {
+        val builder = AlertDialog.Builder(mContext)
+        builder.setTitle("Something went wrong")
+        builder.setMessage("We were unable to upload the proof. Please try again.")
+        builder.setPositiveButton(android.R.string.ok) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     private fun getUploadFileName(title: String, mimeType: String): String {
@@ -441,7 +452,7 @@ class WebDAVSiteController(
     }
 
     private fun uploadProof(media: Media?, basePath: String): Boolean {
-        var lastUrl: String? = null
+        var lastUrl: String?
         try {
             if (media?.mediaHash != null) {
                 val mediaHash = String(media.mediaHash)

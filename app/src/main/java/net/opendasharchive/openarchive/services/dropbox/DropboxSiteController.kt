@@ -1,9 +1,11 @@
 package net.opendasharchive.openarchive.services.dropbox
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import android.app.AlertDialog
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.dropbox.core.DbxException
@@ -88,7 +90,7 @@ class DropboxSiteController(
                             if (getUseProofMode()) {
                                 val uploadedSuccessfully = uploadProof(media, projectName, folderName)
                                 if(!uploadedSuccessfully){
-                                    ///TODO: add message
+                                    showAlertDialogToUser()
                                 }
                             }
                         }
@@ -113,6 +115,16 @@ class DropboxSiteController(
             jobFailed(e, -1, "Failed primary media upload")
             false
         }
+    }
+
+    private fun showAlertDialogToUser() {
+        val builder = AlertDialog.Builder(mContext)
+        builder.setTitle("Something went wrong")
+        builder.setMessage("We were unable to upload the proof. Please try again.")
+        builder.setPositiveButton(R.string.ok) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
@@ -192,7 +204,6 @@ class DropboxSiteController(
             Log.e(TAG, e.toString())
             return false
         }
-        return false
     }
 
     private fun uploadMetadata(
