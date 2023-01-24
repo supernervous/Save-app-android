@@ -1,9 +1,11 @@
 package net.opendasharchive.openarchive.services.dropbox
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import android.app.AlertDialog
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.dropbox.core.DbxException
@@ -19,6 +21,7 @@ import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
+import net.opendasharchive.openarchive.util.Utility
 import org.witness.proofmode.ProofMode
 import timber.log.Timber
 import java.io.File
@@ -85,7 +88,12 @@ class DropboxSiteController(
                             media.save()
                             jobSucceeded(finalMediaPath)
                             uploadMetadata(media, projectName!!, folderName, fileName)
-                            if (getUseProofMode()) uploadProof(media, projectName, folderName)
+                            if (getUseProofMode()) {
+                                val uploadedSuccessfully = uploadProof(media, projectName, folderName)
+                                if(!uploadedSuccessfully){
+                                    Utility.showAlertDialogToUser(mContext)
+                                }
+                            }
                         }
                     }
 
@@ -104,11 +112,12 @@ class DropboxSiteController(
             uTask?.upload(mediaUri.toString(), fileName, folderName, projectName!!)
             true
         } catch (e: Exception) {
-            Timber.tag(TAG).d("Failed primary media upload: ${e.message}" )
+            Timber.tag(TAG).d("Failed primary media upload: ${e.message}")
             jobFailed(e, -1, "Failed primary media upload")
             false
         }
     }
+
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
         return try {
@@ -184,9 +193,9 @@ class DropboxSiteController(
             }
             return true
         } catch (e: Exception) {
-            Log.e(TAG,e.toString())
+            Log.e(TAG, e.toString())
+            return false
         }
-        return false
     }
 
     private fun uploadMetadata(
