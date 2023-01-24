@@ -1,10 +1,14 @@
 package net.opendasharchive.openarchive.util
 
+import android.R
+import android.app.AlertDialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.newFixedThreadPoolContext
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +42,15 @@ object Utility {
         return result
     }
 
+    fun showAlertDialogToUser(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Something went wrong")
+        builder.setMessage("We were unable to upload the proof. Please try again.")
+        builder.setPositiveButton(R.string.ok) { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
 
     fun getOutputMediaFileByCache(context: Context, fileName: String): File? {
         val mediaStorageDir = context.cacheDir

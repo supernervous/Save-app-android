@@ -21,6 +21,7 @@ import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
+import net.opendasharchive.openarchive.util.Utility
 import org.witness.proofmode.ProofMode
 import timber.log.Timber
 import java.io.File
@@ -90,7 +91,7 @@ class DropboxSiteController(
                             if (getUseProofMode()) {
                                 val uploadedSuccessfully = uploadProof(media, projectName, folderName)
                                 if(!uploadedSuccessfully){
-                                    showAlertDialogToUser()
+                                    Utility.showAlertDialogToUser(mContext)
                                 }
                             }
                         }
@@ -117,15 +118,6 @@ class DropboxSiteController(
         }
     }
 
-    private fun showAlertDialogToUser() {
-        val builder = AlertDialog.Builder(mContext)
-        builder.setTitle("Something went wrong")
-        builder.setMessage("We were unable to upload the proof. Please try again.")
-        builder.setPositiveButton(R.string.ok) { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
-    }
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
         return try {

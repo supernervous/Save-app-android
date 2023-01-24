@@ -29,6 +29,7 @@ import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
+import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
 import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.PgpUtils
@@ -366,7 +367,7 @@ class WebDAVSiteController(
             if (getUseProofMode()) {
                 val uploadedSuccessfully = uploadProof(media, projectFolderPath)
                 if(!uploadedSuccessfully){
-                    showAlertDialogToUser()
+                    Utility.showAlertDialogToUser(mContext)
                 }
             }
             true
@@ -375,16 +376,6 @@ class WebDAVSiteController(
             jobFailed(e, -1, tmpMediaPath)
             false
         }
-    }
-
-    private fun showAlertDialogToUser() {
-        val builder = AlertDialog.Builder(mContext)
-        builder.setTitle("Something went wrong")
-        builder.setMessage("We were unable to upload the proof. Please try again.")
-        builder.setPositiveButton(android.R.string.ok) { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
     }
 
     private fun getUploadFileName(title: String, mimeType: String): String {
