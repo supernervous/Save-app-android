@@ -81,9 +81,9 @@ jobs:
         echo $DETEKT_DOWNLOAD_URL
         echo "::set-output name=download_url::$DETEKT_DOWNLOAD_URL"
 
-    # Sets up the detekt cli
-    - name: Setup Detekt
-      id: detekt_setup
+    # Sets up and runs the detekt cli
+    - name: Setup and Run Detekt
+      id: detekt_setup_and_run
       run: |
         dest=$( mktemp -d )
         curl --request GET \
@@ -95,12 +95,7 @@ jobs:
         ls $dest
         DETEKT=$dest/detect.jar
         echo "::set-output name=detekt::$DETEKT"
-
-    # Performs static analysis using Detekt
-    - name: Run Detekt
-      continue-on-error: true
-      run: |
-        DETEKT=${{ steps.detekt_setup.outputs.detekt }}
+        # Performs static analysis using Detekt
         java -jar $DETEKT --input ${{ github.workspace }} --all-rules --report sarif:${{ github.workspace }}/detekt.sarif.json
 
     # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
