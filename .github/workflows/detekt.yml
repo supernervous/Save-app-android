@@ -86,7 +86,6 @@ jobs:
       continue-on-error: true
       id: detekt_setup_and_run
       run: |
-        dest=$( mktemp -d )
         curl --request GET \
           --url ${{ steps.detekt_info.outputs.download_url }} \
           --silent \
