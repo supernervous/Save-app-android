@@ -18,7 +18,6 @@ class DropboxClientFactory {
     fun init(context: Context, accessToken: String?): DbxClientV2? {
         if (sDbxClient == null) {
             val requestConfig = DbxRequestConfig.newBuilder("dbc")
-                //.withHttpRequestor(OkHttp3Requestor(getOkClient(context)))
                 .withHttpRequestor(OkHttp3Requestor(Utility.generateOkHttpClient(context)))
                 .build()
             sDbxClient = DbxClientV2(requestConfig, accessToken)

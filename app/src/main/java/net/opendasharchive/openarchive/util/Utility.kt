@@ -13,8 +13,6 @@ import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.services.webdav.BasicAuthInterceptor
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import kotlinx.coroutines.newFixedThreadPoolContext
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,11 +66,7 @@ object Utility {
 
             if(username.isEmpty() && password.isEmpty()){
                 client = OkHttpClient.Builder()
-                    .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                        val request =
-                            chain.request().newBuilder().addHeader("Connection", "close").build()
-                        chain.proceed(request)
-                    })
+                    .addInterceptor(addConnectionInterceptor())
                     .connectTimeout(20L, TimeUnit.MINUTES)
                     .writeTimeout(20L, TimeUnit.MINUTES)
                     .readTimeout(20L, TimeUnit.MINUTES)
@@ -80,11 +74,7 @@ object Utility {
                     .build()
             } else {
                 client = OkHttpClient.Builder()
-                    .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                        val request =
-                            chain.request().newBuilder().addHeader("Connection", "close").build()
-                        chain.proceed(request)
-                    })
+                    .addInterceptor(addConnectionInterceptor())
                     .addInterceptor(BasicAuthInterceptor(user = username, password = password))
                     .connectTimeout(20L, TimeUnit.SECONDS)
                     .writeTimeout(20L, TimeUnit.SECONDS)
@@ -92,13 +82,16 @@ object Utility {
                     .retryOnConnectionFailure(false)
                     .build()
             }
-
-
-
-            //client = OkHttpClient.Builder().build()
         }
         return client
     }
+
+    private fun addConnectionInterceptor() = Interceptor { chain: Interceptor.Chain ->
+        val request =
+            chain.request().newBuilder().addHeader("Connection", "close").build()
+        chain.proceed(request)
+    }
+
     fun getOutputMediaFileByCache(context: Context, fileName: String): File? {
         val mediaStorageDir = context.cacheDir
         if (!mediaStorageDir.exists()) {
