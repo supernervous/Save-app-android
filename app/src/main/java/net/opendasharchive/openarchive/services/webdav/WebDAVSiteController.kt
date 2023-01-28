@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.webdav
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -316,7 +317,12 @@ class WebDAVSiteController(
             media?.serverUrl = finalMediaPath
             jobSucceeded(finalMediaPath)
             uploadMetadata(media, projectFolderPath, fileName)
-            if (getUseProofMode()) uploadProof(media, projectFolderPath)
+            if (getUseProofMode()) {
+                val uploadedSuccessfully = uploadProof(media, projectFolderPath)
+                if(!uploadedSuccessfully){
+                    Utility.showAlertDialogToUser(mContext)
+                }
+            }
             true
         } catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
@@ -390,7 +396,7 @@ class WebDAVSiteController(
     }
 
     private fun uploadProof(media: Media?, basePath: String): Boolean {
-        var lastUrl: String? = null
+        var lastUrl: String?
         try {
             if (media?.mediaHash != null) {
                 val mediaHash = String(media.mediaHash)
@@ -412,6 +418,7 @@ class WebDAVSiteController(
             }
         } catch (e: java.lang.Exception) {
             Log.e(TAG, e.toString())
+            return false
         }
         return false
     }
