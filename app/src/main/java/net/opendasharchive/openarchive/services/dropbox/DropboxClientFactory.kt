@@ -9,6 +9,7 @@ import info.guardianproject.netcipher.client.StrongBuilder
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
+import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
 
 class DropboxClientFactory {
@@ -17,7 +18,8 @@ class DropboxClientFactory {
     fun init(context: Context, accessToken: String?): DbxClientV2? {
         if (sDbxClient == null) {
             val requestConfig = DbxRequestConfig.newBuilder("dbc")
-                .withHttpRequestor(OkHttp3Requestor(getOkClient(context)))
+                //.withHttpRequestor(OkHttp3Requestor(getOkClient(context)))
+                .withHttpRequestor(OkHttp3Requestor(Utility.generateOkHttpClient(context)))
                 .build()
             sDbxClient = DbxClientV2(requestConfig, accessToken)
         }

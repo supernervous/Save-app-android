@@ -35,6 +35,7 @@ import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
+import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.isEmailValid
 import net.opendasharchive.openarchive.util.extensions.show
 import okhttp3.Request
@@ -293,14 +294,14 @@ class WebDAVLoginActivity : BaseActivity() {
     }
 
     fun loginUserIntoWebDav(fullUrl: String, username: String, password: String): Boolean {
-        val okHttpBaseClient = OkHttpBaseClient(username = username, password = password)
+        val okHttpBaseClient = Utility.generateOkHttpClient(this)
         val request: Request = Request.Builder()
             .url(fullUrl)
             .method("GET", null)
             .addHeader("OCS-APIRequest", "true")
             .addHeader("Accept", "application/json")
             .build()
-        val response: Response = okHttpBaseClient.okHttpClient.newCall(request).execute()
+        val response: Response = okHttpBaseClient.newCall(request).execute()
         Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
         return response.code == 200
     }

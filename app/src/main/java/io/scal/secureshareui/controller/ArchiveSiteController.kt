@@ -17,6 +17,7 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
+import net.opendasharchive.openarchive.util.Utility
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.witness.proofmode.ProofMode
@@ -33,23 +34,14 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
 
     private var mContinueUpload = true
     private var client: OkHttpClient? = null
+    private val context: Context = context
 
     init {
         initClient()
     }
 
     private fun initClient() {
-        client = OkHttpClient.Builder()
-            .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                val request =
-                    chain.request().newBuilder().addHeader("Connection", "close").build()
-                chain.proceed(request)
-            })
-            .connectTimeout(20L, TimeUnit.MINUTES)
-            .writeTimeout(20L, TimeUnit.MINUTES)
-            .readTimeout(20L, TimeUnit.MINUTES)
-            .retryOnConnectionFailure(true)
-            .build()
+        client = Utility.generateOkHttpClient(context)
     }
 
     companion object {

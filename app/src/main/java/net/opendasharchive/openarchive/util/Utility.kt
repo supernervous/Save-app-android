@@ -5,9 +5,16 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
+import info.guardianproject.netcipher.proxy.OrbotHelper
+import net.opendasharchive.openarchive.services.webdav.BasicAuthInterceptor
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object Utility {
 
@@ -39,6 +46,46 @@ object Utility {
     }
 
 
+    fun generateOkHttpClient(context: Context, username: String = "", password: String = ""): OkHttpClient{
+        lateinit var client: OkHttpClient
+        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
+            //connect via Tor.
+        }
+        else {
+
+            if(username.isEmpty() && password.isEmpty()){
+                client = OkHttpClient.Builder()
+                    .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+                        val request =
+                            chain.request().newBuilder().addHeader("Connection", "close").build()
+                        chain.proceed(request)
+                    })
+                    .connectTimeout(20L, TimeUnit.MINUTES)
+                    .writeTimeout(20L, TimeUnit.MINUTES)
+                    .readTimeout(20L, TimeUnit.MINUTES)
+                    .retryOnConnectionFailure(true)
+                    .build()
+            } else {
+                client = OkHttpClient.Builder()
+                    .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+                        val request =
+                            chain.request().newBuilder().addHeader("Connection", "close").build()
+                        chain.proceed(request)
+                    })
+                    .addInterceptor(BasicAuthInterceptor(user = username, password = password))
+                    .connectTimeout(20L, TimeUnit.SECONDS)
+                    .writeTimeout(20L, TimeUnit.SECONDS)
+                    .readTimeout(20L, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(false)
+                    .build()
+            }
+
+
+
+            //client = OkHttpClient.Builder().build()
+        }
+        return client
+    }
     fun getOutputMediaFileByCache(context: Context, fileName: String): File? {
         val mediaStorageDir = context.cacheDir
         if (!mediaStorageDir.exists()) {

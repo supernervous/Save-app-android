@@ -28,6 +28,7 @@ import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
+import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
 import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.PgpUtils
@@ -51,7 +52,7 @@ class WebDAVSiteController(
     jobId
 ) {
 
-    lateinit var okHttpBaseClient: OkHttpBaseClient
+    lateinit var okHttpBaseClient: OkHttpClient
 
     private var chunkStartIdx: Int = 0
     private val FILE_BASE = "files/"
@@ -75,55 +76,8 @@ class WebDAVSiteController(
     @SuppressLint("SimpleDateFormat")
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
-        okHttpBaseClient = OkHttpBaseClient()
-        if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
-            val builder = StrongOkHttpClientBuilder(context)
-            builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
-                override fun onConnected(okHttpClient: OkHttpClient?) {
-                    sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
-                }
-
-                override fun onConnectionException(e: Exception) {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception) + e.message
-                    )
-                    listener?.failure(msg)
-                }
-
-                override fun onTimeout() {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception_timeout)
-                    )
-                    listener?.failure(msg)
-                }
-
-                override fun onInvalid() {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception_invalid)
-                    )
-                    listener?.failure(msg)
-                }
-            })
-            while (sardine == null) {
-                try {
-                    Thread.sleep(2000)
-                } catch (e: Exception) {
-                }
-                Log.d(TAG, "waiting for Tor-enabled Sardine to init")
-            }
-        } else {
-            sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
-        }
-
+        okHttpBaseClient = Utility.generateOkHttpClient(context)
+        sardine = OkHttpSardine(okHttpBaseClient)
     }
 
 
@@ -457,11 +411,10 @@ class WebDAVSiteController(
                 return true
             }
         } catch (e: java.lang.Exception) {
-            Log.e(TAG,e.toString())
+            Log.e(TAG, e.toString())
         }
         return false
     }
-
 
 
 }
