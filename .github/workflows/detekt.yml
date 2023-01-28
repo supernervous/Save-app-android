@@ -77,6 +77,7 @@ jobs:
         fi
         cat gh_response.json
         DETEKT_DOWNLOAD_URL=https://github.com/detekt/detekt/releases/download/v$DETEKT_RELEASE_TAG/detekt-cli-$DETEKT_RELEASE_TAG-all.jar
+        echo $DETEKT_DOWNLOAD_URL
         echo "::set-output name=download_url::$DETEKT_DOWNLOAD_URL"
 
     # Sets up the detekt cli
