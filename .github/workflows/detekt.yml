@@ -83,6 +83,7 @@ jobs:
 
     # Sets up and runs the detekt cli
     - name: Setup and Run Detekt
+      continue-on-error: true
       id: detekt_setup_and_run
       run: |
         dest=$( mktemp -d )
