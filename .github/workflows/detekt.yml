@@ -33,6 +33,7 @@ env:
   # Release tag associated with version of Detekt to be installed
   # SARIF support (required for this workflow) was introduced in Detekt v1.15.0
   DETEKT_RELEASE_TAG: v1.22.0
+  DETEKT_RELEASE: 1.22.0
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -76,7 +77,7 @@ jobs:
           exit 1
         fi
         cat gh_response.json
-        DETEKT_DOWNLOAD_URL=https://github.com/detekt/detekt/releases/download/v$DETEKT_RELEASE_TAG/detekt-cli-$DETEKT_RELEASE_TAG-all.jar
+        DETEKT_DOWNLOAD_URL=https://github.com/detekt/detekt/releases/download/$DETEKT_RELEASE_TAG/detekt-cli-$DETEKT_RELEASE-all.jar
         echo $DETEKT_DOWNLOAD_URL
         echo "::set-output name=download_url::$DETEKT_DOWNLOAD_URL"
 
