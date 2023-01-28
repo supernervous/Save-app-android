@@ -79,7 +79,7 @@ jobs:
         cat gh_response.json
         DETEKT_DOWNLOAD_URL=https://github.com/detekt/detekt/releases/download/$DETEKT_RELEASE_TAG/detekt-cli-$DETEKT_RELEASE-all.jar
         echo $DETEKT_DOWNLOAD_URL
-        echo "::set-output name=download_url::$DETEKT_DOWNLOAD_URL"
+        echo "download_url=$DETEKT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
 
     # Sets up and runs the detekt cli
     - name: Setup and Run Detekt
@@ -94,9 +94,9 @@ jobs:
         chmod a+x $dest/detekt.jar
         ls $dest
         DETEKT=$dest/detect.jar
-        echo "::set-output name=detekt::$DETEKT"
+        echo "detekt=$DETEKT" >> $GITHUB_OUTPUT
         # Performs static analysis using Detekt
-        java -jar $DETEKT --input ${{ github.workspace }} --all-rules --report sarif:${{ github.workspace }}/detekt.sarif.json
+        java -jar "${DETEKT}" --input ${{ github.workspace }} --all-rules --report sarif:${{ github.workspace }}/detekt.sarif.json
 
     # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
     # This is so we can easily map results onto their source files
