@@ -90,9 +90,10 @@ jobs:
           --url ${{ steps.detekt_info.outputs.download_url }} \
           --silent \
           --location \
-          --output $dest/detekt
-        chmod a+x $dest/detekt
-        DETEKT=$dest/detect
+          --output $dest/detekt.jar
+        chmod a+x $dest/detekt.jar
+        ls $dest
+        DETEKT=$dest/detect.jar
         echo "::set-output name=detekt::$DETEKT"
 
     # Performs static analysis using Detekt
