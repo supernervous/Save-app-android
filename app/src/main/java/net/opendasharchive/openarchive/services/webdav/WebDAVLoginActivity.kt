@@ -294,7 +294,7 @@ class WebDAVLoginActivity : BaseActivity() {
     }
 
     fun loginUserIntoWebDav(fullUrl: String, username: String, password: String): Boolean {
-        val okHttpBaseClient = Utility.generateOkHttpClient(this)
+        val okHttpBaseClient = Utility.generateOkHttpClient(this,username,password)
         val request: Request = Request.Builder()
             .url(fullUrl)
             .method("GET", null)

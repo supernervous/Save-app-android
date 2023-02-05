@@ -4,9 +4,11 @@ import android.R
 import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.DialogInterface
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.snackbar.Snackbar
 import info.guardianproject.netcipher.proxy.OrbotHelper
@@ -20,8 +22,18 @@ import java.util.concurrent.TimeUnit
 
 object Utility {
 
-    fun toastOnUiThread(fragmentActivity: FragmentActivity, message: String?, isLongToast: Boolean) {
-        fragmentActivity.runOnUiThread { Toast.makeText(fragmentActivity.applicationContext, message, if (isLongToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
+    fun toastOnUiThread(
+        fragmentActivity: FragmentActivity,
+        message: String?,
+        isLongToast: Boolean
+    ) {
+        fragmentActivity.runOnUiThread {
+            Toast.makeText(
+                fragmentActivity.applicationContext,
+                message,
+                if (isLongToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     fun getMimeType(context: Context, uri: Uri?): String? {
@@ -57,33 +69,58 @@ object Utility {
         builder.show()
     }
 
-    fun generateOkHttpClient(context: Context, username: String = "", password: String = ""): OkHttpClient{
+    fun generateOkHttpClient(
+        context: Context,
+        username: String = "",
+        password: String = ""
+    ): OkHttpClient {
         lateinit var client: OkHttpClient
-        if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
-            //connect via Tor.
-        }
-        else {
-
-            if(username.isEmpty() && password.isEmpty()){
-                client = OkHttpClient.Builder()
-                    .addInterceptor(addConnectionInterceptor())
-                    .connectTimeout(20L, TimeUnit.MINUTES)
-                    .writeTimeout(20L, TimeUnit.MINUTES)
-                    .readTimeout(20L, TimeUnit.MINUTES)
-                    .retryOnConnectionFailure(true)
-                    .build()
-            } else {
-                client = OkHttpClient.Builder()
-                    .addInterceptor(addConnectionInterceptor())
-                    .addInterceptor(BasicAuthInterceptor(user = username, password = password))
-                    .connectTimeout(20L, TimeUnit.SECONDS)
-                    .writeTimeout(20L, TimeUnit.SECONDS)
-                    .readTimeout(20L, TimeUnit.SECONDS)
-                    .retryOnConnectionFailure(false)
-                    .build()
-            }
+        client = if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
+            generateStandardOkHttpClient(username, password, client)
+        } else {
+            showAlertToUser(context)
+            generateStandardOkHttpClient(username, password, client)
         }
         return client
+    }
+
+    private fun showAlertToUser(context: Context) {
+        val message =
+            context.getString(net.opendasharchive.openarchive.R.string.something_went_wrong)
+        val builder = androidx.appcompat.app.AlertDialog.Builder(context)
+        builder.setTitle(net.opendasharchive.openarchive.R.string.unsecured_internet_connection)
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun generateStandardOkHttpClient(
+        username: String,
+        password: String,
+        client: OkHttpClient
+    ): OkHttpClient {
+        var client1 = client
+        if (username.isEmpty() && password.isEmpty()) {
+            client1 = OkHttpClient.Builder()
+                .addInterceptor(addConnectionInterceptor())
+                .connectTimeout(20L, TimeUnit.MINUTES)
+                .writeTimeout(20L, TimeUnit.MINUTES)
+                .readTimeout(20L, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(true)
+                .build()
+        } else {
+            client1 = OkHttpClient.Builder()
+                .addInterceptor(addConnectionInterceptor())
+                .addInterceptor(BasicAuthInterceptor(user = username, password = password))
+                .connectTimeout(20L, TimeUnit.SECONDS)
+                .writeTimeout(20L, TimeUnit.SECONDS)
+                .readTimeout(20L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .build()
+        }
+        return client1
     }
 
     private fun addConnectionInterceptor() = Interceptor { chain: Interceptor.Chain ->
@@ -100,8 +137,10 @@ object Utility {
             }
         }
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        return File(mediaStorageDir,
-            "$timeStamp.$fileName")
+        return File(
+            mediaStorageDir,
+            "$timeStamp.$fileName"
+        )
     }
 
     fun writeStreamToFile(input: InputStream?, file: File?): Boolean {

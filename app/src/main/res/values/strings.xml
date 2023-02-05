@@ -357,4 +357,6 @@
     <string name="ci_title">Help us make Save better</string>
     <string name="ci_negative">No way</string>
     <string name="ci_confirm">Sure</string>
+
+    <string name = "something_went_wrong">Something went wrong</string>
 </resources>
