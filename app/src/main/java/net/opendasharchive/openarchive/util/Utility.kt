@@ -13,6 +13,9 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.snackbar.Snackbar
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.services.webdav.BasicAuthInterceptor
+import net.opendasharchive.openarchive.util.Constants.CONNECT_TIMEOUT
+import net.opendasharchive.openarchive.util.Constants.READ_TIMEOUT
+import net.opendasharchive.openarchive.util.Constants.WRITE_TIMEOUT
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import java.io.*
@@ -105,18 +108,18 @@ object Utility {
         if (username.isEmpty() && password.isEmpty()) {
             client1 = OkHttpClient.Builder()
                 .addInterceptor(addConnectionInterceptor())
-                .connectTimeout(20L, TimeUnit.MINUTES)
-                .writeTimeout(20L, TimeUnit.MINUTES)
-                .readTimeout(20L, TimeUnit.MINUTES)
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MINUTES)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.MINUTES)
+                .readTimeout(READ_TIMEOUT, TimeUnit.MINUTES)
                 .retryOnConnectionFailure(true)
                 .build()
         } else {
             client1 = OkHttpClient.Builder()
                 .addInterceptor(addConnectionInterceptor())
                 .addInterceptor(BasicAuthInterceptor(user = username, password = password))
-                .connectTimeout(20L, TimeUnit.SECONDS)
-                .writeTimeout(20L, TimeUnit.SECONDS)
-                .readTimeout(20L, TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
                 .build()
         }

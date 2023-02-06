@@ -17,4 +17,7 @@ object Constants {
     const val PREFIX_HTTPS = "https://"
     const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
     const val DAV = "/dav"
+    const val CONNECT_TIMEOUT = 20L
+    const val WRITE_TIMEOUT = 20L
+    const val READ_TIMEOUT = 20L
 }

@@ -69,7 +69,7 @@ class ArchiveLoginActivity : BaseActivity() {
             } catch (exception: Exception) {
                 Log.e(
                     TAG,
-                    "user selected \"use tor\" but an exception was thrown while setting the proxy: " + exception.getLocalizedMessage()
+                    "\"use tor\" selected but an exception was thrown: " + exception.getLocalizedMessage()
                 );
                 return;
             }
