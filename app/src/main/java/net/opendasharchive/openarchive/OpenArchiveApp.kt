@@ -9,15 +9,12 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
 import com.orm.SugarRecord.findById
-import info.guardianproject.netcipher.client.StrongBuilder
-import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.TRACK_LOCATION
 import net.opendasharchive.openarchive.util.Prefs.getCurrentSpaceId
-import okhttp3.OkHttpClient
 import org.acra.ACRA
 import org.acra.ReportField
 import org.acra.annotation.AcraCore
@@ -101,34 +98,7 @@ class OpenArchiveApp : SugarApp() {
         if (oh.init()) {
             orbotConnected = true
         }
-        try {
-            StrongOkHttpClientBuilder.forMaxSecurity(appContext)
-                .build(object : StrongBuilder.Callback<OkHttpClient?> {
-                    override fun onConnected(okHttpClient: OkHttpClient?) {
-                        orbotConnected = true
-                        Timber.tag("NetCipherClient").d( "Connection to orbot established!")
-                    }
-
-                    override fun onConnectionException(exc: Exception) {
-                        orbotConnected = false
-                        Timber.tag("NetCipherClient").d( "onConnectionException() $exc")
-                    }
-
-                    override fun onTimeout() {
-                        orbotConnected = false
-                        Timber.tag("NetCipherClient").d( "onTimeout()")
-                    }
-
-                    override fun onInvalid() {
-                        orbotConnected = false
-                        Timber.tag("NetCipherClient").d( "onInvalid()")
-                    }
-                })
-        } catch (exc: Exception) {
-            Timber.tag("Error").d( "Error while initializing TOR Proxy OkHttpClient $exc")
-        }
     }
-
 
     @Synchronized
     fun getCurrentSpace(): Space? {
