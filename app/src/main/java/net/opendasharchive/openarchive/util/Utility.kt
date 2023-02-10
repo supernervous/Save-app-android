@@ -1,17 +1,18 @@
 package net.opendasharchive.openarchive.util
 
 import android.R
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.ContextWrapper
-import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
-import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.snackbar.Snackbar
 import info.guardianproject.netcipher.proxy.OrbotHelper
+import info.guardianproject.netcipher.proxy.OrbotHelper.START_TOR_RESULT
+import info.guardianproject.netcipher.proxy.OrbotHelper.getShowOrbotStartIntent
 import net.opendasharchive.openarchive.services.webdav.BasicAuthInterceptor
 import net.opendasharchive.openarchive.util.Constants.CONNECT_TIMEOUT
 import net.opendasharchive.openarchive.util.Constants.READ_TIMEOUT
@@ -22,6 +23,7 @@ import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 object Utility {
 
@@ -77,36 +79,54 @@ object Utility {
         username: String = "",
         password: String = ""
     ): OkHttpClient {
-        lateinit var client: OkHttpClient
-        client = if (Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
-            generateStandardOkHttpClient(username, password, client)
-        } else {
-            showAlertToUser(context)
-            generateStandardOkHttpClient(username, password, client)
+        if (Prefs.getUseTor()) {
+            if (!OrbotHelper.isOrbotInstalled(context)) {
+                showAlertToUser(context, false)
+            }
+
+            if (OrbotHelper.isOrbotInstalled(context) && !OrbotHelper.isOrbotRunning(context)) {
+                showAlertToUser(context, true)
+            }
         }
-        return client
+        //irrespective of having Orbot installed or running, the app will only use OkHttp library.
+        return generateStandardOkHttpClient(username, password)
     }
 
-    private fun showAlertToUser(context: Context) {
+    fun showAlertToUser(context: Context, isOrbotAppInstalled: Boolean) {
         val message =
             context.getString(net.opendasharchive.openarchive.R.string.something_went_wrong)
         val builder = androidx.appcompat.app.AlertDialog.Builder(context)
         builder.setTitle(net.opendasharchive.openarchive.R.string.unsecured_internet_connection)
             .setMessage(message)
             .setCancelable(false)
-            .setPositiveButton(R.string.ok) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.ok) { _, _ ->
+                //redirect user to play store or start orbot app
+                setPositiveButtonAction(context, isOrbotAppInstalled)}
+           // }.show()
+    }
+
+    private fun setPositiveButtonAction(context: Context, isOrbotAppInstalled: Boolean) {
+        if (!isOrbotAppInstalled) {
+            startActivity(
+                context,
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=org.torproject.android")
+                ),null)
+        } else {
+            val intent = getShowOrbotStartIntent()
+            (context as Activity).startActivityForResult(intent, START_TOR_RESULT)
+        }
     }
 
     private fun generateStandardOkHttpClient(
         username: String,
         password: String,
-        client: OkHttpClient
     ): OkHttpClient {
-        var client1 = client
+        lateinit var client: OkHttpClient
         if (username.isEmpty() && password.isEmpty()) {
-            client1 = OkHttpClient.Builder()
+            client = OkHttpClient.Builder()
                 .addInterceptor(addConnectionInterceptor())
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.MINUTES)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.MINUTES)
@@ -114,7 +134,7 @@ object Utility {
                 .retryOnConnectionFailure(true)
                 .build()
         } else {
-            client1 = OkHttpClient.Builder()
+            client = OkHttpClient.Builder()
                 .addInterceptor(addConnectionInterceptor())
                 .addInterceptor(BasicAuthInterceptor(user = username, password = password))
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
@@ -123,7 +143,7 @@ object Utility {
                 .retryOnConnectionFailure(false)
                 .build()
         }
-        return client1
+        return client
     }
 
     private fun addConnectionInterceptor() = Interceptor { chain: Interceptor.Chain ->

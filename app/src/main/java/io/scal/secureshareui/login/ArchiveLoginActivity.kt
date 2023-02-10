@@ -22,6 +22,7 @@ import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Utility
 import java.lang.Exception
 import java.util.regex.Pattern
 
@@ -60,19 +61,21 @@ class ArchiveLoginActivity : BaseActivity() {
         mWebview!!.visibility = View.VISIBLE
         mWebview!!.addJavascriptInterface(JSInterface(), "htmlout")
 
-        if (proxyHost != null && Prefs.getUseTor() && OrbotHelper.isOrbotInstalled(this)) {
-            try {
-                WebkitProxy.setProxy(
-                    "android.app.Application",
-                    applicationContext, mWebview, proxyHost, proxyPort
-                )
-            } catch (exception: Exception) {
-                Log.e(
-                    TAG,
-                    "\"use tor\" selected but an exception was thrown: " + exception.getLocalizedMessage()
-                );
-                return;
-            }
+        if (proxyHost != null && Prefs.getUseTor()) {
+            if(OrbotHelper.isOrbotInstalled(this)) {
+                try {
+                    WebkitProxy.setProxy(
+                        "android.app.Application",
+                        applicationContext, mWebview, proxyHost, proxyPort
+                    )
+                } catch (exception: Exception) {
+                    Log.e(
+                        TAG,
+                        "\"use tor\" selected but an exception was thrown: " + exception.getLocalizedMessage()
+                    )
+                    return
+                }
+            }else Utility.showAlertToUser(this, false)
 
         }
         mWebview!!.webViewClient = object : WebViewClient() {

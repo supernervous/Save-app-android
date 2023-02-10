@@ -97,7 +97,6 @@ dependencies {
 
     implementation libraries.circular_imageview
     implementation libraries.netCipher
-    implementation libraries.netCipherOkHttp
 
     //from here: https://github.com/guardianproject/proofmode
     implementation (libraries.android_libproofmode) {

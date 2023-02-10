@@ -14,9 +14,6 @@ import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.SardineListener
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
-import info.guardianproject.netcipher.client.StrongBuilder
-import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
-import info.guardianproject.netcipher.proxy.OrbotHelper
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.controller.SiteControllerListener
 import net.opendasharchive.openarchive.R
