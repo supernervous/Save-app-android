@@ -1,6 +1,11 @@
 package net.opendasharchive.openarchive.features.media.preview
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -9,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
@@ -19,6 +25,7 @@ import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Utility
 
 class PreviewMediaListActivity : BaseActivity() {
 
@@ -39,6 +46,9 @@ class PreviewMediaListActivity : BaseActivity() {
         viewModel.observeValuesForWorkState(this)
         initLayout()
         showFirstTimeBatch()
+        LocalBroadcastManager.getInstance(this).registerReceiver(useTorReceiver,
+            IntentFilter("useTorIntent")
+        )
     }
 
     private fun initLayout() {
@@ -61,11 +71,20 @@ class PreviewMediaListActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(useTorReceiver)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_batch_review_media, menu)
         return true
+    }
+
+    private val useTorReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val isOrbotAppInstalled = intent.getBooleanExtra("isOrbotAppInstalled",false)
+            Utility.showAlertToUser(this@PreviewMediaListActivity,isOrbotAppInstalled)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

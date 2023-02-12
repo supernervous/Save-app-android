@@ -50,7 +50,7 @@ class WebDAVSiteController(
     jobId
 ) {
 
-    lateinit var okHttpBaseClient: OkHttpClient
+    private var okHttpBaseClient: OkHttpClient? = null
 
     private var chunkStartIdx: Int = 0
     private val FILE_BASE = "files/"
@@ -75,7 +75,10 @@ class WebDAVSiteController(
     private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
         okHttpBaseClient = Utility.generateOkHttpClient(context)
-        sardine = OkHttpSardine(okHttpBaseClient)
+
+        if(okHttpBaseClient!=null) {
+            sardine = OkHttpSardine(okHttpBaseClient)
+        }
     }
 
 

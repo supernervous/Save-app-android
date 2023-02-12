@@ -1,11 +1,17 @@
 package net.opendasharchive.openarchive.features.media.browse
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.R
@@ -18,6 +24,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.util.Constants
+import net.opendasharchive.openarchive.util.Utility
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -37,6 +44,22 @@ class BrowseProjectsActivity : BaseActivity() {
         setContentView(mBinding.root)
         initView()
         registerObservable()
+        LocalBroadcastManager.getInstance(this).registerReceiver(useTorReceiver,
+            IntentFilter("useTorIntent")
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(useTorReceiver)
+
+    }
+
+    private val useTorReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val isOrbotAppInstalled = intent.getBooleanExtra("isOrbotAppInstalled",false)
+            Utility.showAlertToUser(this@BrowseProjectsActivity,isOrbotAppInstalled)
+        }
     }
 
     private fun initView() {

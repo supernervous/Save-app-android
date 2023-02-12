@@ -2,28 +2,27 @@ package net.opendasharchive.openarchive.publish
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import android.os.Bundle
-import net.opendasharchive.openarchive.R
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.content.IntentFilter
-import net.opendasharchive.openarchive.MainActivity
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.OpenArchiveApp
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
+import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
@@ -44,6 +43,16 @@ class UploadManagerActivity : BaseActivity() {
         mFrag =
             supportFragmentManager.findFragmentById(R.id.fragUploadManager) as MediaListFragment?
         mFrag!!.setProjectId(projectId)
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(useTorReceiver,
+             IntentFilter("useTorIntent"))
+    }
+
+    private val useTorReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val isOrbotAppInstalled = intent.getBooleanExtra("isOrbotAppInstalled",false)
+            Utility.showAlertToUser(this@UploadManagerActivity,isOrbotAppInstalled)
+        }
     }
 
     override fun onResume() {
@@ -58,6 +67,8 @@ class UploadManagerActivity : BaseActivity() {
     override fun onPause() {
         super.onPause()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(useTorReceiver)
+
     }
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {

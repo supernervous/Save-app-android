@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import info.guardianproject.netcipher.proxy.OrbotHelper.START_TOR_RESULT
 import info.guardianproject.netcipher.proxy.OrbotHelper.getShowOrbotStartIntent
@@ -78,16 +79,27 @@ object Utility {
         context: Context,
         username: String = "",
         password: String = ""
-    ): OkHttpClient {
+    ): OkHttpClient? {
+        lateinit var intent: Intent
         if (Prefs.getUseTor()) {
             if (!OrbotHelper.isOrbotInstalled(context)) {
-                showAlertToUser(context, false)
+                 intent = Intent("useTorIntent")
+                intent.putExtra("isOrbotAppInstalled", false)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                //showAlertToUser(context, false)
+                return null
             }
 
             if (OrbotHelper.isOrbotInstalled(context) && !OrbotHelper.isOrbotRunning(context)) {
-                showAlertToUser(context, true)
+                //showAlertToUser(context, true)
+                intent = Intent("useTorIntent")
+                intent.putExtra("isOrbotAppInstalled", true)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                return null
             }
+            return generateStandardOkHttpClient(username, password)
         }
+
         //irrespective of having Orbot installed or running, the app will only use OkHttp library.
         return generateStandardOkHttpClient(username, password)
     }
@@ -95,15 +107,15 @@ object Utility {
     fun showAlertToUser(context: Context, isOrbotAppInstalled: Boolean) {
         val message =
             context.getString(net.opendasharchive.openarchive.R.string.something_went_wrong)
-        val builder = androidx.appcompat.app.AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context)
         builder.setTitle(net.opendasharchive.openarchive.R.string.unsecured_internet_connection)
             .setMessage(message)
             .setCancelable(false)
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .setPositiveButton(R.string.ok) { _, _ ->
                 //redirect user to play store or start orbot app
-                setPositiveButtonAction(context, isOrbotAppInstalled)}
-           // }.show()
+                setPositiveButtonAction(context, isOrbotAppInstalled)
+            }.show()
     }
 
     private fun setPositiveButtonAction(context: Context, isOrbotAppInstalled: Boolean) {

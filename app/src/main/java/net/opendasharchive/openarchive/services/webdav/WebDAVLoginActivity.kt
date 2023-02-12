@@ -295,15 +295,18 @@ class WebDAVLoginActivity : BaseActivity() {
 
     fun loginUserIntoWebDav(fullUrl: String, username: String, password: String): Boolean {
         val okHttpBaseClient = Utility.generateOkHttpClient(this,username,password)
-        val request: Request = Request.Builder()
-            .url(fullUrl)
-            .method("GET", null)
-            .addHeader("OCS-APIRequest", "true")
-            .addHeader("Accept", "application/json")
-            .build()
-        val response: Response = okHttpBaseClient.newCall(request).execute()
-        Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
-        return response.code == 200
+
+        return if(okHttpBaseClient!=null) {
+            val request: Request = Request.Builder()
+                .url(fullUrl)
+                .method("GET", null)
+                .addHeader("OCS-APIRequest", "true")
+                .addHeader("Accept", "application/json")
+                .build()
+            val response: Response = okHttpBaseClient.newCall(request).execute()
+            Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, response.body?.string())
+            response.code == 200
+        } else false
     }
 
     fun removeProject(v: View) {
