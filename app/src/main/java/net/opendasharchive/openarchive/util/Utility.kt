@@ -80,35 +80,38 @@ object Utility {
         username: String = "",
         password: String = ""
     ): OkHttpClient? {
-        lateinit var intent: Intent
         if (Prefs.getUseTor()) {
             if (!OrbotHelper.isOrbotInstalled(context)) {
-                 intent = Intent("useTorIntent")
-                intent.putExtra("isOrbotAppInstalled", false)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-                //showAlertToUser(context, false)
+                sendUseTorIntentBroadcast(context,false)
                 return null
             }
 
             if (OrbotHelper.isOrbotInstalled(context) && !OrbotHelper.isOrbotRunning(context)) {
-                //showAlertToUser(context, true)
-                intent = Intent("useTorIntent")
-                intent.putExtra("isOrbotAppInstalled", true)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                sendUseTorIntentBroadcast(context,true)
                 return null
             }
-            return generateStandardOkHttpClient(username, password)
         }
-
-        //irrespective of having Orbot installed or running, the app will only use OkHttp library.
+        //irrespective of use_tor is true or false, the app will only use OkHttp library.
         return generateStandardOkHttpClient(username, password)
     }
 
+    private fun sendUseTorIntentBroadcast(
+        context: Context,
+        isOrbotAppInstalled: Boolean
+    ) {
+        val intent = Intent("useTorIntent")
+        intent.putExtra("isOrbotAppInstalled", isOrbotAppInstalled)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+    }
+
     fun showAlertToUser(context: Context, isOrbotAppInstalled: Boolean) {
+        val title = if(!isOrbotAppInstalled){
+            net.opendasharchive.openarchive.R.string.orbot_not_installed
+        }else net.opendasharchive.openarchive.R.string.orbot_not_running
         val message =
             context.getString(net.opendasharchive.openarchive.R.string.something_went_wrong)
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(net.opendasharchive.openarchive.R.string.unsecured_internet_connection)
+        builder.setTitle(title)
             .setMessage(message)
             .setCancelable(false)
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }

@@ -352,6 +352,8 @@
     <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
     <string name="web_dav_connection_exception_invalid">Unable to connect to Orbot/Tor: INVALID</string>
     <string name="unsecured_internet_connection">Detected an unsecured internet connection</string>
+    <string name="orbot_not_installed">You do not have Orbot installed. Would you like to install Orbot?</string>
+    <string name="orbot_not_running">You need to enable Orbot in the background.</string>
     <!-- Clean Insights measurement -->
     <string name="clean_insight_consent_prompt">We are trying to understand why uploads fail sometimes, and would like to take some limited, anonymous measurements.</string>
     <string name="ci_title">Help us make Save better</string>
