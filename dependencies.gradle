@@ -14,7 +14,7 @@ ext {
             cleaninsights_android_sdk     : '2.5.0',
             audio_waveform                : 'v1.0.1',
             picasso                       : '2.5.2',
-            fresco                        : '1.10.0',
+            fresco                        : '2.6.0',
             frescoimageviewer             : '0.5.0',
             netCipher                     : '2.0.0-alpha1',
             android_libproofmode          : '0.16a-library',
