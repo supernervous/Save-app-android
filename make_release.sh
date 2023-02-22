@@ -1,12 +1,17 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # from:  http://developer.android.com/tools/publishing/app-signing.html
 
 ./gradlew assembleRelease
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore openarchive-release.keystore app/build/outputs/apk/app-release-unsigned.apk release
+apk=`find app/build/outputs/apk -name "*.apk"`
 
-jarsigner -verify -verbose -certs app/build/outputs/apk/app-release-unsigned.apk
+jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore openarchive-release.keystore "${apk}" android
 
-/home/josh/Android/Sdk/build-tools/21.1.2/zipalign -v 4 app/build/outputs/apk/app-release-unsigned.apk openarchive-release.apk
+jarsigner -verify -verbose -certs "${apk}"
 
+versions=`ls $ANDROID_HOME/build-tools`
+sortedVersions=($(sort <<<"${versions[*]}"))
+newest=${sortedVersions[-1]}
+
+"$ANDROID_HOME/build-tools/$newest/zipalign" -v 4 "${apk}" openarchive-release.apk
