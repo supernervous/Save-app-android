@@ -1,25 +1,22 @@
 package io.scal.secureshareui.login
 
-import io.scal.secureshareui.lib.Util.clearWebviewAndCookies
-import android.app.Activity
-import android.webkit.WebView
-import android.os.Bundle
-import net.opendasharchive.openarchive.R
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.webkit.WebViewClient
-import io.scal.secureshareui.controller.ArchiveSiteController
-import android.webkit.JavascriptInterface
 import android.content.DialogInterface
 import android.content.Intent
-import android.util.Log
-import android.view.MotionEvent
+import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import io.scal.secureshareui.controller.ArchiveSiteController
 import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.lib.Util
+import io.scal.secureshareui.lib.Util.clearWebviewAndCookies
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import java.lang.Exception
+import timber.log.Timber
 import java.util.regex.Pattern
 
 class ArchiveLoginActivity : BaseActivity() {
@@ -67,6 +64,7 @@ class ArchiveLoginActivity : BaseActivity() {
          *
          * } */
         mWebview!!.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 //if logged in, hide and redirect to credentials
                 if (url == ARCHIVE_LOGGED_IN_URL) {
@@ -107,14 +105,19 @@ class ArchiveLoginActivity : BaseActivity() {
 
     private fun parseArchiveCredentials(rawHtml: String) {
         try {
-            val pattern = Pattern.compile("<div class=\"alert alert-danger\">(.+?)<\\/div>")
+            val pattern = Pattern.compile("<div class=\"alert alert-danger\">(.+?)</div>")
             val matcher = pattern.matcher(rawHtml)
-            if (matcher.find()) mAccessKey =
-                matcher.group(1).split(":".toRegex()).toTypedArray()[1].trim { it <= ' ' }
-            if (matcher.find()) mSecretKey =
-                matcher.group(1).split(":".toRegex()).toTypedArray()[1].trim { it <= ' ' }
-        } catch (e: Exception) {
-            Log.d("Archive Login", "unable to get site S3 creds", e)
+
+            if (matcher.find()) {
+                mAccessKey = matcher.group(1)?.split(":".toRegex())?.get(1)?.trim { it <= ' ' }
+            }
+
+            if (matcher.find()) {
+                mSecretKey = matcher.group(1)?.split(":".toRegex())?.get(1)?.trim { it <= ' ' }
+            }
+        }
+        catch (e: Exception) {
+            Timber.tag("Archive Login").d(e, "unable to get site S3 creds")
         }
     }
 
@@ -131,7 +134,7 @@ class ArchiveLoginActivity : BaseActivity() {
                     finish()
                 }
             } else if (html.contains("Verification Email Sent")) {
-                showAccountCreatedDialog { dialog, which -> finish() }
+                showAccountCreatedDialog { _, _ -> finish() }
             }
         }
     }
@@ -144,7 +147,7 @@ class ArchiveLoginActivity : BaseActivity() {
     }
 
     override fun finish() {
-        Log.d(TAG, "finish()")
+        Timber.tag(TAG).d("finish()")
         val data = Intent()
         data.putExtra(SiteController.EXTRAS_KEY_USERNAME, mAccessKey)
         data.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, mSecretKey)

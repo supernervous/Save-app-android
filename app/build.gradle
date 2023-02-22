@@ -6,7 +6,7 @@ apply from : '../config.gradle'
 def getDropboxKey() {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("dropbox_key");
+    return properties.getProperty("dropbox_key")
 }
 
 android {
@@ -122,7 +122,7 @@ dependencies {
     //header recyclerview
     implementation libraries.sectioned_recyclerview_adapter
 
-    implementation group: 'androidx.preference', name: 'preference', version: '1.1.1'
+    implementation group: 'androidx.preference', name: 'preference-ktx', version: '1.2.0'
 
     //crash reporting
     implementation libraries.acra_core
@@ -148,12 +148,12 @@ dependencies {
     //glide
     implementation libraries.glide
     implementation 'com.google.android.gms:play-services-basement:18.1.0'
-    implementation 'com.google.android.gms:play-services-base:18.1.0'
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
     annotationProcessor libraries.glideAnnotate
 
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.work:work-runtime-ktx:2.8.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
     implementation libraries.guava
     implementation libraries.sheetsInfo

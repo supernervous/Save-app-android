@@ -19,7 +19,7 @@ Save is an open-source app created by OpenArchive to help eyewitnesses and human
 ## About OpenArchive💡
 OpenArchive is dedicated to protecting media freedom: preserving, amplifying, and securely routing mobile media to community-maintained collections in accessible public and private archives, outside the corporate walled gardens currently dominating the online media ecosystem.
 Created by and for citizen reporters and human rights defenders in 2015, our distributed media ecosystem promotes freedom of expression by protecting, authenticating, and offering access to and long-term preservation of at-risk community media.
-Visit our website to learn more: [open-archive.org](open-archive.org)
+Visit our website to learn more: [open-archive.org](https://open-archive.org)
 
 ## About Save📲 
 Save (share, archive, verify, encrypt) is an easy-to-use app designed by OpenArchive to help you store, share, and amplify your mobile media while ensuring your identity remains protected. 
@@ -34,7 +34,7 @@ If you would like to contribute code, please consider the following:
 *Stick to the naming conventions of the rest of code. Think hard about naming.
 *Refactor early, don’t repeat yourself.
 *Spaghetti code, 1k+ line methods and similar abominations won’t be accepted.
-*Don’t be too clever. Code which isn’t understandable by anyone but you while writing it, won’t be acepted. Document the non-obvious!
+*Don’t be too clever. Code which isn’t understandable by anyone but you while writing it, won’t be accepted. Document the non-obvious!
 *If you find violations of these rules in the existing code, again: Happy to see your pull requests!
 *Contributor License Agreement: If you send pull requests, please state that you grant OpenArchive the non-revocable right to use your code for this project in any way OpenArchive deems necessary. This includes, re-licensing under another license.
 
@@ -52,8 +52,8 @@ There are other ways you can help, too! If you’re interested in volunteering o
 ## Contact💬
 Join the OpenArchive community:
 Email us [info@open-archive.org](mailto:info@open-archive.org)
-Follow us on Twitter: [twitter.com/open_archive](twitter.com/open_archive) 
-Follow us on Instagram: [instagram.com/open__archive](instagram.com/open__archive)
+Follow us on Twitter: [twitter.com/open_archive](https://twitter.com/open_archive) 
+Follow us on Instagram: [instagram.com/open__archive](https://www.instagram.com/open__archive)
 
 ## FAQ❓
 Need more information about the Save app, OpenArchive, and the work it does? Please check our [FAQ page](https://open-archive.org/faq/).

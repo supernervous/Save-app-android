@@ -6,19 +6,19 @@ import androidx.preference.PreferenceManager
 
 object Prefs{
 
-    const val PREF_UPLOAD_WIFI_ONLY = "upload_wifi_only"
-    const val PREF_NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
-    const val PREF_NEARBY_USE_WIFI = "nearby_use_wifi"
-    const val PREF_USE_TOR = "use_tor"
-    const val PREF_USE_PROOFMODE = "use_proofmode"
-    const val PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
-    const val PREF_CURRENT_SPACE_ID = "current_space"
+    private const val PREF_UPLOAD_WIFI_ONLY = "upload_wifi_only"
+    private const val PREF_NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
+    private const val PREF_NEARBY_USE_WIFI = "nearby_use_wifi"
+    private const val PREF_USE_TOR = "use_tor"
+    private const val PREF_USE_PROOFMODE = "use_proofmode"
+    private const val PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
+    private const val PREF_CURRENT_SPACE_ID = "current_space"
     const val TRACK_LOCATION = "trackLocation"
 
     private var prefs: SharedPreferences? = null
 
     fun setContext(context: Context?) {
-        if (prefs == null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        if (prefs == null && context != null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     fun putBoolean(key: String?, value: Boolean) {
@@ -82,7 +82,7 @@ object Prefs{
     }
 
     fun setCurrentSpaceId(spaceId: Long) {
-        prefs?.edit()?.putLong(PREF_CURRENT_SPACE_ID, spaceId)?.commit()
+        prefs?.edit()?.putLong(PREF_CURRENT_SPACE_ID, spaceId)?.apply()
     }
 
 }

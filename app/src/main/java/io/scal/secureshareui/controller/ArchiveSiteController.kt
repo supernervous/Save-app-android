@@ -77,7 +77,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
         }
 
         private fun getSlug(title: String): String {
-            return title.replace("[^A-Za-z0-9]".toRegex(), "-")
+            return title.replace("[^A-Za-z\\d]".toRegex(), "-")
         }
 
         @JvmStatic
@@ -130,7 +130,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             val mediaUri = valueMap[VALUE_KEY_MEDIA_PATH]
             val mimeType = valueMap[VALUE_KEY_MIME_TYPE]
 
-            // TODO this should make sure we arn't accidentally using one of archive.org's metadata fields by accident
+            // TODO this should make sure we aren't accidentally using one of archive.org's metadata fields by accident
             val slug = valueMap[VALUE_KEY_SLUG]
             val randomString = Util.RandomString(4).nextString()
             val uploadBasePath = "$slug-$randomString"
@@ -421,7 +421,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
         return responseHandler.handleResponse(response)
     }
 
-    override fun delete(space: Space?, title: String?, mediaFile: String?): Boolean {
+    override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
         Timber.tag(TAG).d( "Upload file: Entering upload")
 
         /**
@@ -435,7 +435,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
 
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
         val mediaUrl: String? = try {
-            ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(title, "UTF-8") + '/' + mediaFile
+            ARCHIVE_API_ENDPOINT + '/' + URLEncoder.encode(bucketName, "UTF-8") + '/' + mediaFile
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
             return false
