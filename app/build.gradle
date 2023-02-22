@@ -31,9 +31,6 @@ android {
         vectorDrawables.useSupportLibrary = true
 
     }
-    lintOptions {
-        abortOnError false
-    }
 
     flavorDimensions "free"
     buildTypes {
@@ -50,12 +47,9 @@ android {
         }
     }
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'LICENSE.txt'
+        resources {
+            excludes += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES', 'LICENSE.txt']
+        }
     }
     productFlavors {
         releaseflavor {
@@ -70,6 +64,10 @@ android {
     buildFeatures {
         viewBinding true
     }
+    lint {
+        abortOnError false
+    }
+    namespace 'net.opendasharchive.openarchive'
 
 }
 
