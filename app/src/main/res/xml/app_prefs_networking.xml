@@ -1,16 +1,13 @@
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:asp="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.preference.PreferenceCategory
-        android:title="@string/prefs_networking_title">
+    <androidx.preference.PreferenceCategory android:title="@string/prefs_networking_title">
 
         <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
             android:key="use_tor"
-            android:title="@string/prefs_use_tor_title"
             android:summary="@string/prefs_use_tor_summary"
-            android:defaultValue="false" />
+            android:title="@string/prefs_use_tor_title" />
 
     </androidx.preference.PreferenceCategory>
-
 
 </androidx.preference.PreferenceScreen>

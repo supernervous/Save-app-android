@@ -1,67 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:orientation="vertical"
     android:background="@color/oablue"
-    >
+    android:filterTouchesWhenObscured="true"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/custom_slide_image"
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:src="@drawable/onboarding1"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="64dp"
-
-        />
-
+        android:src="@drawable/onboarding1"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/custom_slide_big_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="This is the headline"
-        android:textColor="@color/white"
+        android:background="@color/oablue"
         android:gravity="start"
-        android:textStyle="bold"
-        android:textSize="32sp"
         android:paddingLeft="36dp"
         android:paddingRight="36dp"
-        android:background="@color/oablue"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:textStyle="bold" />
 
-        />
     <TextView
         android:id="@+id/custom_slide_big_text_sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the app onboarding page where you want to have an interesting time, isn't that true?"
-        android:textColor="@color/white"
+        android:layout_below="@+id/custom_slide_big_text"
         android:layout_gravity="start"
-        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/oablue"
 
         android:paddingLeft="36dp"
-        android:paddingRight="36dp"
         android:paddingTop="6dp"
-        android:layout_below="@+id/custom_slide_big_text"
-        android:background="@color/oablue"
-        android:layout_marginBottom="12dp"
-
-        />
+        android:paddingRight="36dp"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/custom_slide_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do it!"
         android:layout_below="@+id/custom_slide_big_text_sub"
         android:layout_marginStart="36dp"
         android:layout_marginTop="6dp"
         android:textColor="@color/oablue"
-        android:visibility="gone"
-        ></Button>
+        android:visibility="gone" />
+
 </RelativeLayout>

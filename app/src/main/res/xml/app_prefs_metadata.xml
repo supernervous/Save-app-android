@@ -1,25 +1,18 @@
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:asp="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-    <androidx.preference.PreferenceCategory
-        android:title="@string/prefs_data_title">
+    <androidx.preference.PreferenceCategory android:title="@string/prefs_data_title">
 
         <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
             android:key="use_proofmode"
-            android:title="@string/prefs_use_proofmode_title"
             android:summary="@string/prefs_use_proofmode_summary"
-            android:defaultValue="false" />
+            android:title="@string/prefs_use_proofmode_title" />
 
         <androidx.preference.Preference
             android:key="share_proofmode"
-            android:title="@string/prefs_share_proofmode_title"
             android:summary="@string/prefs_share_proofmode_summary"
-            />
+            android:title="@string/prefs_share_proofmode_title" />
 
     </androidx.preference.PreferenceCategory>
-
-
-
 
 </androidx.preference.PreferenceScreen>
