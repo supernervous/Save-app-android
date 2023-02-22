@@ -21,7 +21,7 @@
     <string name="lblEditMetadata">Editar Média </string>
     <string name="lblSave">Salvar </string>
     <string name="loading_title">Transferir Média </string>
-    <string name="loading_message">Por favor, aguarde enquanto transferimos os seus média para o Internet Archive... </string>
+    <string name="loading_message">Por favor, aguarde enquanto transferimos os seus média para o Internet Archive… </string>
 
     <!-- Default Values -->
     <string name="default_title">Designação</string>
@@ -96,7 +96,7 @@
     <string name="upload_securely_via_tor">Transferir em Segurança via Tor</string>
     <string name="lbl_share_prefs">Partilhar Preferências </string>
     <string name="problem_authticating">Problemas com a autenticação no Internet Archive. </string>
-    <string name="uploading_to_internet_archive">Transferir para o Internet Archive... </string>
+    <string name="uploading_to_internet_archive">Transferir para o Internet Archive… </string>
     <string name="lbl_update_value">Atualizar Valor</string>
     <string name="lbl_enter_value">Clique para inserir um valor. </string>
     <string name="title_activity_about">Sobre OpenArchive</string>
@@ -137,7 +137,7 @@ OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal
     <string name="hint_author">Autor</string>
     <string name="hint_location">Locação</string>
     <string name="hint_tags">Tags</string>
-    <string name="hint_license">Licensa (ver questões abaixo)</string>
+    <string name="hint_license">Licença (ver questões abaixo)</string>
 
     <string name="answer_yes">Sim</string>
     <string name="answer_no">Não</string>

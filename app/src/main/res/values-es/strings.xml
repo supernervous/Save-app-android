@@ -21,7 +21,7 @@
     <string name="lblEditMetadata">Editar multimedia</string>
     <string name="lblSave">Guardar</string>
     <string name="loading_title">Subir multimedia</string>
-    <string name="loading_message">Por favor, espera mientras tu multimedia se sube a Internet Archive...</string>
+    <string name="loading_message">Por favor, espera mientras tu multimedia se sube a Internet Archive…</string>
 
     <!-- Default Values -->
     <string name="default_title">Mi título</string>
@@ -96,7 +96,7 @@
     <string name="upload_securely_via_tor">Sube de forma segura a través de Tor</string>
     <string name="lbl_share_prefs">Compartiendo preferencias</string>
     <string name="problem_authticating">Hubo un problema de autenticación con Internet Archive.</string>
-    <string name="uploading_to_internet_archive">Subiendo a Internet Archive...</string>
+    <string name="uploading_to_internet_archive">Subiendo a Internet Archive…</string>
     <string name="lbl_update_value">Actualizar valor</string>
     <string name="lbl_enter_value">Pulsa para ingresar un valor.</string>
     <string name="title_activity_about">Acerca de OpenArchive</string>
@@ -121,7 +121,7 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="info_license_sharealike">¿Solicitarles que compartan del mismo modo que tú?</string>
     <string name="info_license_comm">¿Permitir uso comercial?</string>
 
-    <string name="orbot_detected">Orbot detectado; utiliza la red Tor para conectarte de forma más segura...</string>
+    <string name="orbot_detected">Orbot detectado; utiliza la red Tor para conectarte de forma más segura…</string>
 
     <string name="media_hint">Haz clic en el botón (+) para importar o crear multimedia para agregar a tu archivo</string>
 
@@ -161,7 +161,7 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="prefs_networking_title">Conectando</string>
     <string name="prefs_use_tor_title">Habilitar enrutamiento cebolla</string>
     <string name="prefs_use_tor_summary">Si Orbot esta instalado, usar la red de Tor</string>
-    <string name="prefs_upload_wifi_only_title">Subir unicamente en modo Wifi</string>
+    <string name="prefs_upload_wifi_only_title">Subir únicamente en modo Wifi</string>
     <string name="prefs_upload_wifi_only_summary">Esperar hasta que este en conectado al Wifi para subir multimedia</string>
     <string name="prefs_nearby_title">Cercanos</string>
 
@@ -182,11 +182,11 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="bt_enabled">Bluetooth activado</string>
 
     <string name="action_received">Recibido</string>
-    <string name="status_receiving">Recibiendo...</string>
+    <string name="status_receiving">Recibiendo…</string>
     <string name="action_duplicate">Duplicado recibido</string>
-    <string name="status_connecting">Conectando...</string>
+    <string name="status_connecting">Conectando…</string>
     <string name="status_connected">Conectado!</string>
-    <string name="looking_for_nearby_devices">Buscando dispositivos cercanos...</string>
+    <string name="looking_for_nearby_devices">Buscando dispositivos cercanos…</string>
     <string name="tap_to_connect">Tocar para conectarse</string>
 
 </resources>

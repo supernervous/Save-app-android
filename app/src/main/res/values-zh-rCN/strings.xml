@@ -21,7 +21,7 @@
     <string name="lblEditMetadata">编辑媒体</string>
     <string name="lblSave">保存</string>
     <string name="loading_title">上传媒体</string>
-    <string name="loading_message">正在将您的媒体上传到 Internet Archive，请稍候...</string>
+    <string name="loading_message">正在将您的媒体上传到 Internet Archive，请稍候…</string>
 
     <!-- Default Values -->
     <string name="default_title">我的标题</string>
@@ -96,7 +96,7 @@
     <string name="upload_securely_via_tor">通过 Tor 安全上传</string>
     <string name="lbl_share_prefs">共享首选项</string>
     <string name="problem_authticating">进行 Internet Archive 验证时出现问题。</string>
-    <string name="uploading_to_internet_archive">正在上传到 Internet Archive...</string>
+    <string name="uploading_to_internet_archive">正在上传到 Internet Archive…</string>
     <string name="lbl_update_value">更新值</string>
     <string name="lbl_enter_value">点按以输入值</string>
     <string name="title_activity_about">关于 OpenArchive</string>
@@ -122,7 +122,7 @@ OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 
     <string name="info_license_sharealike">要求他们像您一样分享？</string>
     <string name="info_license_comm">允许商业使用？</string>
 
-    <string name="orbot_detected">检测到 Orbot；正使用 Tor 网络连接以提高安全性...</string>
+    <string name="orbot_detected">检测到 Orbot；正使用 Tor 网络连接以提高安全性…</string>
 
     <string name="media_hint">单击 (+) 按钮导入或创建要添加到您的归档中的媒体</string>
 

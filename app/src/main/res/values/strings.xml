@@ -246,7 +246,7 @@
     <string name="action_plus">+</string>
     <string name="create_a_new_project">Create a new project</string>
     <string name="title_uploads">Uploads</string>
-    <string name="title_uploading">Uploading...</string>
+    <string name="title_uploading">Uploading…</string>
 
     <string name="title_activity_batch_media_review">Preview</string>
     <string name="action_upload">Upload</string>
@@ -335,7 +335,7 @@
 
     <string name="crash_dialog_text">Help us improve, share your crashes</string>
     <string name="crash_dialog_title">Crash Reporting</string>
-    <string name="crash_dialog_comment_prompt">What were you doing when the crash occured?</string>
+    <string name="crash_dialog_comment_prompt">What were you doing when the crash occurred?</string>
 
     <string name="crashreportemail">support@guardianproject.info</string>
     <string name="onboarding_archive_over_tor">Save over Tor</string>
@@ -344,9 +344,9 @@
     <string name="action_install">Install</string>
     <string name="action_enable">Enable</string>
     <string name="action_start">Start</string>
-    <string name="batch_waiting_for_upload">Waiting for upload...</string>
-    <string name="batch_uploading_now">Uploading now...</string>
-    <string name="login_activity_logging_message">Logging in...</string>
+    <string name="batch_waiting_for_upload">Waiting for upload…</string>
+    <string name="batch_uploading_now">Uploading now…</string>
+    <string name="login_activity_logging_message">Logging in…</string>
     <string name="login_you_have_already_space">You\'ve already got a space with these credentials</string>
     <string name="web_dav_connection_exception">\"Unable to connect to Orbot/Tor: \"</string>
     <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
