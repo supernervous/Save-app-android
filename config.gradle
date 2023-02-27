@@ -1,5 +1,5 @@
 ext.config = [
-        buildToolsVersion: '31.0.0',
+        buildToolsVersion: '33.0.2',
         compileSdkVersion: 33,
         minSdkVersion    : 21,
         targetSdkVersion : 33,
