@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from : '../dependencies.gradle'
 apply from : '../config.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 def getDropboxKey() {
     Properties properties = new Properties()
@@ -29,7 +30,7 @@ android {
         archivesBaseName = "OpenArchive-$versionName"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     flavorDimensions "free"
@@ -166,6 +167,11 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.guolindev.permissionx:permissionx:1.6.4'
 
+    // Tests
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.7.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
 }
 
 configurations {
