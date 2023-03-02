@@ -1,13 +1,10 @@
 package net.opendasharchive.openarchive.services.webdav
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Message
 import android.text.TextUtils
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
@@ -27,7 +24,6 @@ import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
-import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
 import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
@@ -40,7 +36,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class WebDAVSiteController(
@@ -56,8 +51,7 @@ class WebDAVSiteController(
     lateinit var okHttpBaseClient: OkHttpBaseClient
 
     private var chunkStartIdx: Int = 0
-    private val FILE_BASE = "files/"
-
+    private val fileBase = "files/"
 
     private var sardine: Sardine? = null
     private var server: String? = null
@@ -67,15 +61,14 @@ class WebDAVSiteController(
 
     companion object {
         const val SITE_KEY = "webdav"
-        const val TAG = "WebDAVSC"
     }
 
     init {
-        init(context, listener, jobId)
+        init(context, listener)
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun init(context: Context, listener: SiteControllerListener?, jobId: String?) {
+    private fun init(context: Context, listener: SiteControllerListener?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
         okHttpBaseClient = OkHttpBaseClient()
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
@@ -118,9 +111,10 @@ class WebDAVSiteController(
             while (sardine == null) {
                 try {
                     Thread.sleep(2000)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
-                Log.d(TAG, "waiting for Tor-enabled Sardine to init")
+
+                Timber.d("waiting for Tor-enabled Sardine to init")
             }
         } else {
             sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
@@ -203,8 +197,10 @@ class WebDAVSiteController(
                 }
                 true
             } catch (e: IOException) {
-                Log.w(TAG, "Failed primary media upload: " + finalMediaPath + ": " + e.message)
+                Timber.w("Failed primary media upload of \"%s\": %s", finalMediaPath, e.message)
+
                 jobFailed(e, -1, finalMediaPath)
+
                 false
             }
         }
@@ -226,11 +222,12 @@ class WebDAVSiteController(
 
         val listFiles = ArrayList<File>()
 
-        val _path = path?.replace("webdav", "dav")
+        @Suppress("NAME_SHADOWING")
+        val path = path?.replace("webdav", "dav")
 
         val sbFolderPath = StringBuffer()
-        sbFolderPath.append(_path)
-        sbFolderPath.append(FILE_BASE)
+        sbFolderPath.append(path)
+        sbFolderPath.append(fileBase)
         sbFolderPath.append(space?.username).append('/')
 
         val baseFolderPath = sbFolderPath.toString()
@@ -298,6 +295,7 @@ class WebDAVSiteController(
             val buffer = ByteArray(bufferSize)
             chunkStartIdx = 0
             val inputStream = mContext.contentResolver.openInputStream(mediaUri)
+
             while (media != null && chunkStartIdx < media.contentLength) {
                 val baos = ByteArrayOutputStream()
                 var i = inputStream?.read(buffer) ?: continue
@@ -334,6 +332,9 @@ class WebDAVSiteController(
                 jobProgress(totalBytes.toLong(), null)
                 chunkStartIdx = totalBytes + 1
             }
+
+            inputStream?.close()
+
             fileName = getUploadFileName(
                 media?.title ?: Constants.EMPTY_STRING,
                 media?.mimeType ?: Constants.EMPTY_STRING
@@ -417,24 +418,18 @@ class WebDAVSiteController(
             fos.flush()
             fos.close()
             sardine?.put(urlMeta, fileMetaData, "text/plain", false, null)
-            if (getUseProofMode()) {
-                val metaHash = getMetaMediaHash(media)
-                putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
-                putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val fileProofDir = ProofMode.getProofDir(mContext, metaHash)
-                if (fileProofDir != null && fileProofDir.exists()) {
-                    val filesProof = fileProofDir.listFiles()
-                    filesProof?.forEach { fileProof ->
-                        sardine?.put(
-                            basePath + '/' + fileProof.name,
-                            fileProof,
-                            "text/plain",
-                            false,
-                            null
-                        )
-                    }
-                }
+
+            /// Upload ProofMode metadata, if enabled and successfully created.
+            for (file in getProof(media)) {
+                sardine?.put(
+                    basePath + '/' + file.name,
+                    file,
+                    "text/plain",
+                    false,
+                    null
+                )
             }
+
             return true
         } catch (e: IOException) {
             jobFailed(e, -1, urlMeta)
@@ -463,8 +458,10 @@ class WebDAVSiteController(
                 }
                 return true
             }
-        } catch (e: java.lang.Exception) {
-            Log.e(TAG, e.toString())
+        }
+        catch (e: java.lang.Exception) {
+            Timber.e(e)
+
             return false
         }
         return false

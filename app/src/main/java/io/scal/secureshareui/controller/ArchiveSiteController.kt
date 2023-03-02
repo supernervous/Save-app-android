@@ -15,18 +15,14 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
-import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import org.witness.proofmode.ProofMode
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
 class ArchiveSiteController(context: Context, listener: SiteControllerListener?, jobId: String?) : SiteController(context, listener, jobId) {
@@ -109,15 +105,6 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
     }
 
 
-
-    fun startRegistration(space: Space) {
-        val intent = Intent(mContext, ArchiveLoginActivity::class.java)
-        intent.putExtra("register", true)
-        intent.putExtra(EXTRAS_KEY_CREDENTIALS, space.password)
-        (mContext as Activity).startActivityForResult(intent, CONTROLLER_REQUEST_CODE)
-        // FIXME not a safe cast, context might be a service
-    }
-
     override fun startAuthentication(space: Space?) {
         val intent = Intent(mContext, ArchiveLoginActivity::class.java)
         intent.putExtra(EXTRAS_KEY_CREDENTIALS, space?.password)
@@ -170,21 +157,11 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
             /// upload meta data
             uploadMetaData(fileMetaData, space, uploadBasePathMetaData, fileName)
 
-            /// upload proof mode
-            if (getUseProofMode()) {
-                val metaHash = getMetaMediaHash(media)
-                putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
-                putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
-                val fileProofDir = ProofMode.getProofDir(mContext, metaHash)
-                if (fileProofDir != null && fileProofDir.exists()) {
-                    val filesProof = fileProofDir.listFiles()
-                    if (filesProof != null) {
-                        for (file in filesProof) {
-                            uploadProofFiles(file, space, uploadBasePathMetaData)
-                        }
-                    }
-                }
+            /// Upload ProofMode metadata, if enabled and successfully created.
+            for (file in getProof(media)) {
+                uploadProofFiles(file, space, uploadBasePathMetaData)
             }
+
             return true
         } catch (exc: Exception) {
             Timber.tag(TAG).d( "AndroidUploadService ${exc.message}")
@@ -454,7 +431,7 @@ class ArchiveSiteController(context: Context, listener: SiteControllerListener?,
 
     @Throws(IOException::class)
     override fun getFolders(space: Space?, path: String?): ArrayList<File> {
-        return ArrayList<File>()
+        return ArrayList()
     }
 
     /**

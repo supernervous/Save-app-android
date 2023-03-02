@@ -10,7 +10,9 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
+import net.opendasharchive.openarchive.util.Prefs
 import org.witness.proofmode.crypto.HashUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -37,7 +39,6 @@ abstract class SiteController(
     /**
      * Gives a SiteController a chance to add metadata to the intent resulting from the ChooseAccounts process
      * that gets passed to each SiteController during publishing
-     * @param intent
      */
     @Throws(IOException::class)
     abstract fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean
@@ -47,23 +48,40 @@ abstract class SiteController(
     abstract fun getFolders(space: Space?, path: String?): ArrayList<File>
     open fun cancel() {}
 
-    @Throws(FileNotFoundException::class)
-    fun getMetaMediaHash(media: Media): String? {
-        var metaMediaHash = ProofMode.generateProof(
-            mContext,
-            Uri.parse(media.originalFilePath),
-            media.mediaHashString
-        )
-        if (metaMediaHash == null) {
-            val proofHash = HashUtils.getSHA256FromFileContent(
-                mContext.contentResolver.openInputStream(
-                    Uri.parse(media.originalFilePath)
-                )
+    fun getProof(media: Media): Array<out File> {
+        if (!Prefs.getUseProofMode()) return emptyArray()
+
+        // Don't use geolocation and network information.
+        Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
+        Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
+
+        try {
+            var hash = ProofMode.generateProof(
+                mContext,
+                Uri.parse(media.originalFilePath),
+                media.mediaHashString
             )
-            metaMediaHash =
-                ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath), proofHash)
+
+            if (hash == null) {
+                val proofHash = HashUtils.getSHA256FromFileContent(
+                    mContext.contentResolver.openInputStream(Uri.parse(media.originalFilePath))
+                )
+
+                hash = ProofMode.generateProof(mContext, Uri.parse(media.originalFilePath), proofHash)
+            }
+
+            return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
         }
-        return metaMediaHash
+        catch (exception: FileNotFoundException) {
+            Timber.e(exception)
+
+            return emptyArray()
+        }
+        catch (exception: SecurityException) {
+            Timber.e(exception)
+
+            return emptyArray()
+        }
     }
 
     fun setOnEventListener(publishEventListener: OnEventListener?) {
