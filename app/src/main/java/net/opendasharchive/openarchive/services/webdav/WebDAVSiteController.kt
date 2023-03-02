@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Message
-import android.text.TextUtils
 import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
@@ -22,13 +21,9 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
-import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
-import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
-import org.witness.proofmode.ProofMode
-import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -190,7 +185,6 @@ class WebDAVSiteController(
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
                     uploadMetadata(media, projectFolderPath, fileName)
-//                    uploadProof(media, projectFolderPath)
                 } else {
                     media?.serverUrl = finalMediaPath
                     jobSucceeded(finalMediaPath)
@@ -365,12 +359,7 @@ class WebDAVSiteController(
             media?.serverUrl = finalMediaPath
             jobSucceeded(finalMediaPath)
             uploadMetadata(media, projectFolderPath, fileName)
-            if (getUseProofMode()) {
-                val uploadedSuccessfully = uploadProof(media, projectFolderPath)
-                if(!uploadedSuccessfully){
-                    Utility.showAlertDialogToUser(mContext)
-                }
-            }
+
             true
         } catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
@@ -433,36 +422,6 @@ class WebDAVSiteController(
             return true
         } catch (e: IOException) {
             jobFailed(e, -1, urlMeta)
-        }
-        return false
-    }
-
-    private fun uploadProof(media: Media?, basePath: String): Boolean {
-        var lastUrl: String?
-        try {
-            if (media?.mediaHash != null) {
-                val mediaHash = String(media.mediaHash)
-                if (!TextUtils.isEmpty(mediaHash)) {
-                    val fileProofDir = ProofMode.getProofDir(mContext, mediaHash)
-                    if (fileProofDir != null && fileProofDir.exists()) {
-                        val filesProof = fileProofDir.listFiles()
-                        filesProof?.forEach { fileProof ->
-                            lastUrl = basePath + fileProof.name
-                            sardine?.put(lastUrl, fileProof, "text/plain", false, null)
-                        }
-                    }
-                    val mPgpUtils = PgpUtils.getInstance(mContext, PgpUtils.DEFAULT_PASSWORD)
-                    val pubKey = mPgpUtils.publicKeyString
-                    val keyPath = "$basePath/proofmode.pubkey"
-                    sardine?.put(keyPath, pubKey.toByteArray(), "text/plain", null)
-                }
-                return true
-            }
-        }
-        catch (e: java.lang.Exception) {
-            Timber.e(e)
-
-            return false
         }
         return false
     }

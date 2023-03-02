@@ -16,9 +16,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Globals
-import net.opendasharchive.openarchive.util.Prefs.getUseProofMode
-import net.opendasharchive.openarchive.util.Utility
-import org.witness.proofmode.ProofMode
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -84,12 +81,6 @@ class DropboxSiteController(
                             media.save()
                             jobSucceeded(finalMediaPath)
                             uploadMetadata(media, projectName!!, folderName, fileName)
-                            if (getUseProofMode()) {
-                                val uploadedSuccessfully = uploadProof(media, projectName, folderName)
-                                if(!uploadedSuccessfully){
-                                    Utility.showAlertDialogToUser(mContext)
-                                }
-                            }
                         }
                     }
 
@@ -164,37 +155,6 @@ class DropboxSiteController(
         result.append(UrlEscapers.urlFragmentEscaper().escape(title))
         if (!ext.isNullOrEmpty() && !title.endsWith(ext)) result.append('.').append(ext)
         return result.toString()
-    }
-
-    private fun uploadProof(media: Media, projectName: String, folderName: String): Boolean {
-        try {
-            val uTask =
-                UploadFileTask(mContext, dbClient.getClient()!!, object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata?) {}
-                    override fun onError(e: Exception?) {}
-                    override fun onProgress(progress: Long) {}
-                })
-            val mediaHash = String(media.mediaHash)
-            if (!TextUtils.isEmpty(mediaHash)) {
-                val fileProofDir = ProofMode.getProofDir(mContext, mediaHash)
-                if (fileProofDir != null && fileProofDir.exists()) {
-                    val filesProof = fileProofDir.listFiles()
-                    filesProof?.forEach { fileProof ->
-                        uTask.upload(
-                            Uri.fromFile(fileProof).toString(),
-                            fileProof.name,
-                            folderName,
-                            projectName
-                        )
-                    }
-                }
-            }
-            return true
-        } catch (e: Exception) {
-            Timber.e(e)
-
-            return false
-        }
     }
 
     private fun uploadMetadata(
