@@ -17,7 +17,7 @@ ext {
             fresco                        : '1.10.0',
             frescoimageviewer             : '0.5.0',
             netCipher                     : '2.0.0-alpha1',
-            android_libproofmode          : '0.16a-library',
+            android_libproofmode          : '1.0.25-library',
             sardine_android               : '89f7eae512',
             sectioned_recyclerview_adapter: '2.0.0',
             acra                          : '5.4.0',

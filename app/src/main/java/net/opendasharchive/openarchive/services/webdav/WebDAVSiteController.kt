@@ -28,7 +28,7 @@ import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
 import net.opendasharchive.openarchive.util.Utility
 import okhttp3.OkHttpClient
 import org.witness.proofmode.ProofMode
-import org.witness.proofmode.crypto.PgpUtils
+import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -452,7 +452,7 @@ class WebDAVSiteController(
                         }
                     }
                     val mPgpUtils = PgpUtils.getInstance(mContext, PgpUtils.DEFAULT_PASSWORD)
-                    val pubKey = mPgpUtils.publicKey
+                    val pubKey = mPgpUtils.publicKeyString
                     val keyPath = "$basePath/proofmode.pubkey"
                     sardine?.put(keyPath, pubKey.toByteArray(), "text/plain", null)
                 }
@@ -466,6 +466,4 @@ class WebDAVSiteController(
         }
         return false
     }
-
-
 }

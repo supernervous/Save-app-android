@@ -6,20 +6,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.*
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.routeTo
-import org.witness.proofmode.crypto.PgpUtils
+import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.IOException
 
@@ -114,7 +113,7 @@ class SettingsActivity : BaseActivity() {
         fun shareKey(activity: Activity) {
             try {
                 val mPgpUtils = PgpUtils.getInstance(activity, PgpUtils.DEFAULT_PASSWORD)
-                val pubKey = mPgpUtils.publicKey
+                val pubKey = mPgpUtils.publicKeyString
                 if (pubKey.isNotEmpty()) {
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.type = "text/plain"
