@@ -18,19 +18,13 @@ import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.TRACK_LOCATION
 import net.opendasharchive.openarchive.util.Prefs.getCurrentSpaceId
 import okhttp3.OkHttpClient
-import org.acra.ACRA
-import org.acra.ReportField
-import org.acra.annotation.AcraCore
-import org.acra.config.CoreConfigurationBuilder
-import org.acra.data.StringFormat
 import timber.log.Timber
 
-@AcraCore(buildConfigClass = BuildConfig::class)
 class OpenArchiveApp : SugarApp() {
 
     @Volatile
     var orbotConnected = false
-    private val mCleanInsightsCirculo = CleanInsightsManager()
+    private val mCleanInsights = CleanInsightsManager()
     private var mCurrentSpace: Space? = null
 
     override fun attachBaseContext(base: Context?) {
@@ -56,30 +50,7 @@ class OpenArchiveApp : SugarApp() {
         if (getUseTor() && OrbotHelper.isOrbotInstalled(this))
             initNetCipher(this)
 
-        initCrashReporting()
-
         uploadQueue()
-
-    }
-
-    private fun initCrashReporting() {
-        val builder = CoreConfigurationBuilder(this)
-            .setBuildConfigClass(BuildConfig::class.java)
-            .setReportFormat(StringFormat.KEY_VALUE_LIST)
-            .setReportContent( //ReportField.USER_COMMENT,
-                ReportField.REPORT_ID,
-                ReportField.APP_VERSION_NAME,
-                ReportField.APP_VERSION_CODE,
-                ReportField.ANDROID_VERSION,
-                ReportField.PHONE_MODEL,
-                ReportField.PACKAGE_NAME,
-                ReportField.CRASH_CONFIGURATION,
-                ReportField.CUSTOM_DATA,
-                ReportField.STACK_TRACE,
-                ReportField.APPLICATION_LOG,
-                ReportField.BUILD
-            )
-        ACRA.init(this, builder)
     }
 
     fun uploadQueue() {
@@ -90,9 +61,8 @@ class OpenArchiveApp : SugarApp() {
         }
     }
 
-    fun initNetCipher(context: Context) {
-        val LOG_TAG = "NetCipherClient"
-        Timber.tag(LOG_TAG).d( "Initializing NetCipher client")
+    private fun initNetCipher(context: Context) {
+        Timber.d( "Initializing NetCipher client")
         val appContext = context.applicationContext
         val oh = OrbotHelper.get(appContext)
         if (BuildConfig.DEBUG) {
@@ -135,7 +105,7 @@ class OpenArchiveApp : SugarApp() {
         if (mCurrentSpace == null) {
             val spaceId = getCurrentSpaceId()
             if (spaceId != -1L) {
-                mCurrentSpace = findById<Space>(
+                mCurrentSpace = findById(
                     Space::class.java, spaceId
                 )
             }
@@ -143,21 +113,15 @@ class OpenArchiveApp : SugarApp() {
         return mCurrentSpace
     }
 
-
-    fun getUseTor(): Boolean {
+    private fun getUseTor(): Boolean {
         return orbotConnected
     }
 
     fun hasCleanInsightsConsent(): Boolean? {
-        return mCleanInsightsCirculo.hasConsent()
+        return mCleanInsights.hasConsent()
     }
 
     fun showCleanInsightsConsent(activity: Activity) {
-        mCleanInsightsCirculo.getConsent(activity)
+        mCleanInsights.getConsent(activity)
     }
-
-    fun measureEvent(key: String, value: String) {
-        mCleanInsightsCirculo.measureEvent(key, value)
-    }
-
 }
