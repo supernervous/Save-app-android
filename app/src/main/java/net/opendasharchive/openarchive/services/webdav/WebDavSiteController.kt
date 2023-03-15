@@ -42,7 +42,7 @@ class WebDAVSiteController(
     jobId
 ) {
 
-    lateinit var okHttpBaseClient: OkHttpBaseClient
+    lateinit var httpClient: OkHttpClient
 
     private var chunkStartIdx: Int = 0
     private val fileBase = "files/"
@@ -64,12 +64,12 @@ class WebDAVSiteController(
     @SuppressLint("SimpleDateFormat")
     private fun init(context: Context, listener: SiteControllerListener?) {
         dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
-        okHttpBaseClient = OkHttpBaseClient()
+        httpClient = OkHttpClient.base()
         if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
             val builder = StrongOkHttpClientBuilder(context)
             builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
                 override fun onConnected(okHttpClient: OkHttpClient?) {
-                    sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
+                    sardine = OkHttpSardine(httpClient)
                 }
 
                 override fun onConnectionException(e: Exception) {
@@ -111,7 +111,7 @@ class WebDAVSiteController(
                 Timber.d("waiting for Tor-enabled Sardine to init")
             }
         } else {
-            sardine = OkHttpSardine(okHttpBaseClient.okHttpClient)
+            sardine = OkHttpSardine(httpClient)
         }
 
     }
