@@ -1,4 +1,4 @@
-package io.scal.secureshareui.login
+package net.opendasharchive.openarchive.services.internetarchive
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -10,10 +10,8 @@ import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import io.scal.secureshareui.controller.ArchiveSiteController
-import io.scal.secureshareui.controller.SiteController
-import io.scal.secureshareui.lib.Util
-import io.scal.secureshareui.lib.Util.clearWebviewAndCookies
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import timber.log.Timber

@@ -1,4 +1,4 @@
-package io.scal.secureshareui.controller
+package net.opendasharchive.openarchive.services
 import android.os.Message
 
 interface SiteControllerListener {

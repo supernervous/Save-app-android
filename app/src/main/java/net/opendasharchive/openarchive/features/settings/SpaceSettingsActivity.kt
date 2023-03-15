@@ -24,7 +24,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.services.archivedotorg.IaLoginActivity
+import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA

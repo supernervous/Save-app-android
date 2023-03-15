@@ -9,8 +9,8 @@ import com.dropbox.core.DbxException
 import com.dropbox.core.v2.files.FileMetadata
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
-import io.scal.secureshareui.controller.SiteController
-import io.scal.secureshareui.controller.SiteControllerListener
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST

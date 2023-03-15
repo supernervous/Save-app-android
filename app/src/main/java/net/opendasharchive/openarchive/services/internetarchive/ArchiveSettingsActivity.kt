@@ -1,12 +1,10 @@
-package net.opendasharchive.openarchive.services.archivedotorg
+package net.opendasharchive.openarchive.services.internetarchive
 
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.databinding.ActivityArchiveMetadataBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaById

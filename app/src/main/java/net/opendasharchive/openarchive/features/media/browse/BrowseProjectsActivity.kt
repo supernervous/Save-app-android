@@ -5,7 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
 import net.opendasharchive.openarchive.db.Project

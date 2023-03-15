@@ -73,14 +73,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".services.archivedotorg.ArchiveSettingsActivity"
+            android:name=".services.internetarchive.ArchiveSettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/SettingsTheme" />
         <activity
-            android:name="io.scal.secureshareui.login.ArchiveLoginActivity"
+            android:name=".services.internetarchive.ArchiveLoginActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
             android:parentActivityName=".features.onboarding.SpaceSetupActivity"
@@ -96,7 +96,7 @@
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
         <activity
-            android:name=".services.archivedotorg.IaLoginActivity"
+            android:name=".services.internetarchive.IaLoginActivity"
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
         <activity

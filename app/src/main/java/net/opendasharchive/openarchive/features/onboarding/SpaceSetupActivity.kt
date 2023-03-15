@@ -7,7 +7,7 @@ import android.view.Window
 import android.view.WindowManager
 import net.opendasharchive.openarchive.databinding.ActivitySignInBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.services.archivedotorg.IaLoginActivity
+import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 

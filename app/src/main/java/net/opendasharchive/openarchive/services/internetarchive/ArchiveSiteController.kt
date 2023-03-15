@@ -1,4 +1,4 @@
-package io.scal.secureshareui.controller
+package net.opendasharchive.openarchive.services.internetarchive
 
 import android.app.Activity
 import android.content.Context
@@ -9,12 +9,12 @@ import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.impl.handler.ResponseHandler
-import io.scal.secureshareui.lib.Util
-import io.scal.secureshareui.login.ArchiveLoginActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import timber.log.Timber

@@ -1,4 +1,4 @@
-package io.scal.secureshareui.controller
+package net.opendasharchive.openarchive.services.internetarchive
 
 interface RequestListener {
     fun transferred(bytes: Long)

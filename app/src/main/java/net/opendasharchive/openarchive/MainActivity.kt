@@ -27,7 +27,7 @@ import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.orm.SugarRecord.findById
-import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.services.SiteController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding

@@ -1,4 +1,4 @@
-package io.scal.secureshareui.controller
+package net.opendasharchive.openarchive.services.internetarchive
 
 import okio.source
 import okhttp3.internal.closeQuietly

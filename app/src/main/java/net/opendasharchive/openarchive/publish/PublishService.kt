@@ -16,11 +16,11 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.orm.SugarRecord.find
 import com.orm.SugarRecord.findById
-import io.scal.secureshareui.controller.ArchiveSiteController
-import io.scal.secureshareui.controller.ArchiveSiteController.Companion.getMediaMetadata
-import io.scal.secureshareui.controller.SiteController
-import io.scal.secureshareui.controller.SiteController.Companion.getSiteController
-import io.scal.secureshareui.controller.SiteControllerListener
+import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController
+import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController.Companion.getMediaMetadata
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteController.Companion.getSiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Collection

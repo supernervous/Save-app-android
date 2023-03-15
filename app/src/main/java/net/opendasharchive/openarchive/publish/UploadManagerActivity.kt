@@ -11,14 +11,11 @@ import net.opendasharchive.openarchive.MainActivity
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity

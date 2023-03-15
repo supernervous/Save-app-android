@@ -1,4 +1,4 @@
-package io.scal.secureshareui.lib
+package net.opendasharchive.openarchive.services.internetarchive
 
 import android.app.Activity
 import android.webkit.CookieManager

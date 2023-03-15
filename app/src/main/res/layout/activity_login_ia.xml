@@ -6,7 +6,7 @@
     android:filterTouchesWhenObscured="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="net.opendasharchive.openarchive.services.archivedotorg.IaLoginActivity">
+    tools:context="net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

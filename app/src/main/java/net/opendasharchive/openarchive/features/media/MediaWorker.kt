@@ -7,8 +7,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.orm.SugarRecord.find
 import com.orm.SugarRecord.findById
-import io.scal.secureshareui.controller.ArchiveSiteController
-import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController
+import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media

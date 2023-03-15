@@ -13,8 +13,8 @@ import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import info.guardianproject.netcipher.client.StrongBuilder
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import io.scal.secureshareui.controller.SiteController
-import io.scal.secureshareui.controller.SiteControllerListener
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById

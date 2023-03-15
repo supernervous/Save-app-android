@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.services.archivedotorg
+package net.opendasharchive.openarchive.services.internetarchive
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -10,8 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.orm.SugarRecord.findById
-import io.scal.secureshareui.controller.ArchiveSiteController
-import io.scal.secureshareui.controller.SiteController
+import net.opendasharchive.openarchive.services.SiteController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.MainActivity

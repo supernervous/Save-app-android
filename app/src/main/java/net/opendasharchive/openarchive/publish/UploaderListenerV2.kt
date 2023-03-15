@@ -3,12 +3,11 @@ package net.opendasharchive.openarchive.publish
 import android.content.Context
 import android.content.Intent
 import android.os.Message
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import io.scal.secureshareui.controller.SiteController
-import io.scal.secureshareui.controller.SiteControllerListener
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import timber.log.Timber
 
 class UploaderListenerV2(
@@ -37,7 +36,7 @@ class UploaderListenerV2(
         val errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE)
         val error = "Error $errorCode: $errorMessage"
 
-        Log.d("OAPublish", "upload error: $error")
+        Timber.d("upload error: $error")
 
         uploadMedia.statusMessage = error
         uploadMedia.status = Media.STATUS_ERROR
@@ -49,7 +48,7 @@ class UploaderListenerV2(
     // Send an Intent with an action named "custom-event-name". The Intent sent should
     // be received by the ReceiverActivity.
     private fun notifyMediaUpdated(media: Media) {
-        Timber.tag("sender").d("Broadcasting message");
+        Timber.tag("sender").d("Broadcasting message")
         val intent = Intent(MainActivity.INTENT_FILTER_NAME)
         intent.putExtra(SiteController.MESSAGE_KEY_MEDIA_ID, media.id)
         intent.putExtra(SiteController.MESSAGE_KEY_STATUS, media.status)
