@@ -31,7 +31,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs.getUploadWifiOnly
 import timber.log.Timber
 import java.io.IOException
@@ -111,7 +110,7 @@ class PublishService : Service(), Runnable {
                         media.uploadDate = datePublish
                         media.progress = 0 //should we reset this?
                         media.status = Media.STATUS_UPLOADING
-                        media.statusMessage = Constants.EMPTY_STRING
+                        media.statusMessage = ""
                     }
                     media.licenseUrl = proj.licenseUrl
                     try {

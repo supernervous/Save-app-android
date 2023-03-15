@@ -5,7 +5,6 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.util.Constants
 import kotlin.math.max
 
 class BadgeDrawable(context: Context) : Drawable() {
@@ -14,7 +13,7 @@ class BadgeDrawable(context: Context) : Drawable() {
     private var mTextPaint: Paint? = null
     private val mTxtRect = Rect()
 
-    private var mCount = Constants.EMPTY_STRING
+    private var mCount = ""
 
     init {
         val mTextSize = context.resources.getDimension(R.dimen.badge_text_size)
@@ -53,6 +52,7 @@ class BadgeDrawable(context: Context) : Drawable() {
         //NO-OP
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.UNKNOWN
     }

@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.db
 
 import com.orm.SugarRecord
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import java.util.Date
 
 data class Project(
@@ -17,13 +16,13 @@ data class Project(
 
         fun getAllBySpace(spaceId: Long): List<Project>? {
             val whereArgs = arrayOf(spaceId.toString() + "")
-            return find(Project::class.java, "space_id = ?", whereArgs, EMPTY_STRING, "ID DESC", EMPTY_STRING)
+            return find(Project::class.java, "space_id = ?", whereArgs, "", "ID DESC", "")
         }
 
         fun getAllBySpace(spaceId: Long, archived: Boolean): List<Project>? {
             val isArchived = if (archived) 1 else 0
-            val whereArgs = arrayOf(spaceId.toString() + EMPTY_STRING, isArchived.toString() + EMPTY_STRING)
-            return find(Project::class.java, "space_id = ? AND archived = ?", whereArgs, EMPTY_STRING, "ID DESC", EMPTY_STRING)
+            val whereArgs = arrayOf(spaceId.toString() + "", isArchived.toString() + "")
+            return find(Project::class.java, "space_id = ? AND archived = ?", whereArgs, "", "ID DESC", "")
         }
 
         fun getById(projectId: Long): Project? {

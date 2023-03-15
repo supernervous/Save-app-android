@@ -12,10 +12,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
 import android.view.*
-import com.google.android.gms.security.ProviderInstaller;
-import android.widget.ImageView
+import com.google.android.gms.security.ProviderInstaller
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -51,7 +49,6 @@ import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.ui.BadgeDrawable
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
@@ -359,7 +356,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     private fun importMedia(uri: Uri?): Media? {
         if (uri == null) return null
-        val title = Utility.getUriDisplayName(this, uri) ?: Constants.EMPTY_STRING
+        val title = Utility.getUriDisplayName(this, uri) ?: ""
         val mimeType = Utility.getMimeType(this, uri)
         val fileImport = Utility.getOutputMediaFileByCache(this, title)
         try {
@@ -400,7 +397,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             media.contentLength = fileSource.length()
         } else media.contentLength = fileImport?.length() ?: 0
         media.originalFilePath = Uri.fromFile(fileImport).toString()
-        media.mimeType = mimeType ?: Constants.EMPTY_STRING
+        media.mimeType = mimeType ?: ""
         media.createDate = createDate
         media.updateDate = media.createDate
         media.status = Media.STATUS_LOCAL

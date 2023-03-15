@@ -1,18 +1,15 @@
 package net.opendasharchive.openarchive.features.media.batch
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -28,7 +25,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -59,7 +55,7 @@ class BatchReviewMediaActivity : BaseActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = EMPTY_STRING
+            title = ""
         }
 
         if (mPicasso == null) {
@@ -159,18 +155,18 @@ class BatchReviewMediaActivity : BaseActivity() {
 //                    tvDescriptionLbl.isEnabled = false
 
                     if (media.description.isEmpty()) {
-                        tvDescriptionLbl.hint = EMPTY_STRING
+                        tvDescriptionLbl.hint = ""
                     }
 //                    tvAuthorLbl.isEnabled = false
 //                    tvLocationLbl.isEnabled = false
 
                     if (TextUtils.isEmpty(media.location)) {
-                        tvLocationLbl.hint = EMPTY_STRING
+                        tvLocationLbl.hint = ""
                     }
 //                    tvTagsLbl.isEnabled = false
 
                     if (media.getTags().isEmpty()) {
-                        tvTagsLbl.hint = EMPTY_STRING
+                        tvTagsLbl.hint = ""
                     }
 //                    tvCcLicense.isEnabled = false
                 }

@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import com.orm.SugarRecord.findById
 import io.scal.secureshareui.controller.ArchiveSiteController
@@ -25,7 +24,6 @@ import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Prefs.getBoolean
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
@@ -151,9 +149,9 @@ class ArchiveOrgLoginActivity : BaseActivity() {
             if (resultCode == RESULT_OK) {
                 val credentials = data?.getStringExtra(SiteController.EXTRAS_KEY_CREDENTIALS)
                 mSpace?.let {
-                    it.password = credentials ?: EMPTY_STRING
+                    it.password = credentials ?: ""
                     val username = data?.getStringExtra(SiteController.EXTRAS_KEY_USERNAME)
-                    it.username = username ?: EMPTY_STRING
+                    it.username = username ?: ""
                     binding.accesskey.setText(username)
                     binding.secretkey.setText(credentials)
                     it.name = getString(R.string.label_ia)
@@ -264,6 +262,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
         )
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (isSuccessLogin) {
             val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)

@@ -4,14 +4,13 @@ import android.content.*
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.WorkInfo
@@ -19,7 +18,6 @@ import com.bumptech.glide.Glide
 import com.orm.SugarRecord.findById
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
-import net.opendasharchive.openarchive.BuildConfig
 import net.opendasharchive.openarchive.MainActivity.Companion.INTENT_FILTER_NAME
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
@@ -31,7 +29,6 @@ import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
@@ -40,8 +37,6 @@ import java.io.File
 
 
 class ReviewMediaActivity : BaseActivity() {
-
-    private val TAG = "ReviewMediaActivity"
 
     private lateinit var mBinding: ActivityReviewMediaBinding
 
@@ -56,7 +51,7 @@ class ReviewMediaActivity : BaseActivity() {
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.tag("receiver").d("Updating media")
-            mMedia = findById<Media>(Media::class.java, mMedia.id)
+            mMedia = findById(Media::class.java, mMedia.id)
             bindMedia()
         }
     }
@@ -68,13 +63,13 @@ class ReviewMediaActivity : BaseActivity() {
         setContentView(mBinding.root)
         val application = requireNotNull(application)
         val viewModelFactory = ReviewMediaViewModelFactory(application)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ReviewMediaViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ReviewMediaViewModel::class.java]
         initLayout()
         observeValues()
     }
 
     private fun observeValues() {
-        viewModel.workState.observe(this, Observer { workInfo ->
+        viewModel.workState.observe(this) { workInfo ->
             workInfo.forEach {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
@@ -92,13 +87,13 @@ class ReviewMediaActivity : BaseActivity() {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.apply {
-            title = Constants.EMPTY_STRING
+            title = ""
             setDisplayHomeAsUpEnabled(true)
         }
 
@@ -109,10 +104,9 @@ class ReviewMediaActivity : BaseActivity() {
                 .build()
         }
 
-        mBinding.reviewMetadata.tbCcDeriv.setOnCheckedChangeListener { buttonView, isChecked -> setLicense() }
-        mBinding.reviewMetadata.tbCcSharealike.setOnCheckedChangeListener { buttonView, isChecked -> setLicense() }
-        mBinding.reviewMetadata.tbCcComm.setOnCheckedChangeListener { buttonView, isChecked -> setLicense() }
-
+        mBinding.reviewMetadata.tbCcDeriv.setOnCheckedChangeListener { _, _ -> setLicense() }
+        mBinding.reviewMetadata.tbCcSharealike.setOnCheckedChangeListener { _, _ -> setLicense() }
+        mBinding.reviewMetadata.tbCcComm.setOnCheckedChangeListener { _, _ -> setLicense() }
     }
 
     private fun updateFlagState() {
@@ -146,7 +140,7 @@ class ReviewMediaActivity : BaseActivity() {
                     ivEditLocation.setImageResource(R.drawable.ic_location_selected)
                 }
 
-                if (!mMedia.getTags().isNullOrEmpty()) {
+                if (mMedia.getTags().isNotEmpty()) {
                     tvTagsLbl.setText(mMedia.getTags())
                     ivEditTags.setImageResource(R.drawable.ic_tag_selected)
                 }
@@ -158,15 +152,18 @@ class ReviewMediaActivity : BaseActivity() {
             if (mMedia.status != Media.STATUS_LOCAL
                 && mMedia.status != Media.STATUS_NEW
             ) {
-
-                if (mMedia.status == Media.STATUS_UPLOADED || mMedia.status == Media.STATUS_PUBLISHED) {
-                    //NO-OP
-                } else if (mMedia.status == Media.STATUS_QUEUED) {
-                    tvUrl.text = "Waiting for upload..."
-                    tvUrl.visibility = View.VISIBLE
-                } else if (mMedia.status == Media.STATUS_UPLOADING) {
-                    tvUrl.text = "Uploading now..."
-                    tvUrl.visibility = View.VISIBLE
+                when (mMedia.status) {
+                    Media.STATUS_UPLOADED, Media.STATUS_PUBLISHED -> {
+                        //NO-OP
+                    }
+                    Media.STATUS_QUEUED -> {
+                        tvUrl.text = "Waiting for upload..."
+                        tvUrl.visibility = View.VISIBLE
+                    }
+                    Media.STATUS_UPLOADING -> {
+                        tvUrl.text = "Uploading now..."
+                        tvUrl.visibility = View.VISIBLE
+                    }
                 }
 
                 reviewMetadata.tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
@@ -175,7 +172,7 @@ class ReviewMediaActivity : BaseActivity() {
 
                 if (mMedia.description.isEmpty()) {
                     reviewMetadata.ivEditNotes.visibility = View.GONE
-                    reviewMetadata.tvDescriptionLbl.hint = Constants.EMPTY_STRING
+                    reviewMetadata.tvDescriptionLbl.hint = ""
                 }
 
                 reviewMetadata.tvAuthorLbl.isEnabled = false
@@ -187,9 +184,9 @@ class ReviewMediaActivity : BaseActivity() {
                 }
 
                 reviewMetadata.tvTagsLbl.isEnabled = false
-                if (mMedia.getTags().isNullOrEmpty()) {
+                if (mMedia.getTags().isEmpty()) {
                     reviewMetadata.ivEditTags.visibility = View.GONE
-                    reviewMetadata.tvTagsLbl.hint = Constants.EMPTY_STRING
+                    reviewMetadata.tvTagsLbl.hint = ""
                 }
                 reviewMetadata.tvCcLicense.isEnabled = false
                 reviewMetadata.groupLicenseChooser.visibility = View.GONE
@@ -231,7 +228,6 @@ class ReviewMediaActivity : BaseActivity() {
 
     private fun saveMedia() {
         //if deleted
-        if (mMedia == null) return
         if (mBinding.reviewMetadata.tvTitleLbl.text.isNotEmpty()) mMedia.title =
             mBinding.reviewMetadata.tvTitleLbl.text.toString() else {
             //use the file name if the user doesn't set a title
@@ -287,7 +283,7 @@ class ReviewMediaActivity : BaseActivity() {
 
         // check for new file or existing media
         if (currentMediaId >= 0) {
-            mMedia = findById<Media>(Media::class.java, currentMediaId)
+            mMedia = findById(Media::class.java, currentMediaId)
         } else {
             Utility.toastOnUiThread(this, getString(R.string.error_no_media),false)
             finish()
@@ -377,55 +373,6 @@ class ReviewMediaActivity : BaseActivity() {
         }
     }
 
-    //share the link to the file on the IA
-    private fun shareTorrentLink() {
-        val sb = StringBuffer()
-        sb.append("\"").append(mMedia.title).append("\"").append(' ')
-        sb.append(getString(R.string.share_torrent_text)).append(' ')
-        val sbTorrentUrl = StringBuffer()
-        val tagId = Uri.parse(mMedia.serverUrl).lastPathSegment
-        sb.append("https://archive.org/download/")
-        sb.append(tagId)
-        sb.append("/")
-        sb.append(tagId)
-        sb.append("_archive.torrent")
-        val sharingIntent = Intent(Intent.ACTION_SEND)
-        sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mMedia.title)
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
-        startActivity(
-            Intent.createChooser(
-                sharingIntent,
-                resources.getString(R.string.share_using)
-            )
-        )
-    }
-
-
-    //share the link to the file on the IA
-    private fun shareMedia() {
-        val sb = StringBuffer()
-        sb.append("\"").append(mMedia.title).append("\"").append(' ')
-        sb.append(getString(R.string.share_media_text)).append(' ')
-        sb.append(mMedia.serverUrl)
-        val sharingIntent = Intent(Intent.ACTION_SEND)
-        sharingIntent.type = mMedia.mimeType
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mMedia.title)
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
-        var sharedFileUri: Uri? = null
-        val mediaPath = mMedia.originalFilePath
-        sharedFileUri =
-            if (mediaPath.startsWith("content:")) Uri.parse(mediaPath) else FileProvider.getUriForFile(
-                this, BuildConfig.APPLICATION_ID + ".provider", File(mMedia.originalFilePath)
-            )
-        sharingIntent.putExtra(Intent.EXTRA_STREAM, sharedFileUri)
-        startActivity(
-            Intent.createChooser(
-                sharingIntent,
-                resources.getString(R.string.share_using)
-            )
-        )
-    }
 
     override fun onResume() {
         super.onResume()
@@ -435,22 +382,6 @@ class ReviewMediaActivity : BaseActivity() {
             mMessageReceiver,
             IntentFilter(INTENT_FILTER_NAME)
         )
-    }
-
-    private fun showSuccess() {
-        Toast.makeText(this, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
-    }
-
-    fun showError(message: String?) {
-        runOnUiThread {
-            if (!isFinishing) {
-                AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-                    .setTitle("Upload Error")
-                    .setMessage(message)
-                    .setCancelable(false)
-                    .setPositiveButton("ok") { dialog, which -> finish() }.create().show()
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -463,26 +394,26 @@ class ReviewMediaActivity : BaseActivity() {
         val build = AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
             .setTitle(R.string.popup_remove_title)
             .setMessage(R.string.popup_remove_desc)
-            .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { dialogInterface, i ->
+            .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { _, _ ->
                 //do nothing
             }
-            .setPositiveButton(R.string.lbl_ok) { dialog, which ->
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 deleteMedia()
             }
         build.create().show()
     }
 
     private fun deleteMedia() {
-        val media: Media = findById<Media>(Media::class.java, currentMediaId)
-        if (!media.serverUrl.isNullOrEmpty() || media.status == Media.STATUS_UPLOADED || media.status == Media.STATUS_PUBLISHED) {
+        val media: Media = findById(Media::class.java, currentMediaId)
+        if (media.serverUrl.isNotEmpty() || media.status == Media.STATUS_UPLOADED || media.status == Media.STATUS_PUBLISHED) {
             mMedia.status = Media.STATUS_DELETE_REMOTE
             mMedia.save()
             //start upload queue, which will also handle the deletes
             (application as OpenArchiveApp).uploadQueue()
             finish()
         } else {
-            val success: Boolean = findById<Media>(Media::class.java, currentMediaId).delete()
-            Log.d("OAMedia", "Item deleted: $success")
+            val success: Boolean = findById(Media::class.java, currentMediaId).delete()
+            Timber.d("Item deleted: $success")
             finish()
         }
     }

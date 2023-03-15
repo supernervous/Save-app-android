@@ -3,17 +3,13 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 
 class AddProjectActivity : BaseActivity() {
 
@@ -32,7 +28,7 @@ class AddProjectActivity : BaseActivity() {
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = EMPTY_STRING
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -68,6 +64,7 @@ class AddProjectActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {

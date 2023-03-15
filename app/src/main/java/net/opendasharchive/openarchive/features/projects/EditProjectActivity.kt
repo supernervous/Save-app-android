@@ -4,12 +4,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
@@ -17,10 +15,8 @@ import net.opendasharchive.openarchive.db.Collection.Companion.getCollectionById
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Globals
 
 class EditProjectActivity : BaseActivity() {
@@ -45,7 +41,7 @@ class EditProjectActivity : BaseActivity() {
 
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = EMPTY_STRING
+        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val projectId = intent.getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID, -1L)
 
@@ -148,7 +144,7 @@ class EditProjectActivity : BaseActivity() {
 
             mBinding.editProjectLayout.apply {
                 if (!tbCcDerivEnable.isChecked) {
-                    ccLicenseDisplay.text = EMPTY_STRING
+                    ccLicenseDisplay.text = ""
                     project.licenseUrl = null
                     project.save()
                     return
@@ -231,6 +227,7 @@ class EditProjectActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {

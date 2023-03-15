@@ -1,12 +1,12 @@
 package net.opendasharchive.openarchive.db
 
 import android.content.Intent
-import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
 import net.opendasharchive.openarchive.util.Prefs
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 
 class SpaceChecker {
@@ -26,10 +26,10 @@ class SpaceChecker {
 
 data class Space(
     var type: Int = 0,
-    var name: String = EMPTY_STRING,
-    var username: String = EMPTY_STRING,
-    var password: String = EMPTY_STRING,
-    var host: String = EMPTY_STRING
+    var name: String = "",
+    var username: String = "",
+    var password: String = "",
+    var host: String = ""
 ) : SugarRecord() {
 
     companion object {

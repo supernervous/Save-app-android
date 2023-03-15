@@ -2,10 +2,8 @@ package net.opendasharchive.openarchive.features.media.browse
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.scal.secureshareui.controller.SiteController
 import net.opendasharchive.openarchive.R
@@ -17,7 +15,6 @@ import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
-import net.opendasharchive.openarchive.util.Constants
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -42,7 +39,7 @@ class BrowseProjectsActivity : BaseActivity() {
     private fun initView() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title = Constants.EMPTY_STRING
+        title = ""
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
         val space = getCurrentSpace()

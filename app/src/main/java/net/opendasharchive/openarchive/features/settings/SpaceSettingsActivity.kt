@@ -61,7 +61,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.let {
-            it.title = Constants.EMPTY_STRING
+            it.title = ""
             it.setDisplayHomeAsUpEnabled(true)
         }
 

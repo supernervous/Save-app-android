@@ -18,6 +18,6 @@ class UnitTests {
 
     @Test
     fun emptyString() {
-        Assert.assertEquals(Constants.EMPTY_STRING, "")
+        Assert.assertEquals(Constants.REMOTE_PHP_ADDRESS, "/remote.php/webdav/")
     }
 }

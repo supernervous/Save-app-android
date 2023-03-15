@@ -1,32 +1,29 @@
 package net.opendasharchive.openarchive.db
 
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
-import net.opendasharchive.openarchive.util.Constants.EMPTY_STRING
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
 data class Media(
-    var originalFilePath: String = EMPTY_STRING,
-    var mimeType: String = EMPTY_STRING,
+    var originalFilePath: String = "",
+    var mimeType: String = "",
     var createDate: Date? = null,
     var updateDate: Date? = null,
     var uploadDate: Date? = null,
-    var serverUrl: String = EMPTY_STRING,
-    var title: String = EMPTY_STRING,
-    var description: String = EMPTY_STRING,
-    var author: String = EMPTY_STRING,
-    var location: String = EMPTY_STRING,
-    private var tags: String = EMPTY_STRING,
+    var serverUrl: String = "",
+    var title: String = "",
+    var description: String = "",
+    var author: String = "",
+    var location: String = "",
+    private var tags: String = "",
     var licenseUrl: String? = null,
     @SerializedName(value = "mediaHashBytes")
     var mediaHash: ByteArray = byteArrayOf(),
     @SerializedName(value = "mediaHash")
-    var mediaHashString: String = EMPTY_STRING,
+    var mediaHashString: String = "",
     var status: Int = 0,
-    var statusMessage: String = EMPTY_STRING,
+    var statusMessage: String = "",
     var projectId: Long = 0,
     var collectionId: Long = 0,
     var contentLength: Long = 0,
@@ -39,7 +36,7 @@ data class Media(
     fun getFormattedCreateDate(): String {
         return createDate?.let {
             SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(it)
-        } ?: EMPTY_STRING
+        } ?: ""
     }
 
     fun getTags(): String {
@@ -64,21 +61,21 @@ data class Media(
 
         fun getMediaByProjectAndCollection(projectId: Long, collectionId: Long): List<Media>? {
             val values =
-                arrayOf(projectId.toString() + EMPTY_STRING, collectionId.toString() + EMPTY_STRING)
+                arrayOf(projectId.toString() + "", collectionId.toString() + "")
             return find(
                 Media::class.java,
                 "PROJECT_ID = ? AND COLLECTION_ID = ?",
                 values,
-                EMPTY_STRING,
+                "",
                 "STATUS, ID DESC",
-                EMPTY_STRING
+                ""
             )
         }
 
         fun getMediaByStatus(statuses: LongArray, order: String?): List<Media>? {
             val values = arrayOfNulls<String>(statuses.size)
             var idx = 0
-            for (status in statuses) values[idx++] = status.toString() + EMPTY_STRING
+            for (status in statuses) values[idx++] = status.toString() + ""
             val sbWhere = StringBuffer()
             for (i in values.indices) {
                 sbWhere.append("status = ?")
@@ -88,9 +85,9 @@ data class Media(
                 Media::class.java,
                 sbWhere.toString(),
                 values,
-                EMPTY_STRING,
+                "",
                 order,
-                EMPTY_STRING
+                ""
             )
         }
 
@@ -99,14 +96,14 @@ data class Media(
         }
 
         fun getMediaByProject(projectId: Long): List<Media>? {
-            val values = arrayOf(projectId.toString() + EMPTY_STRING)
+            val values = arrayOf(projectId.toString() + "")
             return find(
                 Media::class.java,
                 "PROJECT_ID = ?",
                 values,
-                EMPTY_STRING,
+                "",
                 "STATUS, ID DESC",
-                EMPTY_STRING
+                ""
             )
         }
     }

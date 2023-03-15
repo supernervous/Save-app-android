@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.features.media
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -20,7 +19,6 @@ import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.publish.UploaderListenerV2
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
 import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
-import net.opendasharchive.openarchive.util.Constants
 import timber.log.Timber
 import java.util.*
 
@@ -52,7 +50,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                         media.uploadDate = datePublish
                         media.progress = 0 //should we reset this?
                         media.status = Media.STATUS_UPLOADING
-                        media.statusMessage = Constants.EMPTY_STRING
+                        media.statusMessage = ""
                     }
 
                     media.licenseUrl = proj.licenseUrl
@@ -60,7 +58,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                     val project = getById(media.projectId)
                     project?.let {
                         val valueMap = ArchiveSiteController.getMediaMetadata(ctx, media)
-                        media.serverUrl = project.description ?: Constants.EMPTY_STRING
+                        media.serverUrl = project.description ?: ""
                         media.status = Media.STATUS_UPLOADING
                         media.save()
                         notifyMediaUpdated(media)
@@ -97,8 +95,6 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                                             null
                                         )
                                 }
-
-
 
                                 val result = sc?.upload(space, media, valueMap)
                                 if (result == true) {

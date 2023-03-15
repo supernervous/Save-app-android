@@ -19,7 +19,6 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
@@ -133,12 +132,12 @@ class WebDAVSiteController(
             uploadUsingChunking(space, media, valueMap)
         } else {
             startAuthentication(space)
-            val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: Constants.EMPTY_STRING)
+            val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: "")
             val basePath = media?.serverUrl
             val folderName = dateFormat?.format(media?.createDate ?: Date())
             val fileName: String = getUploadFileName(
-                media?.title ?: Constants.EMPTY_STRING,
-                media?.mimeType ?: Constants.EMPTY_STRING
+                media?.title ?: "",
+                media?.mimeType ?: ""
             )
             val projectFolderBuilder = StringBuffer() //server + '/' + basePath;
             projectFolderBuilder.append(server?.replace("webdav", "dav"))
@@ -148,7 +147,7 @@ class WebDAVSiteController(
             projectFolderBuilder.append(basePath)
             var projectFolderPath = projectFolderBuilder.toString()
             if (media?.contentLength == 0L) {
-                val fileMedia = File(mediaUri.path ?: Constants.EMPTY_STRING)
+                val fileMedia = File(mediaUri.path ?: "")
                 if (fileMedia.exists()) media.contentLength = fileMedia.length()
             }
 
@@ -260,8 +259,8 @@ class WebDAVSiteController(
         startAuthentication(space)
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
         var fileName: String = getUploadFileName(
-            media?.title ?: Constants.EMPTY_STRING,
-            media?.mimeType ?: Constants.EMPTY_STRING
+            media?.title ?: "",
+            media?.mimeType ?: ""
         )
         val folderName = dateFormat?.format(media?.updateDate ?: Date())
         val chunkFolderPath =
@@ -274,7 +273,7 @@ class WebDAVSiteController(
         projectFolderBuilder.append(chunkFolderPath)
         var projectFolderPath = projectFolderBuilder.toString()
         if (media?.contentLength == 0L) {
-            val fileMedia = File(mediaUri.path ?: Constants.EMPTY_STRING)
+            val fileMedia = File(mediaUri.path ?: "")
             if (fileMedia.exists()) media.contentLength = fileMedia.length()
         }
         val tmpMediaPath = projectFolderPath
@@ -330,19 +329,19 @@ class WebDAVSiteController(
             inputStream?.close()
 
             fileName = getUploadFileName(
-                media?.title ?: Constants.EMPTY_STRING,
-                media?.mimeType ?: Constants.EMPTY_STRING
+                media?.title ?: "",
+                media?.mimeType ?: ""
             )
             projectFolderBuilder = StringBuffer() //server + '/' + basePath;
             projectFolderBuilder.append(server?.replace("webdav", "dav"))
             if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
             projectFolderBuilder.append("files/")
             projectFolderBuilder.append(
-                UrlEscapers.urlFragmentEscaper().escape(space?.username ?: Constants.EMPTY_STRING)
+                UrlEscapers.urlFragmentEscaper().escape(space?.username ?: "")
             )
                 .append('/')
             projectFolderBuilder.append(
-                UrlEscapers.urlFragmentEscaper().escape(media?.serverUrl ?: Constants.EMPTY_STRING)
+                UrlEscapers.urlFragmentEscaper().escape(media?.serverUrl ?: "")
             )
             projectFolderPath = projectFolderBuilder.toString()
             if (sardine?.exists(projectFolderPath) == false) sardine?.createDirectory(

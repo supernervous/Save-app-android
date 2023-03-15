@@ -16,7 +16,6 @@ import com.permissionx.guolindev.PermissionX
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.routeTo
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
@@ -38,7 +37,7 @@ class SettingsActivity : BaseActivity() {
     private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.let {
-            it.title = Constants.EMPTY_STRING
+            it.title = ""
             it.setDisplayHomeAsUpEnabled(true)
         }
         routeTo(SettingsFragment(), mBinding.content.id)

@@ -13,7 +13,6 @@ import io.scal.secureshareui.controller.SiteController
 import io.scal.secureshareui.controller.SiteControllerListener
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Globals
 import timber.log.Timber
@@ -67,7 +66,7 @@ class DropboxSiteController(
         val fileName: String = getUploadFileName(media.title, media.mimeType)
 
         if (media.contentLength == 0L) {
-            val fileMedia = File(mediaUri.path ?: Constants.EMPTY_STRING)
+            val fileMedia = File(mediaUri.path ?: "")
             if (fileMedia.exists()) media.contentLength = fileMedia.length()
         }
 
@@ -121,7 +120,7 @@ class DropboxSiteController(
         startAuthentication(space)
         val listFiles = ArrayList<File>()
         try {
-            val result = dbClient.getClient()!!.files().listFolder(Constants.EMPTY_STRING)
+            val result = dbClient.getClient()!!.files().listFolder("")
             for (md in result.entries) {
                 val fileOrFolder = md.pathLower
                 if (!fileOrFolder.contains(".")) {
