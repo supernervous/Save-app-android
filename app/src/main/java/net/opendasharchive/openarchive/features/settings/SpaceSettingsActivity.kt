@@ -142,12 +142,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
     private fun getSpaceIcon(space: Space, iconSize: Int): ImageView {
         val image = AvatarImageView(this)
         image.avatarBackgroundColor = ContextCompat.getColor(this, R.color.oablue)
-        if (space.type == Space.TYPE_INTERNET_ARCHIVE) {
+        if (space.tType == Space.Type.INTERNET_ARCHIVE) {
             image.setImageResource(R.drawable.ialogo128)
             image.state = AvatarImageView.SHOW_IMAGE
         } else {
-            if (space.name.isEmpty()) space.name = space.username
-            image.setText(space.name.substring(0, 1).uppercase(Locale.ROOT))
+            image.setText(space.friendlyName.substring(0, 1).uppercase(Locale.ROOT))
             image.state = AvatarImageView.SHOW_INITIAL
         }
         val margin = 6
@@ -179,22 +178,16 @@ class SpaceSettingsActivity : AppCompatActivity() {
             viewModel.getLatestSpace()
         }
         mSpace?.let {
-            val uriServer = Uri.parse(it.host)
-            mBinding.contentSpaceLayout.txtSpaceName.text =
-                it.name.ifEmpty {
-                    uriServer.host
-                }
+            mBinding.contentSpaceLayout.txtSpaceName.text = it.friendlyName
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
             mBinding.contentSpaceLayout.spaceAvatar.avatarBackgroundColor =
                 ContextCompat.getColor(this, R.color.oablue)
 
-            if (it.type == Space.TYPE_INTERNET_ARCHIVE) {
+            if (it.tType == Space.Type.INTERNET_ARCHIVE) {
                 mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
                 mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_IMAGE
             } else {
-                val spaceName = it.name.ifEmpty {
-                    it.host
-                }
+                val spaceName = it.friendlyName
                 mBinding.contentSpaceLayout.spaceAvatar.setText(
                     spaceName.substring(0, 1).uppercase(Locale.getDefault())
                 )
@@ -207,11 +200,13 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     private fun startSpaceAuthActivity() {
         mSpace?.let {
-            val intent = if (it.type == Space.TYPE_WEBDAV) {
-                Intent(this@SpaceSettingsActivity, WebDAVLoginActivity::class.java)
-            } else if (it.type == Space.TYPE_DROPBOX) {
+            val intent = if (it.tType == Space.Type.WEBDAV) {
+                Intent(this@SpaceSettingsActivity, WebDavLoginActivity::class.java)
+            }
+            else if (it.tType == Space.Type.DROPBOX) {
                 Intent(this@SpaceSettingsActivity, DropboxLoginActivity::class.java)
-            } else {
+            }
+            else {
                 Intent(this@SpaceSettingsActivity, ArchiveOrgLoginActivity::class.java)
             }
             intent.putExtra(SPACE_EXTRA, it.id)

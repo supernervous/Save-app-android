@@ -3,13 +3,11 @@ package net.opendasharchive.openarchive.features.media.grid
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +20,6 @@ import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProjectAndCollection
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.media.list.MediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
@@ -121,7 +118,7 @@ class MediaGridFragment : MediaListFragment() {
                     }, onDelete = {
                         refresh()
                     }, onUpload = {
-                        if (Space.getCurrentSpace()!!.type == Space.TYPE_WEBDAV){
+                        if (Space.getCurrentSpace()?.tType == Space.Type.WEBDAV) {
                             if(Space.getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
                                 val availableSpace = getAvailableStorageSpace(it)
                                 val totalUploadsContent = availableSpace.first

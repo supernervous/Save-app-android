@@ -44,8 +44,8 @@ class BrowseProjectsActivity : BaseActivity() {
 
         val space = getCurrentSpace()
         if (space != null) {
-            val siteController = when (space.type) {
-                Space.TYPE_WEBDAV -> {
+            val siteController = when (space.tType) {
+                Space.Type.WEBDAV -> {
                     SiteController.getSiteController(
                         WebDAVSiteController.SITE_KEY,
                         this,
@@ -53,7 +53,7 @@ class BrowseProjectsActivity : BaseActivity() {
                         null
                     )
                 }
-                Space.TYPE_DROPBOX -> {
+                Space.Type.DROPBOX -> {
                     SiteController.getSiteController(
                         DropboxSiteController.SITE_KEY, this, null, null
                     )

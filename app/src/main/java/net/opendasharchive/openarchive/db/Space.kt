@@ -12,7 +12,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 class SpaceChecker {
     companion object {
         fun navigateToHome(activity: AppCompatActivity) {
-            val listSpaces = Space.getAllAsList()
+            val listSpaces = Space.getAll()
             if (listSpaces?.hasNext() == true) {
                 activity.finish()
             } else {
@@ -32,39 +32,49 @@ data class Space(
     var host: String = ""
 ) : SugarRecord() {
 
-    companion object {
-        const val TYPE_WEBDAV = 0
-        const val TYPE_INTERNET_ARCHIVE = 1
-        const val TYPE_DROPBOX = 3
+    enum class Type(val id: Int) {
+        WEBDAV(0),
+        INTERNET_ARCHIVE(1),
+        DROPBOX(3)
+    }
 
-        fun getAllAsList(): Iterator<Space>? {
+    companion object {
+        fun getAll(): Iterator<Space>? {
             return findAll(Space::class.java)
         }
 
-        fun getSpaceForCurrentUsername(email: String, type: Int, host:String): Int {
-            var totalNoOfExistingSpaces = 0
-            getAllAsList()?.asSequence()?.toList()?.let {
-                totalNoOfExistingSpaces = it.count { e -> e.username == email && e.type == type && e.host == host }
-            }
-            return totalNoOfExistingSpaces
+        fun hasSpace(type: Type, host: String, username: String): Boolean {
+            return find(Space::class.java,
+                "type = ? AND host = ? AND username = ?",
+                type.id.toString(), host, username)
+                .isNotEmpty()
         }
 
         fun getCurrentSpace(): Space? {
-            val spaceId: Long? = Prefs.getCurrentSpaceId()
-            if (spaceId != null) {
-                try {
-                    val space: Space? = findById(Space::class.java, spaceId)
-                    if (space != null) {
-                        if (TextUtils.isEmpty(space.name)) space.name = space.username
-                        return space
-                    }
-                } catch (e2: Exception) {
-                    //handle exception that may accure when current space id is null
-                    return null
-                }
+            return try {
+                findById(Space::class.java, Prefs.getCurrentSpaceId())
+            } catch (e2: Exception) {
+                //TODO: Handle exception that may occur when current space id is null.
+                null
             }
-            return null
+        }
+    }
+
+    val friendlyName: String
+        get() {
+            if (name.isNotBlank()) {
+                return name
+            }
+
+            return hostUrl?.host ?: name
         }
 
-    }
+    val hostUrl: HttpUrl?
+        get() = host.toHttpUrlOrNull()
+
+    var tType: Type?
+        get() = Type.values().firstOrNull { it.id == type }
+        set(value) {
+            type = (value ?: Type.WEBDAV).id
+        }
 }

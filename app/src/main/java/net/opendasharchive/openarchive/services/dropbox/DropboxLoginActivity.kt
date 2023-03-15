@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import com.dropbox.core.android.Auth
 import com.orm.SugarRecord.findById
@@ -20,7 +19,6 @@ import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME
@@ -56,7 +54,7 @@ class DropboxLoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(SPACE_EXTRA)) {
-            mSpace = findById<Space>(Space::class.java, intent.getLongExtra(SPACE_EXTRA, -1L))
+            mSpace = findById(Space::class.java, intent.getLongExtra(SPACE_EXTRA, -1L))
             binding.actionRemoveSpace.show()
 
             if (!mSpace?.username.isNullOrEmpty())
@@ -68,7 +66,7 @@ class DropboxLoginActivity : BaseActivity() {
                 isTokenExist = true
             }
             mSpace = Space()
-            mSpace?.type = Space.TYPE_DROPBOX
+            mSpace?.tType = Space.Type.DROPBOX
             if (mSpace?.password.isNullOrEmpty()) attemptLogin()
         }
 
@@ -91,19 +89,19 @@ class DropboxLoginActivity : BaseActivity() {
                         mSpace?.let { space ->
                             val client =
                                 DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
-                            var spaceExistCount = 0
+                            var spaceExists = false
                             lateinit var email: String
                             try {
                                 email =
-                                    client?.users()?.currentAccount?.email ?: Constants.EMPTY_STRING
-                                spaceExistCount =
-                                    Space.getSpaceForCurrentUsername(email, Space.TYPE_DROPBOX,space.host)
+                                    client?.users()?.currentAccount?.email ?: ""
+                                spaceExists =
+                                    Space.hasSpace(Space.Type.DROPBOX, space.host, email)
                             } catch (e: Exception) {
                                 space.username = Auth.getUid()
                                 e.printStackTrace()
                             }
 
-                            if (spaceExistCount == 0) {
+                            if (spaceExists) {
                                 space.username = email
                                 space.password = accessToken
                                 space.save()
@@ -138,6 +136,7 @@ class DropboxLoginActivity : BaseActivity() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (isSuccessLogin) {
             val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
@@ -195,7 +194,7 @@ class DropboxLoginActivity : BaseActivity() {
 
     fun removeProject(view: View?) {
         val dialogClickListener =
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         //Yes button clicked
@@ -227,10 +226,5 @@ class DropboxLoginActivity : BaseActivity() {
 
             SpaceChecker.navigateToHome(this)
         }
-    }
-
-
-    companion object {
-        private const val TAG = "Login"
     }
 }

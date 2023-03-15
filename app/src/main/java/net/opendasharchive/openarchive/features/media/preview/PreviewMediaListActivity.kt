@@ -3,11 +3,9 @@ package net.opendasharchive.openarchive.features.media.preview
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
@@ -85,7 +83,7 @@ class PreviewMediaListActivity : BaseActivity() {
 
     private fun batchUpload() {
         val listMedia = mFrag?.getMediaList() ?: listOf()
-        if (getCurrentSpace()!!.type == Space.TYPE_WEBDAV){
+        if (getCurrentSpace()?.tType == Space.Type.WEBDAV) {
 
              if(getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
                  //currently ticket #319 only supports nextcloud. Need to figure out a solution on the webDAV layer, that works across the board.

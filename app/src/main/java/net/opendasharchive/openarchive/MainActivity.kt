@@ -38,7 +38,6 @@ import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getAllAsList
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
@@ -268,25 +267,25 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
     private fun initSpace(space: Space) {
         mSpace = space
         mSpace?.let {
-            if (it.name.isNotEmpty()) {
-                setTitle(it.name)
+            if (it.friendlyName.isNotEmpty()) {
+                setTitle(it.friendlyName)
             } else {
-                val listSpaces = getAllAsList()
+                val listSpaces = Space.getAll()
                 if (listSpaces?.hasNext() == true) {
                     mSpace = listSpaces.next()
-                    setTitle(it.name)
+                    setTitle(it.friendlyName)
                     Prefs.setCurrentSpaceId(it.id)
                 } else {
                     setTitle(R.string.main_activity_title)
                 }
             }
 
-            if (it.type == Space.TYPE_INTERNET_ARCHIVE) {
+            if (it.type == Space.Type.INTERNET_ARCHIVE.id) {
                 mBinding.spaceAvatar.setImageResource(R.drawable.ialogo128)
             } else {
                 val drawable = TextDrawable.builder()
                     .buildRound(
-                        it.name.substring(0, 1).uppercase(Locale.getDefault()),
+                        it.friendlyName.substring(0, 1).uppercase(Locale.getDefault()),
                         resources.getColor(R.color.oablue)
                     )
                 mBinding.spaceAvatar.setImageDrawable(drawable)
@@ -566,6 +565,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
         if (requestCode == REQUEST_NEW_PROJECT_NAME) {

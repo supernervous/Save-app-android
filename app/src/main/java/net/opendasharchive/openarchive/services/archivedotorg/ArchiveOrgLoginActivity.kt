@@ -76,7 +76,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
     private fun initSpace() {
         if (mSpace == null) {
             mSpace = Space().also { space ->
-                space.type = Space.TYPE_INTERNET_ARCHIVE
+                space.tType = Space.Type.INTERNET_ARCHIVE
                 space.host = ArchiveSiteController.ARCHIVE_BASE_URL
                 space.name = getString(R.string.label_ia)
             }
@@ -143,6 +143,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SiteController.CONTROLLER_REQUEST_CODE) {
@@ -155,7 +156,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
                     binding.accesskey.setText(username)
                     binding.secretkey.setText(credentials)
                     it.name = getString(R.string.label_ia)
-                    it.type = Space.TYPE_INTERNET_ARCHIVE
+                    it.tType = Space.Type.INTERNET_ARCHIVE
                     it.save()
                     setCurrentSpaceId(it.id)
                     isSuccessLogin = true

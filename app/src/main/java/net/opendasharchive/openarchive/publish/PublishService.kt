@@ -159,25 +159,26 @@ class PublishService : Service(), Runnable {
             ) else getCurrentSpace()
             if (space != null) {
                 var sc: SiteController? = null
-                when (space.type) {
-                    Space.TYPE_WEBDAV -> sc = getSiteController(
-                        WebDAVSiteController.SITE_KEY,
+                when (space.tType) {
+                    Space.Type.WEBDAV -> sc = getSiteController(
+                        WebDavSiteController.SITE_KEY,
                         this,
                         UploaderListener(media),
                         null
                     )
-                    Space.TYPE_INTERNET_ARCHIVE -> sc = getSiteController(
+                    Space.Type.INTERNET_ARCHIVE -> sc = getSiteController(
                         ArchiveSiteController.SITE_KEY,
                         this,
                         UploaderListener(media),
                         null
                     )
-                    Space.TYPE_DROPBOX -> sc = getSiteController(
+                    Space.Type.DROPBOX -> sc = getSiteController(
                         DropboxSiteController.SITE_KEY,
                         this,
                         UploaderListener(media),
                         null
                     )
+                    else -> {}
                 }
                 listControllers.add(sc)
                 sc?.upload(space, media, valueMap)

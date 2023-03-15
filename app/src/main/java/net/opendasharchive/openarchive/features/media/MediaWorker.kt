@@ -72,28 +72,29 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                             var sc: SiteController? = null
 
                             try {
-                                when (space.type) {
-                                    Space.TYPE_WEBDAV -> sc =
+                                when (space.tType) {
+                                    Space.Type.WEBDAV -> sc =
                                         SiteController.getSiteController(
                                             WebDAVSiteController.SITE_KEY,
                                             ctx,
                                             UploaderListenerV2(media, ctx),
                                             null
                                         )
-                                    Space.TYPE_INTERNET_ARCHIVE -> sc =
+                                    Space.Type.INTERNET_ARCHIVE -> sc =
                                         SiteController.getSiteController(
                                             ArchiveSiteController.SITE_KEY,
                                             ctx,
                                             UploaderListenerV2(media, ctx),
                                             null
                                         )
-                                    Space.TYPE_DROPBOX -> sc =
+                                    Space.Type.DROPBOX -> sc =
                                         SiteController.getSiteController(
                                             SITE_KEY,
                                             ctx,
                                             UploaderListenerV2(media, ctx),
                                             null
                                         )
+                                    else -> {}
                                 }
 
                                 val result = sc?.upload(space, media, valueMap)
