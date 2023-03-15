@@ -1,12 +1,18 @@
 package net.opendasharchive.openarchive.db
 
 import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.amulyakhare.textdrawable.TextDrawable
+import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.util.Prefs
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import java.util.*
 
 
 class SpaceChecker {
@@ -77,4 +83,43 @@ data class Space(
         set(value) {
             type = (value ?: Type.WEBDAV).id
         }
+
+    fun setAvatar(view: ImageView) {
+        when (tType) {
+            Type.INTERNET_ARCHIVE -> {
+                if (view is AvatarImageView) {
+                    view.state = AvatarImageView.SHOW_IMAGE
+                }
+
+                view.setImageResource(R.drawable.ialogo128)
+            }
+
+            Type.DROPBOX -> {
+                if (view is AvatarImageView) {
+                    view.state = AvatarImageView.SHOW_IMAGE
+                }
+
+                view.post {
+                    view.setImageResource(R.drawable.dropbox)
+                }
+            }
+
+            else -> {
+                if (view is AvatarImageView) {
+                    view.state = AvatarImageView.SHOW_INITIAL
+                    view.setText((friendlyName.firstOrNull() ?: 'X').uppercase(Locale.getDefault()))
+                    view.avatarBackgroundColor = ContextCompat.getColor(view.context, R.color.oablue)
+                }
+                else {
+                    val drawable = TextDrawable.builder()
+                        .buildRound(
+                            friendlyName.firstOrNull()?.uppercase(Locale.getDefault()),
+                            ContextCompat.getColor(view.context, R.color.oablue)
+                        )
+
+                    view.setImageDrawable(drawable)
+                }
+            }
+        }
+    }
 }

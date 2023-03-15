@@ -12,17 +12,16 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
 import android.view.*
-import com.google.android.gms.security.ProviderInstaller
 import android.widget.ProgressBar
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.amulyakhare.textdrawable.TextDrawable
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
@@ -280,16 +279,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 }
             }
 
-            if (it.type == Space.Type.INTERNET_ARCHIVE.id) {
-                mBinding.spaceAvatar.setImageResource(R.drawable.ialogo128)
-            } else {
-                val drawable = TextDrawable.builder()
-                    .buildRound(
-                        it.friendlyName.substring(0, 1).uppercase(Locale.getDefault()),
-                        resources.getColor(R.color.oablue)
-                    )
-                mBinding.spaceAvatar.setImageDrawable(drawable)
-            }
+            it.setAvatar(mBinding.spaceAvatar)
         }
     }
 
@@ -379,7 +369,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             project.openCollectionId = coll.id
             project.save()
         } else {
-            coll = findById<Collection>(Collection::class.java, project.openCollectionId)
+            coll = findById(Collection::class.java, project.openCollectionId)
             if (coll == null || coll.uploadDate != null) {
                 coll = Collection()
                 coll.projectId = project.id

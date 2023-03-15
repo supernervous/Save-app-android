@@ -30,7 +30,7 @@ import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
-import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
+import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import net.opendasharchive.openarchive.util.Prefs.getUploadWifiOnly
 import timber.log.Timber
 import java.io.IOException

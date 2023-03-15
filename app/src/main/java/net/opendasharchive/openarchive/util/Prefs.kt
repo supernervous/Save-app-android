@@ -29,6 +29,10 @@ object Prefs{
         return prefs?.getBoolean(key, false) ?: false
     }
 
+    /**
+     * TODO: What the fuck is this? What is this used for and why isn't this stored in the database?
+     *      Or is it, and this is a duplicate?
+     */
     fun getNextCloudModel(): String {
         return prefs?.getString(Globals.PREF_NEXTCLOUD_USER_DATA, "") ?: ""
     }

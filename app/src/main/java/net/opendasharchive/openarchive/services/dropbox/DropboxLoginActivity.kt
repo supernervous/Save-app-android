@@ -46,7 +46,9 @@ class DropboxLoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
         binding = ActivityLoginDropboxBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,12 +57,9 @@ class DropboxLoginActivity : BaseActivity() {
 
         if (intent.hasExtra(SPACE_EXTRA)) {
             mSpace = findById(Space::class.java, intent.getLongExtra(SPACE_EXTRA, -1L))
-            binding.actionRemoveSpace.show()
-
-            if (!mSpace?.username.isNullOrEmpty())
-                binding.email.text = mSpace?.username
-
-        } else {
+            binding.removeSpaceBt.show()
+        }
+        else {
             isNewSpace = true
             if (Auth.getOAuth2Token() != null) {
                 isTokenExist = true
@@ -70,6 +69,11 @@ class DropboxLoginActivity : BaseActivity() {
             if (mSpace?.password.isNullOrEmpty()) attemptLogin()
         }
 
+        binding.email.text = mSpace?.username
+
+        binding.removeSpaceBt.setOnClickListener {
+            removeProject()
+        }
     }
 
     override fun onPause() {
@@ -120,7 +124,7 @@ class DropboxLoginActivity : BaseActivity() {
                     result?.let {
                         if (it == DropboxResult.Success) {
                             binding.email.text = mSpace?.username
-                            binding.actionRemoveSpace.show()
+                            binding.removeSpaceBt.show()
                             isSuccessLogin = true
                         } else if (it == DropboxResult.AccountAlreadyExist) {
                             Toast.makeText(
@@ -192,7 +196,7 @@ class DropboxLoginActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun removeProject(view: View?) {
+    private fun removeProject() {
         val dialogClickListener =
             DialogInterface.OnClickListener { _, which ->
                 when (which) {

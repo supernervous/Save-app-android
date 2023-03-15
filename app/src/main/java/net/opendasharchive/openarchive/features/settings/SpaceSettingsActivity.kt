@@ -15,7 +15,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.abdularis.civ.AvatarImageView
@@ -25,13 +24,11 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.services.archivedotorg.ArchiveOrgLoginActivity
+import net.opendasharchive.openarchive.services.archivedotorg.IaLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
-import net.opendasharchive.openarchive.services.webdav.WebDAVLoginActivity
-import net.opendasharchive.openarchive.util.Constants
+import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 import net.opendasharchive.openarchive.util.Prefs
-import java.util.*
 
 class SpaceSettingsActivity : AppCompatActivity() {
 
@@ -44,7 +41,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         mBinding = ActivitySpaceSettingsBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this).get(SpaceSettingsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SpaceSettingsViewModel::class.java]
         setContentView(mBinding.root)
         initLayout()
         observeData()
@@ -141,14 +138,8 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     private fun getSpaceIcon(space: Space, iconSize: Int): ImageView {
         val image = AvatarImageView(this)
-        image.avatarBackgroundColor = ContextCompat.getColor(this, R.color.oablue)
-        if (space.tType == Space.Type.INTERNET_ARCHIVE) {
-            image.setImageResource(R.drawable.ialogo128)
-            image.state = AvatarImageView.SHOW_IMAGE
-        } else {
-            image.setText(space.friendlyName.substring(0, 1).uppercase(Locale.ROOT))
-            image.state = AvatarImageView.SHOW_INITIAL
-        }
+        space.setAvatar(image)
+
         val margin = 6
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -180,19 +171,9 @@ class SpaceSettingsActivity : AppCompatActivity() {
         mSpace?.let {
             mBinding.contentSpaceLayout.txtSpaceName.text = it.friendlyName
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
-            mBinding.contentSpaceLayout.spaceAvatar.avatarBackgroundColor =
-                ContextCompat.getColor(this, R.color.oablue)
 
-            if (it.tType == Space.Type.INTERNET_ARCHIVE) {
-                mBinding.contentSpaceLayout.spaceAvatar.setImageResource(R.drawable.ialogo128)
-                mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_IMAGE
-            } else {
-                val spaceName = it.friendlyName
-                mBinding.contentSpaceLayout.spaceAvatar.setText(
-                    spaceName.substring(0, 1).uppercase(Locale.getDefault())
-                )
-                mBinding.contentSpaceLayout.spaceAvatar.state = AvatarImageView.SHOW_INITIAL
-            }
+            it.setAvatar(mBinding.contentSpaceLayout.spaceAvatar)
+
             mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { v: View? -> startSpaceAuthActivity() }
             viewModel.getAllProjects(it.id)
         }
@@ -200,16 +181,15 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     private fun startSpaceAuthActivity() {
         mSpace?.let {
-            val intent = if (it.tType == Space.Type.WEBDAV) {
-                Intent(this@SpaceSettingsActivity, WebDavLoginActivity::class.java)
+            val clazz = when (it.tType) {
+                Space.Type.INTERNET_ARCHIVE -> IaLoginActivity::class.java
+                Space.Type.DROPBOX -> DropboxLoginActivity::class.java
+                else -> WebDavLoginActivity::class.java
             }
-            else if (it.tType == Space.Type.DROPBOX) {
-                Intent(this@SpaceSettingsActivity, DropboxLoginActivity::class.java)
-            }
-            else {
-                Intent(this@SpaceSettingsActivity, ArchiveOrgLoginActivity::class.java)
-            }
+
+            val intent = Intent(this@SpaceSettingsActivity, clazz)
             intent.putExtra(SPACE_EXTRA, it.id)
+
             startActivity(intent)
         } ?: run {
             finish()

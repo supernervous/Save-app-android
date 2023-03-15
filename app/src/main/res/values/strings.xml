@@ -215,7 +215,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This e-mail address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">Login failed</string>
+    <string name="error_incorrect_username_or_password">Incorrect username or password</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contact permission needed for e-mail
         completions."
@@ -357,4 +357,6 @@
     <string name="ci_title">Help us make Save better</string>
     <string name="ci_negative">No way</string>
     <string name="ci_confirm">Sure</string>
+    <string name="server_name_optional">Server Name (Optional)</string>
+    <string name="dropbox_id">Dropbox ID:</string>
 </resources>

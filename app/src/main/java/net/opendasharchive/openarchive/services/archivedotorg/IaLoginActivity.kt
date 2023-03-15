@@ -3,8 +3,6 @@ package net.opendasharchive.openarchive.services.archivedotorg
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -18,7 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivityArchiveKeyLoginBinding
+import net.opendasharchive.openarchive.databinding.ActivityLoginIaBinding
 import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
@@ -28,64 +26,64 @@ import net.opendasharchive.openarchive.util.Prefs.getBoolean
 import net.opendasharchive.openarchive.util.Prefs.putBoolean
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
-import net.opendasharchive.openarchive.util.extensions.isPasswordValid
 import net.opendasharchive.openarchive.util.extensions.show
+import timber.log.Timber
 
-class ArchiveOrgLoginActivity : BaseActivity() {
+class IaLoginActivity : BaseActivity() {
 
     private var mSpace: Space? = null
-    private lateinit var binding: ActivityArchiveKeyLoginBinding
+    private lateinit var binding: ActivityLoginIaBinding
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
     private var isSuccessLogin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        binding = ActivityArchiveKeyLoginBinding.inflate(layoutInflater)
+        binding = ActivityLoginIaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.hasExtra("space")) {
-            mSpace = findById<Space>(
-                Space::class.java, intent.getLongExtra("space", -1L)
-            )
-            binding.actionRemoveSpace.show()
-        }
-
-        initSpace()
-        initView()
-        showFirstTimeIA()
-    }
-
-    private fun initView() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (!mSpace?.username.isNullOrEmpty())
-            binding.accesskey.setText(mSpace!!.username)
+        if (intent.hasExtra("space")) {
+            mSpace = findById(Space::class.java, intent.getLongExtra("space", -1L))
+            binding.removeSpaceBt.show()
+            binding.removeSpaceBt.setOnClickListener {
+                removeProject()
+            }
+        }
 
-        binding.secretkey.setOnEditorActionListener { textView: TextView?, id: Int, keyEvent: KeyEvent? ->
+        if (mSpace == null) {
+            mSpace = Space()
+            mSpace?.tType = Space.Type.INTERNET_ARCHIVE
+            mSpace?.host = ArchiveSiteController.ARCHIVE_BASE_URL
+            mSpace?.name = getString(R.string.label_ia)
+        }
+
+        binding.accesskey.setText(mSpace?.username)
+        binding.secretkey.setText(mSpace?.password)
+
+        binding.secretkey.setOnEditorActionListener { _: TextView?, id: Int, _: KeyEvent? ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 attemptLogin()
                 return@setOnEditorActionListener true
             }
             false
         }
-    }
 
-    private fun initSpace() {
-        if (mSpace == null) {
-            mSpace = Space().also { space ->
-                space.tType = Space.Type.INTERNET_ARCHIVE
-                space.host = ArchiveSiteController.ARCHIVE_BASE_URL
-                space.name = getString(R.string.label_ia)
-            }
+        binding.acquireKeysBt.setOnClickListener {
+            acquireKeys()
         }
+
+        showFirstTimeIA()
     }
 
-    fun onAcquireKeys(view: View?) {
+    private fun acquireKeys() {
         val siteController =
             SiteController.getSiteController(ArchiveSiteController.SITE_KEY, this, null, null)
+
         siteController?.setOnEventListener(object : SiteController.OnEventListener {
             override fun onSuccess(space: Space?) {
                 space?.save()
@@ -97,6 +95,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
             override fun onRemove(space: Space?) {
             }
         })
+
         siteController?.startAuthentication(mSpace)
     }
 
@@ -113,20 +112,16 @@ class ArchiveOrgLoginActivity : BaseActivity() {
         var focusView: View? = null
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(secretKey) && !secretKey.isPasswordValid()) {
+        if (secretKey.isEmpty()) {
             binding.secretkey.error = getString(R.string.error_invalid_password)
             focusView = binding.secretkey
             cancel = true
         }
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(accessKey) && !accessKey.isPasswordValid()) {
+        if (accessKey.isEmpty()) {
             binding.accesskey.error = getString(R.string.error_invalid_password)
             focusView = binding.accesskey
-            cancel = true
-        }
-
-        if(TextUtils.isEmpty(accessKey) || TextUtils.isEmpty(secretKey)){
             cancel = true
         }
 
@@ -135,8 +130,8 @@ class ArchiveOrgLoginActivity : BaseActivity() {
             // form field with an error.
             focusView?.requestFocus()
             Toast.makeText(this, getString(R.string.IA_login_error), Toast.LENGTH_SHORT).show()
-
-        } else {
+        }
+        else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             userLoginTask()
@@ -177,7 +172,7 @@ class ArchiveOrgLoginActivity : BaseActivity() {
             }
             android.R.id.home -> {
                 if (isSuccessLogin) {
-                    val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+                    val intent = Intent(this@IaLoginActivity, MainActivity::class.java)
                     finishAffinity()
                     startActivity(intent)
                 } else {
@@ -188,9 +183,9 @@ class ArchiveOrgLoginActivity : BaseActivity() {
         return true
     }
 
-    fun removeProject(v: View) {
+    private fun removeProject() {
         val dialogClickListener =
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         //Yes button clicked
@@ -244,19 +239,19 @@ class ArchiveOrgLoginActivity : BaseActivity() {
                 try {
                     true
                 } catch (e: Exception) {
-                    Log.e(TAG, "error on login", e)
+                    Timber.e(e, "error on login")
                     false
                 }
             },
             onPostExecute = { result ->
                 if (result) {
                     mSpace?.let {
-                        val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+                        val intent = Intent(this@IaLoginActivity, MainActivity::class.java)
                         finishAffinity()
                         startActivity(intent)
                     }
                 } else {
-                    binding.secretkey.error = getString(R.string.error_incorrect_password)
+                    binding.secretkey.error = getString(R.string.error_incorrect_username_or_password)
                     binding.secretkey.requestFocus()
                 }
             }
@@ -266,16 +261,11 @@ class ArchiveOrgLoginActivity : BaseActivity() {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (isSuccessLogin) {
-            val intent = Intent(this@ArchiveOrgLoginActivity, MainActivity::class.java)
+            val intent = Intent(this@IaLoginActivity, MainActivity::class.java)
             finishAffinity()
             startActivity(intent)
         } else {
             super.onBackPressed()
         }
     }
-
-    companion object {
-        const val TAG = "Login"
-    }
-
 }

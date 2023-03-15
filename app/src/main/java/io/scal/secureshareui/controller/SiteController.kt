@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.os.Message
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
+import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.util.Prefs
 import org.witness.proofmode.crypto.HashUtils
@@ -166,9 +166,9 @@ abstract class SiteController(
                     listener,
                     jobId
                 )
-                WebDAVSiteController.SITE_KEY -> {
+                WebDavSiteController.SITE_KEY -> {
                     return try {
-                        WebDAVSiteController(context!!, listener, jobId)
+                        WebDavSiteController(context!!, listener, jobId)
                     } catch (e: Exception) {
                         e.printStackTrace()
                         null

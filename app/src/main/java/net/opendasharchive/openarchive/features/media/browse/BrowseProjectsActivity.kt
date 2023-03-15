@@ -14,7 +14,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
-import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
+import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -47,7 +47,7 @@ class BrowseProjectsActivity : BaseActivity() {
             val siteController = when (space.tType) {
                 Space.Type.WEBDAV -> {
                     SiteController.getSiteController(
-                        WebDAVSiteController.SITE_KEY,
+                        WebDavSiteController.SITE_KEY,
                         this,
                         null,
                         null

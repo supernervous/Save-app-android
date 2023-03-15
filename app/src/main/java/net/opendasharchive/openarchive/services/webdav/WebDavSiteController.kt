@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class WebDAVSiteController(
+class WebDavSiteController(
     context: Context,
     listener: SiteControllerListener?,
     jobId: String?

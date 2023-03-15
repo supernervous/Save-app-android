@@ -18,7 +18,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.publish.UploaderListenerV2
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
-import net.opendasharchive.openarchive.services.webdav.WebDAVSiteController
+import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import timber.log.Timber
 import java.util.*
 
@@ -75,7 +75,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                                 when (space.tType) {
                                     Space.Type.WEBDAV -> sc =
                                         SiteController.getSiteController(
-                                            WebDAVSiteController.SITE_KEY,
+                                            WebDavSiteController.SITE_KEY,
                                             ctx,
                                             UploaderListenerV2(media, ctx),
                                             null
