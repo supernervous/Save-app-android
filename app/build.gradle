@@ -96,7 +96,6 @@ dependencies {
 
     implementation libraries.circular_imageview
     implementation libraries.netCipher
-    implementation libraries.netCipherOkHttp
 
     //from here: https://github.com/guardianproject/proofmode
     implementation (libraries.android_libproofmode) {
@@ -141,13 +140,13 @@ dependencies {
 
     //glide
     implementation libraries.glide
-    implementation 'com.google.android.gms:play-services-basement:18.1.0'
+    implementation 'com.google.android.gms:play-services-basement:18.2.0'
     implementation 'com.google.android.gms:play-services-base:18.2.0'
     annotationProcessor libraries.glideAnnotate
 
     implementation "androidx.work:work-runtime-ktx:2.8.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0"
 
     implementation libraries.guava
     implementation libraries.sheetsInfo

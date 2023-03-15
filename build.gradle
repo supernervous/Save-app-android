@@ -88,8 +88,6 @@ allprojects {
             content {
                 includeModule 'com.amulyakhare', 'com.amulyakhare.textdrawable'
                 includeModule 'com.github.stfalcon', 'frescoimageviewer'
-                includeModule 'info.guardianproject.netcipher', 'netcipher'
-                includeModule 'info.guardianproject.netcipher', 'netcipher-okhttp3'
                 includeModule 'io.github.luizgrp.sectionedrecyclerviewadapter', 'sectionedrecyclerviewadapter'
                 includeModule 'com.tapadoo.android', 'alerter'
                 includeModule 'me.relex', 'photodraweeview'
