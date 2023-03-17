@@ -45,9 +45,9 @@ class ArchiveLoginActivity : BaseActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun login(currentURL: String, proxyHost: String?, proxyPort: Int) {
         mWebview = findViewById<View>(R.id.webView) as WebView
-        mWebview!!.settings.javaScriptEnabled = true
-        mWebview!!.visibility = View.VISIBLE
-        mWebview!!.addJavascriptInterface(JSInterface(), "htmlout")
+        mWebview?.settings?.javaScriptEnabled = true
+        mWebview?.visibility = View.VISIBLE
+        mWebview?.addJavascriptInterface(JSInterface(), "htmlout")
 
         //if Orbot is installed and running, then use it!
         /**
@@ -61,7 +61,7 @@ class ArchiveLoginActivity : BaseActivity() {
          * }
          *
          * } */
-        mWebview!!.webViewClient = object : WebViewClient() {
+        mWebview?.webViewClient = object : WebViewClient() {
             @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 //if logged in, hide and redirect to credentials
@@ -145,7 +145,7 @@ class ArchiveLoginActivity : BaseActivity() {
     }
 
     override fun finish() {
-        Timber.tag(TAG).d("finish()")
+        Timber.d("finish()")
         val data = Intent()
         data.putExtra(SiteController.EXTRAS_KEY_USERNAME, mAccessKey)
         data.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, mSecretKey)
@@ -155,7 +155,6 @@ class ArchiveLoginActivity : BaseActivity() {
     }
 
     companion object {
-        private const val TAG = "ArchiveLoginActivity"
         private const val ARCHIVE_CREATE_ACCOUNT_URL =
             "https://archive.org/account/login.createaccount.php"
         private const val ARCHIVE_LOGIN_URL = "https://archive.org/account/login.php"

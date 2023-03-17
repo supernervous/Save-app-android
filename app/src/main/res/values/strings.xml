@@ -348,9 +348,9 @@
     <string name="batch_uploading_now">Uploading now…</string>
     <string name="login_activity_logging_message">Logging in…</string>
     <string name="login_you_have_already_space">You\'ve already got a space with these credentials</string>
-    <string name="web_dav_connection_exception">\"Unable to connect to Orbot/Tor: \"</string>
-    <string name="web_dav_connection_exception_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
-    <string name="web_dav_connection_exception_invalid">Unable to connect to Orbot/Tor: INVALID</string>
+    <string name="tor_connection_exception">Unable to connect to Orbot/Tor.</string>
+    <string name="tor_connection_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
+    <string name="tor_connection_invalid">Unable to connect to Orbot/Tor: INVALID</string>
     <string name="unsecured_internet_connection">Detected an unsecured internet connection</string>
     <!-- Clean Insights measurement -->
     <string name="clean_insight_consent_prompt">We are trying to understand why uploads fail sometimes, and would like to take some limited, anonymous measurements.</string>

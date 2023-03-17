@@ -14,6 +14,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.snackbar.Snackbar
 import com.orm.SugarRecord.findById
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginWebdavBinding
@@ -23,14 +26,18 @@ import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.show
-import okhttp3.OkHttpClient
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
+import kotlin.coroutines.suspendCoroutine
 
 class WebDavLoginActivity : BaseActivity() {
 
@@ -38,7 +45,6 @@ class WebDavLoginActivity : BaseActivity() {
     private lateinit var mSnackbar: Snackbar
     private var mCollection: List<Collection>? = null
     private var mSpace: Space? = null
-    private var mAuthThread: Thread? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +133,8 @@ class WebDavLoginActivity : BaseActivity() {
     }
 
     private fun fixSpaceUrl(url: CharSequence?): Uri? {
+        if (url.isNullOrBlank()) return null
+
         val uri = Uri.parse(url.toString())
         val builder = uri.buildUpon()
 
@@ -187,25 +195,15 @@ class WebDavLoginActivity : BaseActivity() {
             return
         }
 
+        if (Space.hasSpace(Space.Type.WEBDAV, space.host, space.username)) {
+            return showError(getString(R.string.login_you_have_already_space))
+        }
+
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         mSnackbar.show()
-        mAuthThread = Thread(UserLoginTask())
-        mAuthThread?.start()
-    }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    inner class UserLoginTask : Runnable {
-        override fun run() {
-            val space = mSpace ?: return
-
-            if (Space.hasSpace(Space.Type.WEBDAV, space.host, space.username)) {
-                return showError(getString(R.string.login_you_have_already_space))
-            }
-
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 loginUserIntoWebDav(space)
 
@@ -217,52 +215,61 @@ class WebDavLoginActivity : BaseActivity() {
             catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {
                     showError(getString(R.string.error_incorrect_username_or_password), true)
-                }
-                else {
-                    showError(exception.message ?: getString(R.string.status_error))
+                } else {
+                    showError(exception.localizedMessage ?: getString(R.string.status_error))
                 }
             }
         }
+    }
 
-        private fun loginUserIntoWebDav(space: Space) {
-            val url = space.hostUrl ?: throw IOException("400 Bad Request")
+    private suspend fun loginUserIntoWebDav(space: Space) {
+        val url = space.hostUrl ?: throw IOException("400 Bad Request")
 
-            val client = OkHttpClient.base(space.username, space.password)
+        val client = SaveClient.get(this@WebDavLoginActivity, space.username, space.password)
 
-            val request = Request.Builder()
-                .url(url)
-                .method("GET", null)
-                .addHeader("OCS-APIRequest", "true")
-                .addHeader("Accept", "application/json")
-                .build()
+        val request = Request.Builder()
+            .url(url)
+            .method("GET", null)
+            .addHeader("OCS-APIRequest", "true")
+            .addHeader("Accept", "application/json")
+            .build()
 
-            val response = client.newCall(request).execute()
+        return suspendCoroutine {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    it.resumeWith(Result.failure(e))
+                }
 
-            val code = response.code
-            val message = response.message
-            val body = response.body?.string()
+                override fun onResponse(call: Call, response: Response) {
+                    val code = response.code
+                    val message = response.message
+                    val body = response.body?.string()
 
-            response.close()
+                    response.close()
 
-            if (code != 200 && code != 204) {
-                throw IOException("$code $message")
-            }
+                    if (code != 200 && code != 204) {
+                        return it.resumeWith(Result.failure(IOException("$code $message")))
+                    }
 
-            Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, body)
+                    Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, body)
+
+                    it.resumeWith(Result.success(Unit))
+                }
+            })
         }
+    }
 
-        private fun showError(text: CharSequence, onForm: Boolean = false) {
-            runOnUiThread {
-                mSnackbar.dismiss()
+    private fun showError(text: CharSequence, onForm: Boolean = false) {
+        runOnUiThread {
+            mSnackbar.dismiss()
 
-                if (onForm) {
-                    mBinding.password.error = text
-                    mBinding.password.requestFocus()
-                }
-                else {
-                    Toast.makeText(this@WebDavLoginActivity, text, Toast.LENGTH_LONG).show()
-                    mBinding.server.requestFocus()
-                }
+            if (onForm) {
+                mBinding.password.error = text
+                mBinding.password.requestFocus()
+            }
+            else {
+                Toast.makeText(applicationContext, text, Toast.LENGTH_LONG).show()
+                mBinding.server.requestFocus()
             }
         }
     }

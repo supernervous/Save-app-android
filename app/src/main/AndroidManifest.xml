@@ -14,6 +14,7 @@
 
     <queries>
         <package android:name="org.torproject.android" />
+        <package android:name="com.dropbox.android" />
     </queries>
 
     <application
@@ -111,15 +112,16 @@
             android:launchMode="singleTask"
             android:taskAffinity="">
             <intent-filter>
-
-                <!-- Change this to be db- followed by your app key -->
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="db-gd5sputfo57s1l1" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity

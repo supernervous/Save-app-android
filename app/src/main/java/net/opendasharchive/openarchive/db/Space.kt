@@ -49,10 +49,21 @@ data class Space(
             return findAll(Space::class.java)
         }
 
-        fun hasSpace(type: Type, host: String, username: String): Boolean {
-            return find(Space::class.java,
-                "type = ? AND host = ? AND username = ?",
-                type.id.toString(), host, username)
+        fun hasSpace(type: Type, host: String? = null, username: String? = null): Boolean {
+            var whereClause = "type = ?"
+            val whereArgs = mutableListOf(type.id.toString())
+
+            if (!host.isNullOrEmpty()) {
+                whereClause = "$whereClause AND host = ?"
+                whereArgs.add(host)
+            }
+
+            if (!username.isNullOrEmpty()) {
+                whereClause = "$whereClause AND username = ?"
+                whereArgs.add(username)
+            }
+
+            return find(Space::class.java, whereClause, whereArgs.toTypedArray(), null, null, null)
                 .isNotEmpty()
         }
 

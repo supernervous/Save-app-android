@@ -10,19 +10,15 @@ import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.SardineListener
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
-import info.guardianproject.netcipher.client.StrongBuilder
-import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder
-import info.guardianproject.netcipher.proxy.OrbotHelper
-import net.opendasharchive.openarchive.services.SiteController
-import net.opendasharchive.openarchive.services.SiteControllerListener
-import net.opendasharchive.openarchive.R
+import kotlinx.coroutines.runBlocking
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.SiteControllerListener
 import net.opendasharchive.openarchive.util.Globals
-import net.opendasharchive.openarchive.util.Prefs.getUseTor
 import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
-import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -42,15 +38,15 @@ class WebDavSiteController(
     jobId
 ) {
 
-    lateinit var httpClient: OkHttpClient
-
     private var chunkStartIdx: Int = 0
     private val fileBase = "files/"
 
     private var sardine: Sardine? = null
     private var server: String? = null
     private var mContinueUpload = true
-    private var dateFormat: SimpleDateFormat? = null
+
+    @SuppressLint("SimpleDateFormat")
+    private val dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
 
     companion object {
@@ -63,57 +59,18 @@ class WebDavSiteController(
 
     @SuppressLint("SimpleDateFormat")
     private fun init(context: Context, listener: SiteControllerListener?) {
-        dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
-        httpClient = OkHttpClient.base()
-        if (getUseTor() && OrbotHelper.isOrbotInstalled(context)) {
-            val builder = StrongOkHttpClientBuilder(context)
-            builder.withBestProxy().build(object : StrongBuilder.Callback<OkHttpClient?> {
-                override fun onConnected(okHttpClient: OkHttpClient?) {
-                    sardine = OkHttpSardine(httpClient)
-                }
-
-                override fun onConnectionException(e: Exception) {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception) + e.message
-                    )
-                    listener?.failure(msg)
-                }
-
-                override fun onTimeout() {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception_timeout)
-                    )
-                    listener?.failure(msg)
-                }
-
-                override fun onInvalid() {
-                    val msg = Message()
-                    msg.data.putInt(MESSAGE_KEY_CODE, 500)
-                    msg.data.putString(
-                        MESSAGE_KEY_MESSAGE,
-                        context.getString(R.string.web_dav_connection_exception_invalid)
-                    )
-                    listener?.failure(msg)
-                }
-            })
-            while (sardine == null) {
-                try {
-                    Thread.sleep(2000)
-                } catch (_: Exception) {
-                }
-
-                Timber.d("waiting for Tor-enabled Sardine to init")
+        try {
+            runBlocking {
+                sardine = OkHttpSardine(SaveClient.get(context))
             }
-        } else {
-            sardine = OkHttpSardine(httpClient)
         }
+        catch (e: Exception) {
+            val msg = Message()
+            msg.data.putInt(MESSAGE_KEY_CODE, 500)
+            msg.data.putString(MESSAGE_KEY_MESSAGE, e.message)
 
+            listener?.failure(msg)
+        }
     }
 
 
@@ -134,7 +91,7 @@ class WebDavSiteController(
             startAuthentication(space)
             val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: "")
             val basePath = media?.serverUrl
-            val folderName = dateFormat?.format(media?.createDate ?: Date())
+            val folderName = dateFormat.format(media?.createDate ?: Date())
             val fileName: String = getUploadFileName(
                 media?.title ?: "",
                 media?.mimeType ?: ""
@@ -262,7 +219,7 @@ class WebDavSiteController(
             media?.title ?: "",
             media?.mimeType ?: ""
         )
-        val folderName = dateFormat?.format(media?.updateDate ?: Date())
+        val folderName = dateFormat.format(media?.updateDate ?: Date())
         val chunkFolderPath =
             media?.serverUrl + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName)
         var projectFolderBuilder = StringBuffer() //server + '/' + basePath;

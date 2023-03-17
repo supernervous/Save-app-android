@@ -56,19 +56,23 @@ class UploadFileTask(
 
     private fun upload(localFile: File?) {
         if (localFile != null) {
-            var result: FileMetadata? = null
-            try {
+            var result: FileMetadata?
 
+            try {
                 try {
                     mDbxClient.files().listFolder(mRemoteProjectPath)
-                } catch (e: Exception) {
+                }
+                catch (e: Exception) {
                     mDbxClient.files().createFolderV2(mRemoteProjectPath)
                 }
+
                 try {
                     mDbxClient.files().listFolder(mRemoteProjectPath + mRemoteFolderPath)
-                } catch (e: Exception) {
+                }
+                catch (e: Exception) {
                     mDbxClient.files().createFolderV2(mRemoteProjectPath + mRemoteFolderPath)
                 }
+
                 try {
                     FileInputStream(localFile).use { inputStream ->
                         result = mDbxClient.files()
@@ -76,28 +80,19 @@ class UploadFileTask(
                             .withMode(WriteMode.OVERWRITE).uploadAndFinish(inputStream)
                         mCallback.onUploadComplete(result)
                     }
-                } catch (e: DbxException) {
-                    mException = e
-                    if (mException != null) {
-                        mCallback.onError(mException)
-                    } else if (result == null) {
-                        mCallback.onError(null)
-                    }
-                } catch (e: IOException) {
-                    mException = e
-                    if (mException != null) {
-                        mCallback.onError(mException)
-                    } else if (result == null) {
-                        mCallback.onError(null)
-                    }
                 }
-            } catch (e: Exception) {
-                mException = e
-                if (mException != null) {
+                catch (e: DbxException) {
+                    mException = e
                     mCallback.onError(mException)
-                } else if (result == null) {
-                    mCallback.onError(null)
                 }
+                catch (e: IOException) {
+                    mException = e
+                    mCallback.onError(mException)
+                }
+            }
+            catch (e: Exception) {
+                mException = e
+                mCallback.onError(mException)
             }
         }
     }
@@ -191,7 +186,7 @@ class UploadFileTask(
                 continue
             } catch (ex: NetworkIOException) {
                 continue
-            } catch (ex: UploadSessionLookupErrorException) {
+            } catch (ex: UploadSessionAppendErrorException) {
                 return if (ex.errorValue.isIncorrectOffset) {
                     uploaded = ex.errorValue
                         .incorrectOffsetValue

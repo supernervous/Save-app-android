@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.dropbox.core.android.Auth
 import com.orm.SugarRecord.findById
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginDropboxBinding
@@ -19,20 +19,14 @@ import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
-import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.show
 
-
-enum class DropboxResult {
-    Success,
-    Error,
-    AccountAlreadyExist
-}
 
 class DropboxLoginActivity : BaseActivity() {
 
@@ -41,8 +35,6 @@ class DropboxLoginActivity : BaseActivity() {
     private var isNewSpace: Boolean = false
     private var isTokenExist: Boolean = false
     private var isSuccessLogin: Boolean = false
-
-    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +46,19 @@ class DropboxLoginActivity : BaseActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isSuccessLogin) {
+                    val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
+                    finishAffinity()
+                    startActivity(intent)
+                }
+                else {
+                    finish()
+                }
+            }
+        })
 
         if (intent.hasExtra(SPACE_EXTRA)) {
             mSpace = findById(Space::class.java, intent.getLongExtra(SPACE_EXTRA, -1L))
@@ -84,70 +89,40 @@ class DropboxLoginActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (isNewSpace && !isTokenExist) {
-            scope.executeAsyncTask(
-                onPreExecute = {},
-                doInBackground = {
-                    val accessToken = Auth.getOAuth2Token()
-                    if (!accessToken.isNullOrEmpty() && mSpace != null) {
-                        mSpace?.let { space ->
-                            val client =
-                                DropboxClientFactory().init(this@DropboxLoginActivity, accessToken)
-                            var spaceExists = false
-                            lateinit var email: String
-                            try {
-                                email =
-                                    client?.users()?.currentAccount?.email ?: ""
-                                spaceExists =
-                                    Space.hasSpace(Space.Type.DROPBOX, space.host, email)
-                            } catch (e: Exception) {
-                                space.username = Auth.getUid()
-                                e.printStackTrace()
-                            }
+        val accessToken = Auth.getOAuth2Token()
+        val space = mSpace
 
-                            if (spaceExists) {
-                                space.username = email
-                                space.password = accessToken
-                                space.save()
-                                setCurrentSpaceId(space.id)
-                                DropboxResult.Success
-                            } else {
-                                DropboxResult.AccountAlreadyExist
-                            }
-
-                        }
-                    } else {
-                        DropboxResult.Error
-                    }
-                },
-                onPostExecute = { result ->
-                    result?.let {
-                        if (it == DropboxResult.Success) {
-                            binding.email.text = mSpace?.username
-                            binding.removeSpaceBt.show()
-                            isSuccessLogin = true
-                        } else if (it == DropboxResult.AccountAlreadyExist) {
-                            Toast.makeText(
-                                this,
-                                getString(R.string.login_you_have_already_space),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }
-            )
+        if (!isNewSpace || isTokenExist || accessToken.isNullOrEmpty() || space == null) {
+            return
         }
 
-    }
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val client = SaveClient.getDropbox(this@DropboxLoginActivity, accessToken)
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (isSuccessLogin) {
-            val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
-            finishAffinity()
-            startActivity(intent)
-        } else {
-            super.onBackPressed()
+                val username: String = try {
+                    client.users()?.currentAccount?.email ?: ""
+                }
+                catch (e: Exception) {
+                    Auth.getUid() ?: ""
+                }
+
+                space.username = username
+                space.password = accessToken
+                space.save()
+                setCurrentSpaceId(space.id)
+
+                MainScope().launch {
+                    binding.email.text = mSpace?.username
+                    binding.removeSpaceBt.show()
+                    isSuccessLogin = true
+                }
+            }
+            catch (e: Exception) {
+                MainScope().launch {
+                    Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -157,25 +132,14 @@ class DropboxLoginActivity : BaseActivity() {
      * errors are presented and no actual login attempt is made.
      */
     private fun attemptLogin() {
+        // Store values at the time of the login attempt.
+        mSpace?.username = DROPBOX_USERNAME
+        mSpace?.name = DROPBOX_NAME
+        mSpace?.host = DROPBOX_HOST
 
-        mSpace?.let { space ->
-            // Store values at the time of the login attempt.
-            space.username = DROPBOX_USERNAME
-            space.name = DROPBOX_NAME
-            space.host = DROPBOX_HOST
-        }
-
-        val cancel = false
-        val focusView: View? = null
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView?.requestFocus()
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            Auth.startOAuth2Authentication(this@DropboxLoginActivity, "gd5sputfo57s1l1")
-        }
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        Auth.startOAuth2Authentication(this, "gd5sputfo57s1l1")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
