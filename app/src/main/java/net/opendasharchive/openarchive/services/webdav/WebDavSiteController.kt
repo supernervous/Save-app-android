@@ -188,58 +188,64 @@ class WebDavSiteController(
 
 
     @Throws(IOException::class)
-    private fun uploadUsingChunking(
-        space: Space?,
-        media: Media?,
-        valueMap: HashMap<String, String?>
-    ): Boolean {
+    private fun uploadUsingChunking(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
+
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
-        var fileName: String = getUploadFileName(media)
+        var fileName: String = getUploadFileName(media, true)
         val folderName = dateFormat.format(media?.updateDate ?: Date())
-        val chunkFolderPath =
-            media?.serverUrl + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName)
-        var projectFolderBuilder = StringBuffer() //server + '/' + basePath;
-        projectFolderBuilder.append(server?.replace("webdav", "dav"))
-        if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
-        projectFolderBuilder.append("uploads/")
-        projectFolderBuilder.append(space?.username).append('/')
-        projectFolderBuilder.append(chunkFolderPath)
-        var projectFolderPath = projectFolderBuilder.toString()
+        val chunkFolderPath = media?.serverUrl + "-" + fileName
+
+        var sb = StringBuffer() //server + '/' + basePath;
+        sb.append(server?.replace("webdav", "dav"))
+        if (server?.endsWith("/") == false) sb.append('/')
+        sb.append("uploads/")
+        sb.append(space?.username).append('/')
+        sb.append(chunkFolderPath)
+        var projectFolderPath = sb.toString()
+
         if (media?.contentLength == 0L) {
             val fileMedia = File(mediaUri.path ?: "")
             if (fileMedia.exists()) media.contentLength = fileMedia.length()
         }
         val tmpMediaPath = projectFolderPath
-        return try {
-            if (sardine?.exists(projectFolderPath) == false) sardine?.createDirectory(
-                projectFolderPath
-            )
 
-            //create chunks and start uploads; look for existing chunks, and skip if done; start with the last chunk and reupload
+        return try {
+            if (sardine?.exists(projectFolderPath) == false) {
+                sardine?.createDirectory(projectFolderPath)
+            }
+
+            // Create chunks and start uploads. Look for existing chunks, and skip if done.
+            // Start with the last chunk and reupload.
             val chunkSize = 1024 * 2000
             val bufferSize = 1024 * 4
             val buffer = ByteArray(bufferSize)
+
             chunkStartIdx = 0
+
             val inputStream = mContext.contentResolver.openInputStream(mediaUri)
 
             while (media != null && chunkStartIdx < media.contentLength) {
                 val baos = ByteArrayOutputStream()
                 var i = inputStream?.read(buffer) ?: continue
                 var totalBytes: Int = chunkStartIdx + i
+
                 while (i != -1) {
                     baos.write(buffer)
                     if (baos.size() > chunkSize) break
                     i = inputStream.read(buffer)
                     if (i != -1) totalBytes += i
                 }
+
                 val chunkPath = "$tmpMediaPath/chunk-$chunkStartIdx-$totalBytes"
                 val chunkExists = sardine?.exists(chunkPath)
                 var chunkLengthMatches = false
+
                 if (chunkExists == true) {
                     val listDav = sardine?.list(chunkPath)
                     chunkLengthMatches =
                         !listDav.isNullOrEmpty() && listDav[0].contentLength >= chunkSize
                 }
+
                 if (chunkExists == false || !chunkLengthMatches) {
                     sardine?.put(
                         chunkPath,
@@ -255,6 +261,7 @@ class WebDavSiteController(
                             }
                         })
                 }
+
                 jobProgress(totalBytes.toLong(), null)
                 chunkStartIdx = totalBytes + 1
             }
@@ -262,31 +269,34 @@ class WebDavSiteController(
             inputStream?.close()
 
             fileName = getUploadFileName(media)
-            projectFolderBuilder = StringBuffer() //server + '/' + basePath;
-            projectFolderBuilder.append(server?.replace("webdav", "dav"))
-            if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
-            projectFolderBuilder.append("files/")
-            projectFolderBuilder.append(
-                UrlEscapers.urlFragmentEscaper().escape(space?.username ?: "")
-            )
-                .append('/')
-            projectFolderBuilder.append(
-                UrlEscapers.urlFragmentEscaper().escape(media?.serverUrl ?: "")
-            )
-            projectFolderPath = projectFolderBuilder.toString()
-            if (sardine?.exists(projectFolderPath) == false) sardine?.createDirectory(
-                projectFolderPath
-            )
-            projectFolderPath += "/$folderName"
-            if (sardine?.exists(projectFolderPath) == true) sardine?.createDirectory(
-                projectFolderPath
-            )
 
-            //UrlEscapers.urlFragmentEscaper().escape(inputString);
+            sb = StringBuffer() //server + '/' + basePath;
+                .append(server?.replace("webdav", "dav"))
+            if (server?.endsWith("/") == false) sb.append('/')
+            sb.append("files/")
+                .append(UrlEscapers.urlFragmentEscaper().escape(space?.username ?: ""))
+                .append('/')
+                .append(UrlEscapers.urlFragmentEscaper().escape(media?.serverUrl ?: ""))
+
+            projectFolderPath = sb.toString()
+
+            if (sardine?.exists(projectFolderPath) == false) {
+                sardine?.createDirectory(projectFolderPath)
+            }
+
+            projectFolderPath += "/$folderName"
+
+            if (sardine?.exists(projectFolderPath) == true) {
+                sardine?.createDirectory(projectFolderPath)
+            }
+
             val finalMediaPath = "$projectFolderPath/$fileName"
+
             sardine?.move("$tmpMediaPath/.file", finalMediaPath)
             media?.serverUrl = finalMediaPath
+
             jobSucceeded(finalMediaPath)
+
             uploadMetadata(media, projectFolderPath, fileName)
 
             true
@@ -307,7 +317,6 @@ class WebDavSiteController(
 
         val urlMeta = "$basePath/$fileName.meta.json"
         val json = Gson().toJson(media, Media::class.java)
-
 
         try {
             sardine?.put(urlMeta, json.toByteArray(), "text/plain", null)
