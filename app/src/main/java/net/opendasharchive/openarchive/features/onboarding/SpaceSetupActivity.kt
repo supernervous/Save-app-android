@@ -29,7 +29,7 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
             startActivity(Intent(this, WebDavLoginActivity::class.java))
         }
 
-        if (Space.hasSpace(Space.Type.INTERNET_ARCHIVE)) {
+        if (Space.has(Space.Type.INTERNET_ARCHIVE)) {
             mBinding.iaFrame.hide()
             mBinding.iaDivider.hide()
         }
@@ -39,7 +39,7 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
             }
         }
 
-        if (Space.hasSpace(Space.Type.DROPBOX)) {
+        if (Space.has(Space.Type.DROPBOX)) {
             mBinding.dropboxFrame.hide()
             mBinding.dropboxDivider.hide()
         }

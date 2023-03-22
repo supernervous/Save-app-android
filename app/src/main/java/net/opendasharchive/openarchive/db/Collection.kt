@@ -23,7 +23,7 @@ data class Collection(
     }
 
     override fun delete(): Boolean {
-        Media.getByCollection(id).forEach {
+        Media.getByCollection(id ?: -1).forEach {
             it.delete()
         }
 

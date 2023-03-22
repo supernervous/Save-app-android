@@ -34,7 +34,7 @@ data class Space(
             return findAll(Space::class.java)
         }
 
-        fun hasSpace(type: Type, host: String? = null, username: String? = null): Boolean {
+        fun get(type: Type, host: String? = null, username: String? = null): List<Space> {
             var whereClause = "type = ?"
             val whereArgs = mutableListOf(type.id.toString())
 
@@ -48,17 +48,24 @@ data class Space(
                 whereArgs.add(username)
             }
 
-            return find(Space::class.java, whereClause, whereArgs.toTypedArray(), null, null, null)
-                .isNotEmpty()
+            return find(Space::class.java, whereClause, whereArgs.toTypedArray(),
+                null, null, null)
+        }
+
+        fun has(type: Type, host: String? = null, username: String? = null): Boolean {
+            return get(type, host, username).isNotEmpty()
         }
 
         fun getCurrent(): Space? {
-            return try {
-                findById(Space::class.java, Prefs.getCurrentSpaceId())
-            } catch (e: Exception) {
-                //TODO: Handle exception that may occur when current space id is null.
-                null
-            }
+            val id = Prefs.getCurrentSpaceId()
+
+            if (id <= 0) return null
+
+            return get(id)
+        }
+
+        fun get(id: Long): Space? {
+            return findById(Space::class.java, id)
         }
 
         fun navigate(activity: AppCompatActivity) {
@@ -130,7 +137,7 @@ data class Space(
     }
 
     override fun delete(): Boolean {
-        Project.getAllBySpace(id).forEach {
+        Project.getAllBySpace(id ?: -1).forEach {
             it.delete()
         }
 

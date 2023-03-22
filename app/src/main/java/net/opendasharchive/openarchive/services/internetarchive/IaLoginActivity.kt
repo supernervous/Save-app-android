@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import com.orm.SugarRecord.findById
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginIaBinding
@@ -21,7 +20,7 @@ import net.opendasharchive.openarchive.util.extensions.show
 
 class IaLoginActivity : BaseActivity() {
 
-    private var mSpace: Space? = null
+    private lateinit var mSpace: Space
     private lateinit var mBinding: ActivityLoginIaBinding
 
     private var isSuccessLogin: Boolean = false
@@ -38,22 +37,18 @@ class IaLoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra("space")) {
-            mSpace = findById(Space::class.java, intent.getLongExtra("space", -1L))
+            mSpace = Space.get(intent.getLongExtra("space", -1L)) ?: Space()
             mBinding.removeSpaceBt.show()
             mBinding.removeSpaceBt.setOnClickListener {
                 removeProject()
             }
         }
-
-        if (mSpace == null) {
+        else {
             mSpace = Space()
-            mSpace?.tType = Space.Type.INTERNET_ARCHIVE
-            mSpace?.host = IaSiteController.ARCHIVE_BASE_URL
-            mSpace?.name = getString(R.string.label_ia)
         }
 
-        mBinding.accessKey.setText(mSpace?.username)
-        mBinding.secretKey.setText(mSpace?.password)
+        mBinding.accessKey.setText(mSpace.username)
+        mBinding.secretKey.setText(mSpace.password)
 
         mBinding.secretKey.setOnEditorActionListener { _: TextView?, id: Int, _: KeyEvent? ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -118,11 +113,15 @@ class IaLoginActivity : BaseActivity() {
             return
         }
 
-        mSpace?.password = accessKey
-        mSpace?.username = secretKey
-        mSpace?.name = getString(R.string.label_ia)
-        mSpace?.tType = Space.Type.INTERNET_ARCHIVE
-        mSpace?.save()
+        mSpace.tType = Space.Type.INTERNET_ARCHIVE
+        mSpace.host = IaSiteController.ARCHIVE_BASE_URL
+        mSpace.name = getString(R.string.label_ia)
+        mSpace.username = accessKey
+        mSpace.password = secretKey
+        mSpace.save()
+
+        Prefs.setCurrentSpaceId(mSpace.id)
+
         isSuccessLogin = true
 
         finishAffinity()
@@ -130,9 +129,7 @@ class IaLoginActivity : BaseActivity() {
     }
 
     private val mAcquireKeysResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val space = mSpace
-
-        if (it.resultCode != RESULT_OK || space == null) {
+        if (it.resultCode != RESULT_OK) {
             return@registerForActivityResult
         }
 
@@ -166,7 +163,7 @@ class IaLoginActivity : BaseActivity() {
             .setTitle(R.string.remove_from_app)
             .setMessage(getString(R.string.confirm_remove_space))
             .setPositiveButton(R.string.action_remove) { _, _ ->
-                mSpace?.delete()
+                mSpace.delete()
 
                 Space.navigate(this)
             }

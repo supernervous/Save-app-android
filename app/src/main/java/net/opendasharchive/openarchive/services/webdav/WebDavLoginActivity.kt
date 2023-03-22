@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.snackbar.Snackbar
-import com.orm.SugarRecord.findById
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +37,7 @@ class WebDavLoginActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityLoginWebdavBinding
     private lateinit var mSnackbar: Snackbar
-    private var mSpace: Space? = null
+    private lateinit var mSpace: Space
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,44 +51,42 @@ class WebDavLoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(Constants.SPACE_EXTRA)) {
-            mSpace = findById(Space::class.java, intent.getLongExtra(Constants.SPACE_EXTRA, -1L))
+            mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space()
             mBinding.removeSpaceBt.show()
             mBinding.removeSpaceBt.setOnClickListener {
                 removeProject()
             }
         }
-
-        if (mSpace == null) {
+        else {
             mSpace = Space()
-            mSpace?.tType = Space.Type.WEBDAV
         }
 
         with(intent) {
             if (hasExtra(Constants.EXTRA_DATA_USER)) {
                 val host = getStringExtra(Constants.EXTRA_DATA_SERVER)
-                if (host != null) mSpace?.host = host
+                if (host != null) mSpace.host = host
 
                 val username = getStringExtra(Constants.EXTRA_DATA_USER)
-                if (username != null) mSpace?.username = username
+                if (username != null) mSpace.username = username
 
                 val password = getStringExtra(Constants.EXTRA_DATA_PASSWORD)
-                if (password != null) mSpace?.password = password
+                if (password != null) mSpace.password = password
             }
         }
 
         // Set up the login form.
-        mBinding.servername.setText(mSpace?.name)
+        mBinding.name.setText(mSpace.name)
 
-        mBinding.server.setText(mSpace?.host)
+        mBinding.server.setText(mSpace.host)
         mBinding.server.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 mBinding.server.setText(fixSpaceUrl(mBinding.server.text)?.toString())
             }
         }
 
-        mBinding.email.setText(mSpace?.username)
+        mBinding.email.setText(mSpace.username)
 
-        mBinding.password.setText(mSpace?.password)
+        mBinding.password.setText(mSpace.password)
         mBinding.password.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
                 attemptLogin()
@@ -157,26 +154,26 @@ class WebDavLoginActivity : BaseActivity() {
         mBinding.email.error = null
         mBinding.password.error = null
 
-        val space = mSpace ?: return
-
         // Store values at the time of the login attempt.
         var errorView: View? = null
 
-        space.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
-        mBinding.server.setText(space.host)
+        mSpace.name = mBinding.name.text?.toString() ?: ""
 
-        space.username = mBinding.email.text?.toString() ?: ""
-        space.password = mBinding.password.text?.toString() ?: ""
+        mSpace.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
+        mBinding.server.setText(mSpace.host)
 
-        if (space.host.isEmpty()) {
+        mSpace.username = mBinding.email.text?.toString() ?: ""
+        mSpace.password = mBinding.password.text?.toString() ?: ""
+
+        if (mSpace.host.isEmpty()) {
             mBinding.server.error = getString(R.string.error_field_required)
             errorView = mBinding.server
         }
-        else if (space.username.isEmpty()) {
+        else if (mSpace.username.isEmpty()) {
             mBinding.email.error = getString(R.string.error_field_required)
             errorView = mBinding.email
         }
-        else if (space.password.isEmpty()) {
+        else if (mSpace.password.isEmpty()) {
             mBinding.password.error = getString(R.string.error_field_required)
             errorView = mBinding.password
         }
@@ -189,7 +186,9 @@ class WebDavLoginActivity : BaseActivity() {
             return
         }
 
-        if (Space.hasSpace(Space.Type.WEBDAV, space.host, space.username)) {
+        val other = Space.get(Space.Type.WEBDAV, mSpace.host, mSpace.username)
+
+        if (other.isNotEmpty() && other[0].id != mSpace.id) {
             return showError(getString(R.string.login_you_have_already_space))
         }
 
@@ -199,10 +198,13 @@ class WebDavLoginActivity : BaseActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                loginUserIntoWebDav(space)
+                loginUserIntoWebDav(mSpace)
 
-                space.save()
-                setCurrentSpaceId(space.id)
+                mSpace.tType = Space.Type.WEBDAV
+                mSpace.save()
+
+                setCurrentSpaceId(mSpace.id)
+
                 finishAffinity()
                 startActivity(Intent(this@WebDavLoginActivity, MainActivity::class.java))
             }
@@ -273,7 +275,7 @@ class WebDavLoginActivity : BaseActivity() {
             .setTitle(R.string.remove_from_app)
             .setMessage(getString(R.string.confirm_remove_space))
             .setPositiveButton(R.string.action_remove) { _, _ ->
-                mSpace?.delete()
+                mSpace.delete()
 
                 Space.navigate(this)
             }

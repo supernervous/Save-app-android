@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.dropbox.core.android.Auth
-import com.orm.SugarRecord.findById
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -25,14 +24,14 @@ import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
-import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 
 
 class DropboxLoginActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLoginDropboxBinding
-    private var mSpace: Space? = null
+    private lateinit var mSpace: Space
     private var isNewSpace: Boolean = false
     private var isTokenExist: Boolean = false
     private var isSuccessLogin: Boolean = false
@@ -50,19 +49,12 @@ class DropboxLoginActivity : BaseActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isSuccessLogin) {
-                    val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
-                    finishAffinity()
-                    startActivity(intent)
-                }
-                else {
-                    finish()
-                }
+                navigate()
             }
         })
 
         if (intent.hasExtra(SPACE_EXTRA)) {
-            mSpace = findById(Space::class.java, intent.getLongExtra(SPACE_EXTRA, -1L))
+            mSpace = Space.get(intent.getLongExtra(SPACE_EXTRA, -1L)) ?: Space()
             binding.removeSpaceBt.show()
         }
         else {
@@ -71,11 +63,10 @@ class DropboxLoginActivity : BaseActivity() {
                 isTokenExist = true
             }
             mSpace = Space()
-            mSpace?.tType = Space.Type.DROPBOX
-            if (mSpace?.password.isNullOrEmpty()) attemptLogin()
+            if (mSpace.password.isEmpty()) attemptLogin()
         }
 
-        binding.email.text = mSpace?.username
+        binding.email.text = mSpace.username
 
         binding.removeSpaceBt.setOnClickListener {
             removeProject()
@@ -91,9 +82,8 @@ class DropboxLoginActivity : BaseActivity() {
         super.onResume()
 
         val accessToken = Auth.getOAuth2Token()
-        val space = mSpace
 
-        if (!isNewSpace || isTokenExist || accessToken.isNullOrEmpty() || space == null) {
+        if (!isNewSpace || isTokenExist || accessToken.isNullOrEmpty()) {
             return
         }
 
@@ -108,13 +98,13 @@ class DropboxLoginActivity : BaseActivity() {
                     Auth.getUid() ?: ""
                 }
 
-                space.username = username
-                space.password = accessToken
-                space.save()
-                setCurrentSpaceId(space.id)
+                mSpace.username = username
+                mSpace.password = accessToken
+                mSpace.save()
+                Prefs.setCurrentSpaceId(mSpace.id)
 
                 MainScope().launch {
-                    binding.email.text = mSpace?.username
+                    binding.email.text = mSpace.username
                     binding.removeSpaceBt.show()
                     isSuccessLogin = true
                 }
@@ -134,9 +124,10 @@ class DropboxLoginActivity : BaseActivity() {
      */
     private fun attemptLogin() {
         // Store values at the time of the login attempt.
-        mSpace?.username = DROPBOX_USERNAME
-        mSpace?.name = DROPBOX_NAME
-        mSpace?.host = DROPBOX_HOST
+        mSpace.tType = Space.Type.DROPBOX
+        mSpace.name = DROPBOX_NAME
+        mSpace.host = DROPBOX_HOST
+        mSpace.username = DROPBOX_USERNAME
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
@@ -149,7 +140,7 @@ class DropboxLoginActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            finish()
+            navigate()
 
             return true
         }
@@ -157,12 +148,22 @@ class DropboxLoginActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun navigate() {
+        if (isSuccessLogin) {
+            finishAffinity()
+            startActivity(Intent(this@DropboxLoginActivity, MainActivity::class.java))
+        }
+        else {
+            finish()
+        }
+    }
+
     private fun removeProject() {
         AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
             .setTitle(R.string.remove_from_app)
             .setMessage(getString(R.string.confirm_remove_space))
             .setPositiveButton(R.string.action_remove) { _, _ ->
-                mSpace?.delete()
+                mSpace.delete()
 
                 Space.navigate(this)
             }

@@ -33,7 +33,7 @@ data class Project(
     }
 
     override fun delete(): Boolean {
-        Collection.getByProject(id).forEach {
+        Collection.getByProject(id ?: -1).forEach {
             it.delete()
         }
 
