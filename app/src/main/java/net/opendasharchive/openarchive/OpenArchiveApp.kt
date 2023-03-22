@@ -8,19 +8,15 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
-import com.orm.SugarRecord.findById
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Prefs.TRACK_LOCATION
-import net.opendasharchive.openarchive.util.Prefs.getCurrentSpaceId
 import timber.log.Timber
 
 class OpenArchiveApp : SugarApp() {
 
     private val mCleanInsights = CleanInsightsManager()
-    private var mCurrentSpace: Space? = null
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -43,11 +39,15 @@ class OpenArchiveApp : SugarApp() {
         Prefs.putBoolean(TRACK_LOCATION, false)
 
         if (Prefs.getUseTor()) initNetCipher()
-
-        uploadQueue()
     }
 
-    fun uploadQueue() {
+    /**
+     * This needs to be called from the foreground (from an activity in the foreground),
+     * otherwise, `#startForegroundService` will crash!
+     * See
+     * https://developer.android.com/guide/components/foreground-services#background-start-restrictions
+     */
+    fun startUploadService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(Intent(this, PublishService::class.java))
         } else {
@@ -66,19 +66,6 @@ class OpenArchiveApp : SugarApp() {
         oh.init()
     }
 
-
-    @Synchronized
-    fun getCurrentSpace(): Space? {
-        if (mCurrentSpace == null) {
-            val spaceId = getCurrentSpaceId()
-            if (spaceId != -1L) {
-                mCurrentSpace = findById(
-                    Space::class.java, spaceId
-                )
-            }
-        }
-        return mCurrentSpace
-    }
 
     fun hasCleanInsightsConsent(): Boolean? {
         return mCleanInsights.hasConsent()

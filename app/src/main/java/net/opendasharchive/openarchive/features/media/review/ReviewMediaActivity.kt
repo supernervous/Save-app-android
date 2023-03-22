@@ -409,7 +409,7 @@ class ReviewMediaActivity : BaseActivity() {
             mMedia.status = Media.STATUS_DELETE_REMOTE
             mMedia.save()
             //start upload queue, which will also handle the deletes
-            (application as OpenArchiveApp).uploadQueue()
+            (application as OpenArchiveApp).startUploadService()
             finish()
         } else {
             val success: Boolean = findById(Media::class.java, currentMediaId).delete()

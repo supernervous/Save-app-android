@@ -210,7 +210,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         mBinding.tabs.setupWithViewPager(mBinding.pager)
 
         //check for any queued uploads and restart
-        (application as OpenArchiveApp).uploadQueue()
+        (application as OpenArchiveApp).startUploadService()
 
     }
 
