@@ -8,14 +8,25 @@ data class Collection(
     var uploadDate: Date? = null,
     var serverUrl: String? = null
 ) : SugarRecord() {
+
     companion object {
-        fun getAllAsList(): List<Collection>? {
-            return find(Collection::class.java, "", arrayOf(), "", "ID DESC", "")
+
+        fun getAll(): List<Collection> {
+            return find(Collection::class.java, null, arrayOf(),
+                null, "id DESC", null)
         }
 
-        fun getCollectionById(projectId: Long): List<Collection>? {
-              return find(Collection::class.java, "PROJECT_ID=?", arrayOf(projectId.toString()), null, null, "")
-
+        fun getByProject(projectId: Long): List<Collection> {
+              return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
+                  null, null, "")
         }
+    }
+
+    override fun delete(): Boolean {
+        Media.getByCollection(id).forEach {
+            it.delete()
+        }
+
+        return super.delete()
     }
 }

@@ -3,22 +3,21 @@ package net.opendasharchive.openarchive.features.projects
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityCreateNewProjectBinding
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import java.util.*
 
 class CreateNewProjectActivity : BaseActivity() {
 
-    private val SPECIAL_CHARS = ".*[\\\\/*\\s]"
+    companion object {
+        private const val SPECIAL_CHARS = ".*[\\\\/*\\s]"
+    }
 
     private lateinit var mBinding: ActivityCreateNewProjectBinding
 
@@ -36,7 +35,7 @@ class CreateNewProjectActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.title_new_project)
 
-        mBinding.createNewProjectLayout.edtNewProject.setOnEditorActionListener { v, actionId, event ->
+        mBinding.createNewProjectLayout.edtNewProject.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 saveProject()
             }
@@ -68,26 +67,25 @@ class CreateNewProjectActivity : BaseActivity() {
     }
 
     private fun createProject(description: String): Boolean {
-        getCurrentSpace()?.let { currentSpace ->
-            val listProjects = getAllBySpace(currentSpace.id, false)
-            listProjects?.forEach { project ->
+        Space.getCurrent()?.let { currentSpace ->
+            Project.getAllBySpace(currentSpace.id, false).forEach { project ->
                 if (project.description == description) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.error_project_exists),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this, getString(R.string.error_project_exists),
+                        Toast.LENGTH_LONG).show()
+
                     return false
                 }
             }
+
             val project = Project()
             project.created = Date()
             project.description = description
             project.spaceId = currentSpace.id
             project.save()
-            return true
 
+            return true
         }
+
         return false
     }
 

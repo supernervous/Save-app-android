@@ -2,38 +2,28 @@ package net.opendasharchive.openarchive.services
 
 import android.content.Context
 import android.net.Uri
-import kotlin.Throws
-import org.witness.proofmode.ProofMode
 import android.os.Bundle
 import android.os.Message
-import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController
+import android.webkit.MimeTypeMap
+import com.google.common.net.UrlEscapers
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
+import net.opendasharchive.openarchive.services.internetarchive.IaSiteController
+import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import net.opendasharchive.openarchive.util.Prefs
+import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.lang.Exception
-import java.util.ArrayList
-import kotlin.collections.HashMap
 
 abstract class SiteController(
     protected var mContext: Context,
     private var mListener: SiteControllerListener?, // this is whatever the app wants it to be, we'll pass it back with our callbacks
     private var mJobId: String?
 ) {
-    private var mPublishEventListener: OnEventListener? = null
-
-    ///changes
-    interface OnEventListener {
-        fun onSuccess(space: Space?)
-        fun onFailure(space: Space?, failureMessage: String?)
-        fun onRemove(space: Space?)
-    }
 
     abstract fun startAuthentication(space: Space?)
 
@@ -85,10 +75,6 @@ abstract class SiteController(
         }
     }
 
-    fun setOnEventListener(publishEventListener: OnEventListener?) {
-        mPublishEventListener = publishEventListener
-    }
-
     /**
      * result is a site specific unique id that we can use to fetch the data,
      * build an embed tag, etc. for some sites this might be a URL
@@ -128,7 +114,6 @@ abstract class SiteController(
     }
 
     companion object {
-        const val CONTROLLER_REQUEST_CODE = 101
         const val MESSAGE_TYPE_SUCCESS = 23423430
         const val MESSAGE_TYPE_FAILURE = 23423431
         const val MESSAGE_TYPE_PROGRESS = 23423432
@@ -138,8 +123,6 @@ abstract class SiteController(
         const val MESSAGE_KEY_MESSAGE = "message"
         const val MESSAGE_KEY_RESULT = "result"
         const val MESSAGE_KEY_PROGRESS = "progress"
-        const val EXTRAS_KEY_USERNAME = "username"
-        const val EXTRAS_KEY_CREDENTIALS = "credentials"
         const val MESSAGE_KEY_STATUS = "status"
         const val MESSAGE_KEY_MEDIA_ID = "mediaId"
         const val VALUE_KEY_TITLE = "title"
@@ -152,43 +135,52 @@ abstract class SiteController(
         const val VALUE_KEY_MEDIA_PATH = "mediaPath"
         const val VALUE_KEY_LICENSE_URL = "licenseUrl"
         const val VALUE_KEY_MIME_TYPE = "mimeType"
-        var METADATA_REQUEST_CODE = 24153
 
         @JvmStatic
-        fun getSiteController(
-            site: String?,
-            context: Context?,
-            listener: SiteControllerListener?,
-            jobId: String?
+        fun getSiteController(site: String?, context: Context?, listener: SiteControllerListener?, jobId: String?
         ): SiteController? {
-            when (site) {
-                ArchiveSiteController.SITE_KEY -> return ArchiveSiteController(
-                    context!!,
-                    listener,
-                    jobId
-                )
-                WebDavSiteController.SITE_KEY -> {
-                    return try {
-                        WebDavSiteController(context!!, listener, jobId)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        null
-                    }
-                }
-                DropboxSiteController.SITE_KEY -> {
-                    return try {
-                        DropboxSiteController(context!!, listener, jobId)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        null
-                    }
+            @Suppress("NAME_SHADOWING")
+            val context = context ?: return null
+
+            return when (site) {
+                IaSiteController.SITE_KEY -> IaSiteController(context, listener, jobId)
+
+                WebDavSiteController.SITE_KEY -> WebDavSiteController(context, listener, jobId)
+
+                DropboxSiteController.SITE_KEY -> DropboxSiteController(context, listener, jobId)
+
+                else -> null
+            }
+        }
+
+        fun getUploadFileName(media: Media?, escapeTitle: Boolean = false): String {
+            var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media?.mimeType)
+            if (ext.isNullOrEmpty()) {
+                ext = when {
+                    media?.mimeType?.startsWith("image") == true -> "jpg"
+
+                    media?.mimeType?.startsWith("video") == true -> "mp4"
+
+                    media?.mimeType?.startsWith("audio") == true -> "m4a"
+
+                    else -> "txt"
                 }
             }
-            /**
-             * else if (site.equalsIgnoreCase(PirateBoxSiteController.SITE_KEY)) {
-             * return new PirateBoxSiteController(context,listener,jobId);
-             * } */
-            return null
+
+            var title = media?.title
+
+            if (title.isNullOrBlank()) title = media?.mediaHashString
+            if (title == null) title = ""
+
+            if (escapeTitle) {
+                title = UrlEscapers.urlPathSegmentEscaper().escape(title) ?: title
+            }
+
+            if (!title.endsWith(".$ext")) {
+                return "$title.$ext"
+            }
+
+            return title
         }
     }
 }

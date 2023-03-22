@@ -16,7 +16,7 @@ class MediaListViewModel : ViewModel() {
         if (projectId == EMPTY_ID) {
             _mediaList.value = Media.getMediaByStatus(status, Media.ORDER_PRIORITY)
         } else {
-            _mediaList.value = Media.getMediaByProject(projectId)
+            _mediaList.value = Media.getByProject(projectId)
         }
     }
 

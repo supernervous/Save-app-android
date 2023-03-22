@@ -1,13 +1,12 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.activity.OnBackPressedCallback
 import net.opendasharchive.openarchive.databinding.ActivityArchiveMetadataBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.LICENSE_URL
 import net.opendasharchive.openarchive.util.Globals
@@ -19,10 +18,6 @@ class ArchiveSettingsActivity : BaseActivity() {
 
     private var mMedia: Media? = null
     private lateinit var binding: ActivityArchiveMetadataBinding
-
-    private val sharedPref: SharedPreferences by lazy {
-        getSharedPreferences(Globals.PREF_FILE_KEY, MODE_PRIVATE)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +35,17 @@ class ArchiveSettingsActivity : BaseActivity() {
         // set up ccLicense link
         binding.tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                saveMediaMetadata()
+            }
+        })
     }
 
     private fun initView(mediaId: Long) {
 
         if (mediaId >= 0) {
-            mMedia = getMediaById(mediaId)
+            mMedia = Media.get(mediaId)
         } else {
             binding.apply {
                 tvTitleLbl.hide()
@@ -85,11 +85,6 @@ class ArchiveSettingsActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onBackPressed() {
-        saveMediaMetadata()
-        super.onBackPressed()
-    }
-
     private fun saveMediaMetadata() {
         Prefs.putString(Globals.PREF_LICENSE_URL, LICENSE_URL)
 
@@ -104,10 +99,4 @@ class ArchiveSettingsActivity : BaseActivity() {
             save()
         }
     }
-
-
-    companion object {
-        const val TAG = "ArchiveMetadataActivity"
-    }
-
 }

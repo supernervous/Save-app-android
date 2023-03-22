@@ -16,8 +16,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProjectAndCollection
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
@@ -41,7 +40,7 @@ class MediaGridFragment : MediaListFragment() {
         savedInstanceState: Bundle?
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(MediaGridViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MediaGridViewModel::class.java]
 
         val context = requireNotNull(activity?.application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
@@ -68,8 +67,8 @@ class MediaGridFragment : MediaListFragment() {
 
             var addedView = false
             listCollections?.forEach { collection ->
-                val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
-                if (!listMedia.isNullOrEmpty()) {
+                val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
+                if (listMedia.isNotEmpty()) {
                     if (!addedView) {
                         mBinding.mediacontainer.removeAllViews()
                         addedView = true
@@ -118,8 +117,8 @@ class MediaGridFragment : MediaListFragment() {
                     }, onDelete = {
                         refresh()
                     }, onUpload = {
-                        if (Space.getCurrentSpace()?.tType == Space.Type.WEBDAV) {
-                            if(Space.getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
+                        if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
+                            if(Space.getCurrent()!!.host.contains("https://sam.nl.tab.digital")){
                                 val availableSpace = getAvailableStorageSpace(it)
                                 val totalUploadsContent = availableSpace.first
                                 val totalStorage = availableSpace.second
@@ -161,25 +160,23 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     override fun refresh() {
-        val listCollections = getAllAsList()
-        listCollections?.forEach { collection ->
-            val listMedia = getMediaByProjectAndCollection(getProjectId(), collection.id)
+        Collection.getAll().forEach { collection ->
+            val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
             val adapter = mAdapters[collection.id]
             val holder: SectionViewHolder? = mSection[collection.id]
-            val listMediaArray = listMedia?.let { ArrayList(it) }
+            val listMediaArray = ArrayList(listMedia)
+
             if (adapter != null) {
-                if (listMediaArray != null) {
-                    adapter.updateData(listMediaArray)
-                }
+                adapter.updateData(listMediaArray)
                 setSectionHeaders(collection, listMedia, holder)
-            } else if (!listMedia.isNullOrEmpty()) {
+            }
+            else if (listMedia.isNotEmpty()) {
                 val view = createMediaList(collection, listMedia)
                 _mBinding?.let { mBinding ->
                     mBinding.mediacontainer.addView(view, 0)
                     mBinding.addMediaHint.visibility = View.GONE
                 }
             }
-
         }
     }
 

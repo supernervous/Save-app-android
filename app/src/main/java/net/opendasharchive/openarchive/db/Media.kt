@@ -59,53 +59,31 @@ data class Media(
         const val ORDER_PRIORITY = "PRIORITY DESC"
 
 
-        fun getMediaByProjectAndCollection(projectId: Long, collectionId: Long): List<Media>? {
-            val values =
-                arrayOf(projectId.toString() + "", collectionId.toString() + "")
-            return find(
-                Media::class.java,
-                "PROJECT_ID = ? AND COLLECTION_ID = ?",
-                values,
-                "",
-                "STATUS, ID DESC",
-                ""
-            )
+        fun getByProject(projectId: Long): List<Media> {
+            return find(Media::class.java, "project_id = ?", arrayOf(projectId.toString()),
+                null, "status, id DESC", null)
         }
 
-        fun getMediaByStatus(statuses: LongArray, order: String?): List<Media>? {
-            val values = arrayOfNulls<String>(statuses.size)
-            var idx = 0
-            for (status in statuses) values[idx++] = status.toString() + ""
-            val sbWhere = StringBuffer()
-            for (i in values.indices) {
-                sbWhere.append("status = ?")
-                if (i + 1 < values.size) sbWhere.append(" OR ")
-            }
-            return find(
-                Media::class.java,
-                sbWhere.toString(),
-                values,
-                "",
-                order,
-                ""
-            )
+        fun getByCollection(collectionId: Long): List<Media> {
+            return find(Media::class.java, "collection_id = ?", arrayOf(collectionId.toString()),
+                null, null, null)
         }
 
-        fun getMediaById(mediaId: Long): Media {
+        fun getByProjectAndCollection(projectId: Long, collectionId: Long): List<Media> {
+            return find(Media::class.java, "project_id = ? AND collection_id = ?",
+                arrayOf(projectId.toString(), collectionId.toString()),
+                null, "status, id DESC", null)
+        }
+
+        fun getMediaByStatus(statuses: LongArray, order: String?): List<Media> {
+            return find(Media::class.java,
+                statuses.map { "status = ?" }.joinToString(" OR "),
+                statuses.map { it.toString() }.toTypedArray(),
+                null, order, null)
+        }
+
+        fun get(mediaId: Long): Media? {
             return findById(Media::class.java, mediaId)
         }
-
-        fun getMediaByProject(projectId: Long): List<Media>? {
-            val values = arrayOf(projectId.toString() + "")
-            return find(
-                Media::class.java,
-                "PROJECT_ID = ?",
-                values,
-                "",
-                "STATUS, ID DESC",
-                ""
-            )
-        }
     }
-
 }

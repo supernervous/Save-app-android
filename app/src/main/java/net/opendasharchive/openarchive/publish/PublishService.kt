@@ -16,8 +16,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.orm.SugarRecord.find
 import com.orm.SugarRecord.findById
-import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController
-import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController.Companion.getMediaMetadata
+import net.opendasharchive.openarchive.services.internetarchive.IaSiteController
 import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.services.SiteController.Companion.getSiteController
 import net.opendasharchive.openarchive.services.SiteControllerListener
@@ -28,7 +27,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import net.opendasharchive.openarchive.util.Prefs.getUploadWifiOnly
@@ -149,14 +147,14 @@ class PublishService : Service(), Runnable {
     private fun uploadMedia(media: Media): Boolean {
         val project = getById(media.projectId)
         return if (project != null) {
-            val valueMap = getMediaMetadata(this, media)
+            val valueMap = IaSiteController.getMediaMetadata(this, media)
             media.serverUrl = Objects.requireNonNull(project.description).toString()
             media.status = Media.STATUS_UPLOADING
             media.save()
             notifyMediaUpdated(media)
-            val space: Space? = if (project.spaceId != -1L) findById(
+            val space = if (project.spaceId != -1L) findById(
                 Space::class.java, project.spaceId
-            ) else getCurrentSpace()
+            ) else Space.getCurrent()
             if (space != null) {
                 var sc: SiteController? = null
                 when (space.tType) {
@@ -167,7 +165,7 @@ class PublishService : Service(), Runnable {
                         null
                     )
                     Space.Type.INTERNET_ARCHIVE -> sc = getSiteController(
-                        ArchiveSiteController.SITE_KEY,
+                        IaSiteController.SITE_KEY,
                         this,
                         UploaderListener(media),
                         null
@@ -264,11 +262,16 @@ class PublishService : Service(), Runnable {
 
     @Synchronized
     private fun doForeground() {
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0,
-            notificationIntent, PendingIntent.FLAG_IMMUTABLE
-        )
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE
+        }
+        else {
+            0
+        }
+
+        val pendingIntent = PendingIntent.getActivity(this, 0,
+            Intent(this, MainActivity::class.java), flag)
+
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_app_notify)
             .setContentTitle(getString(R.string.app_name)) //.setContentText(getString(R.string.app_subtext))
@@ -278,7 +281,7 @@ class PublishService : Service(), Runnable {
     }
 
     companion object {
-        const val MY_BACKGROUND_JOB = 0
+        private const val MY_BACKGROUND_JOB = 0
         fun scheduleJob(context: Context) {
             val js = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
             val job = JobInfo.Builder(

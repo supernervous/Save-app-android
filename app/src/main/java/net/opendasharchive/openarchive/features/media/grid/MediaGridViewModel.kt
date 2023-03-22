@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.db.Collection.Companion.getAllAsList
 
 class MediaGridViewModel : ViewModel() {
 
@@ -16,7 +15,7 @@ class MediaGridViewModel : ViewModel() {
 
     fun getAllCollection() {
         viewModelScope.launch {
-            _collections.value = getAllAsList()
+            _collections.value = Collection.getAll()
         }
     }
 }

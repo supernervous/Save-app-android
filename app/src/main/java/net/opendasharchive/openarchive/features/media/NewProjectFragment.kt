@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import net.opendasharchive.openarchive.MainActivity.Companion.REQUEST_NEW_PROJECT_NAME
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.databinding.FragmentNewProjectBinding
 import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 
@@ -33,10 +33,8 @@ class NewProjectFragment : Fragment() {
     ): View? {
         _mBinding = FragmentNewProjectBinding.inflate(inflater, container, false)
         _mBinding?.tvAddProject?.setOnClickListener {
-            activity?.startActivityForResult(
-                    Intent(activity, AddProjectActivity::class.java),
-                    REQUEST_NEW_PROJECT_NAME
-            )
+            (activity as? MainActivity)?.requestNewProjectNameResultLauncher
+                ?.launch(Intent(activity, AddProjectActivity::class.java))
         }
         return _mBinding?.root
     }

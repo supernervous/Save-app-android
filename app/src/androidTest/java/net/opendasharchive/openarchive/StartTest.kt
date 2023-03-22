@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import net.opendasharchive.openarchive.services.internetarchive.IaSiteController
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,5 +20,12 @@ class StartTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         Assert.assertEquals("net.opendasharchive.openarchive.release", appContext.packageName)
+    }
+
+    @Test
+    fun splitTags() {
+        val pieces = IaSiteController.splitTags("foo bar;baz,bam  bum")
+
+        Assert.assertEquals(listOf("foo", "bar", "baz", "bam", "bum"), pieces)
     }
 }

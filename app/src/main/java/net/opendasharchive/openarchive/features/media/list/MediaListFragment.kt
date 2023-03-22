@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 
@@ -61,7 +58,7 @@ open class MediaListFragment : Fragment() {
     ): View? {
         _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         _mBinding?.root?.tag = TAG
-        viewModel = ViewModelProvider(this).get(MediaListViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MediaListViewModel::class.java]
         observeData()
         viewModel.getMediaList(mProjectId, mStatuses)
         return _mBinding?.root
@@ -148,17 +145,17 @@ open class MediaListFragment : Fragment() {
     }
 
     open fun refresh() {
-        val listMedia: List<Media>? = if (mProjectId == -1L) {
-            getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+        val listMedia = if (mProjectId == -1L) {
+            Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {
-            getMediaByProject(mProjectId)
+            Media.getByProject(mProjectId)
         }
 
-        val filterList = listMedia?.filter { it ->
+        val filterList = listMedia.filter {
             it.status == Media.STATUS_UPLOADING || it.status == Media.STATUS_QUEUED
         }
 
-        filterList?.let {
+        filterList.let {
             val listMediaArray = ArrayList(it)
             mMediaAdapter?.updateData(listMediaArray)
         } ?: run {
@@ -167,17 +164,17 @@ open class MediaListFragment : Fragment() {
     }
 
     open fun getUploadingCounter() : Int{
-        val listMedia: List<Media>? = if (mProjectId == -1L) {
-            getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+        val listMedia = if (mProjectId == -1L) {
+            Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {
-            getMediaByProject(mProjectId)
+            Media.getByProject(mProjectId)
         }
 
-        val filterList = listMedia?.filter { it ->
+        val filterList = listMedia.filter {
             it.status == Media.STATUS_QUEUED || it.status == Media.STATUS_UPLOADING
         }
 
-        return filterList?.size ?: 0
+        return filterList.size
     }
 
     override fun onResume() {

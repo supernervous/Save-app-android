@@ -3,8 +3,6 @@ package net.opendasharchive.openarchive.services.webdav
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.os.Message
-import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.Sardine
@@ -22,7 +20,6 @@ import net.opendasharchive.openarchive.util.Prefs.useNextcloudChunking
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,49 +50,31 @@ class WebDavSiteController(
         const val SITE_KEY = "webdav"
     }
 
-    init {
-        init(context, listener)
-    }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun init(context: Context, listener: SiteControllerListener?) {
+    override fun startAuthentication(space: Space?) {
         try {
             runBlocking {
-                sardine = OkHttpSardine(SaveClient.get(context))
+                sardine = OkHttpSardine(SaveClient.get(mContext))
+                sardine?.setCredentials(space?.username, space?.password)
+                server = space?.host
             }
         }
         catch (e: Exception) {
-            val msg = Message()
-            msg.data.putInt(MESSAGE_KEY_CODE, 500)
-            msg.data.putString(MESSAGE_KEY_MESSAGE, e.message)
-
-            listener?.failure(msg)
-        }
-    }
-
-
-    override fun startAuthentication(space: Space?) {
-        sardine?.let {
-            it.setCredentials(space?.username, space?.password)
-            server = space?.host
+            jobFailed(e, 500, e.localizedMessage)
         }
     }
 
     override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
-
-        if (sardine == null) throw IOException("client not init'd")
+        startAuthentication(space)
 
         return if (useNextcloudChunking()) {
             uploadUsingChunking(space, media, valueMap)
-        } else {
-            startAuthentication(space)
+        }
+        else {
             val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: "")
             val basePath = media?.serverUrl
             val folderName = dateFormat.format(media?.createDate ?: Date())
-            val fileName: String = getUploadFileName(
-                media?.title ?: "",
-                media?.mimeType ?: ""
-            )
+            val fileName: String = getUploadFileName(media)
             val projectFolderBuilder = StringBuffer() //server + '/' + basePath;
             projectFolderBuilder.append(server?.replace("webdav", "dav"))
             if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
@@ -157,6 +136,8 @@ class WebDavSiteController(
     }
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
+        startAuthentication(space)
+
         return try {
             sardine?.delete(bucketName)
             true
@@ -207,18 +188,13 @@ class WebDavSiteController(
 
 
     @Throws(IOException::class)
-    fun uploadUsingChunking(
+    private fun uploadUsingChunking(
         space: Space?,
         media: Media?,
         valueMap: HashMap<String, String?>
     ): Boolean {
-        if (sardine == null) throw IOException("client not init'd")
-        startAuthentication(space)
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
-        var fileName: String = getUploadFileName(
-            media?.title ?: "",
-            media?.mimeType ?: ""
-        )
+        var fileName: String = getUploadFileName(media)
         val folderName = dateFormat.format(media?.updateDate ?: Date())
         val chunkFolderPath =
             media?.serverUrl + "-" + UrlEscapers.urlFragmentEscaper().escape(fileName)
@@ -285,10 +261,7 @@ class WebDavSiteController(
 
             inputStream?.close()
 
-            fileName = getUploadFileName(
-                media?.title ?: "",
-                media?.mimeType ?: ""
-            )
+            fileName = getUploadFileName(media)
             projectFolderBuilder = StringBuffer() //server + '/' + basePath;
             projectFolderBuilder.append(server?.replace("webdav", "dav"))
             if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
@@ -317,68 +290,40 @@ class WebDavSiteController(
             uploadMetadata(media, projectFolderPath, fileName)
 
             true
-        } catch (e: IOException) {
+        }
+        catch (e: IOException) {
             sardine?.delete(tmpMediaPath)
             jobFailed(e, -1, tmpMediaPath)
             false
         }
     }
 
-    private fun getUploadFileName(title: String, mimeType: String): String {
-        val result = StringBuffer()
-        var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-        if (ext.isNullOrEmpty()) {
-            ext =
-                when {
-                    mimeType.startsWith("image") -> "jpg"
-                    mimeType.startsWith("video") -> "mp4"
-                    mimeType.startsWith(
-                        "audio"
-                    ) -> "m4a"
-                    else -> "txt"
-                }
-        }
-        result.append(title)
-        if (!title.endsWith(ext)) result.append('.').append(ext)
-        return result.toString()
-    }
-
     private fun uploadMetadata(media: Media?, basePath: String, fileName: String): Boolean {
-
         if (media == null) return false
 
-        //update to the latest project license
+        // Update to the latest project license.
         val project = getById(media.projectId)
         media.licenseUrl = project?.licenseUrl
+
         val urlMeta = "$basePath/$fileName.meta.json"
-        val gson = Gson()
-        val json = gson.toJson(media, Media::class.java)
+        val json = Gson().toJson(media, Media::class.java)
+
+
         try {
-            val fileMetaData = File(
-                mContext.filesDir,
-                "$fileName.meta.json"
-            )
-            val fos = FileOutputStream(fileMetaData)
-            fos.write(json.toByteArray())
-            fos.flush()
-            fos.close()
-            sardine?.put(urlMeta, fileMetaData, "text/plain", false, null)
+            sardine?.put(urlMeta, json.toByteArray(), "text/plain", null)
 
             /// Upload ProofMode metadata, if enabled and successfully created.
             for (file in getProof(media)) {
-                sardine?.put(
-                    basePath + '/' + file.name,
-                    file,
-                    "text/plain",
-                    false,
-                    null
-                )
+                sardine?.put(basePath + '/' + file.name, file, "text/plain",
+                    false, null)
             }
 
             return true
-        } catch (e: IOException) {
+        }
+        catch (e: IOException) {
             jobFailed(e, -1, urlMeta)
         }
+
         return false
     }
 }

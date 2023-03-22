@@ -12,7 +12,6 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
@@ -57,10 +56,6 @@ class PreviewMediaListActivity : BaseActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_batch_review_media, menu)
         return true
@@ -83,9 +78,9 @@ class PreviewMediaListActivity : BaseActivity() {
 
     private fun batchUpload() {
         val listMedia = mFrag?.getMediaList() ?: listOf()
-        if (getCurrentSpace()?.tType == Space.Type.WEBDAV) {
+        if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
 
-             if(getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")){
+             if(Space.getCurrent()?.host?.contains("https://sam.nl.tab.digital") == true){
                  //currently ticket #319 only supports nextcloud. Need to figure out a solution on the webDAV layer, that works across the board.
                  val availableSpace = getAvailableStorageSpace(listMedia)
                  val totalUploadsContent = availableSpace.first

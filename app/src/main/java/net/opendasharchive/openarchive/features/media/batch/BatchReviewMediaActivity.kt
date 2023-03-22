@@ -18,7 +18,6 @@ import com.squareup.picasso.Picasso
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -47,7 +46,7 @@ class BatchReviewMediaActivity : BaseActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         mBinding = ActivityBatchReviewMediaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-        viewModel = ViewModelProvider(this).get(BatchReviewMediaViewModel::class.java)
+        viewModel = ViewModelProvider(this)[BatchReviewMediaViewModel::class.java]
         initLayout()
     }
 
@@ -69,9 +68,8 @@ class BatchReviewMediaActivity : BaseActivity() {
         val context = requireNotNull(application)
         val viewModelFactory = PreviewMediaListViewModelFactory(context)
         previewMediaListViewModel =
-            ViewModelProvider(this, viewModelFactory).get(PreviewMediaListViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
         previewMediaListViewModel.observeValuesForWorkState(this)
-
     }
 
     private fun updateFlagState(media: Media) {
@@ -139,14 +137,18 @@ class BatchReviewMediaActivity : BaseActivity() {
             }
 
             if (media.status != Media.STATUS_LOCAL && media.status != Media.STATUS_NEW) {
-                if (media.status == Media.STATUS_UPLOADED || media.status == Media.STATUS_PUBLISHED) {
-                    // NO-OP
-                } else if (media.status == Media.STATUS_QUEUED) {
-                    tvUrl.text = getString(R.string.batch_waiting_for_upload)
-                    tvUrl.show()
-                } else if (media.status == Media.STATUS_UPLOADING) {
-                    tvUrl.text = getString(R.string.batch_uploading_now)
-                    tvUrl.show()
+                when (media.status) {
+                    Media.STATUS_UPLOADED, Media.STATUS_PUBLISHED -> {
+                        // NO-OP
+                    }
+                    Media.STATUS_QUEUED -> {
+                        tvUrl.text = getString(R.string.batch_waiting_for_upload)
+                        tvUrl.show()
+                    }
+                    Media.STATUS_UPLOADING -> {
+                        tvUrl.text = getString(R.string.batch_uploading_now)
+                        tvUrl.show()
+                    }
                 }
 
                 archiveMetadataLayout.apply {
@@ -232,11 +234,11 @@ class BatchReviewMediaActivity : BaseActivity() {
     }
 
     private fun uploadMedia() {
-        val space = Space.getCurrentSpace()
+        val space = Space.getCurrent()
         val listMedia = mediaList
 
         if (space?.tType == Space.Type.WEBDAV) {
-            if (Space.getCurrentSpace()!!.host.contains("https://sam.nl.tab.digital")) {
+            if (space.host.contains("https://sam.nl.tab.digital")) {
                 val nextCloudModel =
                     Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
                 var totalUploadsContent = 0.0
@@ -270,12 +272,13 @@ class BatchReviewMediaActivity : BaseActivity() {
     }
 
     private fun init() {
-        val intent = intent
-        val mediaIds = intent.getLongArrayExtra(Globals.EXTRA_CURRENT_MEDIA_ID)
-        mediaList = ArrayList()
-        mediaIds?.forEach { mediaId ->
-            mediaList.add(getMediaById(mediaId))
+        mediaList.clear()
+
+        intent.getLongArrayExtra(Globals.EXTRA_CURRENT_MEDIA_ID)?.forEach {
+            val media = Media.get(it) ?: return@forEach
+            mediaList.add(media)
         }
+
         bindMedia()
     }
 
@@ -312,9 +315,5 @@ class BatchReviewMediaActivity : BaseActivity() {
         super.onResume()
         init()
         bindMedia()
-    }
-
-    companion object {
-        const val TAG = "ReviewMediaActivity"
     }
 }

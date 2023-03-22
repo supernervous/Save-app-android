@@ -25,7 +25,7 @@ import net.opendasharchive.openarchive.databinding.ActivityReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project.Companion.getById
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
@@ -157,11 +157,11 @@ class ReviewMediaActivity : BaseActivity() {
                         //NO-OP
                     }
                     Media.STATUS_QUEUED -> {
-                        tvUrl.text = "Waiting for upload..."
+                        tvUrl.text = getString(R.string.waiting_for_upload)
                         tvUrl.visibility = View.VISIBLE
                     }
                     Media.STATUS_UPLOADING -> {
-                        tvUrl.text = "Uploading now..."
+                        tvUrl.text = getString(R.string.uploading_now)
                         tvUrl.visibility = View.VISIBLE
                     }
                 }
@@ -329,7 +329,7 @@ class ReviewMediaActivity : BaseActivity() {
     }
 
     private fun checkPermission() {
-        val space = getCurrentSpace()
+        val space = Space.getCurrent()
         if (space != null) {
             //mark queued
             mMedia.status = Media.STATUS_QUEUED

@@ -15,21 +15,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.*
 
 
-class SpaceChecker {
-    companion object {
-        fun navigateToHome(activity: AppCompatActivity) {
-            val listSpaces = Space.getAll()
-            if (listSpaces?.hasNext() == true) {
-                activity.finish()
-            } else {
-                val intent = Intent(activity, SpaceSetupActivity::class.java)
-                activity.finishAffinity()
-                activity.startActivity(intent)
-            }
-        }
-    }
-}
-
 data class Space(
     var type: Int = 0,
     var name: String = "",
@@ -45,7 +30,7 @@ data class Space(
     }
 
     companion object {
-        fun getAll(): Iterator<Space>? {
+        fun getAll(): Iterator<Space> {
             return findAll(Space::class.java)
         }
 
@@ -67,12 +52,22 @@ data class Space(
                 .isNotEmpty()
         }
 
-        fun getCurrentSpace(): Space? {
+        fun getCurrent(): Space? {
             return try {
                 findById(Space::class.java, Prefs.getCurrentSpaceId())
-            } catch (e2: Exception) {
+            } catch (e: Exception) {
                 //TODO: Handle exception that may occur when current space id is null.
                 null
+            }
+        }
+
+        fun navigate(activity: AppCompatActivity) {
+            if (getAll().hasNext()) {
+                activity.finish()
+            }
+            else {
+                activity.finishAffinity()
+                activity.startActivity(Intent(activity, SpaceSetupActivity::class.java))
             }
         }
     }
@@ -132,5 +127,13 @@ data class Space(
                 }
             }
         }
+    }
+
+    override fun delete(): Boolean {
+        Project.getAllBySpace(id).forEach {
+            it.delete()
+        }
+
+        return super.delete()
     }
 }

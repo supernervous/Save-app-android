@@ -13,6 +13,7 @@ import android.os.Environment
 import android.text.TextUtils
 import android.view.*
 import android.widget.ProgressBar
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -37,7 +38,6 @@ import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
@@ -63,8 +63,6 @@ import java.util.*
 class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
 
     companion object {
-        const val REQUEST_NEW_PROJECT_NAME = 1001
-        const val ERROR_DIALOG_REQUEST_CODE = 1
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 
@@ -173,8 +171,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             val listProjects = getAllBySpace(it.id, false)
             mPagerAdapter.updateData(listProjects)
             mBinding.pager.adapter = mPagerAdapter
-            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem =
-                1 else mBinding.pager.currentItem = 0
+            mBinding.pager.currentItem = if (listProjects.isNotEmpty()) 1 else 0
             mBinding.tabs.removeOnTabSelectedListener(this)
         } ?: run {
             mBinding.pager.adapter = mPagerAdapter
@@ -230,10 +227,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
     }
 
     fun promptAddProject() {
-        startActivityForResult(
-            Intent(this, AddProjectActivity::class.java),
-            REQUEST_NEW_PROJECT_NAME
-        )
+        requestNewProjectNameResultLauncher.launch(Intent(this, AddProjectActivity::class.java))
     }
 
     private fun refreshProjects() {
@@ -242,9 +236,9 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
             mPagerAdapter.updateData(listProjects)
             mBinding.pager.adapter = mPagerAdapter
-            if (!listProjects.isNullOrEmpty()) mBinding.pager.currentItem =
-                1 else mBinding.pager.currentItem = 0
+            mBinding.pager.currentItem = if (listProjects.isNotEmpty()) 1 else 0
         }
+
         updateMenu()
     }
 
@@ -270,7 +264,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 setTitle(it.friendlyName)
             } else {
                 val listSpaces = Space.getAll()
-                if (listSpaces?.hasNext() == true) {
+                if (listSpaces.hasNext()) {
                     mSpace = listSpaces.next()
                     setTitle(it.friendlyName)
                     Prefs.setCurrentSpaceId(it.id)
@@ -317,7 +311,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 Media.STATUS_UPLOADING.toLong(),
                 Media.STATUS_QUEUED.toLong()
             )
-            val uploadCount = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)?.size ?: 0
+            val uploadCount = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY).size
             if (uploadCount > 0) {
                 it.isVisible = true
                 val bg = BadgeDrawable(this)
@@ -488,14 +482,14 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             IntentFilter(INTENT_FILTER_NAME)
         )
         mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
-        val spaceCurrent = getCurrentSpace()
+        val spaceCurrent = Space.getCurrent()
         spaceCurrent?.let { currentSpace ->
             mSpace?.let {
                 val listProjects = getAllBySpace(it.id, false)
                 if (it.id != currentSpace.id) {
                     initSpace(spaceCurrent)
                     refreshProjects()
-                } else if (listProjects?.size != mPagerAdapter.count - 1) {
+                } else if (listProjects.size != mPagerAdapter.count - 1) {
                     initSpace(spaceCurrent)
                     refreshProjects()
                 } else {
@@ -555,24 +549,21 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         return super.onOptionsItemSelected(item)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        if (requestCode == REQUEST_NEW_PROJECT_NAME) {
-            if (resultCode == RESULT_OK) {
-                refreshProjects()
-            }
-        } else if (requestCode == ERROR_DIALOG_REQUEST_CODE) {
-            retryProviderInstall = true
-
+    val requestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            refreshProjects()
         }
+    }
+
+    private val mErrorDialogResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+        retryProviderInstall = true
     }
 
     override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
         GoogleApiAvailability.getInstance().apply {
             if (isUserResolvableError(errorCode)) {
 
-                showErrorDialogFragment(this@MainActivity, errorCode, ERROR_DIALOG_REQUEST_CODE) {
+                showErrorDialogFragment(this@MainActivity, errorCode, mErrorDialogResultLauncher) {
                     // The user chose not to take the recovery action.
                     showAlertIcon()
                 }
@@ -580,7 +571,6 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 showAlertIcon()
             }
         }
-
     }
 
     private fun showAlertIcon() {

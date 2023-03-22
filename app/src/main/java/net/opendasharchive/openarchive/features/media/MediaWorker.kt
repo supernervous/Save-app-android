@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.orm.SugarRecord.find
 import com.orm.SugarRecord.findById
-import net.opendasharchive.openarchive.services.internetarchive.ArchiveSiteController
+import net.opendasharchive.openarchive.services.internetarchive.IaSiteController
 import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.db.Collection
@@ -15,7 +15,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.publish.UploaderListenerV2
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController.Companion.SITE_KEY
 import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
@@ -57,7 +56,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
 
                     val project = getById(media.projectId)
                     project?.let {
-                        val valueMap = ArchiveSiteController.getMediaMetadata(ctx, media)
+                        val valueMap = IaSiteController.getMediaMetadata(ctx, media)
                         media.serverUrl = project.description ?: ""
                         media.status = Media.STATUS_UPLOADING
                         media.save()
@@ -65,7 +64,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
 
                         val space: Space? = if (project.spaceId != -1L) findById(
                             Space::class.java, project.spaceId
-                        ) else getCurrentSpace()
+                        ) else Space.getCurrent()
 
                         space?.let {
 
@@ -82,7 +81,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                                         )
                                     Space.Type.INTERNET_ARCHIVE -> sc =
                                         SiteController.getSiteController(
-                                            ArchiveSiteController.SITE_KEY,
+                                            IaSiteController.SITE_KEY,
                                             ctx,
                                             UploaderListenerV2(media, ctx),
                                             null

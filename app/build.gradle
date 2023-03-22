@@ -68,8 +68,8 @@ android {
     lint {
         abortOnError false
     }
-    namespace 'net.opendasharchive.openarchive'
 
+    namespace 'net.opendasharchive.openarchive'
 }
 
 dependencies {
@@ -95,7 +95,7 @@ dependencies {
     implementation libraries.frescoimageviewer
 
     implementation libraries.circular_imageview
-    implementation libraries.netCipher
+    implementation libraries.netcipher
 
     //from here: https://github.com/guardianproject/proofmode
     implementation (libraries.android_libproofmode) {

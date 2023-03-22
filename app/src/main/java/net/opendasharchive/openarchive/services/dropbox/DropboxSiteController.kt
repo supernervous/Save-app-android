@@ -3,10 +3,8 @@ package net.opendasharchive.openarchive.services.dropbox
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import com.dropbox.core.v2.DbxClientV2
 import com.dropbox.core.v2.files.FileMetadata
-import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import net.opendasharchive.openarchive.db.Media
@@ -57,7 +55,6 @@ class DropboxSiteController(
         }
     }
 
-
     override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
         if (media == null) return false
 
@@ -72,7 +69,7 @@ class DropboxSiteController(
 
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
         val projectName = media.serverUrl
-        val fileName = getUploadFileName(media.title, media.mimeType)
+        val fileName = getUploadFileName(media, true)
 
         @SuppressLint("SimpleDateFormat")
         val folderName = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
@@ -150,32 +147,6 @@ class DropboxSiteController(
     override fun cancel() {
         mContinueUpload = false
         mTask?.cancel()
-    }
-
-    private fun getUploadFileName(title: String, mimeType: String): String {
-        val result = StringBuffer()
-        var ext: String?
-
-        ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-        if (ext.isNullOrEmpty()) {
-            ext = if (mimeType.startsWith("image")) {
-                "jpg"
-            }
-            else if (mimeType.startsWith("video")) {
-                "mp4"
-            }
-            else if (mimeType.startsWith("audio")) {
-                "m4a"
-            }
-            else {
-                "txt"
-            }
-        }
-
-        result.append(UrlEscapers.urlFragmentEscaper().escape(title))
-        if (!title.endsWith(ext)) result.append('.').append(ext)
-
-        return result.toString()
     }
 
     private fun uploadMetadata(media: Media, projectName: String, folderName: String, fileName: String) {

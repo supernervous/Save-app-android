@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.services.webdav
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,11 +19,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginWebdavBinding
-import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Constants
@@ -43,7 +38,6 @@ class WebDavLoginActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityLoginWebdavBinding
     private lateinit var mSnackbar: Snackbar
-    private var mCollection: List<Collection>? = null
     private var mSpace: Space? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -275,42 +269,15 @@ class WebDavLoginActivity : BaseActivity() {
     }
 
     private fun removeProject() {
-        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-            when (which) {
-                DialogInterface.BUTTON_POSITIVE -> {
-                    confirmRemoveSpace()
-                    finish()
-                }
-                DialogInterface.BUTTON_NEGATIVE -> {}
-            }
-        }
-        val message = getString(R.string.confirm_remove_space)
-        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-        builder.setTitle(R.string.remove_from_app)
-            .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-            .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
-    }
+        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
+            .setTitle(R.string.remove_from_app)
+            .setMessage(getString(R.string.confirm_remove_space))
+            .setPositiveButton(R.string.action_remove) { _, _ ->
+                mSpace?.delete()
 
-    private fun confirmRemoveSpace() {
-        mSpace?.let { space ->
-            space.delete()
-            space.id?.let {
-                val listProjects = getAllBySpace(it)
-                listProjects?.forEach { project ->
-                    mCollection = Collection.getCollectionById(project.id)
-                    mCollection?.forEach { collection ->
-                        collection.delete()
-                    }
-                    mCollection = null
-
-                    val listMedia = getMediaByProject(project.id)
-                    listMedia?.forEach { media ->
-                        media.delete()
-                    }
-                    project.delete()
-                }
+                Space.navigate(this)
             }
-            SpaceChecker.navigateToHome(this)
-        }
+            .setNegativeButton(R.string.action_cancel, null)
+            .show()
     }
 }

@@ -81,7 +81,7 @@
             android:taskAffinity=""
             android:theme="@style/SettingsTheme" />
         <activity
-            android:name=".services.internetarchive.ArchiveLoginActivity"
+            android:name=".services.internetarchive.IaScrapeActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
             android:parentActivityName=".features.onboarding.SpaceSetupActivity"

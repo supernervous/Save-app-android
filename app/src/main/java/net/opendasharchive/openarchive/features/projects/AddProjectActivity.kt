@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
 import net.opendasharchive.openarchive.databinding.ActivityAddProjectBinding
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 
 class AddProjectActivity : BaseActivity() {
-
-    private val CREATE_NEW_PROJECT_CODE = 1000
-    private val BROWSE_PROJECTS_CODE = 1001
 
     private lateinit var mBinding: ActivityAddProjectBinding
 
@@ -33,22 +31,24 @@ class AddProjectActivity : BaseActivity() {
     }
 
     fun onNewProjectClicked(view: View?) {
-        val space = getCurrentSpace()
+        val space = Space.getCurrent()
+
         if (space != null) {
-            val intent = Intent(this, CreateNewProjectActivity::class.java)
-            startActivityForResult(intent, CREATE_NEW_PROJECT_CODE)
-        } else {
+            mResultLauncher.launch(Intent(this, CreateNewProjectActivity::class.java))
+        }
+        else {
             finish()
             startActivity(Intent(this, SpaceSetupActivity::class.java))
         }
     }
 
     fun onBrowseProjects(view: View?) {
-        val space = getCurrentSpace()
+        val space = Space.getCurrent()
+
         if (space != null) {
-            val intent = Intent(this, BrowseProjectsActivity::class.java)
-            startActivityForResult(intent, BROWSE_PROJECTS_CODE)
-        } else {
+            mResultLauncher.launch(Intent(this, BrowseProjectsActivity::class.java))
+        }
+        else {
             finish()
             startActivity(Intent(this, SpaceSetupActivity::class.java))
         }
@@ -64,10 +64,8 @@ class AddProjectActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
+    private val mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
             setResult(RESULT_OK)
             finish()
         }

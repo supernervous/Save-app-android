@@ -359,4 +359,6 @@
     <string name="ci_confirm">Sure</string>
     <string name="server_name_optional">Server Name (Optional)</string>
     <string name="dropbox_id">Dropbox ID:</string>
+    <string name="waiting_for_upload">Waiting for upload…</string>
+    <string name="uploading_now">Uploading now…</string>
 </resources>

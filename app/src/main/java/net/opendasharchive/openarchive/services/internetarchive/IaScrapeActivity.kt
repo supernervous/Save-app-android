@@ -10,95 +10,109 @@ import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import net.opendasharchive.openarchive.services.SiteController
-import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
+import android.widget.Toast
+import info.guardianproject.netcipher.webkit.WebkitProxy
+import kotlinx.coroutines.*
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.databinding.ActivityIaScrapeBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
 import timber.log.Timber
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.regex.Pattern
 
-class ArchiveLoginActivity : BaseActivity() {
+class IaScrapeActivity : BaseActivity() {
+
+    private lateinit var mBinding: ActivityIaScrapeBinding
 
     private var mAccessResult = RESULT_CANCELED
     private var mAccessKey: String? = null
     private var mSecretKey: String? = null
-    private var mWebview: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        setContentView(R.layout.activity_archive_login)
+
+        mBinding = ActivityIaScrapeBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
         val doRegister = intent.getBooleanExtra("register", false)
-        val useTor = intent.getBooleanExtra("useTor", false)
-        var proxyHost: String? = null
-        var proxyPort = -1
-        if (useTor) {
-            proxyHost =
-                if (intent.hasExtra("proxyHost")) intent.getStringExtra("proxyHost") else Util.ORBOT_HOST
-            proxyPort = intent.getIntExtra("proxyPort", Util.ORBOT_HTTP_PORT)
-        }
-        if (doRegister) login(ARCHIVE_CREATE_ACCOUNT_URL, proxyHost, proxyPort) else login(
-            ARCHIVE_LOGIN_URL, proxyHost, proxyPort
-        )
+
+        login(if (doRegister) { ARCHIVE_CREATE_ACCOUNT_URL } else { ARCHIVE_LOGIN_URL })
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun login(currentURL: String, proxyHost: String?, proxyPort: Int) {
-        mWebview = findViewById<View>(R.id.webView) as WebView
-        mWebview?.settings?.javaScriptEnabled = true
-        mWebview?.visibility = View.VISIBLE
-        mWebview?.addJavascriptInterface(JSInterface(), "htmlout")
+    private fun login(currentURL: String) {
+        mBinding.webView.settings.javaScriptEnabled = true
+        mBinding.webView.addJavascriptInterface(JSInterface(), "htmlout")
+        mBinding.webView.visibility = View.VISIBLE
 
-        //if Orbot is installed and running, then use it!
-        /**
-         * if (proxyHost != null) {
-         *
-         * try {
-         * WebkitProxy.setProxy("android.app.Application", getApplicationContext(),mWebview,proxyHost,proxyPort) ;
-         * } catch (Exception e) {
-         * Log.e(TAG, "user selected \"use tor\" but an exception was thrown while setting the proxy: " + e.getLocalizedMessage());
-         * return;
-         * }
-         *
-         * } */
-        mWebview?.webViewClient = object : WebViewClient() {
+        mBinding.webView.webViewClient = object : WebViewClient() {
+
             @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                //if logged in, hide and redirect to credentials
+
+                // If logged in, redirect to credentials.
                 if (url == ARCHIVE_LOGGED_IN_URL) {
-                    //		view.setVisibility(View.INVISIBLE);
                     view.loadUrl(ARCHIVE_CREDENTIALS_URL)
                     return true
                 }
+
                 return false
             }
 
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                //if credentials page, inject JS for scraping
+
+                //if credentials page, inject JS for scraping.
                 when (url) {
                     ARCHIVE_CREDENTIALS_URL -> {
-                        sIsLoginScren = true
+                        sIsLoginScreen = true
                         val jsCmd = StringBuffer()
                         jsCmd.append("javascript:(function(){")
                         jsCmd.append("window.htmlout.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');")
                         jsCmd.append("document.getElementById('confirm').checked=true;")
                         jsCmd.append("document.getElementById('generateNewKeys').click();")
                         jsCmd.append("})();")
-                        mWebview!!.loadUrl(jsCmd.toString())
+                        mBinding.webView.loadUrl(jsCmd.toString())
                     }
                     ARCHIVE_CREATE_ACCOUNT_URL -> {
-                        sIsLoginScren = false
-                        //String jsSourceDump = "javascript:";
-                        //mWebview.loadUrl(jsSourceDump);
+                        sIsLoginScreen = false
                     }
-                    ArchiveSiteController.ARCHIVE_BASE_URL -> {
+                    IaSiteController.ARCHIVE_BASE_URL -> {
                         view.loadUrl(ARCHIVE_CREDENTIALS_URL)
                     }
                 }
             }
         }
-        mWebview!!.loadUrl(currentURL)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val client = SaveClient.get(this@IaScrapeActivity)
+
+                if (client.proxy?.type() == Proxy.Type.HTTP || client.proxy?.type() == Proxy.Type.SOCKS) {
+                    val address = client.proxy?.address() as? InetSocketAddress
+
+                    if (address != null) {
+                        WebkitProxy.setProxy(applicationContext,address.hostString, address.port)
+                    }
+                }
+
+                MainScope().launch {
+                    mBinding.webView.loadUrl(currentURL)
+                }
+            }
+            catch (e: Exception) {
+                MainScope().launch {
+                    Toast.makeText(this@IaScrapeActivity, e.localizedMessage, Toast.LENGTH_LONG).show()
+
+                    finish()
+                }
+            }
+        }
     }
 
     private fun parseArchiveCredentials(rawHtml: String) {
@@ -115,23 +129,23 @@ class ArchiveLoginActivity : BaseActivity() {
             }
         }
         catch (e: Exception) {
-            Timber.tag("Archive Login").d(e, "unable to get site S3 creds")
+            Timber.d(e, "Unable to get site S3 credentials.")
         }
     }
 
     internal inner class JSInterface {
         @JavascriptInterface
         fun processHTML(html: String?) {
-            if (null == html) {
-                return
-            }
-            if (sIsLoginScren) {
+            if (null == html) return
+
+            if (sIsLoginScreen) {
                 parseArchiveCredentials(html)
                 if (mAccessKey != null && mSecretKey != null) {
                     mAccessResult = RESULT_OK
                     finish()
                 }
-            } else if (html.contains("Verification Email Sent")) {
+            }
+            else if (html.contains("Verification Email Sent")) {
                 showAccountCreatedDialog { _, _ -> finish() }
             }
         }
@@ -146,20 +160,26 @@ class ArchiveLoginActivity : BaseActivity() {
 
     override fun finish() {
         Timber.d("finish()")
+
         val data = Intent()
-        data.putExtra(SiteController.EXTRAS_KEY_USERNAME, mAccessKey)
-        data.putExtra(SiteController.EXTRAS_KEY_CREDENTIALS, mSecretKey)
+        data.putExtra(EXTRAS_KEY_USERNAME, mAccessKey)
+        data.putExtra(EXTRAS_KEY_CREDENTIALS, mSecretKey)
         setResult(mAccessResult, data)
+
         super.finish()
-        clearWebviewAndCookies(mWebview, this)
+
+        clearWebviewAndCookies(mBinding.webView, this)
     }
 
     companion object {
-        private const val ARCHIVE_CREATE_ACCOUNT_URL =
-            "https://archive.org/account/login.createaccount.php"
+        private const val ARCHIVE_CREATE_ACCOUNT_URL = "https://archive.org/account/login.createaccount.php"
         private const val ARCHIVE_LOGIN_URL = "https://archive.org/account/login.php"
         private const val ARCHIVE_LOGGED_IN_URL = "https://archive.org/index.php"
         private const val ARCHIVE_CREDENTIALS_URL = "https://archive.org/account/s3.php"
-        private var sIsLoginScren = false
+
+        const val EXTRAS_KEY_USERNAME = "username"
+        const val EXTRAS_KEY_CREDENTIALS = "credentials"
+
+        private var sIsLoginScreen = false
     }
 }

@@ -5,14 +5,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.Space.Companion.getCurrentSpace
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.SiteController
 import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
 import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import java.io.File
@@ -42,7 +40,7 @@ class BrowseProjectsActivity : BaseActivity() {
         title = ""
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        val space = getCurrentSpace()
+        val space = Space.getCurrent()
         if (space != null) {
             val siteController = when (space.tType) {
                 Space.Type.WEBDAV -> {
@@ -86,17 +84,16 @@ class BrowseProjectsActivity : BaseActivity() {
         val project = Project()
         project.created = Date()
         project.description = description
-        project.spaceId = getCurrentSpace()?.id
+        project.spaceId = Space.getCurrent()?.id
         project.save()
     }
 
 
     private fun projectExists(name: String): Boolean {
-        val space = getCurrentSpace()
+        val space = Space.getCurrent()
         space?.let {
-            val listProjects = getAllBySpace(it.id, false)
             //check for duplicate name
-            listProjects?.forEach { project ->
+            Project.getAllBySpace(it.id, false).forEach { project ->
                 if (project.description == name) return true
             }
         }

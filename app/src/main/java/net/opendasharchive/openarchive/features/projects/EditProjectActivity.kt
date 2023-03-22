@@ -1,7 +1,5 @@
 package net.opendasharchive.openarchive.features.projects
 
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -11,11 +9,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
-import net.opendasharchive.openarchive.db.Collection.Companion.getCollectionById
-import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.Collection.Companion.getByProject
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
-import net.opendasharchive.openarchive.db.SpaceChecker
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Globals
 
@@ -47,7 +44,7 @@ class EditProjectActivity : BaseActivity() {
 
         if (projectId != -1L) {
             mProject = getById(projectId)
-            mCollection = getCollectionById(projectId)
+            mCollection = getByProject(projectId)
             if (mProject == null) {
                 finish()
                 return
@@ -68,7 +65,7 @@ class EditProjectActivity : BaseActivity() {
                     editProjectLayout.edtProjectName.setText(project.description)
                     editProjectLayout.edtProjectName.isEnabled = false
                 } else {
-                    editProjectLayout.edtProjectName.setOnEditorActionListener { v, actionId, event ->
+                    editProjectLayout.edtProjectName.setOnEditorActionListener { _, actionId, _ ->
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             val newProjectName = editProjectLayout.edtProjectName.text.toString()
                             if (newProjectName.isNotEmpty()) {
@@ -97,7 +94,7 @@ class EditProjectActivity : BaseActivity() {
                 editProjectLayout.ccRow3.visibility =
                     if (editProjectLayout.tbCcDerivEnable.isChecked) View.VISIBLE else View.GONE
 
-                editProjectLayout.tbCcDerivEnable.setOnCheckedChangeListener { buttonView, isChecked ->
+                editProjectLayout.tbCcDerivEnable.setOnCheckedChangeListener { _, isChecked ->
                     editProjectLayout.ccRow1.visibility = if (isChecked) View.VISIBLE else View.GONE
                     editProjectLayout.ccRow2.visibility = if (isChecked) View.VISIBLE else View.GONE
                     editProjectLayout.ccRow3.visibility = if (isChecked) View.VISIBLE else View.GONE
@@ -105,37 +102,43 @@ class EditProjectActivity : BaseActivity() {
                 }
 
                 if (!project.licenseUrl.isNullOrEmpty()) {
-                    if (project.licenseUrl == "http://creativecommons.org/licenses/by-sa/4.0/") {
-                        editProjectLayout.tbCcDeriv.isChecked = true
-                        editProjectLayout.tbCcComm.isChecked = true
-                        editProjectLayout.tbCcSharealike.isChecked = true
-                    } else if (project.licenseUrl == "http://creativecommons.org/licenses/by-nc-sa/4.0/") {
-                        editProjectLayout.tbCcDeriv.isChecked = true
-                        editProjectLayout.tbCcSharealike.isChecked = true
-                    } else if (project.licenseUrl == "http://creativecommons.org/licenses/by/4.0/") {
-                        editProjectLayout.tbCcDeriv.isChecked = true
-                        editProjectLayout.tbCcComm.isChecked = true
-                    } else if (project.licenseUrl == "http://creativecommons.org/licenses/by-nc/4.0/") {
-                        editProjectLayout.tbCcDeriv.isChecked = true
-                    } else if (project.licenseUrl == "http://creativecommons.org/licenses/by-nd/4.0/") {
-                        editProjectLayout.tbCcComm.isChecked = true
+                    when (project.licenseUrl) {
+                        "http://creativecommons.org/licenses/by-sa/4.0/" -> {
+                            editProjectLayout.tbCcDeriv.isChecked = true
+                            editProjectLayout.tbCcComm.isChecked = true
+                            editProjectLayout.tbCcSharealike.isChecked = true
+                        }
+                        "http://creativecommons.org/licenses/by-nc-sa/4.0/" -> {
+                            editProjectLayout.tbCcDeriv.isChecked = true
+                            editProjectLayout.tbCcSharealike.isChecked = true
+                        }
+                        "http://creativecommons.org/licenses/by/4.0/" -> {
+                            editProjectLayout.tbCcDeriv.isChecked = true
+                            editProjectLayout.tbCcComm.isChecked = true
+                        }
+                        "http://creativecommons.org/licenses/by-nc/4.0/" -> {
+                            editProjectLayout.tbCcDeriv.isChecked = true
+                        }
+                        "http://creativecommons.org/licenses/by-nd/4.0/" -> {
+                            editProjectLayout.tbCcComm.isChecked = true
+                        }
                     }
                 }
 
-                editProjectLayout.tbCcDeriv.setOnCheckedChangeListener { buttonView, isChecked ->
+                editProjectLayout.tbCcDeriv.setOnCheckedChangeListener { _, isChecked ->
                     updateLicense()
                     editProjectLayout.tbCcSharealike.isEnabled = isChecked
                 }
 
-                editProjectLayout.tbCcComm.setOnCheckedChangeListener { buttonView, isChecked -> updateLicense() }
-                editProjectLayout.tbCcSharealike.setOnCheckedChangeListener { buttonView, isChecked -> updateLicense() }
+                editProjectLayout.tbCcComm.setOnCheckedChangeListener { _, _ -> updateLicense() }
+                editProjectLayout.tbCcSharealike.setOnCheckedChangeListener { _, _ -> updateLicense() }
                 editProjectLayout.tbCcSharealike.isEnabled = editProjectLayout.tbCcDeriv.isChecked
                 editProjectLayout.ccLicenseDisplay.text = project.licenseUrl
             }
         }
     }
 
-    fun updateLicense() {
+    private fun updateLicense() {
 
         mProject?.let { project ->
 
@@ -170,36 +173,22 @@ class EditProjectActivity : BaseActivity() {
     }
 
     fun removeProject(view: View?) {
-        val dialogClickListener =
-            DialogInterface.OnClickListener { dialog, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        confirmRemoveSpace()
-                        finish()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                    }
-                }
-            }
-        val message = getString(R.string.action_remove_project)
-        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-        builder.setTitle(R.string.remove_from_app)
-            .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-            .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
-    }
+        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
+            .setTitle(R.string.remove_from_app)
+            .setMessage(getString(R.string.action_remove_project))
+            .setPositiveButton(R.string.action_remove) { _, _ ->
+                mProject?.delete()
+                mProject = null
 
-    private fun confirmRemoveSpace() {
-        val listMedia = Media.getMediaByProject(mProject!!.id)
-        listMedia?.forEach { media ->
-            media.delete()
-        }
-        mProject?.delete()
-        mProject = null
-        mCollection?.forEach { collection ->
-            collection.delete()
-        }
-        mCollection = null
-        SpaceChecker.navigateToHome(this)
+                mCollection?.forEach {
+                    it.delete()
+                }
+                mCollection = null
+
+                Space.navigate(this)
+            }
+            .setNegativeButton(R.string.action_cancel, null)
+            .show()
     }
 
     fun archiveProject(view: View?) {
@@ -226,14 +215,4 @@ class EditProjectActivity : BaseActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            setResult(RESULT_OK)
-            finish()
-        }
-    }
-
 }

@@ -1,23 +1,24 @@
 package net.opendasharchive.openarchive.services.dropbox
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.dropbox.core.android.Auth
 import com.orm.SugarRecord.findById
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginDropboxBinding
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByProject
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.SpaceChecker
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
@@ -148,51 +149,24 @@ class DropboxLoginActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            if (isSuccessLogin) {
-                val intent = Intent(this@DropboxLoginActivity, MainActivity::class.java)
-                finishAffinity()
-                startActivity(intent)
-            } else {
-                finish()
-            }
+            finish()
+
             return true
         }
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun removeProject() {
-        val dialogClickListener =
-            DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        //Yes button clicked
-                        confirmRemoveSpace()
-                        finish()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                    }
-                }
-            }
-        val message = getString(R.string.confirm_remove_space)
-        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-        builder.setTitle(R.string.remove_from_app)
-            .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-            .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
-    }
+        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
+            .setTitle(R.string.remove_from_app)
+            .setMessage(getString(R.string.confirm_remove_space))
+            .setPositiveButton(R.string.action_remove) { _, _ ->
+                mSpace?.delete()
 
-    private fun confirmRemoveSpace() {
-        mSpace?.let { space ->
-            space.delete()
-            val listProjects = getAllBySpace(space.id)
-            listProjects?.forEach { project ->
-                val listMedia = getMediaByProject(project.id)
-                listMedia?.forEach { media ->
-                    media.delete()
-                }
-                project.delete()
+                Space.navigate(this)
             }
-
-            SpaceChecker.navigateToHome(this)
-        }
+            .setNegativeButton(R.string.action_cancel, null)
+            .show()
     }
 }
