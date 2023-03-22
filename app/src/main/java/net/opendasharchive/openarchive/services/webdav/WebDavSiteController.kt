@@ -35,15 +35,15 @@ class WebDavSiteController(
     jobId
 ) {
 
-    private var chunkStartIdx: Int = 0
-    private val fileBase = "files/"
+    private var mChunkStartIdx: Int = 0
+    private val mFileBase = "files/"
 
-    private var sardine: Sardine? = null
-    private var server: String? = null
+    private var mSardine: Sardine? = null
+    private var mServer: String? = null
     private var mContinueUpload = true
 
     @SuppressLint("SimpleDateFormat")
-    private val dateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
+    private val mDateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
 
 
     companion object {
@@ -54,9 +54,9 @@ class WebDavSiteController(
     override fun startAuthentication(space: Space?) {
         try {
             runBlocking {
-                sardine = OkHttpSardine(SaveClient.get(mContext))
-                sardine?.setCredentials(space?.username, space?.password)
-                server = space?.host
+                mSardine = OkHttpSardine(SaveClient.get(mContext))
+                mSardine?.setCredentials(space?.username, space?.password)
+                mServer = space?.host
             }
         }
         catch (e: Exception) {
@@ -66,6 +66,7 @@ class WebDavSiteController(
 
     override fun upload(space: Space?, media: Media?, valueMap: HashMap<String, String?>): Boolean {
         startAuthentication(space)
+        if (mSardine == null) return false
 
         return if (useNextcloudChunking()) {
             uploadUsingChunking(space, media, valueMap)
@@ -73,11 +74,11 @@ class WebDavSiteController(
         else {
             val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH] ?: "")
             val basePath = media?.serverUrl
-            val folderName = dateFormat.format(media?.createDate ?: Date())
+            val folderName = mDateFormat.format(media?.createDate ?: Date())
             val fileName: String = getUploadFileName(media)
             val projectFolderBuilder = StringBuffer() //server + '/' + basePath;
-            projectFolderBuilder.append(server?.replace("webdav", "dav"))
-            if (server?.endsWith("/") == false) projectFolderBuilder.append('/')
+            projectFolderBuilder.append(mServer?.replace("webdav", "dav"))
+            if (mServer?.endsWith("/") == false) projectFolderBuilder.append('/')
             projectFolderBuilder.append("files/")
             projectFolderBuilder.append(space?.username).append('/')
             projectFolderBuilder.append(basePath)
@@ -89,16 +90,16 @@ class WebDavSiteController(
 
             var finalMediaPath: String? = null
             try {
-                if (sardine?.exists(projectFolderPath) == false) sardine?.createDirectory(
+                if (mSardine?.exists(projectFolderPath) == false) mSardine?.createDirectory(
                     projectFolderPath
                 )
                 projectFolderPath += "/$folderName"
-                if (sardine?.exists(projectFolderPath) == false) sardine?.createDirectory(
+                if (mSardine?.exists(projectFolderPath) == false) mSardine?.createDirectory(
                     projectFolderPath
                 )
                 finalMediaPath = "$projectFolderPath/$fileName"
-                if (sardine?.exists(finalMediaPath) == false) {
-                    sardine?.put(mContext.contentResolver,
+                if (mSardine?.exists(finalMediaPath) == false) {
+                    mSardine?.put(mContext.contentResolver,
                         finalMediaPath,
                         mediaUri,
                         media?.contentLength ?: 0L,
@@ -137,9 +138,10 @@ class WebDavSiteController(
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
         startAuthentication(space)
+        if (mSardine == null) return false
 
         return try {
-            sardine?.delete(bucketName)
+            mSardine?.delete(bucketName)
             true
         } catch (e: IOException) {
             e.printStackTrace()
@@ -158,11 +160,11 @@ class WebDavSiteController(
 
         val sbFolderPath = StringBuffer()
         sbFolderPath.append(path)
-        sbFolderPath.append(fileBase)
+        sbFolderPath.append(mFileBase)
         sbFolderPath.append(space?.username).append('/')
 
         val baseFolderPath = sbFolderPath.toString()
-        val listFolders = sardine?.list(baseFolderPath)
+        val listFolders = mSardine?.list(baseFolderPath)
 
         listFolders?.forEach { folder ->
             if (folder.isDirectory) {
@@ -192,12 +194,12 @@ class WebDavSiteController(
 
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
         var fileName: String = getUploadFileName(media, true)
-        val folderName = dateFormat.format(media?.updateDate ?: Date())
+        val folderName = mDateFormat.format(media?.updateDate ?: Date())
         val chunkFolderPath = media?.serverUrl + "-" + fileName
 
         var sb = StringBuffer() //server + '/' + basePath;
-        sb.append(server?.replace("webdav", "dav"))
-        if (server?.endsWith("/") == false) sb.append('/')
+        sb.append(mServer?.replace("webdav", "dav"))
+        if (mServer?.endsWith("/") == false) sb.append('/')
         sb.append("uploads/")
         sb.append(space?.username).append('/')
         sb.append(chunkFolderPath)
@@ -210,8 +212,8 @@ class WebDavSiteController(
         val tmpMediaPath = projectFolderPath
 
         return try {
-            if (sardine?.exists(projectFolderPath) == false) {
-                sardine?.createDirectory(projectFolderPath)
+            if (mSardine?.exists(projectFolderPath) == false) {
+                mSardine?.createDirectory(projectFolderPath)
             }
 
             // Create chunks and start uploads. Look for existing chunks, and skip if done.
@@ -220,14 +222,14 @@ class WebDavSiteController(
             val bufferSize = 1024 * 4
             val buffer = ByteArray(bufferSize)
 
-            chunkStartIdx = 0
+            mChunkStartIdx = 0
 
             val inputStream = mContext.contentResolver.openInputStream(mediaUri)
 
-            while (media != null && chunkStartIdx < media.contentLength) {
+            while (media != null && mChunkStartIdx < media.contentLength) {
                 val baos = ByteArrayOutputStream()
                 var i = inputStream?.read(buffer) ?: continue
-                var totalBytes: Int = chunkStartIdx + i
+                var totalBytes: Int = mChunkStartIdx + i
 
                 while (i != -1) {
                     baos.write(buffer)
@@ -236,24 +238,24 @@ class WebDavSiteController(
                     if (i != -1) totalBytes += i
                 }
 
-                val chunkPath = "$tmpMediaPath/chunk-$chunkStartIdx-$totalBytes"
-                val chunkExists = sardine?.exists(chunkPath)
+                val chunkPath = "$tmpMediaPath/chunk-$mChunkStartIdx-$totalBytes"
+                val chunkExists = mSardine?.exists(chunkPath)
                 var chunkLengthMatches = false
 
                 if (chunkExists == true) {
-                    val listDav = sardine?.list(chunkPath)
+                    val listDav = mSardine?.list(chunkPath)
                     chunkLengthMatches =
                         !listDav.isNullOrEmpty() && listDav[0].contentLength >= chunkSize
                 }
 
                 if (chunkExists == false || !chunkLengthMatches) {
-                    sardine?.put(
+                    mSardine?.put(
                         chunkPath,
                         baos.toByteArray(),
                         media.mimeType,
                         object : SardineListener {
                             override fun transferred(bytes: Long) {
-                                jobProgress(chunkStartIdx.toLong() + bytes, null)
+                                jobProgress(mChunkStartIdx.toLong() + bytes, null)
                             }
 
                             override fun continueUpload(): Boolean {
@@ -263,7 +265,7 @@ class WebDavSiteController(
                 }
 
                 jobProgress(totalBytes.toLong(), null)
-                chunkStartIdx = totalBytes + 1
+                mChunkStartIdx = totalBytes + 1
             }
 
             inputStream?.close()
@@ -271,8 +273,8 @@ class WebDavSiteController(
             fileName = getUploadFileName(media)
 
             sb = StringBuffer() //server + '/' + basePath;
-                .append(server?.replace("webdav", "dav"))
-            if (server?.endsWith("/") == false) sb.append('/')
+                .append(mServer?.replace("webdav", "dav"))
+            if (mServer?.endsWith("/") == false) sb.append('/')
             sb.append("files/")
                 .append(UrlEscapers.urlFragmentEscaper().escape(space?.username ?: ""))
                 .append('/')
@@ -280,19 +282,19 @@ class WebDavSiteController(
 
             projectFolderPath = sb.toString()
 
-            if (sardine?.exists(projectFolderPath) == false) {
-                sardine?.createDirectory(projectFolderPath)
+            if (mSardine?.exists(projectFolderPath) == false) {
+                mSardine?.createDirectory(projectFolderPath)
             }
 
             projectFolderPath += "/$folderName"
 
-            if (sardine?.exists(projectFolderPath) == true) {
-                sardine?.createDirectory(projectFolderPath)
+            if (mSardine?.exists(projectFolderPath) == true) {
+                mSardine?.createDirectory(projectFolderPath)
             }
 
             val finalMediaPath = "$projectFolderPath/$fileName"
 
-            sardine?.move("$tmpMediaPath/.file", finalMediaPath)
+            mSardine?.move("$tmpMediaPath/.file", finalMediaPath)
             media?.serverUrl = finalMediaPath
 
             jobSucceeded(finalMediaPath)
@@ -302,7 +304,7 @@ class WebDavSiteController(
             true
         }
         catch (e: IOException) {
-            sardine?.delete(tmpMediaPath)
+            mSardine?.delete(tmpMediaPath)
             jobFailed(e, -1, tmpMediaPath)
             false
         }
@@ -319,11 +321,11 @@ class WebDavSiteController(
         val json = Gson().toJson(media, Media::class.java)
 
         try {
-            sardine?.put(urlMeta, json.toByteArray(), "text/plain", null)
+            mSardine?.put(urlMeta, json.toByteArray(), "text/plain", null)
 
             /// Upload ProofMode metadata, if enabled and successfully created.
             for (file in getProof(media)) {
-                sardine?.put(basePath + '/' + file.name, file, "text/plain",
+                mSardine?.put(basePath + '/' + file.name, file, "text/plain",
                     false, null)
             }
 

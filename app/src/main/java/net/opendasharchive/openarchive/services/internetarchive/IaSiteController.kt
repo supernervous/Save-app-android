@@ -15,7 +15,6 @@ import net.opendasharchive.openarchive.services.SiteControllerListener
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okio.BufferedSink
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
 
@@ -258,8 +257,6 @@ class IaSiteController(context: Context, listener: SiteControllerListener?, jobI
         @Suppress("NAME_SHADOWING")
         val media = media ?: return false
 
-        startAuthentication(space)
-
         try {
             val mediaUri = valueMap[VALUE_KEY_MEDIA_PATH]
             val mimeType = valueMap[VALUE_KEY_MIME_TYPE]
@@ -294,7 +291,7 @@ class IaSiteController(context: Context, listener: SiteControllerListener?, jobI
         return false
     }
 
-    @Throws(IOException::class)
+    @Throws(Exception::class)
     private fun put(url: String, requestBody: RequestBody, headers: Headers) {
         val request = Request.Builder()
             .url(url)
@@ -310,17 +307,6 @@ class IaSiteController(context: Context, listener: SiteControllerListener?, jobI
     }
 
     override fun delete(space: Space?, bucketName: String?, mediaFile: String?): Boolean {
-        Timber.d( "Upload file: Entering upload")
-
-        /**
-         *
-         * o DELETE normally deletes a single file, additionally all the
-         * derivatives and originals related to a file can be
-         * automatically deleted by specifying a header with the DELETE
-         * like so:
-         * x-archive-cascade-delete:1
-         */
-
         // FIXME we are putting a random 4 char string in the bucket name for collision avoidance, we might want to do this differently?
         val mediaUrl = ARCHIVE_API_ENDPOINT + '/' + UrlEscapers.urlPathSegmentEscaper().escape(bucketName ?: "") + '/' + mediaFile
 
@@ -332,43 +318,41 @@ class IaSiteController(context: Context, listener: SiteControllerListener?, jobI
             .addHeader("x-archive-keep-old-version", "0")
             .addHeader("authorization", "LOW " + space?.username + ":" + space?.password)
 
-        execute(builder.build())
+        try {
+            execute(builder.build())
 
-        return true
+            return true
+        }
+        catch (e: Exception) {
+            return false
+        }
     }
 
-    @Throws(IOException::class)
     override fun getFolders(space: Space?, path: String?): ArrayList<File> {
         return ArrayList()
     }
 
+    @Throws(Exception::class)
     private fun execute(request: Request) {
-        runBlocking {
-            var client: OkHttpClient? = null
+        val client: OkHttpClient
 
-            try {
-                client = SaveClient.get(mContext)
-            }
-            catch (e: Exception) {
+        runBlocking {
+            client = SaveClient.get(mContext)
+        }
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
                 jobFailed(e, 500, e.localizedMessage)
             }
 
-            if (client == null) return@runBlocking
-
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    jobFailed(e, 500, e.localizedMessage)
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    jobSucceeded(response.request.toString())
                 }
-
-                override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful) {
-                        jobSucceeded(response.request.toString())
-                    }
-                    else {
-                        jobFailed(null, response.code, response.message)
-                    }
+                else {
+                    jobFailed(null, response.code, response.message)
                 }
-            })
-        }
+            }
+        })
     }
 }

@@ -49,7 +49,6 @@ class DropboxSiteController(
                 }
             }
             catch (e: Exception) {
-                Timber.e(e)
                 mException = e
             }
         }
@@ -64,7 +63,7 @@ class DropboxSiteController(
         if (client == null) {
             jobFailed(mException, -1, mException?.message)
 
-            return true
+            return false
         }
 
         val mediaUri = Uri.parse(valueMap[VALUE_KEY_MEDIA_PATH])
@@ -199,5 +198,4 @@ class DropboxSiteController(
     companion object {
         const val SITE_KEY = "dropbox"
     }
-
 }
