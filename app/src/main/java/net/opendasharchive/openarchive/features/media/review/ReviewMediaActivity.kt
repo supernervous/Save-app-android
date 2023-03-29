@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -29,6 +28,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
@@ -213,12 +213,11 @@ class ReviewMediaActivity : BaseActivity() {
     }
 
     private fun showFirstTimeFlag() {
-        if (!Prefs.getBoolean("ft.flag")) {
-            AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-                .setTitle(R.string.popup_flag_title)
-                .setMessage(R.string.popup_flag_desc).create().show()
-            Prefs.putBoolean("ft.flag", true)
-        }
+        if (Prefs.getBoolean("ft.flag")) return
+
+        AlertHelper.show(this, R.string.popup_flag_desc, R.string.popup_flag_title)
+
+        Prefs.putBoolean("ft.flag", true)
     }
 
     private fun setLicense() {
@@ -391,16 +390,11 @@ class ReviewMediaActivity : BaseActivity() {
     }
 
     private fun showDeleteMediaDialog() {
-        val build = AlertDialog.Builder(this@ReviewMediaActivity, R.style.AlertDialogTheme)
-            .setTitle(R.string.popup_remove_title)
-            .setMessage(R.string.popup_remove_desc)
-            .setCancelable(true).setNegativeButton(R.string.lbl_Cancel) { _, _ ->
-                //do nothing
-            }
-            .setPositiveButton(R.string.lbl_ok) { _, _ ->
+        AlertHelper.show(this, R.string.popup_remove_desc, R.string.popup_remove_title, buttons = listOf(
+            AlertHelper.negativeButton(),
+            AlertHelper.positiveButton() { _, _ ->
                 deleteMedia()
-            }
-        build.create().show()
+            }))
     }
 
     private fun deleteMedia() {

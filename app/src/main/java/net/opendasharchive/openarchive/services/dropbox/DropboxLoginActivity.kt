@@ -7,8 +7,6 @@ import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import com.dropbox.core.android.Auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +18,7 @@ import net.opendasharchive.openarchive.databinding.ActivityLoginDropboxBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
 import net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME
@@ -159,15 +158,12 @@ class DropboxLoginActivity : BaseActivity() {
     }
 
     private fun removeProject() {
-        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-            .setTitle(R.string.remove_from_app)
-            .setMessage(getString(R.string.confirm_remove_space))
-            .setPositiveButton(R.string.action_remove) { _, _ ->
+        AlertHelper.show(this, R.string.confirm_remove_space, R.string.remove_from_app, buttons = listOf(
+            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
                 mSpace.delete()
 
                 Space.navigate(this)
-            }
-            .setNegativeButton(R.string.action_cancel, null)
-            .show()
+            },
+            AlertHelper.negativeButton()))
     }
 }

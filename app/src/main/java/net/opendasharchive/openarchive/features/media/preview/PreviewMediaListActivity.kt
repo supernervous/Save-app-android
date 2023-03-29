@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
@@ -15,6 +14,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 
 class PreviewMediaListActivity : BaseActivity() {
@@ -120,14 +120,10 @@ class PreviewMediaListActivity : BaseActivity() {
     }
 
     private fun showFirstTimeBatch() {
-        val listMedia = mFrag?.getMediaList() ?: listOf()
-        if(listMedia.size > 1) {
-            if (!Prefs.getBoolean("ft.batch")) {
-                AlertDialog.Builder(this, R.style.AlertDialogTheme)
-                    .setTitle(R.string.popup_batch_title)
-                    .setMessage(R.string.popup_batch_desc).create().show()
-                Prefs.putBoolean("ft.batch", true)
-            }
-        }
+        if ((mFrag?.getMediaList() ?: listOf()).isEmpty() || Prefs.getBoolean("ft.batch")) return
+
+        AlertHelper.show(this, R.string.popup_batch_desc, R.string.popup_batch_title)
+
+        Prefs.putBoolean("ft.batch", true)
     }
 }

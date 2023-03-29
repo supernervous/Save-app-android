@@ -2,27 +2,20 @@ package net.opendasharchive.openarchive.db
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Handler
+import android.os.Looper
 import android.view.*
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.view.MotionEventCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.orm.SugarRecord.find
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 
@@ -142,13 +135,11 @@ class MediaAdapter(
     }
 
     private fun showFirstTimeFlag() {
-        if (!Prefs.getBoolean("ft.flag")) {
-            val build: AlertDialog.Builder = AlertDialog.Builder(mContext, R.style.AlertDialogTheme)
-                .setTitle(R.string.popup_flag_title)
-                .setMessage(R.string.popup_flag_desc)
-            build.create().show()
-            Prefs.putBoolean("ft.flag", true)
-        }
+        if (Prefs.getBoolean("ft.flag")) return
+
+        AlertHelper.show(mContext, R.string.popup_flag_desc, R.string.popup_flag_title)
+
+        Prefs.putBoolean("ft.flag", true)
     }
 
     private fun selectView(view: View) {
@@ -200,7 +191,7 @@ class MediaAdapter(
                     if(selectedMedia.isNotEmpty()){
                         onUpload(selectedMedia)
                     }
-                    Handler().postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
                         mode?.finish()
                     },100)
                     true
@@ -229,32 +220,22 @@ class MediaAdapter(
         }
 
         fun removeSelectedMedia(mode: ActionMode?) {
-            val builder =
-                AlertDialog.Builder(ContextThemeWrapper(mContext, R.style.AlertDialogCustom))
-            val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        val it: Iterator<Media> = java.util.ArrayList(data).iterator()
-                        while (it.hasNext()) {
-                            val mediaDelete = it.next()
-                            if (mediaDelete.selected) {
-                                data.remove(mediaDelete)
-                                mediaDelete.delete()
-                            }
+            AlertHelper.show(mContext, R.string.confirm_remove_media, null, buttons = listOf(
+                AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+                    val iterator = java.util.ArrayList(data).iterator()
+                    while (iterator.hasNext()) {
+                        val mediaDelete = iterator.next()
+                        if (mediaDelete.selected) {
+                            data.remove(mediaDelete)
+                            mediaDelete.delete()
                         }
-                        mode?.finish()
-                        notifyDataSetChanged()
-                        onDelete()
                     }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        dialog.dismiss()
-                    }
-                }
-            }
-            val message = mContext.getString(R.string.confirm_remove_media)
-            builder
-                .setMessage(message).setPositiveButton(R.string.action_remove, dialogClickListener)
-                .setNegativeButton(R.string.action_cancel, dialogClickListener).show()
+
+                    mode?.finish()
+                    notifyDataSetChanged()
+                    onDelete()
+                },
+                AlertHelper.negativeButton()))
         }
 
         // Called when the action mode is created; startActionMode() was called

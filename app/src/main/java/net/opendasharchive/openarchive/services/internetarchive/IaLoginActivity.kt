@@ -8,13 +8,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginIaBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 
@@ -159,26 +158,19 @@ class IaLoginActivity : BaseActivity() {
     }
 
     private fun removeProject() {
-        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-            .setTitle(R.string.remove_from_app)
-            .setMessage(getString(R.string.confirm_remove_space))
-            .setPositiveButton(R.string.action_remove) { _, _ ->
+        AlertHelper.show(this, R.string.confirm_remove_space, R.string.remove_from_app, buttons = listOf(
+            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
                 mSpace.delete()
 
                 Space.navigate(this)
-            }
-            .setNegativeButton(R.string.action_cancel, null)
-            .show()
+            },
+            AlertHelper.negativeButton()))
     }
 
     private fun showFirstTimeIa() {
         if (Prefs.getBoolean("ft.ia")) return
 
-        AlertDialog.Builder(this, R.style.AlertDialogTheme)
-            .setTitle(R.string.popup_ia_title)
-            .setMessage(R.string.popup_ia_desc)
-            .create()
-            .show()
+        AlertHelper.show(this, R.string.popup_ia_desc, R.string.popup_ia_title)
 
         Prefs.putBoolean("ft.ia", true)
     }

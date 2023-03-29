@@ -1,12 +1,11 @@
 package net.opendasharchive.openarchive.features.onboarding
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEulaBinding
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 
 /**
@@ -23,8 +22,6 @@ import net.opendasharchive.openarchive.util.Globals
  */
 class EulaActivity(private val mActivity: AppCompatActivity) {
 
-    private lateinit var mBinding: ActivityEulaBinding
-
     //callback to let the activity know when the user has accepted the EULA.
     internal interface OnEulaAgreedTo {
         fun onEulaAgreedTo()
@@ -34,41 +31,30 @@ class EulaActivity(private val mActivity: AppCompatActivity) {
      * Displays the EULA if necessary. This method should be called from the
      * onCreate() method of your main Activity.
      *
-     * @param mActivity The Activity to finish if the user rejects the EULA.
      * @return Whether the user has agreed already.
      */
     fun show(): Boolean {
-        val sharedPrefs: SharedPreferences =
-            mActivity.getSharedPreferences(Globals.PREF_FILE_KEY, Activity.MODE_PRIVATE)
-        val noEula = !sharedPrefs.getBoolean(Globals.PREF_EULA_ACCEPTED, false)
-        if (noEula) {
-            val builder = AlertDialog.Builder(mActivity)
-            val adbInflater = LayoutInflater.from(mActivity)
-            mBinding = ActivityEulaBinding.inflate(adbInflater)
-            builder.setView(mBinding.root)
-            builder.setTitle(R.string.eula_title)
-            builder.setCancelable(true)
-            builder.setPositiveButton(R.string.eula_accept) { dialog, which ->
-                accept(sharedPrefs)
-                if (mActivity is OnEulaAgreedTo) {
-                    (mActivity as OnEulaAgreedTo).onEulaAgreedTo()
-                }
-            }
-            builder.setNegativeButton(R.string.eula_refuse) { _, _ -> refuse(mActivity) }
-            builder.setOnCancelListener {
-                refuse(mActivity)
-            }
-            builder.create().show()
-            return false
+        val preferences = mActivity.getSharedPreferences(Globals.PREF_FILE_KEY, Activity.MODE_PRIVATE)
+
+        if (preferences.getBoolean(Globals.PREF_EULA_ACCEPTED, false)) {
+            return true
         }
-        return true
-    }
 
-    private fun accept(preferences: SharedPreferences) {
-        preferences.edit().putBoolean(Globals.PREF_EULA_ACCEPTED, true).commit()
-    }
+        val binding = ActivityEulaBinding.inflate(LayoutInflater.from(mActivity))
 
-    private fun refuse(activity: Activity) {
-        activity.finish()
+        val alert = AlertHelper.build(mActivity, title = R.string.eula_title, buttons = listOf(
+            AlertHelper.positiveButton(R.string.eula_accept) { _, _ ->
+                preferences.edit().putBoolean(Globals.PREF_EULA_ACCEPTED, true).apply()
+
+                (mActivity as? OnEulaAgreedTo)?.onEulaAgreedTo()
+            },
+            AlertHelper.negativeButton(R.string.eula_refuse) { _, _ ->
+                mActivity.finish()
+            }))
+
+        alert.setView(binding.root)
+        alert.show()
+
+        return false
     }
 }

@@ -5,8 +5,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
 import net.opendasharchive.openarchive.db.Collection.Companion.getByProject
@@ -14,6 +12,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 
 class EditProjectActivity : BaseActivity() {
@@ -172,11 +171,9 @@ class EditProjectActivity : BaseActivity() {
         }
     }
 
-    fun removeProject(view: View?) {
-        AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogCustom))
-            .setTitle(R.string.remove_from_app)
-            .setMessage(getString(R.string.action_remove_project))
-            .setPositiveButton(R.string.action_remove) { _, _ ->
+    fun removeProject() {
+        AlertHelper.show(this, R.string.action_remove_project, R.string.remove_from_app, buttons = listOf(
+            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
                 mProject?.delete()
                 mProject = null
 
@@ -186,12 +183,11 @@ class EditProjectActivity : BaseActivity() {
                 mCollection = null
 
                 Space.navigate(this)
-            }
-            .setNegativeButton(R.string.action_cancel, null)
-            .show()
+            },
+            AlertHelper.negativeButton()))
     }
 
-    fun archiveProject(view: View?) {
+    fun archiveProject() {
         mProject?.let { project ->
             project.archived = !project.archived
             project.save()

@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +17,7 @@ import net.opendasharchive.openarchive.databinding.ActivityIaScrapeBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
+import net.opendasharchive.openarchive.util.AlertHelper
 import timber.log.Timber
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -152,10 +152,10 @@ class IaScrapeActivity : BaseActivity() {
     }
 
     private fun showAccountCreatedDialog(positiveBtnClickListener: DialogInterface.OnClickListener) {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.archive_title))
-            .setMessage(getString(R.string.archive_message))
-            .setPositiveButton(R.string.lbl_ok, positiveBtnClickListener).show()
+        AlertHelper.show(this, R.string.archive_message, R.string.archive_title, buttons = listOf(
+            AlertHelper.positiveButton { dialog, which ->
+                positiveBtnClickListener.onClick(dialog, which)
+            }))
     }
 
     override fun finish() {
