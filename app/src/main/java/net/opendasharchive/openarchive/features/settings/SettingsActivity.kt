@@ -13,10 +13,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.permissionx.guolindev.PermissionX
+import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.extensions.routeTo
+import net.opendasharchive.openarchive.util.AlertHelper
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.IOException
@@ -27,20 +28,20 @@ class SettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
         mBinding = ActivityDataUsageBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-        initLayout()
-    }
 
-
-    private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.let {
-            it.title = ""
-            it.setDisplayHomeAsUpEnabled(true)
-        }
-        routeTo(SettingsFragment(), mBinding.content.id)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportFragmentManager.beginTransaction()
+            .replace(mBinding.content.id, SettingsFragment())
+            .addToBackStack(SettingsFragment::class.java.canonicalName)
+            .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -50,6 +51,7 @@ class SettingsActivity : BaseActivity() {
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -63,21 +65,21 @@ class SettingsActivity : BaseActivity() {
         class SettingsFragment : PreferenceFragmentCompat() {
             override fun onCreatePreferences(bundle: Bundle?, s: String?) {
                 val type = requireActivity().intent.getStringExtra(KEY_TYPE)
+
                 if (type.isNullOrEmpty() || type == KEY_DATAUSE) {
                     addPreferencesFromResource(R.xml.app_prefs_datause)
-                } else if (type == KEY_METADATA) {
+                }
+                else if (type == KEY_METADATA) {
                     addPreferencesFromResource(R.xml.app_prefs_metadata)
-                    val myPref = findPreference<Preference>("share_proofmode")
-                    myPref?.let {
-                        it.onPreferenceClickListener = Preference.OnPreferenceClickListener { //open browser or intent here
+
+                    findPreference<Preference>("share_proofmode")?.onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
                             shareKey(requireActivity())
                             true
                         }
-                    }
 
-                    val useProofMode = findPreference<Preference>("use_proofmode") as SwitchPreferenceCompat
-                    useProofMode.setOnPreferenceChangeListener { _, newValue ->
-                        if(newValue as Boolean){
+                    findPreference<Preference>("use_proofmode")?.setOnPreferenceChangeListener { preference, newValue ->
+                        if (newValue as Boolean) {
                             PermissionX.init(this)
                                 .permissions(
                                     Manifest.permission.READ_PHONE_STATE,
@@ -91,7 +93,7 @@ class SettingsActivity : BaseActivity() {
                                 }
                                 .request { allGranted, _, _ ->
                                     if (!allGranted) {
-                                        useProofMode.isChecked = false
+                                        (preference as? SwitchPreferenceCompat)?.isChecked = false
                                         Toast.makeText(activity,"Please allow all permissions",Toast.LENGTH_LONG).show()
                                         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                         val uri = Uri.fromParts("package", activity?.packageName, null)
@@ -100,11 +102,35 @@ class SettingsActivity : BaseActivity() {
                                     }
                                 }
                         }
+
                         true
                     }
-
-                } else if (type == KEY_NETWORKING) {
+                }
+                else if (type == KEY_NETWORKING) {
                     addPreferencesFromResource(R.xml.app_prefs_networking)
+
+                    findPreference<Preference>("use_tor")?.setOnPreferenceChangeListener { _, newValue ->
+                        val activity = activity ?: return@setOnPreferenceChangeListener true
+
+                        if (newValue as Boolean) {
+                            if (!OrbotHelper.isOrbotInstalled(activity) && !OrbotHelper.isTorServicesInstalled(activity)) {
+                                AlertHelper.show(activity,
+                                    R.string.prefs_install_tor_summary,
+                                    R.string.prefs_use_tor_title,
+                                    buttons = listOf(
+                                        AlertHelper.positiveButton(R.string.action_install) { _, _ ->
+                                            activity.startActivity(
+                                                OrbotHelper.getOrbotInstallIntent(activity))
+                                        },
+                                        AlertHelper.negativeButton(R.string.action_cancel)
+                                    ))
+
+                                return@setOnPreferenceChangeListener false
+                            }
+                        }
+
+                        true
+                    }
                 }
             }
         }
@@ -113,16 +139,17 @@ class SettingsActivity : BaseActivity() {
             try {
                 val mPgpUtils = PgpUtils.getInstance(activity, PgpUtils.DEFAULT_PASSWORD)
                 val pubKey = mPgpUtils.publicKeyString
+
                 if (pubKey.isNotEmpty()) {
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.type = "text/plain"
                     intent.putExtra(Intent.EXTRA_TEXT, pubKey)
                     activity.startActivity(intent)
                 }
-            } catch (ioe: IOException) {
-                Timber.tag("Proofmode").d("error publishing key")
+            }
+            catch (ioe: IOException) {
+                Timber.d("error publishing key")
             }
         }
     }
-
 }
