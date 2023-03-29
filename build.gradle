@@ -80,6 +80,7 @@ allprojects {
                 includeModule 'com.github.abdularis', 'circularimageview'
                 includeModule 'com.github.guardianproject', 'sardine-android'
                 includeModule 'com.github.danimahardhika', 'cafebar'
+                includeModule 'com.github.paolorotolo', 'appintro'
             }
         }
 

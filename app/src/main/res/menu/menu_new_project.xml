@@ -7,7 +7,7 @@
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/action_done"
-        android:title="@string/done_button"
+        android:title="@string/ef_done"
         app:showAsAction="always" />
 
 </menu>
