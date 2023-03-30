@@ -5,7 +5,7 @@
     android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.opendasharchive.openarchive.projects.AddProjectActivity">
+    tools:context=".features.projects.AddProjectActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -13,6 +13,109 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
 
-    <include android:id="@+id/addProjectLayout" layout="@layout/content_add_project" />
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:filterTouchesWhenObscured="true"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/header_new_project"
+            android:textColor="@color/oablue"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="6dp"
+            android:gravity="center_horizontal"
+            android:text="@string/action_media_stored"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/light_grey" />
+
+        <RelativeLayout
+            android:id="@+id/new_project"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/title_create_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_new_project"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_create_new"
+                android:text="@string/add_a_project_folder_to_the_server"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text=">"
+                android:textSize="28sp"
+                tools:ignore="HardcodedText" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/light_grey" />
+
+        <RelativeLayout
+            android:id="@+id/browse_projects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/title_browse_projects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/action_browse_projects"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_browse_projects"
+                android:text="@string/action_choose_folder"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/prompt_arrow"
+                android:textSize="28sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

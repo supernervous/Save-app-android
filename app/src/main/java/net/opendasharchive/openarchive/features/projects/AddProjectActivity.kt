@@ -18,39 +18,31 @@ class AddProjectActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
         mBinding = ActivityAddProjectBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-        initLayout()
-    }
 
-    private fun initLayout() {
+        mBinding.newProject.setOnClickListener {
+            setProject(false)
+        }
+
+        mBinding.browseProjects.setOnClickListener {
+            setProject(true)
+        }
+
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
 
-    fun onNewProjectClicked(view: View?) {
-        val space = Space.getCurrent()
+        // We cannot browse the Internet Archive. Directly forward to creating a project,
+        // as it doesn't make sense to show a one-option menu.
+        if (Space.getCurrent()?.tType == Space.Type.INTERNET_ARCHIVE) {
+            mBinding.browseProjects.visibility = View.GONE
 
-        if (space != null) {
-            mResultLauncher.launch(Intent(this, CreateNewProjectActivity::class.java))
-        }
-        else {
             finish()
-            startActivity(Intent(this, SpaceSetupActivity::class.java))
-        }
-    }
-
-    fun onBrowseProjects(view: View?) {
-        val space = Space.getCurrent()
-
-        if (space != null) {
-            mResultLauncher.launch(Intent(this, BrowseProjectsActivity::class.java))
-        }
-        else {
-            finish()
-            startActivity(Intent(this, SpaceSetupActivity::class.java))
+            setProject(false)
         }
     }
 
@@ -69,5 +61,17 @@ class AddProjectActivity : BaseActivity() {
             setResult(RESULT_OK)
             finish()
         }
+    }
+
+    private fun setProject(browse: Boolean) {
+        if (Space.getCurrent() == null) {
+            finish()
+            startActivity(Intent(this, SpaceSetupActivity::class.java))
+
+            return
+        }
+
+        mResultLauncher.launch(Intent(this,
+            if (browse) BrowseProjectsActivity::class.java else CreateNewProjectActivity::class.java))
     }
 }
