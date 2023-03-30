@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.orm.SugarRecord
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.publish.UploaderListener
@@ -19,17 +18,15 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
     override suspend fun doWork(): Result {
         val datePublish = Date()
 
-        val results = SugarRecord.find(Media::class.java, "status IN (?, ?)",
-            arrayOf(Media.STATUS_QUEUED.toString(), Media.STATUS_UPLOADING.toString()),
-            null, "priority DESC", null)
+        val results = Media.getByStatus(listOf(Media.Status.Queued, Media.Status.Uploading), Media.ORDER_PRIORITY)
 
         for (media in results) {
             val project = media.project ?: return Result.failure()
 
-            if (media.status != Media.STATUS_UPLOADING) {
+            if (media.sStatus != Media.Status.Uploading) {
                 media.uploadDate = datePublish
                 media.progress = 0 //should we reset this?
-                media.status = Media.STATUS_UPLOADING
+                media.sStatus = Media.Status.Uploading
                 media.statusMessage = ""
             }
 
@@ -62,7 +59,7 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                 Timber.d(e)
 
                 media.statusMessage = "error in uploading media: " + e.localizedMessage
-                media.status = Media.STATUS_ERROR
+                media.sStatus = Media.Status.Error
                 media.save()
 
                 return Result.failure()

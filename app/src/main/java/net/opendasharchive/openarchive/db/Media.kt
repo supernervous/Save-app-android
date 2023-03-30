@@ -33,6 +33,17 @@ data class Media(
     var selected: Boolean = false
 ) : SugarRecord() {
 
+    enum class Status(val id: Int) {
+        New(0),
+        Local(1),
+        Queued(2),
+        Published(3),
+        Uploading(4),
+        Uploaded(5),
+        DeleteRemote(7),
+        Error(9),
+    }
+
     fun getFormattedCreateDate(): String {
         return createDate?.let {
             SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(it)
@@ -47,16 +58,14 @@ data class Media(
         this.tags = tags
     }
 
+    var sStatus: Status
+        get() = Status.values().firstOrNull { it.id == status } ?: Status.New
+        set(value) {
+            status = value.id
+        }
+
     companion object {
-        const val STATUS_NEW = 0
-        const val STATUS_LOCAL = 1
-        const val STATUS_QUEUED = 2
-        const val STATUS_PUBLISHED = 3
-        const val STATUS_UPLOADING = 4
-        const val STATUS_UPLOADED = 5
-        const val STATUS_DELETE_REMOTE = 7
-        const val STATUS_ERROR = 9
-        const val ORDER_PRIORITY = "PRIORITY DESC"
+        const val ORDER_PRIORITY = "priority DESC"
 
 
         fun getByProject(projectId: Long): List<Media> {
@@ -75,10 +84,10 @@ data class Media(
                 null, "status, id DESC", null)
         }
 
-        fun getMediaByStatus(statuses: LongArray, order: String?): List<Media> {
+        fun getByStatus(statuses: List<Status>, order: String? = null): List<Media> {
             return find(Media::class.java,
                 statuses.map { "status = ?" }.joinToString(" OR "),
-                statuses.map { it.toString() }.toTypedArray(),
+                statuses.map { it.id.toString() }.toTypedArray(),
                 null, order, null)
         }
 

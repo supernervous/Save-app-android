@@ -20,11 +20,8 @@ import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 open class MediaListFragment : Fragment() {
 
     private var mProjectId: Long = -1
-    private var mStatus = Media.STATUS_UPLOADING.toLong()
-    private var mStatuses = longArrayOf(
-        Media.STATUS_UPLOADING.toLong(),
-        Media.STATUS_QUEUED.toLong(), Media.STATUS_ERROR.toLong()
-    )
+    private var mStatus = Media.Status.Uploading
+    private var mStatuses = listOf(Media.Status.Uploading, Media.Status.Queued, Media.Status.Error)
     open var mMediaAdapter: MediaAdapter? = null
 
     private var _mBinding: FragmentMediaListBinding? = null
@@ -68,7 +65,7 @@ open class MediaListFragment : Fragment() {
         viewModel.mediaList.observe(viewLifecycleOwner) {
             if (mProjectId != EMPTY_ID) {
                 it?.forEach { media ->
-                    if (media.status == Media.STATUS_LOCAL) {
+                    if (media.sStatus == Media.Status.Local) {
                         return@forEach
                     }
                 }
@@ -120,7 +117,7 @@ open class MediaListFragment : Fragment() {
         return mMediaAdapter?.getMediaList()
     }
 
-    open fun setStatus(status: Long) {
+    open fun setStatus(status: Media.Status) {
         mStatus = status
     }
 
@@ -146,13 +143,13 @@ open class MediaListFragment : Fragment() {
 
     open fun refresh() {
         val listMedia = if (mProjectId == -1L) {
-            Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+            Media.getByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {
             Media.getByProject(mProjectId)
         }
 
         val filterList = listMedia.filter {
-            it.status == Media.STATUS_UPLOADING || it.status == Media.STATUS_QUEUED
+            it.sStatus == Media.Status.Uploading || it.sStatus == Media.Status.Queued
         }
 
         filterList.let {
@@ -165,13 +162,13 @@ open class MediaListFragment : Fragment() {
 
     open fun getUploadingCounter() : Int{
         val listMedia = if (mProjectId == -1L) {
-            Media.getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+            Media.getByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {
             Media.getByProject(mProjectId)
         }
 
         val filterList = listMedia.filter {
-            it.status == Media.STATUS_QUEUED || it.status == Media.STATUS_UPLOADING
+            it.sStatus == Media.Status.Queued || it.sStatus == Media.Status.Uploading
         }
 
         return filterList.size

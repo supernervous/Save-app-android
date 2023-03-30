@@ -26,7 +26,7 @@ import timber.log.Timber
 class UploadManagerActivity : BaseActivity() {
 
     var mFrag: MediaListFragment? = null
-    var mMenuEdit: MenuItem? = null
+    private var mMenuEdit: MenuItem? = null
     private var projectId: Long = EMPTY_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class UploadManagerActivity : BaseActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.tag("receiver").d("Updating media")
             val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
-            if (status == Media.STATUS_UPLOADED) {
+            if (status == Media.Status.Uploaded.id) {
                 Handler(Looper.getMainLooper()).post {
                     val progressToolbarTitle: String = if (mFrag!!.getUploadingCounter() == 0) {
                         getString(R.string.title_uploads)
@@ -71,18 +71,18 @@ class UploadManagerActivity : BaseActivity() {
                     supportActionBar!!.title = progressToolbarTitle
                 }
                 mFrag!!.refresh()
-            } else if (status == Media.STATUS_QUEUED) {
+            } else if (status == Media.Status.Queued.id) {
                 Handler(Looper.getMainLooper()).post {
                     supportActionBar!!.title =
                         getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
                 }
-            } else if (status == Media.STATUS_UPLOADING) {
+            } else if (status == Media.Status.Uploading.id) {
                 val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
                 val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
                 if (mediaId != -1L) {
                     mFrag!!.updateItem(mediaId, progress)
                 }
-            } else if (status == Media.STATUS_ERROR) {
+            } else if (status == Media.Status.Error.id) {
                 val oApp = application as OpenArchiveApp
                 val hasCleanInsightsConsent = oApp.hasCleanInsightsConsent()
                 if (hasCleanInsightsConsent != null && !hasCleanInsightsConsent) {
@@ -91,16 +91,20 @@ class UploadManagerActivity : BaseActivity() {
             }
         }
     }
-    var isEditMode = false
-    fun toggleEditMode() {
-        isEditMode = !isEditMode
-        mFrag!!.setEditMode(isEditMode)
-        mFrag!!.refresh()
-        if (isEditMode) {
-            mMenuEdit!!.setTitle(R.string.menu_done)
+
+    private var mEditMode = false
+
+    private fun toggleEditMode() {
+        mEditMode = !mEditMode
+        mFrag?.setEditMode(mEditMode)
+        mFrag?.refresh()
+
+        if (mEditMode) {
+            mMenuEdit?.setTitle(R.string.menu_done)
             stopService(Intent(this, PublishService::class.java))
-        } else {
-            mMenuEdit!!.setTitle(R.string.menu_edit)
+        }
+        else {
+            mMenuEdit?.setTitle(R.string.menu_edit)
             startService(Intent(this, PublishService::class.java))
         }
     }

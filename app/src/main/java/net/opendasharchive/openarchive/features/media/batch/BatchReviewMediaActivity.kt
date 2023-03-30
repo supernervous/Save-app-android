@@ -124,7 +124,7 @@ class BatchReviewMediaActivity : BaseActivity() {
                     ivEditTags.setImageResource(R.drawable.ic_tag_unselected)
                 }
 
-                if (media.status != Media.STATUS_UPLOADED) {
+                if (media.sStatus != Media.Status.Uploaded) {
                     mBinding.archiveMetadataLayout.ivEditFlag.show()
                     mBinding.archiveMetadataLayout.tvFlagLbl.show()
                 } else {
@@ -136,19 +136,20 @@ class BatchReviewMediaActivity : BaseActivity() {
                 tvCcLicense.setText(media.licenseUrl)
             }
 
-            if (media.status != Media.STATUS_LOCAL && media.status != Media.STATUS_NEW) {
-                when (media.status) {
-                    Media.STATUS_UPLOADED, Media.STATUS_PUBLISHED -> {
+            if (media.sStatus != Media.Status.Local && media.sStatus != Media.Status.New) {
+                when (media.sStatus) {
+                    Media.Status.Uploaded, Media.Status.Published -> {
                         // NO-OP
                     }
-                    Media.STATUS_QUEUED -> {
+                    Media.Status.Queued -> {
                         tvUrl.text = getString(R.string.batch_waiting_for_upload)
                         tvUrl.show()
                     }
-                    Media.STATUS_UPLOADING -> {
+                    Media.Status.Uploading -> {
                         tvUrl.text = getString(R.string.batch_uploading_now)
                         tvUrl.show()
                     }
+                    else -> {}
                 }
 
                 archiveMetadataLayout.apply {
@@ -172,8 +173,8 @@ class BatchReviewMediaActivity : BaseActivity() {
                     }
 //                    tvCcLicense.isEnabled = false
                 }
-
-            } else {
+            }
+            else {
                 archiveMetadataLayout.rowFlag.setOnClickListener {
                     mediaList.forEach { media ->
                         media.flag = !media.flag
@@ -181,6 +182,7 @@ class BatchReviewMediaActivity : BaseActivity() {
                     updateFlagState(media)
                 }
             }
+
             updateFlagState(media)
         }
     }
@@ -264,7 +266,7 @@ class BatchReviewMediaActivity : BaseActivity() {
 
     private fun startUpload(listMedia: ArrayList<Media>) {
         for (media in listMedia) {
-            media.status = Media.STATUS_QUEUED
+            media.sStatus = Media.Status.Queued
             media.save()
         }
         val operation = previewMediaListViewModel.applyMedia()

@@ -88,14 +88,14 @@ class MediaViewHolder(
         }
 
         val mediaPath = currentMedia.originalFilePath
-        if (currentMedia.status == Media.STATUS_PUBLISHED || currentMedia.status == Media.STATUS_UPLOADED) {
+        if (currentMedia.sStatus == Media.Status.Published || currentMedia.sStatus == Media.Status.Uploaded) {
             ivIcon.alpha = 1f
         } else {
             if (doImageFade) ivIcon.alpha = 0.5f else ivIcon.alpha = 1f
         }
 
         //Uploading animation
-        if (currentMedia.status == Media.STATUS_UPLOADING || currentMedia.status == Media.STATUS_QUEUED) {
+        if (currentMedia.sStatus == Media.Status.Uploading || currentMedia.sStatus == Media.Status.Queued) {
             startImageUploadProgress()
         } else {
             stopImageUploadProgress()
@@ -204,7 +204,7 @@ class MediaViewHolder(
         }
         lastMediaPath = mediaPath
         val sbTitle = StringBuffer()
-        if (currentMedia.status == Media.STATUS_ERROR) {
+        if (currentMedia.sStatus == Media.Status.Error) {
             sbTitle.append(mContext.getString(R.string.status_error))
             progressBar?.let { progressBar ->
                 progressBar.visibility = View.GONE
@@ -216,7 +216,7 @@ class MediaViewHolder(
             }
             if (!TextUtils.isEmpty(currentMedia.statusMessage)) tvCreateDate?.text =
                 currentMedia.statusMessage
-        } else if (currentMedia.status == Media.STATUS_QUEUED) {
+        } else if (currentMedia.sStatus == Media.Status.Queued) {
             sbTitle.append(mContext.getString(R.string.status_waiting))
             progressBar?.let { progressBar ->
                 progressBar.visibility = View.GONE
@@ -225,7 +225,7 @@ class MediaViewHolder(
                 tvProgress?.text = "0%"
 
             }
-        } else if (currentMedia.status == Media.STATUS_UPLOADING) {
+        } else if (currentMedia.sStatus == Media.Status.Uploading) {
             sbTitle.append(mContext.getString(R.string.status_uploading))
             var perc = 0
             if (currentMedia.contentLength > 0) perc =
@@ -239,7 +239,7 @@ class MediaViewHolder(
             } ?: run {
                 sbTitle.append(" ").append("$perc%")
             }
-        } else if (currentMedia.status == Media.STATUS_UPLOADED) {
+        } else if (currentMedia.sStatus == Media.Status.Uploaded) {
             sbTitle.append(mContext.getString(R.string.status_uploaded))
             progressBar?.let { progressBar ->
                 progressBar.visibility = View.GONE

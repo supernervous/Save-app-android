@@ -84,7 +84,7 @@ class MediaGridFragment : MediaListFragment() {
 
     private fun performBatchUpload(listMedia: List<Media>) {
         for (media in listMedia) {
-            media.status = Media.STATUS_QUEUED
+            media.sStatus = Media.Status.Queued
             media.save()
         }
         previewViewModel.applyMedia()
@@ -191,8 +191,8 @@ class MediaGridFragment : MediaListFragment() {
         holder?.sectionTimestamp?.text = ""
 
         listMedia?.forEach { media ->
-            when (media.status) {
-                Media.STATUS_LOCAL -> {
+            when (media.sStatus) {
+                Media.Status.Local -> {
                     holder?.let {
                         holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
                         holder.sectionTimestamp?.text = "${listMedia.size} ${getString(R.string.label_items)}"
@@ -208,20 +208,20 @@ class MediaGridFragment : MediaListFragment() {
                     }
                     return@forEach
                 }
-                Media.STATUS_QUEUED, Media.STATUS_UPLOADING -> {
+                Media.Status.Queued, Media.Status.Uploading -> {
                     holder?.let {
                         holder.sectionStatus?.text = getString(R.string.header_uploading)
                         var uploadedCount = 0
-                        listMedia.forEach { localMedia ->if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
+                        listMedia.forEach { localMedia ->if (localMedia.sStatus == Media.Status.Uploaded) uploadedCount++ }
                         holder.sectionTimestamp?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_uploaded)
                         holder.action?.visibility = View.INVISIBLE
                     }
                     return@forEach
                 }
-                Media.STATUS_UPLOADED -> {
+                Media.Status.Uploaded -> {
                     holder?.let {
                         var uploadedCount = 0
-                        listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_UPLOADED) uploadedCount++ }
+                        listMedia.forEach { localMedia -> if (localMedia.sStatus == Media.Status.Uploaded) uploadedCount++ }
                         if (uploadedCount == listMedia.size) {
                             holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
                             holder.action?.visibility = View.INVISIBLE
@@ -232,10 +232,10 @@ class MediaGridFragment : MediaListFragment() {
                         if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
                     }
                 }
-                Media.STATUS_ERROR -> {
+                Media.Status.Error -> {
                     holder?.let {
                         var uploadedCount = 0
-                        listMedia.forEach { localMedia -> if (localMedia.status == Media.STATUS_ERROR) uploadedCount++ }
+                        listMedia.forEach { localMedia -> if (localMedia.sStatus == Media.Status.Error) uploadedCount++ }
                         if (uploadedCount == listMedia.size) {
                             holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_remaining)
                         } else {
@@ -254,8 +254,6 @@ class MediaGridFragment : MediaListFragment() {
                     }
                 }
             }
-
         }
     }
-
 }

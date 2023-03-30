@@ -19,7 +19,7 @@ class UploaderListener(
         mMedia.progress = mMedia.contentLength
         notifyMediaUpdated(mMedia, mContext)
 
-        mMedia.status = Media.STATUS_UPLOADED
+        mMedia.sStatus = Media.Status.Uploaded
         mMedia.save()
 
         notifyMediaUpdated(mMedia, mContext)
@@ -40,7 +40,7 @@ class UploaderListener(
         Timber.d("upload error: $error")
 
         mMedia.statusMessage = error
-        mMedia.status = Media.STATUS_ERROR
+        mMedia.sStatus = Media.Status.Error
         mMedia.save()
 
         notifyMediaUpdated(mMedia, mContext)

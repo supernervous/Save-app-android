@@ -34,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
@@ -86,7 +85,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
             val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
             val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
-            if (status == Media.STATUS_UPLOADED) {
+            if (status == Media.Status.Uploaded.id) {
                 mBinding.pager.let {
                     if (mBinding.pager.currentItem > 0) {
                         val frag =
@@ -95,7 +94,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                         updateMenu()
                     }
                 }
-            } else if (status == Media.STATUS_UPLOADING) {
+            } else if (status == Media.Status.Uploading.id) {
                 mBinding.pager.let {
                     if (mediaId != -1L && mBinding.pager.currentItem > 0) {
                         val frag =
@@ -307,11 +306,8 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     private fun updateMenu() {
         mMenuUpload?.let {
-            val mStatuses = longArrayOf(
-                Media.STATUS_UPLOADING.toLong(),
-                Media.STATUS_QUEUED.toLong()
-            )
-            val uploadCount = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY).size
+            val uploadCount = Media.getByStatus(listOf(Media.Status.Uploading, Media.Status.Queued), Media.ORDER_PRIORITY).size
+
             if (uploadCount > 0) {
                 it.isVisible = true
                 val bg = BadgeDrawable(this)
@@ -383,7 +379,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         media.mimeType = mimeType ?: ""
         media.createDate = createDate
         media.updateDate = media.createDate
-        media.status = Media.STATUS_LOCAL
+        media.sStatus = Media.Status.Local
         media.mediaHashString =
             HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
         media.projectId = project.id

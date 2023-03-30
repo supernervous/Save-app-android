@@ -9,15 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSimpleBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Media.Companion.getMediaByStatus
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import java.util.*
 
 open class MediaReviewListFragment : MediaListFragment() {
 
-    private var mStatus = Media.STATUS_LOCAL.toLong()
-    private var mStatuses = longArrayOf(Media.STATUS_LOCAL.toLong())
+    private var mStatus = Media.Status.Local
     private var _mBinding: FragmentMediaListSimpleBinding? = null
 
     override fun onCreateView(
@@ -41,7 +39,7 @@ open class MediaReviewListFragment : MediaListFragment() {
             mBinding.recyclerview.layoutManager = LinearLayoutManager(activity)
             mBinding.recyclerview.setHasFixedSize(true)
 
-            val listMedia: List<Media>? = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+            val listMedia: List<Media> = Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY)
 
             val listMediaArray = ArrayList(listMedia)
             val mediaAdapter = MediaAdapter(requireActivity(),
@@ -66,13 +64,13 @@ open class MediaReviewListFragment : MediaListFragment() {
         }
     }
 
-    override fun setStatus(status: Long) {
+    override fun setStatus(status: Media.Status) {
         mStatus = status
     }
 
     override fun refresh() {
         if (mMediaAdapter != null) {
-            val listMedia = getMediaByStatus(mStatuses, Media.ORDER_PRIORITY)
+            val listMedia = Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY)
             val listMediaArray = ArrayList(listMedia)
             mMediaAdapter?.updateData(listMediaArray)
         }

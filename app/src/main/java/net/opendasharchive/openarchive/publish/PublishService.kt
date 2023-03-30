@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.orm.SugarRecord
 import kotlinx.coroutines.runBlocking
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
@@ -93,17 +92,16 @@ class PublishService : Service(), Runnable {
             val datePublish = Date()
 
             while (mKeepUploading &&
-                SugarRecord.find(Media::class.java, "status IN (?, ?)",
-                    arrayOf(Media.STATUS_QUEUED.toString(), Media.STATUS_UPLOADING.toString()),
-                    null, "priority DESC", null).also { results = it }.isNotEmpty()
+                Media.getByStatus(listOf(Media.Status.Queued, Media.Status.Uploading), Media.ORDER_PRIORITY)
+                    .also { results = it }.isNotEmpty()
             ) {
                 for (media in results) {
                     val project = media.project
 
-                    if (media.status != Media.STATUS_UPLOADING) {
+                    if (media.sStatus != Media.Status.Uploading) {
                         media.uploadDate = datePublish
                         media.progress = 0 // Should we reset this?
-                        media.status = Media.STATUS_UPLOADING
+                        media.sStatus = Media.Status.Uploading
                         media.statusMessage = ""
                     }
 
@@ -124,7 +122,7 @@ class PublishService : Service(), Runnable {
                         Timber.d(ioe)
 
                         media.statusMessage = "error in uploading media: " + ioe.message
-                        media.status = Media.STATUS_ERROR
+                        media.sStatus = Media.Status.Error
                         media.save()
                     }
 
@@ -132,8 +130,7 @@ class PublishService : Service(), Runnable {
                 }
             }
 
-            results = SugarRecord.find(Media::class.java, "status = ?",
-                Media.STATUS_DELETE_REMOTE.toString())
+            results = Media.getByStatus(listOf(Media.Status.DeleteRemote))
 
             //iterate through them, and upload one by one
             for (mediaDelete in results) {
@@ -157,7 +154,7 @@ class PublishService : Service(), Runnable {
         }
 
         media.serverUrl = serverUrl
-        media.status = Media.STATUS_UPLOADING
+        media.sStatus = Media.Status.Uploading
         media.save()
         UploaderListener.notifyMediaUpdated(media, this)
 

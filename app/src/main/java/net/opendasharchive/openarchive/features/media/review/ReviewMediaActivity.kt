@@ -116,8 +116,8 @@ class ReviewMediaActivity : BaseActivity() {
         if (mMedia.flag) mBinding.reviewMetadata.tvFlagLbl.setText(R.string.status_flagged) else mBinding.reviewMetadata.tvFlagLbl.setText(
             R.string.hint_flag
         )
-        if ((mMedia.status != Media.STATUS_LOCAL
-                    && mMedia.status != Media.STATUS_NEW) && !mMedia.flag
+        if ((mMedia.sStatus != Media.Status.Local
+                    && mMedia.sStatus != Media.Status.New) && !mMedia.flag
         ) {
             mBinding.reviewMetadata.ivEditFlag.visibility = View.GONE
             mBinding.reviewMetadata.tvFlagLbl.visibility = View.GONE
@@ -149,21 +149,22 @@ class ReviewMediaActivity : BaseActivity() {
                 tvCcLicense.setText(mMedia.licenseUrl)
             }
 
-            if (mMedia.status != Media.STATUS_LOCAL
-                && mMedia.status != Media.STATUS_NEW
+            if (mMedia.sStatus != Media.Status.Local
+                && mMedia.sStatus != Media.Status.New
             ) {
-                when (mMedia.status) {
-                    Media.STATUS_UPLOADED, Media.STATUS_PUBLISHED -> {
+                when (mMedia.sStatus) {
+                    Media.Status.Uploaded, Media.Status.Published -> {
                         //NO-OP
                     }
-                    Media.STATUS_QUEUED -> {
+                    Media.Status.Queued -> {
                         tvUrl.text = getString(R.string.waiting_for_upload)
                         tvUrl.visibility = View.VISIBLE
                     }
-                    Media.STATUS_UPLOADING -> {
+                    Media.Status.Uploading -> {
                         tvUrl.text = getString(R.string.uploading_now)
                         tvUrl.visibility = View.VISIBLE
                     }
+                    else -> {}
                 }
 
                 reviewMetadata.tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
@@ -200,7 +201,7 @@ class ReviewMediaActivity : BaseActivity() {
             }
 
             if (menuPublish != null) {
-                if (mMedia.status == Media.STATUS_LOCAL) {
+                if (mMedia.sStatus == Media.Status.Local) {
                     menuPublish?.isVisible = true
                     menuShare?.isVisible = false
                 } else {
@@ -237,7 +238,7 @@ class ReviewMediaActivity : BaseActivity() {
         mMedia.location = mBinding.reviewMetadata.tvLocationLbl.text.toString()
         mMedia.setTags(mBinding.reviewMetadata.tvTagsLbl.text.toString())
         setLicense()
-        if (mMedia.status == Media.STATUS_NEW) mMedia.status = Media.STATUS_LOCAL
+        if (mMedia.sStatus == Media.Status.New) mMedia.sStatus = Media.Status.Local
         mMedia.save()
     }
 
@@ -250,7 +251,7 @@ class ReviewMediaActivity : BaseActivity() {
         menuInflater.inflate(R.menu.menu_review_media, menu)
         menuShare = menu.findItem(R.id.menu_item_share)
         menuPublish = menu.findItem(R.id.menu_upload)
-        if (mMedia.status != Media.STATUS_UPLOADED) {
+        if (mMedia.sStatus != Media.Status.Uploaded) {
             menuPublish?.isVisible = true
         } else {
             menuShare?.isVisible = true
@@ -331,7 +332,7 @@ class ReviewMediaActivity : BaseActivity() {
         val space = Space.getCurrent()
         if (space != null) {
             //mark queued
-            mMedia.status = Media.STATUS_QUEUED
+            mMedia.sStatus = Media.Status.Queued
             saveMedia()
             bindMedia()
             viewModel.applyMedia()
@@ -399,8 +400,8 @@ class ReviewMediaActivity : BaseActivity() {
 
     private fun deleteMedia() {
         val media: Media = findById(Media::class.java, currentMediaId)
-        if (media.serverUrl.isNotEmpty() || media.status == Media.STATUS_UPLOADED || media.status == Media.STATUS_PUBLISHED) {
-            mMedia.status = Media.STATUS_DELETE_REMOTE
+        if (media.serverUrl.isNotEmpty() || media.sStatus == Media.Status.Uploaded || media.sStatus == Media.Status.Published) {
+            mMedia.sStatus = Media.Status.DeleteRemote
             mMedia.save()
             //start upload queue, which will also handle the deletes
             (application as OpenArchiveApp).startUploadService()

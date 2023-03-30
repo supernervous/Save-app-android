@@ -102,7 +102,7 @@ class PreviewMediaListActivity : BaseActivity() {
 
     private fun performBatchUpload(listMedia: List<Media>) {
         for (media in listMedia) {
-            media.status = Media.STATUS_QUEUED
+            media.sStatus = Media.Status.Queued
             media.save()
         }
         viewModel.applyMedia()
