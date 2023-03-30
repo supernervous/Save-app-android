@@ -15,7 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
-import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -60,7 +60,7 @@ class UploadManagerActivity : BaseActivity() {
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.tag("receiver").d("Updating media")
-            val status = intent.getIntExtra(SiteController.MESSAGE_KEY_STATUS, -1)
+            val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
             if (status == Media.STATUS_UPLOADED) {
                 Handler(Looper.getMainLooper()).post {
                     val progressToolbarTitle: String = if (mFrag!!.getUploadingCounter() == 0) {
@@ -77,8 +77,8 @@ class UploadManagerActivity : BaseActivity() {
                         getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
                 }
             } else if (status == Media.STATUS_UPLOADING) {
-                val mediaId = intent.getLongExtra(SiteController.MESSAGE_KEY_MEDIA_ID, -1)
-                val progress = intent.getLongExtra(SiteController.MESSAGE_KEY_PROGRESS, -1)
+                val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
+                val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
                 if (mediaId != -1L) {
                     mFrag!!.updateItem(mediaId, progress)
                 }

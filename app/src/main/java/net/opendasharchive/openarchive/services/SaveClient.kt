@@ -5,10 +5,12 @@ import android.content.Intent
 import com.dropbox.core.DbxRequestConfig
 import com.dropbox.core.http.OkHttp3Requestor
 import com.dropbox.core.v2.DbxClientV2
+import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import info.guardianproject.netcipher.client.StrongBuilder
 import info.guardianproject.netcipher.client.StrongBuilderBase
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.webdav.BasicAuthInterceptor
 import net.opendasharchive.openarchive.util.Prefs
 import okhttp3.Interceptor
@@ -147,6 +149,13 @@ class SaveClient(context: Context) : StrongBuilderBase<SaveClient, OkHttpClient>
                 .build()
 
             return DbxClientV2(requestConfig, accessToken)
+        }
+
+        suspend fun getSardine(context: Context, space: Space): OkHttpSardine {
+            val sardine = OkHttpSardine(get(context))
+            sardine.setCredentials(space.username, space.password)
+
+            return sardine
         }
     }
 }

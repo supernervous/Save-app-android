@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.publish
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
@@ -10,54 +9,50 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.IBinder
-import android.os.Message
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.orm.SugarRecord.find
-import com.orm.SugarRecord.findById
-import net.opendasharchive.openarchive.services.internetarchive.IaSiteController
-import net.opendasharchive.openarchive.services.SiteController
-import net.opendasharchive.openarchive.services.SiteController.Companion.getSiteController
-import net.opendasharchive.openarchive.services.SiteControllerListener
+import com.orm.SugarRecord
+import kotlinx.coroutines.runBlocking
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Project.Companion.getById
-import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
-import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
+import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.Prefs.getUploadWifiOnly
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
 class PublishService : Service(), Runnable {
-    private var isRunning = false
-    private var keepUploading = true
+    private var mRunning = false
+    private var mKeepUploading = true
     private var mUploadThread: Thread? = null
-    private val listControllers = ArrayList<SiteController?>()
+    private val mConduits = ArrayList<Conduit?>()
+
     override fun onCreate() {
         super.onCreate()
+
         if (Build.VERSION.SDK_INT >= 26) createNotificationChannel()
+
         doForeground()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (mUploadThread == null || !mUploadThread!!.isAlive) {
+        if (mUploadThread?.isAlive != true) {
             mUploadThread = Thread(this)
-            mUploadThread!!.start()
+            mUploadThread?.start()
         }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        keepUploading = false
-        for (sc in listControllers) sc!!.cancel()
-        listControllers.clear()
+
+        mKeepUploading = false
+
+        for (conduit in mConduits) conduit?.cancel()
+
+        mConduits.clear()
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -67,197 +62,140 @@ class PublishService : Service(), Runnable {
     private fun shouldPublish(): Boolean {
         if (getUploadWifiOnly()) {
             if (isNetworkAvailable(true)) return true
-        } else if (isNetworkAvailable(false)) {
+        }
+        else if (isNetworkAvailable(false)) {
             return true
         }
 
-        //try again when there is a network
+        // Try again when there is a network.
         scheduleJob(this)
+
         return false
     }
 
     override fun run() {
-        if (!isRunning) doPublish()
+        if (!mRunning) doPublish()
+
         stopSelf()
     }
 
     private fun doPublish(): Boolean {
-        isRunning = true
+        mRunning = true
+
         var publishing = false
 
         //check if online, and connected to appropriate network type
         if (shouldPublish()) {
             publishing = true
 
-            //get all media items that are set into queued state
-            var results: List<Media>?
+            // Get all media items that are set into queued state.
+            var results = emptyList<Media>()
             val datePublish = Date()
-            val where = "status = ? OR status = ?"
-            val whereArgs = arrayOf(""+Media.STATUS_QUEUED, ""+Media.STATUS_UPLOADING)
-            while (find(
-                    Media::class.java, where, whereArgs, null, "priority DESC", null
-                ).also { results = it }.size > 0 && keepUploading
+
+            while (mKeepUploading &&
+                SugarRecord.find(Media::class.java, "status IN (?, ?)",
+                    arrayOf(Media.STATUS_QUEUED.toString(), Media.STATUS_UPLOADING.toString()),
+                    null, "priority DESC", null).also { results = it }.isNotEmpty()
             ) {
-                for (media in results!!) {
-                    val coll: Collection = findById(
-                        Collection::class.java, media.collectionId
-                    )
-                    val proj: Project =
-                        findById(Project::class.java, coll.projectId)
+                for (media in results) {
+                    val project = media.project
+
                     if (media.status != Media.STATUS_UPLOADING) {
                         media.uploadDate = datePublish
-                        media.progress = 0 //should we reset this?
+                        media.progress = 0 // Should we reset this?
                         media.status = Media.STATUS_UPLOADING
                         media.statusMessage = ""
                     }
-                    media.licenseUrl = proj.licenseUrl
+
+                    media.licenseUrl = project?.licenseUrl
+
                     try {
-                        val success = uploadMedia(media)
-                        if (success) {
-                            coll.uploadDate = datePublish
-                            coll.save()
-                            proj.openCollectionId = -1L
-                            proj.save()
+                        if (uploadMedia(media)) {
+                            val collection = media.collection
+                            collection?.uploadDate = datePublish
+                            collection?.save()
+
+                            project?.openCollectionId = -1L
+                            project?.save()
                             media.save()
                         }
-                    } catch (ioe: IOException) {
-                        val err = "error in uploading media: " + ioe.message
-                        Timber.tag(javaClass.name).d(ioe, err)
-                        media.statusMessage = err
+                    }
+                    catch (ioe: IOException) {
+                        Timber.d(ioe)
+
+                        media.statusMessage = "error in uploading media: " + ioe.message
                         media.status = Media.STATUS_ERROR
                         media.save()
                     }
-                    if (!keepUploading) return false // time to end this
+
+                    if (!mKeepUploading) return false // Time to end this.
                 }
             }
-            results = find(
-                Media::class.java, "status = ?", ""+Media.STATUS_DELETE_REMOTE
-            )
+
+            results = SugarRecord.find(Media::class.java, "status = ?",
+                Media.STATUS_DELETE_REMOTE.toString())
 
             //iterate through them, and upload one by one
-            for (mediaDelete in results!!) {
+            for (mediaDelete in results) {
                 deleteMedia()
             }
         }
-        isRunning = false
+
+        mRunning = false
+
         return publishing
     }
 
     @Throws(IOException::class)
     private fun uploadMedia(media: Media): Boolean {
-        val project = getById(media.projectId)
-        return if (project != null) {
-            val valueMap = IaSiteController.getMediaMetadata(this, media)
-            media.serverUrl = Objects.requireNonNull(project.description).toString()
-            media.status = Media.STATUS_UPLOADING
-            media.save()
-            notifyMediaUpdated(media)
-            val space = if (project.spaceId != -1L) findById(
-                Space::class.java, project.spaceId
-            ) else Space.getCurrent()
-            if (space != null) {
-                var sc: SiteController? = null
-                when (space.tType) {
-                    Space.Type.WEBDAV -> sc = getSiteController(
-                        WebDavSiteController.SITE_KEY,
-                        this,
-                        UploaderListener(media),
-                        null
-                    )
-                    Space.Type.INTERNET_ARCHIVE -> sc = getSiteController(
-                        IaSiteController.SITE_KEY,
-                        this,
-                        UploaderListener(media),
-                        null
-                    )
-                    Space.Type.DROPBOX -> sc = getSiteController(
-                        DropboxSiteController.SITE_KEY,
-                        this,
-                        UploaderListener(media),
-                        null
-                    )
-                    else -> {}
-                }
-                listControllers.add(sc)
-                sc?.upload(space, media, valueMap)
-                listControllers.remove(sc)
-            }
-            true
-        } else {
+        val serverUrl = media.project?.description
+
+        if (serverUrl.isNullOrEmpty()) {
             media.delete()
-            false
+
+            return false
         }
+
+        media.serverUrl = serverUrl
+        media.status = Media.STATUS_UPLOADING
+        media.save()
+        UploaderListener.notifyMediaUpdated(media, this)
+
+        val conduit = Conduit.get(media, this, UploaderListener(media, this.applicationContext), null)
+            ?: return false
+
+        mConduits.add(conduit)
+        runBlocking {
+            conduit.upload()
+        }
+        mConduits.remove(conduit)
+
+        return true
     }
 
     private fun deleteMedia() {
 
     }
 
-    inner class UploaderListener(private val uploadMedia: Media) : SiteControllerListener {
-        override fun success(msg: Message?) {
-            uploadMedia.progress = uploadMedia.contentLength
-            notifyMediaUpdated(uploadMedia)
-            uploadMedia.status = Media.STATUS_UPLOADED
-            uploadMedia.save()
-            notifyMediaUpdated(uploadMedia)
-        }
-
-        @SuppressLint("BinaryOperationInTimber")
-        override fun progress(msg: Message?) {
-            val data = msg!!.data
-            val contentLengthUploaded = data.getLong(SiteController.MESSAGE_KEY_PROGRESS)
-            uploadMedia.progress = contentLengthUploaded
-            notifyMediaUpdated(uploadMedia)
-        }
-
-        override fun failure(msg: Message?) {
-            val data = msg!!.data
-            val errorCode = data.getInt(SiteController.MESSAGE_KEY_CODE)
-            val errorMessage = data.getString(SiteController.MESSAGE_KEY_MESSAGE)
-            val error = "Error $errorCode: $errorMessage"
-            Timber.tag("OAPublish").d("upload error: $error")
-            uploadMedia.statusMessage = error
-            uploadMedia.status = Media.STATUS_ERROR
-            uploadMedia.save()
-            notifyMediaUpdated(uploadMedia)
-        }
-    }
-
     private fun isNetworkAvailable(requireWifi: Boolean): Boolean {
-        val manager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = manager.activeNetworkInfo
-        var isAvailable = false
-        if (networkInfo != null && networkInfo.isConnected) {
-            isAvailable = true
-            val isWiFi = networkInfo.type == ConnectivityManager.TYPE_WIFI
-            if (requireWifi && !isWiFi) return false
-        }
-        return isAvailable
-    }
+        val info = (getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager)?.activeNetworkInfo
 
-    private fun notifyMediaUpdated(media: Media) {
-        Timber.tag("sender").d("Broadcasting message")
-        val intent = Intent(MainActivity.INTENT_FILTER_NAME)
-        // You can also include some extra data.
-        intent.putExtra(SiteController.MESSAGE_KEY_MEDIA_ID, media.id)
-        intent.putExtra(SiteController.MESSAGE_KEY_STATUS, media.status)
-        intent.putExtra(SiteController.MESSAGE_KEY_PROGRESS, media.progress)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        return info?.isConnected == true && (!requireWifi || info.type == ConnectivityManager.TYPE_WIFI)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val name: CharSequence = getString(R.string.app_name)
-        val description = getString(R.string.app_subtext)
-        val importance = NotificationManager.IMPORTANCE_LOW
-        val mChannel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
-        mChannel.description = description
-        mChannel.enableLights(false)
-        mChannel.enableVibration(false)
-        mChannel.setShowBadge(false)
-        mChannel.lockscreenVisibility = Notification.VISIBILITY_SECRET
-        mNotificationManager.createNotificationChannel(mChannel)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name),
+            NotificationManager.IMPORTANCE_LOW)
+
+        channel.description = getString(R.string.app_subtext)
+        channel.enableLights(false)
+        channel.enableVibration(false)
+        channel.setShowBadge(false)
+        channel.lockscreenVisibility = Notification.VISIBILITY_SECRET
+
+        (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)
+            ?.createNotificationChannel(channel)
     }
 
     @Synchronized
@@ -265,35 +203,34 @@ class PublishService : Service(), Runnable {
         val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_IMMUTABLE
         }
-        else {
-            0
-        }
+        else 0
 
         val pendingIntent = PendingIntent.getActivity(this, 0,
             Intent(this, MainActivity::class.java), flag)
 
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_app_notify)
-            .setContentTitle(getString(R.string.app_name)) //.setContentText(getString(R.string.app_subtext))
-            .setDefaults(Notification.DEFAULT_LIGHTS) //.setVibrate(new long[]{0L}) // Passing null here silently fails
-            .setContentIntent(pendingIntent).build()
+            .setContentTitle(getString(R.string.app_name))
+            .setDefaults(Notification.DEFAULT_LIGHTS)
+            .setContentIntent(pendingIntent)
+            .build()
+
         startForeground(1337, notification)
     }
 
     companion object {
         private const val MY_BACKGROUND_JOB = 0
+        private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
+
         fun scheduleJob(context: Context) {
-            val js = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-            val job = JobInfo.Builder(
-                MY_BACKGROUND_JOB,
-                ComponentName(context, PublishJobService::class.java)
-            )
+            val job = JobInfo.Builder(MY_BACKGROUND_JOB,
+                ComponentName(context, PublishJobService::class.java))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                 .setRequiresCharging(false)
                 .build()
-            js.schedule(job)
-        }
 
-        private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
+            (context.getSystemService(JOB_SCHEDULER_SERVICE) as? JobScheduler)
+                ?.schedule(job)
+        }
     }
 }

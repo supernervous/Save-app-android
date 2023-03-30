@@ -113,7 +113,7 @@ class IaLoginActivity : BaseActivity() {
         }
 
         mSpace.tType = Space.Type.INTERNET_ARCHIVE
-        mSpace.host = IaSiteController.ARCHIVE_BASE_URL
+        mSpace.host = IaConduit.ARCHIVE_BASE_URL
         mSpace.name = getString(R.string.label_ia)
         mSpace.username = accessKey
         mSpace.password = secretKey

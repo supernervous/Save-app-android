@@ -86,4 +86,13 @@ data class Media(
             return findById(Media::class.java, mediaId)
         }
     }
+
+    val collection: Collection?
+        get() = findById(Collection::class.java, collectionId)
+
+    val project: Project?
+        get() = findById(Project::class.java, projectId)
+
+    val space: Space?
+        get() = project?.space
 }

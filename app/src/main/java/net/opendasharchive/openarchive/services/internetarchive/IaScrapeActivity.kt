@@ -82,7 +82,7 @@ class IaScrapeActivity : BaseActivity() {
                     ARCHIVE_CREATE_ACCOUNT_URL -> {
                         sIsLoginScreen = false
                     }
-                    IaSiteController.ARCHIVE_BASE_URL -> {
+                    IaConduit.ARCHIVE_BASE_URL -> {
                         view.loadUrl(ARCHIVE_CREDENTIALS_URL)
                     }
                 }

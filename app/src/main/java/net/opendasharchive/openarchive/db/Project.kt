@@ -40,4 +40,7 @@ data class Project(
         return super.delete()
     }
 
+    val space: Space?
+        get() = findById(Space::class.java, spaceId)
+
 }

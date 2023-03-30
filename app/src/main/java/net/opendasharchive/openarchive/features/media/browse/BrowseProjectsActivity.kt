@@ -5,14 +5,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.services.SiteController
-import net.opendasharchive.openarchive.services.dropbox.DropboxSiteController
-import net.opendasharchive.openarchive.services.webdav.WebDavSiteController
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -26,42 +22,28 @@ class BrowseProjectsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        mBinding = ActivityBrowseProjectsBinding.inflate(layoutInflater)
-        viewModel = BrowseProjectsViewModel()
-        setContentView(mBinding.root)
-        initView()
-        registerObservable()
-    }
 
-    private fun initView() {
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+        mBinding = ActivityBrowseProjectsBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
+        viewModel = BrowseProjectsViewModel()
+
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         title = ""
+
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
         val space = Space.getCurrent()
+
         if (space != null) {
-            val siteController = when (space.tType) {
-                Space.Type.WEBDAV -> {
-                    SiteController.getSiteController(
-                        WebDavSiteController.SITE_KEY,
-                        this,
-                        null,
-                        null
-                    )
-                }
-                Space.Type.DROPBOX -> {
-                    SiteController.getSiteController(
-                        DropboxSiteController.SITE_KEY, this, null, null
-                    )
-                }
-                else -> {
-                    null
-                }
-            }
-            viewModel.getFileList(siteController, space)
+            viewModel.getFileList(this, space)
         }
+
+        registerObservable()
     }
 
     private fun setupProjectList(fileList: ArrayList<File>) {
@@ -113,7 +95,7 @@ class BrowseProjectsActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.home -> {
+            android.R.id.home -> {
                 finish()
                 return true
             }

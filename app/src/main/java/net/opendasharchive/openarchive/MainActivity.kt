@@ -28,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.orm.SugarRecord.findById
-import net.opendasharchive.openarchive.services.SiteController
+import net.opendasharchive.openarchive.services.Conduit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
@@ -83,9 +83,9 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         override fun onReceive(context: Context, intent: Intent) {
             // Get extra data included in the Intent
             Timber.tag("receiver").d( "Updating media")
-            val mediaId = intent.getLongExtra(SiteController.MESSAGE_KEY_MEDIA_ID, -1)
-            val progress = intent.getLongExtra(SiteController.MESSAGE_KEY_PROGRESS, -1)
-            val status = intent.getIntExtra(SiteController.MESSAGE_KEY_STATUS, -1)
+            val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
+            val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
+            val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
             if (status == Media.STATUS_UPLOADED) {
                 mBinding.pager.let {
                     if (mBinding.pager.currentItem > 0) {
