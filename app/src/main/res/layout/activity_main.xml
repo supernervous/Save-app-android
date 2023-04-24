@@ -1,5 +1,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true">
@@ -15,34 +16,39 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar">
 
-            <ImageView android:layout_height="25dp"
+            <ImageView
+                android:id="@+id/alertIcon"
                 android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/alert"
                 android:visibility="gone"
-                android:id = "@+id/alertIcon"
-                android:src = "@drawable/alert">
-            </ImageView>
+                android:contentDescription="@string/status_error" />
+
             <LinearLayout
-                android:paddingStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
                 <ImageView
                     android:id="@+id/space_avatar"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/avatar_default" />
+                    android:src="@drawable/avatar_default"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/space_name"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
                     android:gravity="center_vertical"
                     android:text="@string/app_name"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
+
             </LinearLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

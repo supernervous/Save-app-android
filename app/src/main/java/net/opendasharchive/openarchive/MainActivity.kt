@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.TextUtils
 import android.view.*
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project.Companion.getAllBySpace
 import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -74,9 +72,9 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
+    private lateinit var mPickerLauncher: ImagePickerLauncher
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
-    private var launcher: ImagePickerLauncher? = null
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -110,7 +108,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         super.onCreate(savedInstanceState)
         ProviderInstaller.installIfNeededAsync(this, this)
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        launcher = registerImagePicker { result: List<Image> ->
+        mPickerLauncher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
             result.forEach { image ->
                 uriList.add(image.uri)
@@ -167,10 +165,10 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         snackView?.addView(ProgressBar(this))
 
         mSpace?.let {
-            val listProjects = getAllBySpace(it.id, false)
-            mPagerAdapter.updateData(listProjects)
+            val projects = it.projects
+            mPagerAdapter.updateData(projects)
             mBinding.pager.adapter = mPagerAdapter
-            mBinding.pager.currentItem = if (listProjects.isNotEmpty()) 1 else 0
+            mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
             mBinding.tabs.removeOnTabSelectedListener(this)
         } ?: run {
             mBinding.pager.adapter = mPagerAdapter
@@ -183,11 +181,12 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         mBinding.pager.pageMargin = 0
 
         mBinding.floatingMenu.setOnClickListener {
-            if (mPagerAdapter.count > 1 && lastTab > 0)
+            if (mPagerAdapter.count > 1 && lastTab > 0) {
                 importMedia()
-            else
+            }
+            else {
                 promptAddProject()
-
+            }
         }
 
         mBinding.pager.addOnPageChangeListener(object : OnPageChangeListener {
@@ -231,11 +230,11 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     private fun refreshProjects() {
         mSpace?.let {
-            val listProjects = getAllBySpace(it.id, false)
+            val projects = it.projects
             mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
-            mPagerAdapter.updateData(listProjects)
+            mPagerAdapter.updateData(projects)
             mBinding.pager.adapter = mPagerAdapter
-            mBinding.pager.currentItem = if (listProjects.isNotEmpty()) 1 else 0
+            mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
         }
 
         updateMenu()
@@ -424,38 +423,29 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 isRelative = false
             ) // can be a full path
         }
-        launcher!!.launch(config)
+
+        mPickerLauncher.launch(config)
     }
 
 
+    @Suppress("SameParameterValue")
     private fun askForPermission(permission: String, requestCode: Int): Boolean {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                permission
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED)
+        {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    permission
-                )
-            ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 //This is called if user has denied the permission before
                 //In this case I am just asking the permission again
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(permission),
-                    requestCode
-                )
-            } else {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(permission),
-                    requestCode
-                )
+                ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
             }
+            else {
+                ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+            }
+
             return true
         }
+
         return false
     }
 
@@ -473,36 +463,30 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            mMessageReceiver,
-            IntentFilter(INTENT_FILTER_NAME)
-        )
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
+
         mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
-        val spaceCurrent = Space.getCurrent()
-        spaceCurrent?.let { currentSpace ->
-            mSpace?.let {
-                val listProjects = getAllBySpace(it.id, false)
-                if (it.id != currentSpace.id) {
-                    initSpace(spaceCurrent)
-                    refreshProjects()
-                } else if (listProjects.size != mPagerAdapter.count - 1) {
-                    initSpace(spaceCurrent)
-                    refreshProjects()
-                } else {
-                    initSpace(spaceCurrent)
-                }
-            } ?: run {
-                initSpace(spaceCurrent)
-                refreshProjects()
+
+        Space.getCurrent()?.let { currentSpace ->
+            val space = mSpace
+
+            if (space == null || currentSpace.id != space.id || space.projects.size != mPagerAdapter.count - 1) {
+                initSpace(currentSpace)
             }
+
+            refreshProjects()
+
             refreshCurrentProject()
         }
-        if (mSpace == null || TextUtils.isEmpty(mSpace?.host)) {
-            val intent = Intent(this, OAAppIntro::class.java)
-            startActivity(intent)
+
+        if (mSpace?.host.isNullOrEmpty()) {
+            startActivity(Intent(this, OAAppIntro::class.java))
         }
-        val data = intent
-        importSharedMedia(data)
+
+        importSharedMedia(intent)
+
         if (mBinding.pager.currentItem == 0 && mPagerAdapter.count > 1) {
             mBinding.pager.currentItem = 1
         }
@@ -510,38 +494,41 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     override fun onPause() {
         super.onPause()
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+
         importSharedMedia(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         mMenuUpload = menu.findItem(R.id.menu_upload_manager)
+
         updateMenu()
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             android.R.id.home -> {
                 showSpaceSettings()
+
                 return true
             }
             R.id.menu_upload_manager -> {
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    val projectId = mPagerAdapter.getProject(lastTab)?.id
-                    it.putExtra(PROJECT_ID, projectId)
+                    it.putExtra(PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
                 })
+
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -563,7 +550,8 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                     // The user chose not to take the recovery action.
                     showAlertIcon()
                 }
-            } else {
+            }
+            else {
                 showAlertIcon()
             }
         }
@@ -576,18 +564,19 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     override fun onPostResume() {
         super.onPostResume()
+
         if (retryProviderInstall) {
             // It's safe to retry installation.
             ProviderInstaller.installIfNeededAsync(this, this)
         }
-        retryProviderInstall = false
 
+        retryProviderInstall = false
     }
 
+    /**
+     * This is triggered if the security provider is up-to-date.
+     */
     override fun onProviderInstalled() {
-        //This is triggered if the security provider is up-to-date.
         mBinding.alertIcon.visibility = View.GONE
-
-
     }
 }
