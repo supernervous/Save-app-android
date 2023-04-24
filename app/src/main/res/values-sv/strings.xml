@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <!-- Activities -->
-    <string name="app_name">Spara</string>
     <string name="main_activity_title">Spara</string>
     <string name="title_activity_login">Logga in</string>
     <string name="title_activity_settings">Inställningar</string>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <!-- Activities -->
-    <string name="app_name">حفظ</string>
     <string name="main_activity_title">حفظ</string>
     <string name="title_activity_main">التقاط الوسائل</string>
     <string name="title_activity_login">تسجيل الدخول</string>

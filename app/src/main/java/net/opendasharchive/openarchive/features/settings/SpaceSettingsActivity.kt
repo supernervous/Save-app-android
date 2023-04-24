@@ -4,15 +4,14 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -24,8 +23,8 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
+import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 import net.opendasharchive.openarchive.util.Prefs
@@ -48,10 +47,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val obscuredTouch = event!!.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && event != null) {
+            val obscuredTouch = event.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
             if (obscuredTouch) return false
         }
+
         return super.dispatchTouchEvent(event)
     }
 
@@ -63,6 +63,11 @@ class SpaceSettingsActivity : AppCompatActivity() {
         }
 
         mBinding.apply {
+            btnNewSpace.setOnClickListener {
+                val myIntent = Intent(this@SpaceSettingsActivity, SpaceSetupActivity::class.java)
+                startActivity(myIntent)
+            }
+
             contentSpaceLayout.listProjects.layoutManager =
                 LinearLayoutManager(this@SpaceSettingsActivity)
             contentSpaceLayout.listProjects.setHasFixedSize(false)
@@ -88,17 +93,27 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_NETWORKING)
                 startActivity(intent)
             }
+
+            contentSpaceLayout.btnPrivacy.setOnClickListener {
+                openBrowser("https://open-archive.org/privacy")
+            }
+
+            contentSpaceLayout.btnAcount.setOnClickListener {
+                openBrowser("https://open-archive.org/about")
+            }
         }
 
         try {
-            val pInfo = packageManager.getPackageInfo(packageName, 0)
-            val version = pInfo.versionName
-            val appString = StringBuffer()
-            appString.append(getString(R.string.app_name))
-            appString.append(' ')
-            appString.append(version)
-            (findViewById<View>(R.id.txtVersion) as TextView).text = appString.toString()
-        } catch (e: PackageManager.NameNotFoundException) {
+            val pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            }
+            else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(packageName, 0)
+            }
+            mBinding.contentSpaceLayout.txtVersion.text = getString(R.string.__version__, getString(R.string.app_name), pInfo.versionName)
+        }
+        catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
     }
@@ -174,7 +189,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
             it.setAvatar(mBinding.contentSpaceLayout.spaceAvatar)
 
-            mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { v: View? -> startSpaceAuthActivity() }
+            mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { startSpaceAuthActivity() }
             viewModel.getAllProjects(it.id)
         }
     }
@@ -205,15 +220,6 @@ class SpaceSettingsActivity : AppCompatActivity() {
         mBinding.contentSpaceLayout.listProjects.adapter = adapter
     }
 
-    fun onAboutClick(view: View?) {
-        // startActivity(new Intent(SpaceSettingsActivity.this, OAAppIntro.class));
-        openBrowser("https://open-archive.org/about")
-    }
-
-    fun onPrivacyClick(view: View?) {
-        openBrowser("https://open-archive.org/privacy")
-    }
-
     private fun openBrowser(link: String) {
         try {
             val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
@@ -236,10 +242,5 @@ class SpaceSettingsActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    fun onNewSpaceClicked(view: View?) {
-        val myIntent = Intent(this, SpaceSetupActivity::class.java)
-        startActivity(myIntent)
     }
 }

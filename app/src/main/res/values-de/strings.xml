@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <!-- Activities -->
-    <string name="app_name">Speichern</string>
     <string name="main_activity_title">Speichern</string>
     <string name="title_activity_login">Anmelden</string>
     <string name="title_activity_settings">Einstellungen</string>
@@ -81,6 +79,7 @@
     <string name="status_error">Fehler</string>
     <string name="status_public">Öffentlich</string>
     <string name="status_uploading">Hochladevorgang</string>
+    <string name="prefs_networking_title">Netzwerk</string>
     <string name="prefs_nearby_title">In der Nähe</string>
 
     <string name="prefs_data_title">Metadaten</string>
@@ -148,6 +147,7 @@
     <string name="action_edit">Bearbeiten</string>
     <string name="title_dropbox">Dropbox</string>
     <string name="metadata">Metadaten</string>
+    <string name="networking">Netzwerk</string>
     <string name="remove_from_app_media">Medien entfernen</string>
     <string name="popup_flag_title">Besonderen Inhalt markieren</string>
     <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>

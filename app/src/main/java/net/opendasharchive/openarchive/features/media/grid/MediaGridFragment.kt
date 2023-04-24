@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
+import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
@@ -23,6 +24,7 @@ import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListAc
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.util.Prefs
+import java.text.DateFormat
 
 class MediaGridFragment : MediaListFragment() {
 
@@ -30,7 +32,7 @@ class MediaGridFragment : MediaListFragment() {
     private var mAdapters = HashMap<Long, MediaAdapter>()
     private var mSection = HashMap<Long, SectionViewHolder>()
 
-    private var _mBinding: FragmentMediaListBinding? = null
+    private lateinit var mBinding: FragmentMediaListBinding
     private lateinit var viewModel: MediaGridViewModel
     private lateinit var previewViewModel: PreviewMediaListViewModel
 
@@ -38,8 +40,8 @@ class MediaGridFragment : MediaListFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
+    ): View {
+        mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MediaGridViewModel::class.java]
 
         val context = requireNotNull(activity?.application)
@@ -49,7 +51,7 @@ class MediaGridFragment : MediaListFragment() {
 
         observeData()
         viewModel.getAllCollection()
-        return _mBinding?.root
+        return mBinding.root
     }
 
     private fun observeData() {
@@ -62,24 +64,24 @@ class MediaGridFragment : MediaListFragment() {
         mAdapters = HashMap()
         mSection = HashMap()
 
-        _mBinding?.let { mBinding ->
-            mBinding.root.tag = TAG
+        mBinding.root.tag = TAG
 
-            var addedView = false
-            listCollections?.forEach { collection ->
-                val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
-                if (listMedia.isNotEmpty()) {
-                    if (!addedView) {
-                        mBinding.mediacontainer.removeAllViews()
-                        addedView = true
-                    }
+        var addedView = false
 
-                    val view: View? = createMediaList(collection, listMedia)
-                    mBinding.mediacontainer.addView(view)
+        listCollections?.forEach { collection ->
+            val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
+
+            if (listMedia.isNotEmpty()) {
+                if (!addedView) {
+                    mBinding.mediacontainer.removeAllViews()
+                    addedView = true
                 }
+
+                mBinding.mediacontainer.addView(createMediaList(collection, listMedia))
             }
-            mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
         }
+
+        mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
     }
 
     private fun performBatchUpload(listMedia: List<Media>) {
@@ -90,58 +92,54 @@ class MediaGridFragment : MediaListFragment() {
         previewViewModel.applyMedia()
     }
 
-    private fun createMediaList(collection: Collection, listMedia: List<Media>): View? {
-        val holder = SectionViewHolder()
+    private fun createMediaList(collection: Collection, listMedia: List<Media>): View {
+        val holder = SectionViewHolder(FragmentMediaListSectionBinding.inflate(layoutInflater))
 
         holder.apply {
-            mediaSection = layoutInflater.inflate(R.layout.fragment_media_list_section, null)
-            val rView: RecyclerView? = mediaSection?.findViewById(R.id.recyclerview)
-            if (rView != null) {
-                rView.setHasFixedSize(true)
-                rView.layoutManager = GridLayoutManager(activity, numberOfColumns)
+            mediaSection.recyclerview.setHasFixedSize(true)
+            mediaSection.recyclerview.layoutManager = GridLayoutManager(activity, numberOfColumns)
 
-                sectionStatus = mediaSection?.findViewById(R.id.sectionstatus)
-                sectionTimestamp = mediaSection?.findViewById(R.id.sectiontimestamp)
-                action = mediaSection?.findViewById(R.id.action_next)
-                setSectionHeaders(collection, listMedia, this)
-                val listMediaArray = ArrayList(listMedia)
-                val mediaAdapter = MediaAdapter(
-                    requireContext(),
-                    R.layout.activity_media_list_square,
-                    listMediaArray,
-                    rView,
-                    object : OnStartDragListener {
-                        override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+            setSectionHeaders(collection, listMedia, this)
 
-                        }
-                    }, onDelete = {
-                        refresh()
-                    }, onUpload = {
-                        if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
-                            if(Space.getCurrent()!!.host.contains("https://sam.nl.tab.digital")){
-                                val availableSpace = getAvailableStorageSpace(it)
-                                val totalUploadsContent = availableSpace.first
-                                val totalStorage = availableSpace.second
-                                if(totalStorage < totalUploadsContent){
-                                    Toast.makeText(activity, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-                                }else{
-                                    performBatchUpload(it)
-                                }
-                            }else {
-                                //for NON nextcloud providers
+            val listMediaArray = ArrayList(listMedia)
+            val mediaAdapter = MediaAdapter(
+                requireContext(),
+                R.layout.activity_media_list_square,
+                listMediaArray,
+                mediaSection.recyclerview,
+                object : OnStartDragListener {
+                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+
+                    }
+                }, onDelete = {
+                    refresh()
+                }, onUpload = {
+                    if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
+                        if(Space.getCurrent()!!.host.contains("https://sam.nl.tab.digital")){
+                            val availableSpace = getAvailableStorageSpace(it)
+                            val totalUploadsContent = availableSpace.first
+                            val totalStorage = availableSpace.second
+                            if(totalStorage < totalUploadsContent){
+                                Toast.makeText(activity, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
+                            }else{
                                 performBatchUpload(it)
                             }
-                        }else{
-                            //for non webDAV protocols.
+                        }else {
+                            //for NON nextcloud providers
                             performBatchUpload(it)
                         }
-                    })
-                rView.adapter = mediaAdapter
-                mAdapters[collection.id] = mediaAdapter
-                mSection[collection.id] = this
-            }
+                    }else{
+                        //for non webDAV protocols.
+                        performBatchUpload(it)
+                    }
+                })
+
+            mediaSection.recyclerview.adapter = mediaAdapter
+            mAdapters[collection.id] = mediaAdapter
+            mSection[collection.id] = this
         }
-        return holder.mediaSection
+
+        return holder.mediaSection.root
     }
 
     private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
@@ -163,19 +161,18 @@ class MediaGridFragment : MediaListFragment() {
         Collection.getAll().forEach { collection ->
             val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
             val adapter = mAdapters[collection.id]
-            val holder: SectionViewHolder? = mSection[collection.id]
+            val holder = mSection[collection.id]
             val listMediaArray = ArrayList(listMedia)
 
             if (adapter != null) {
                 adapter.updateData(listMediaArray)
-                setSectionHeaders(collection, listMedia, holder)
+                if (holder != null) setSectionHeaders(collection, listMedia, holder)
             }
             else if (listMedia.isNotEmpty()) {
                 val view = createMediaList(collection, listMedia)
-                _mBinding?.let { mBinding ->
-                    mBinding.mediacontainer.addView(view, 0)
-                    mBinding.addMediaHint.visibility = View.GONE
-                }
+
+                mBinding.mediacontainer.addView(view, 0)
+                mBinding.addMediaHint.visibility = View.GONE
             }
         }
     }
@@ -184,74 +181,74 @@ class MediaGridFragment : MediaListFragment() {
     private fun setSectionHeaders(
         collection: Collection,
         listMedia: List<Media>?,
-        holder: SectionViewHolder?
+        holder: SectionViewHolder
     ) {
+        holder.sectionStatus.text = ""
+        holder.sectionTimestamp.text = ""
 
-        holder?.sectionStatus?.text = ""
-        holder?.sectionTimestamp?.text = ""
+        val df = DateFormat.getDateTimeInstance()
 
         listMedia?.forEach { media ->
             when (media.sStatus) {
                 Media.Status.Local -> {
-                    holder?.let {
-                        holder.sectionStatus?.text = getString(R.string.status_ready_to_upload)
-                        holder.sectionTimestamp?.text = "${listMedia.size} ${getString(R.string.label_items)}"
-                        holder.action?.visibility = View.INVISIBLE
-                        holder.action?.setOnClickListener {
-                            startActivity(
-                                Intent(
-                                    requireActivity(),
-                                    PreviewMediaListActivity::class.java
-                                )
-                            )
-                        }
+                    holder.sectionStatus.text = getString(R.string.status_ready_to_upload)
+                    holder.sectionTimestamp.text = "${listMedia.size} ${getString(R.string.label_items)}"
+                    holder.action.visibility = View.INVISIBLE
+                    holder.action.setOnClickListener {
+                        startActivity(Intent(requireActivity(), PreviewMediaListActivity::class.java))
                     }
+
                     return@forEach
                 }
                 Media.Status.Queued, Media.Status.Uploading -> {
-                    holder?.let {
-                        holder.sectionStatus?.text = getString(R.string.header_uploading)
-                        var uploadedCount = 0
-                        listMedia.forEach { localMedia ->if (localMedia.sStatus == Media.Status.Uploaded) uploadedCount++ }
-                        holder.sectionTimestamp?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_uploaded)
-                        holder.action?.visibility = View.INVISIBLE
-                    }
+                    holder.sectionStatus.text = getString(R.string.header_uploading)
+
+                    val count = listMedia.filter { it.sStatus == Media.Status.Uploaded }.size
+
+                    holder.sectionTimestamp.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
+                    holder.action.visibility = View.INVISIBLE
+
                     return@forEach
                 }
                 Media.Status.Uploaded -> {
-                    holder?.let {
-                        var uploadedCount = 0
-                        listMedia.forEach { localMedia -> if (localMedia.sStatus == Media.Status.Uploaded) uploadedCount++ }
-                        if (uploadedCount == listMedia.size) {
-                            holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
-                            holder.action?.visibility = View.INVISIBLE
-                        } else {
-                            holder.sectionStatus?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_uploaded)
-                            holder.action?.visibility = View.INVISIBLE
-                        }
-                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
+                    val count = listMedia.filter { it.sStatus == Media.Status.Uploaded }.size
+
+                    if (count == listMedia.size) {
+                        holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
+                        holder.action.visibility = View.INVISIBLE
                     }
+                    else {
+                        holder.sectionStatus.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
+                        holder.action.visibility = View.INVISIBLE
+                    }
+
+                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
                 }
                 Media.Status.Error -> {
-                    holder?.let {
-                        var uploadedCount = 0
-                        listMedia.forEach { localMedia -> if (localMedia.sStatus == Media.Status.Error) uploadedCount++ }
-                        if (uploadedCount == listMedia.size) {
-                            holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_remaining)
-                        } else {
-                            holder.sectionStatus?.text = uploadedCount.toString() + " " + getString(R.string.label_out_of) + " " + listMedia.size + ' ' + getString(R.string.label_items_remaining)
-                        }
-                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
-                        holder.action?.visibility = View.INVISIBLE
+                    val count = listMedia.filter { it.sStatus == Media.Status.Error }.size
+
+                    if (count == listMedia.size) {
+                        holder.sectionStatus.text = getString(R.string.__items_failed_to_upload, listMedia.size)
                     }
+                    else {
+                        holder.sectionStatus.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
+                    }
+
+                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
+
+                    holder.action.visibility = View.INVISIBLE
                 }
                 else -> {
-                    holder?.let {
-                        holder.sectionStatus?.text = listMedia.size.toString() + " " + getString(R.string.label_items_uploaded)
-                        if (collection.uploadDate != null) holder.sectionTimestamp?.text = collection.uploadDate?.toLocaleString()
-                        else if (listMedia.isNotEmpty() && listMedia[0].uploadDate != null) holder.sectionTimestamp?.text = listMedia[0].uploadDate.toString()
-                        holder.action?.visibility = View.INVISIBLE
-                    }
+                    holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
+
+                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
+                        ?: run {
+                            listMedia.firstOrNull()?.uploadDate?.let {
+                                holder.sectionTimestamp.text = df.format(it)
+                            }
+                        }
+
+                    holder.action.visibility = View.INVISIBLE
                 }
             }
         }

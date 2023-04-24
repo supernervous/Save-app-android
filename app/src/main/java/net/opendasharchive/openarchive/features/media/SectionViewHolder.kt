@@ -1,13 +1,19 @@
 package net.opendasharchive.openarchive.features.media
 
-import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Recycler
+import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
 
 data class SectionViewHolder(
-    var mediaSection: View? = null,
+    var mediaSection: FragmentMediaListSectionBinding,
     var mediaGrid: Recycler? = null,
-    var sectionStatus: TextView? = null,
-    var sectionTimestamp: TextView? = null,
-    var action: View? = null
-)
+) {
+    val sectionStatus: TextView
+        get() = mediaSection.sectionstatus
+
+    val sectionTimestamp: TextView
+        get() = mediaSection.sectiontimestamp
+
+    val action: TextView
+        get() = mediaSection.actionNext
+}

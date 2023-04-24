@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity">
+    tools:context=".features.settings.SpaceSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -22,30 +22,31 @@
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="right|end"
+                android:layout_gravity="end"
                 android:layout_marginEnd="48dp"
                 android:fillViewport="true"
-                android:gravity="right|end">
+                android:gravity="end">
 
                 <LinearLayout
                     android:id="@+id/spaceview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right|end|center_vertical"
-                    android:gravity="right|end|center_vertical"
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="end|center_vertical"
                     android:orientation="horizontal"
                     android:padding="3dp" />
 
             </androidx.core.widget.NestedScrollView>
 
             <ImageView
+                android:id="@+id/btnNewSpace"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="6dp"
-                android:onClick="onNewSpaceClicked"
-                android:tint="@color/oablue"
-                app:srcCompat="@drawable/ic_add_circle_outline" />
+                app:srcCompat="@drawable/ic_add_circle_outline"
+                app:tint="@color/oablue"
+                android:contentDescription="@string/add_new_space" />
 
         </RelativeLayout>
 
@@ -54,6 +55,5 @@
     <include
         android:id="@+id/contentSpaceLayout"
         layout="@layout/content_space_settings" />
-
 
 </LinearLayout>

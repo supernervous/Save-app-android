@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <!-- Activities -->
-    <string name="app_name">Salvar</string>
     <string name="main_activity_title">Salvar</string>
     <string name="title_activity_main">Capturar Média </string>
     <string name="title_activity_login">Entrar</string>
