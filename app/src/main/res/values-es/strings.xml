@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
-    <string name="app_subtext">Un proyecto impulsado por Internet Archive\n<a href="#">obtén más información</a></string>
-
-    <string name="main_activity_title">Tu OpenArchive</string>
+    <string name="app_name">Guardar</string>
+    <string name="main_activity_title">Guardar</string>
     <string name="title_activity_main">Capturar multimedia</string>
-    <string name="title_activity_login">Iniciar sesión en Internet Archive</string>
+    <string name="title_activity_login">Iniciar sesión</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_first_start">Primer inicio</string>
-    <string name="title_activity_view_media">Ver multimedia</string>
+    <string name="title_activity_view_media">Añadir Información</string>
+    <string name="title_activity_batch_view_media">Edición por lotes</string>
     <string name="title_activity_archive_metadata">Metadatos</string>
     <string name="title_media_list">Subir</string>
 
@@ -21,19 +20,11 @@
     <string name="lblEditMetadata">Editar multimedia</string>
     <string name="lblSave">Guardar</string>
     <string name="loading_title">Subir multimedia</string>
-    <string name="loading_message">Por favor, espera mientras tu multimedia se sube a Internet Archive…</string>
-
     <!-- Default Values -->
     <string name="default_title">Mi título</string>
-    <string name="default_tags">openarchive</string>
+    <string name="default_tags">OpenArchive</string>
 
-    <!-- Alert Values -->
-    <string name="alert_lbl_logout">¿Cerrar sesión?</string>
-    <string name="alert_logout">Cerrar sesión eliminará todos tus ajustes pero mantendrá tus archivos subidos.</string>
-
-    <string name="alert_lbl_delete_media">¿Borrar multimedia?</string>
-    <string name="alert_media_deleted">Multimedia borrada satisfactoriamente</string>
-    <string name="alert_delete_media">Esta multimedia se borrará de forma permanente.</string>
+    <string name="alert_lbl_delete_media">Eliminar Multimedia</string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">Abrir casilla de navegación</string>
@@ -46,23 +37,21 @@
     <string name="drawer_logout">Cerrar sesión</string>
     <string name="drawer_about">Acerca de</string>
     <string name="drawer_settings">Ajustes</string>
+    <string name="action_new_project">Nuevo Proyecto</string>
+
 
     <!-- EULA/Terms of Service -->
     <string name="eula_title">Aceptas:</string>
     <string name="eula_accept">Aceptar</string>
     <string name="eula_refuse">Rechazar</string>
     <string name="end_user_license_agreement">Términos de usuario y Política de privacidad</string>
-    <string name="by_clicking_accept">Al hacer clic en \'Aceptar\' aceptas nuestros términos y políticas:</string>
     <string name="tos_dialog_title">Términos de servicio</string>
-    <string name="tos_dialog_msg">Por favor, acepta nuestros términos de servicio antes de continuar</string>
     <string name="tos_dialog_positive_button">Lo tengo</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Inicia sesión en Archive.org</string>
+    <string name="sign_in_btn">Internet Archive</string>
 
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">¿No tienes una cuenta?\n<a href="https://archive.org/account/login.createaccount.php">¡Regístrate gratuitamente!</a></string>
-    <string name="tos_btn">Estoy de acuerdo con los términos de servicio.</string>
+    <string name="tos_btn">Acepto las Condiciones del Servicio.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importar</string>
@@ -75,36 +64,21 @@
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Imagen principal</string>
 
-    <!-- Errors -->
-    <string name="error_file_not_found">Archivo no encontrado</string>
-    <string name="error_invalid_media_type">Tipo de archivo no reconocido</string>
-    <string name="error_no_media">¡No se encontró una multimedia!</string>
-
     <!-- Server -->
     <string name="lbl_Yes">Si</string>
     <string name="lbl_Cancel">Cancelar</string>
     <string name="lbl_off">Apagado</string>
     <string name="lbl_on">Encendido</string>
-    <string name="lbl_ok">Está bien</string>
+    <string name="lbl_ok">OK</string>
     <string name="lbl_settings">Ajustes</string>
     <string name="lbl_cancelled">Cancelado</string>
-    <string name="lbl_success">Éxito</string>
+    <string name="lbl_success">Listo</string>
     <string name="lbl_continue">Continuar</string>
-    <string name="archive_title">Confirmación de correo electrónico</string>
-    <string name="archive_message">Por favor, confirma tu correo electrónico y vuelve a conectar tu cuenta Archive.</string>
     <string name="upload_to_internet_archive">Subir a Internet Archive</string>
-    <string name="upload_securely_via_tor">Sube de forma segura a través de Tor</string>
     <string name="lbl_share_prefs">Compartiendo preferencias</string>
-    <string name="problem_authticating">Hubo un problema de autenticación con Internet Archive.</string>
-    <string name="uploading_to_internet_archive">Subiendo a Internet Archive…</string>
     <string name="lbl_update_value">Actualizar valor</string>
     <string name="lbl_enter_value">Pulsa para ingresar un valor.</string>
-    <string name="title_activity_about">Acerca de OpenArchive</string>
-
-    <string name="about_body">OpenArchive es una aplicación móvil gratuita y de código abierto dedicada a mantener la privacidad, la procedencia y la preservación de tu multimedia. Se te permite añadir metadatos y licencias Creative Commons a tu multimedia audiovisual y enviarla a Internet Archive a través de Tor; ofreciendo mayor agencia sobre tu multimedia, al tiempo que protege las libertades civiles y aumenta la interoperabilidad para aquellos que quieran encontrarla, reutilizarla y cambiarla en el futuro.\n\n
-OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, Scal.io y Guardian Project. El proyecto fue fundado por Natalie Cadranel con el generoso apoyo de la fundación Knight Prototype Fund.\n\nObtén más información en <a href="https://open-archive.net"> https://open-archive.net </a></string>
-
-    <string name="upload_success">¡Tu multimedia está ahora disponible en Internet Archive!</string>
+    <string name="title_activity_about">Acerca de</string>
 
     <string name="share_using">Compartir enlace del archivo a través de</string>
     <string name="share_text">compartir a través de OpenArchive en</string>
@@ -121,32 +95,24 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="info_license_sharealike">¿Solicitarles que compartan del mismo modo que tú?</string>
     <string name="info_license_comm">¿Permitir uso comercial?</string>
 
-    <string name="orbot_detected">Orbot detectado; utiliza la red Tor para conectarte de forma más segura…</string>
-
-    <string name="media_hint">Haz clic en el botón (+) para importar o crear multimedia para agregar a tu archivo</string>
-
-
     <string name="menu_import_media">Importar medios</string>
     <string name="menu_take_photo">Sacar una foto</string>
     <string name="menu_take_video">Grabar un vídeo</string>
     <string name="menu_record_audio">Grabar audio</string>
-    <string name="menu_nearby_rec">Recibir cercanos</string>
-    <string name="menu_delete">Eliminar Multimedia</string>
+    <string name="menu_delete">Eliminar Media</string>
 
     <string name="hint_title">Título</string>
-    <string name="hint_description">Descripción</string>
+    <string name="hint_description">Añadir Notas</string>
     <string name="hint_author">Autor</string>
-    <string name="hint_location">Ubicación</string>
-    <string name="hint_tags">Etiquetas</string>
+    <string name="hint_location">Añadir Ubicación</string>
+    <string name="hint_tags">Añadir Personas</string>
     <string name="hint_license">Licencia (ver preguntas a continuación)</string>
-
+    <string name="hint_flag">Pulse para marcar como contenido importante</string>
     <string name="answer_yes">Sí</string>
     <string name="answer_no">No</string>
 
     <string name="nearby_public">Público</string>
     <string name="nearby_private">Privado</string>
-    <string name="nearby_paired_only">¿Solo dispositivos vinculados?</string>
-
     <string name="action_cancel">Cancelar</string>
 
     <string name="action_open">Abrir</string>
@@ -154,39 +120,91 @@ OpenArchive es desarrollado en colaboración con Internet Archive, StoryMaker, S
     <string name="channel_name">Publicaciones en OpenArchive</string>
     <string name="channel_description">Muestra el estatus y progreso de las publicaciones en servidores remotos</string>
     <string name="status_waiting">Esperando</string>
+    <string name="status_error">Error</string>
     <string name="status_public">Público</string>
     <string name="status_uploading">Subiendo</string>
     <string name="your_media_is_available">Tu multimedia está disponible en</string>
 
     <string name="prefs_networking_title">Conectando</string>
-    <string name="prefs_use_tor_title">Habilitar enrutamiento cebolla</string>
-    <string name="prefs_use_tor_summary">Si Orbot esta instalado, usar la red de Tor</string>
-    <string name="prefs_upload_wifi_only_title">Subir únicamente en modo Wifi</string>
-    <string name="prefs_upload_wifi_only_summary">Esperar hasta que este en conectado al Wifi para subir multimedia</string>
     <string name="prefs_nearby_title">Cercanos</string>
 
+    <string name="prefs_data_title">Metadatos</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="prefs_bt_summary">Usar Bluetooth para compartir con cercanos</string>
 
-    <string name="prefs_wifi_title">Wifi Peer-to-Peer</string>
-    <string name="prefs_wifi_summary">Use Wifi Peer-to-Peer para compartir con cercanos</string>
-
-    <string name="prefs_lan_title">Punto de acceso Wifi</string>
-    <string name="prefs_lan_summary">Usar un punto de acceso Wifi para compartir con cercanos</string>
-
     <string name="menu_share">Compartir</string>
 
-    <!-- Strings for nearby sharing -->
-    <string name="bt_not_supported">Bluetooth no es soportado</string>
-    <string name="bt_not_enabled">El Bluetooth no esta activado</string>
-    <string name="bt_enabled">Bluetooth activado</string>
-
     <string name="action_received">Recibido</string>
-    <string name="status_receiving">Recibiendo…</string>
     <string name="action_duplicate">Duplicado recibido</string>
     <string name="status_connecting">Conectando…</string>
     <string name="status_connected">Conectado!</string>
-    <string name="looking_for_nearby_devices">Buscando dispositivos cercanos…</string>
     <string name="tap_to_connect">Tocar para conectarse</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Nombre de usuario</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Iniciar sesión</string>
+    <string name="action_sign_in_short">Iniciar sesión</string>
+    <string name="error_incorrect_username_or_password">Nombre de usuario o contraseña incorrectos.</string>
+    <string name="error_field_required">Este campo es obligatorio</string>
+    <string name="setup_nearby">Cercanías</string>
+    <string name="title_welcome">Bienvenido/a</string>
+    <string name="status_uploaded">Subido</string>
+    <string name="header_settings">Ajustes de la aplicación</string>
+    <string name="header_projects">Configuraciones del proyecto</string>
 
-</resources>
+    <string name="header_info">Información</string>
+    <string name="action_data_use">Uso de datos</string>
+    <string name="action_privacy">Privacidad</string>
+    <string name="action_about">Acerca de</string>
+    <string name="header_new_project">Agregar un proyecto</string>
+    <string name="action_browse_projects">Examinar Proyectos Existentes</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">Subidas</string>
+    <string name="title_uploading">Subiendo…</string>
+
+    <string name="title_activity_batch_media_review">Vista previa</string>
+    <string name="action_upload">Subir</string>
+    <string name="action_preview">Vista previa</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">Añadir</string>
+    <string name="connect_your_space">Conecte Su Espacio</string>
+    <string name="upload_to_the_internet_archive">Subir a Internet Archive</string>
+    <string name="app_tag_line">Preservación segura de medios móvil</string>
+    <string name="action_next">Seguir</string>
+    <string name="status_flagged">Contenido Importante</string>
+    <string name="action_media_stored">Configura donde quieres que se guarden tus medios.</string>
+    <string name="create_new_project">Crear nuevo proyecto</string>
+    <string name="menu_edit">Editar</string>
+    <string name="menu_done">Listo</string>
+    <string name="remove_from_app">Eliminar de la aplicación</string>
+    <string name="action_remove">Eliminar</string>
+    <string name="action_archive_project">Archivar proyecto</string>
+    <string name="action_unarchive_project">Desarchivar proyecto</string>
+    <string name="access_key">Clave de acceso</string>
+    <string name="secret_key">Clave secreta</string>
+    <string name="action_acquire_keys">Adquirir claves</string>
+    <string name="title_new_project">Nuevo Proyecto</string>
+    <string name="label_ia">Internet Archive</string>
+    <string name="open_link">Abrir enlace</string>
+    <string name="save_by_openarchive">por OpenArchive</string>
+    <string name="action_edit">Editar</string>
+    <string name="metadata">Metadatos</string>
+    <string name="networking">Red</string>
+    <string name="remove_from_app_media">Eliminar Media</string>
+    <string name="popup_flag_title">Marcar Contenido Importante</string>
+    <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
+
+    <string name="popup_batch_title">Editar múltiples elementos</string>
+    <string name="popup_batch_desc">Para editar múltiples elementos, debe pulsar y mantener presionado cada uno.</string>
+
+    <string name="popup_ia_title">Internet Archive</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">Permitir el uso de Creative Commons para todos los medios en este proyecto</string>
+
+    <string name="crash_dialog_title">Informes de error</string>
+    <string name="action_install">Instalar</string>
+    <string name="action_enable">Habilitar</string>
+    <string name="action_start">Inicio</string>
+    <string name="login_activity_logging_message">Iniciando sesión…</string>
+    </resources>

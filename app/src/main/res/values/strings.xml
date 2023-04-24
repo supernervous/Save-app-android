@@ -240,9 +240,8 @@
     <string name="title_activity_new_project">NewProjectActivity</string>
     <string name="header_new_project">Add a Project</string>
     <string name="action_browse_projects">Browse Existing Projects</string>
-    <string name="title_activity_upload_manager">UploadManagerActivity</string>
+    <string name="title_activity_upload_manager">Upload Manager</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="action_plus">+</string>
     <string name="create_a_new_project">Create a new project</string>
     <string name="title_uploads">Uploads</string>

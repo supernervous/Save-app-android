@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
-    <string name="app_subtext">Projeto Patrocinado pelo Internet Archive\n<a href="#">saber mais</a> </string>
-
-    <string name="main_activity_title">O seu OpenArchive</string>
+    <string name="app_name">Salvar</string>
+    <string name="main_activity_title">Salvar</string>
     <string name="title_activity_main">Capturar Média </string>
-    <string name="title_activity_login">Ligar ao Internet Archive </string>
+    <string name="title_activity_login">Entrar</string>
     <string name="title_activity_settings">Configurações</string>
     <string name="title_activity_first_start">Iniciar pela primeira vez</string>
-    <string name="title_activity_view_media">Visualizar Média </string>
     <string name="title_activity_archive_metadata">Metadados </string>
     <string name="title_media_list">Transferências </string>
 
@@ -21,19 +18,9 @@
     <string name="lblEditMetadata">Editar Média </string>
     <string name="lblSave">Salvar </string>
     <string name="loading_title">Transferir Média </string>
-    <string name="loading_message">Por favor, aguarde enquanto transferimos os seus média para o Internet Archive… </string>
-
     <!-- Default Values -->
     <string name="default_title">Designação</string>
-    <string name="default_tags">openarchive </string>
-
-    <!-- Alert Values -->
-    <string name="alert_lbl_logout">Sair? </string>
-    <string name="alert_logout">Ao desligar removerá todas as suas configurações, mas conservará as suas transferências.</string>
-
-    <string name="alert_lbl_delete_media">Apagar Média? </string>
-    <string name="alert_media_deleted">Média apagado com êxito</string>
-    <string name="alert_delete_media">Este média será permanentemente apagado. </string>
+    <string name="default_tags">OpenArchive </string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">Abrir gaveta de navegação </string>
@@ -46,23 +33,15 @@
     <string name="drawer_logout">Sair</string>
     <string name="drawer_about">Sobre</string>
     <string name="drawer_settings">Configurações</string>
-
     <!-- EULA/Terms of Service -->
     <string name="eula_title">Concorda com: </string>
     <string name="eula_accept">Aceitar </string>
     <string name="eula_refuse">Recusar </string>
     <string name="end_user_license_agreement">Termos de Utilização e Política de Privacidade </string>
-    <string name="by_clicking_accept">Ao clicar em \'Aceitar\' concorda com os nossos termos e políticas: </string>
     <string name="tos_dialog_title">Termos de Serviço </string>
-    <string name="tos_dialog_msg">Por favor, Aceite os nossos Termos de Serviço antes de continuar</string>
     <string name="tos_dialog_positive_button">Entendi</string>
 
-    <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Entrar em Archive.org </string>
-
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">Não tem conta?\n<a href="https://archive.org/account/login.createaccount.php">Registe-se gratuitamente!</a> </string>
-    <string name="tos_btn">Concordo com os termos de serviço </string>
+    <string name="tos_btn">Concordo com os termos de licença.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importar</string>
@@ -75,36 +54,21 @@
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Imagem Principal</string>
 
-    <!-- Errors -->
-    <string name="error_file_not_found">Ficheiro não encontrado </string>
-    <string name="error_invalid_media_type">Tipo de Ficheiro não reconhecido </string>
-    <string name="error_no_media">nenhum Média Detetado!</string>
-
     <!-- Server -->
     <string name="lbl_Yes">Sim</string>
     <string name="lbl_Cancel">Cancelar </string>
     <string name="lbl_off">Desligado</string>
     <string name="lbl_on">Ligado</string>
-    <string name="lbl_ok">Ok</string>
+    <string name="lbl_ok">OK</string>
     <string name="lbl_settings">Configurações</string>
     <string name="lbl_cancelled">Cancelado </string>
-    <string name="lbl_success">Êxito</string>
+    <string name="lbl_success">Pronto</string>
     <string name="lbl_continue">Continuar</string>
-    <string name="archive_title">E-mail de Confirmação</string>
-    <string name="archive_message">Por favor, confirme o seu e-mail e volte para ligar a sua conta Archive. </string>
     <string name="upload_to_internet_archive">Transferir para o Internet Archive</string>
-    <string name="upload_securely_via_tor">Transferir em Segurança via Tor</string>
     <string name="lbl_share_prefs">Partilhar Preferências </string>
-    <string name="problem_authticating">Problemas com a autenticação no Internet Archive. </string>
-    <string name="uploading_to_internet_archive">Transferir para o Internet Archive… </string>
     <string name="lbl_update_value">Atualizar Valor</string>
     <string name="lbl_enter_value">Clique para inserir um valor. </string>
-    <string name="title_activity_about">Sobre OpenArchive</string>
-
-    <string name="about_body">OpenArchive é uma aplicação móvel de fonte aberta, grátis, dedicada à manutenção da privacidade, origem e preservação dos seus média. Permite-lhe a adição de metadados e de Creative Commons licenciados aos seus média audiovisuais e o seu envio para o Internet Archive via Tor; oferece uma maior ação sobre os seus média, enquanto protege as liberdades cívicas e aumenta a interoperabilidade para os que os pretendem encontrar, reutilizar e misturar no futuro.\n\n
-OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal.io, e Guardian Project. O projeto foi iniciado por Natalie Cadranel com o generoso apoio da Knight Foundation\'s Prototype Fund.\n\nSaiba mais em <a href="https://open-archive.net">https://open-archive.net</a></string>
-
-    <string name="upload_success">Os seus média estão agora disponíveis no Internet Archive! </string>
+    <string name="title_activity_about">Sobre</string>
 
     <string name="share_using">Partilhar link do ficheiro via </string>
     <string name="share_text">partilhar via OpenArchive em </string>
@@ -121,31 +85,71 @@ OpenArchive é desenvolvido em parceria com o Internet Archive, StoryMaker, Scal
     <string name="info_license_sharealike">Obrigatório partilhar conforme apresentado?</string>
     <string name="info_license_comm">Permitir o uso comercial?</string>
 
-    <string name="orbot_detected">Orbot detetado ; utilizar rede Tor para uma ligação mais segura</string>
-
-    <string name="media_hint">Clique o botão (+)  para importar ou criar média</string>
-
-
     <string name="menu_import_media">Importar mídia</string>
     <string name="menu_take_photo">Tirar foto
 </string>
     <string name="menu_take_video">Fazer vídeo</string>
     <string name="menu_record_audio">Gravar Áudio</string>
-    <string name="menu_nearby_rec">Receber nas proximidades</string>
     <string name="hint_title">Título</string>
-    <string name="hint_description">Descrição</string>
     <string name="hint_author">Autor</string>
-    <string name="hint_location">Locação</string>
-    <string name="hint_tags">Tags</string>
     <string name="hint_license">Licença (ver questões abaixo)</string>
-
     <string name="answer_yes">Sim</string>
     <string name="answer_no">Não</string>
 
     <string name="nearby_public">Público</string>
     <string name="nearby_private">Privado</string>
-    <string name="nearby_paired_only">Apenas dispositivos emparelhados?</string>
-
     <string name="action_cancel">Cancelar</string>
 
+    <string name="action_open">Aberto</string>
+
+    <string name="status_waiting">Aguardando</string>
+    <string name="status_error">Erro</string>
+    <string name="status_public">Pública</string>
+    <string name="prefs_nearby_title">Perto</string>
+
+    <string name="prefs_data_title">Metadados</string>
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="menu_share">Compartilhar</string>
+
+    <string name="action_received">Recebido</string>
+    <string name="status_connecting">Conectando…</string>
+    <string name="status_connected">Conectado!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Nome de usuário</string>
+    <string name="prompt_password">Palavra-passe</string>
+    <string name="action_sign_in">Registar</string>
+    <string name="action_sign_in_short">Registar</string>
+    <string name="error_incorrect_username_or_password">Usuário ou senha incorretos</string>
+    <string name="error_field_required">Este campo é obrigatório</string>
+    <string name="setup_nearby">Perto</string>
+    <string name="title_welcome">Boas-vindas</string>
+    <string name="status_uploaded">Uploaded</string>
+    <string name="header_settings">Configurações do app</string>
+    <string name="header_info">Info</string>
+    <string name="action_data_use">Uso de dados</string>
+    <string name="action_privacy">Privacidade</string>
+    <string name="action_about">Sobre</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">Envios</string>
+    <string name="title_uploading">Enviando…</string>
+
+    <string name="title_activity_batch_media_review">Mostrar previsão</string>
+    <string name="action_upload">Carregar</string>
+    <string name="action_preview">Mostrar previsão</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">Adicionar</string>
+    <string name="action_next">Próximo</string>
+    <string name="menu_edit">Editar</string>
+    <string name="menu_done">Pronto</string>
+    <string name="action_remove">Remover</string>
+    <string name="open_link">Abrir Link</string>
+    <string name="action_edit">Editar</string>
+    <string name="metadata">Metadados</string>
+    <string name="crash_dialog_title">Relatar falhas</string>
+    <string name="crashreportemail">support@guardianproject.info</string>
+    <string name="action_install">Instalar</string>
+    <string name="action_enable">Habilitar</string>
+    <string name="action_start">Início</string>
     </resources>

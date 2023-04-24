@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Activities -->
+    <string name="app_name">Kaydet</string>
+    <string name="main_activity_title">Kaydet</string>
+    <string name="title_activity_login">Oturum açın</string>
+    <string name="title_activity_settings">Ayarlar</string>
+    <string name="title_activity_view_media">Bilgiler ekle</string>
+    <string name="title_activity_batch_view_media">Toplu düzenleme</string>
+    <string name="title_activity_archive_metadata">Üst veri</string>
+    <string name="title_media_list">Yüklemeler</string>
+
+    <!-- General -->
+    <string name="menu_item_publish">Yayınla</string>
+    <string name="lblSave">Kaydet</string>
+    <string name="default_tags">OpenArchive</string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">Gezinti çekmecesini aç</string>
+    <string name="navigation_drawer_close">Gezinme çekmecesini kapat</string>
+    <string name="action_example">Örnek eylem</string>
+    <string name="action_settings">Ayarlar</string>
+
+    <string name="drawer_home">Ana Sayfa</string>
+    <string name="drawer_uploads">Yüklemeler</string>
+    <string name="drawer_logout">Oturumu kapat</string>
+    <string name="drawer_about">Hakkında</string>
+    <string name="drawer_settings">Ayarlar</string>
+    <string name="action_new_project">Yeni Proje</string>
+
+
+    <string name="eula_accept">Onayla</string>
+    <string name="tos_dialog_title">Kullanım Koşulları</string>
+    <string name="tos_dialog_positive_button">Anladım</string>
+
+    <!-- FirstStartActivity -->
+    <string name="sign_in_btn">Internet Archive</string>
+
+    <string name="tos_btn">Hizmet kullanım şartlarını kabul ediyorum</string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">İçe Aktar</string>
+    <string name="capture_photo">Fotoğraf</string>
+    <string name="capture_video">Görüntü</string>
+    <string name="capture_audio">Ses</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">Evet</string>
+    <string name="lbl_Cancel">İptal Et</string>
+    <string name="lbl_off">Kapalı</string>
+    <string name="lbl_on">Açık</string>
+    <string name="lbl_ok">Tamam</string>
+    <string name="lbl_settings">Ayarlar</string>
+    <string name="lbl_success">Tamam</string>
+    <string name="lbl_continue">Devam et</string>
+    <string name="title_activity_about">Hakkında</string>
+
+    <string name="menu_delete">Ortamı Sil</string>
+
+    <string name="hint_title">Başlık</string>
+    <string name="hint_description">Not ekle</string>
+    <string name="hint_location">Konum ekle</string>
+    <string name="hint_tags">Kişiler ekle</string>
+    <string name="hint_flag">Önemli içerik olarak işaretlemek için dokunun</string>
+    <string name="answer_yes">Evet</string>
+    <string name="answer_no">Hayır</string>
+
+    <string name="nearby_public">Herkese açık</string>
+    <string name="nearby_private">Gizli</string>
+    <string name="action_cancel">İptal Et</string>
+
+    <string name="action_open">Açık</string>
+
+    <string name="status_waiting">Bekleniyor</string>
+    <string name="status_error">Hata</string>
+    <string name="status_public">Herkese açık</string>
+    <string name="status_uploading">Yükleniyor</string>
+    <string name="prefs_nearby_title">Yakındaki</string>
+
+    <string name="prefs_data_title">Üst veri</string>
+    <string name="prefs_use_proofmode_title">ProofMode kullanılsın</string>
+    <string name="prefs_share_proofmode_summary">ProofMode herkese açık anahtarını paylaş</string>
+
+
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="menu_share">Paylaşma</string>
+
+    <string name="action_received">Alınan</string>
+    <string name="status_connecting">Bağlantı kuruluyor…</string>
+    <string name="status_connected">Bağlantı kuruldu!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Kullanıcı adı</string>
+    <string name="prompt_password">Parola</string>
+    <string name="action_sign_in">Oturum aç</string>
+    <string name="action_sign_in_short">Oturum aç</string>
+    <string name="error_incorrect_username_or_password">Kullanıcı adı ya da parola hatalı</string>
+    <string name="error_field_required">Bu alanın doldurulması zorunludur</string>
+    <string name="setup_nearby">Yakındaki</string>
+    <string name="title_welcome">Hoş Geldiniz</string>
+    <string name="header_settings">Uygulama ayarları</string>
+    <string name="header_projects">Proje ayarları</string>
+
+    <string name="header_info">Bilgiler</string>
+    <string name="action_data_use">Veri kullanımı</string>
+    <string name="action_privacy">Kişisel Gizlilik</string>
+    <string name="action_about">Hakkında</string>
+    <string name="header_new_project">Proje Ekle</string>
+    <string name="action_browse_projects">Var Olan Projelere Bak</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">Yüklemeler</string>
+    <string name="title_uploading">Yükleniyor…</string>
+
+    <string name="title_activity_batch_media_review">Ön izleme</string>
+    <string name="action_upload">Yükle</string>
+    <string name="action_preview">Ön izleme</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">Ekle</string>
+    <string name="connect_your_space">Alanınıza Bağlanın</string>
+    <string name="upload_to_the_internet_archive">Internet Archive üzerine yükleyin.</string>
+    <string name="app_tag_line">Güvenli Mobil Ortam Koruma</string>
+    <string name="action_next">Sonraki</string>
+    <string name="status_flagged">Önemli içerik</string>
+    <string name="action_media_stored">Ortamlarınızın saklanacağı yeri seçin.</string>
+    <string name="create_new_project">Yeni proje oluştur</string>
+    <string name="menu_edit">Düzenle</string>
+    <string name="menu_done">Tamam</string>
+    <string name="remove_from_app">Uygulamadan kaldır</string>
+    <string name="action_remove">Kaldır</string>
+    <string name="action_archive_project">Projeyi arşive kaldır</string>
+    <string name="action_unarchive_project">Projeyi arşivden çıkar</string>
+    <string name="access_key">Erişim anahtarı</string>
+    <string name="secret_key">Gizli anahtar</string>
+    <string name="action_acquire_keys">Anahtarları al</string>
+    <string name="title_new_project">Yeni Proje</string>
+    <string name="label_ia">Internet Archive</string>
+    <string name="open_link">Bağlantıyı Aç</string>
+    <string name="save_by_openarchive">OpenArchive tarafından</string>
+    <string name="action_edit">Düzenle</string>
+    <string name="title_dropbox">Dropbox</string>
+    <string name="metadata">Üst veriler</string>
+    <string name="remove_from_app_media">Ortamı Sil</string>
+    <string name="popup_flag_title">Önemli içerik olarak işaretle</string>
+    <string name="popup_flag_desc">Bir ögeyi işaretlediğinizde, özel sunucu üzerinde seçilmiş proje klasöründeki bir alt klasöre yönlendirilir.</string>
+
+    <string name="popup_batch_title">Birkaç ögeyi düzenle</string>
+    <string name="popup_batch_desc">Birden çok ögeyi düzenlemek için her birine dokunup tutun.</string>
+
+    <string name="popup_ia_title">Internet Archive</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">Bu projedeki ortamlara Creative Commons kullanma izni ver</string>
+
+    <string name="crash_dialog_title">Çökme bildirimleri</string>
+    <string name="action_install">Kur</string>
+    <string name="action_enable">Etkinleştir</string>
+    <string name="action_start">Başlat</string>
+    <string name="login_activity_logging_message">Oturum açılıyor…</string>
+    </resources>

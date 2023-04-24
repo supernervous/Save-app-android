@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Activities -->
+    <string name="app_name">Speichern</string>
+    <string name="main_activity_title">Speichern</string>
+    <string name="title_activity_login">Anmelden</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_view_media">Editieren</string>
+    <string name="title_activity_batch_view_media">Massenbearbeitung</string>
+    <string name="title_activity_archive_metadata">Metadaten</string>
+    <string name="title_media_list">Uploads</string>
+
+    <!-- General -->
+    <string name="menu_item_publish">Veröffentlichen</string>
+    <string name="lblSave">Speichern</string>
+    <string name="default_tags">OpenArchive</string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
+    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
+    <string name="action_example">Beispielaktion</string>
+    <string name="action_settings">Einstellungen</string>
+
+    <string name="drawer_home">Pos1</string>
+    <string name="drawer_uploads">Uploads</string>
+    <string name="drawer_logout">Abmelden</string>
+    <string name="drawer_about">Infos</string>
+    <string name="drawer_settings">Einstellungen</string>
+    <string name="action_new_project">Neues Projekt</string>
+
+
+    <!-- EULA/Terms of Service -->
+    <string name="eula_title">Sie stimmen zu:</string>
+    <string name="eula_accept">Zustimmen</string>
+    <string name="eula_refuse">Ablehnen</string>
+    <string name="tos_dialog_title">Nutzungsbedingungen</string>
+    <string name="tos_dialog_positive_button">Verstanden</string>
+
+    <!-- FirstStartActivity -->
+    <string name="sign_in_btn">Internet Archive</string>
+
+    <string name="tos_btn">Ich akzeptiere die Allgemeinen Geschäftsbedingungen.</string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">Import</string>
+    <string name="capture_photo">Foto</string>
+    <string name="capture_video">Video</string>
+    <string name="capture_audio">Audio</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">Ja</string>
+    <string name="lbl_Cancel">Abbrechen</string>
+    <string name="lbl_off">Aus</string>
+    <string name="lbl_on">Ein</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_settings">Einstellungen</string>
+    <string name="lbl_cancelled">Storniert</string>
+    <string name="lbl_success">Fertig</string>
+    <string name="lbl_continue">Weiter</string>
+    <string name="title_activity_about">Infos</string>
+
+    <string name="menu_delete">Medien entfernen</string>
+
+    <string name="hint_title">Titel</string>
+    <string name="hint_description">Notizen hinzufügen</string>
+    <string name="hint_author">Verfasser</string>
+    <string name="hint_location">Ort hinzufügen</string>
+    <string name="hint_tags">Menschen hinzufügen</string>
+    <string name="hint_flag">Tippen um als besonderen Inhalt zu markieren</string>
+    <string name="answer_yes">Ja</string>
+    <string name="answer_no">Nein</string>
+
+    <string name="nearby_public">Öffentlich</string>
+    <string name="nearby_private">Privat</string>
+    <string name="action_cancel">Abbrechen</string>
+
+    <string name="action_open">Öffne</string>
+
+    <string name="status_waiting">Warte</string>
+    <string name="status_error">Fehler</string>
+    <string name="status_public">Öffentlich</string>
+    <string name="status_uploading">Hochladevorgang</string>
+    <string name="prefs_nearby_title">In der Nähe</string>
+
+    <string name="prefs_data_title">Metadaten</string>
+    <string name="prefs_use_proofmode_title">Aktiviere ProofMode</string>
+    <string name="prefs_share_proofmode_summary">Teile öffentlichen ProofMode Schlüssel</string>
+
+
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="menu_share">Teilen</string>
+
+    <string name="action_received">Erhalten</string>
+    <string name="status_connecting">Verbinde…</string>
+    <string name="status_connected">Verbunden!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Benutzername</string>
+    <string name="prompt_password">Passwort</string>
+    <string name="action_sign_in">Anmelden</string>
+    <string name="action_sign_in_short">Anmelden</string>
+    <string name="error_incorrect_username_or_password">Benutzername oder Passwort falsch</string>
+    <string name="error_field_required">Dieses Feld darf nicht leer sein</string>
+    <string name="setup_nearby">In der Nähe</string>
+    <string name="title_welcome">Willkommen</string>
+    <string name="status_uploaded">Hochgeladen</string>
+    <string name="header_settings">App-Einstellungen</string>
+    <string name="header_projects">Projekteinstellungen</string>
+
+    <string name="header_info">Info</string>
+    <string name="action_data_use">Datennutzung</string>
+    <string name="action_privacy">Privatsphäre</string>
+    <string name="action_about">Infos</string>
+    <string name="header_new_project">Projekt hinzufügen</string>
+    <string name="action_browse_projects">Benütze existierendes Projekt</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">Uploads</string>
+    <string name="title_uploading">Hochladen…</string>
+
+    <string name="title_activity_batch_media_review">Vorschau</string>
+    <string name="action_upload">Upload</string>
+    <string name="action_preview">Vorschau</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">Hinzufügen</string>
+    <string name="tap_to_add">Den Button unten verwenden um Medien zu Deinem Projekt hinzuzufügen.</string>
+    <string name="connect_your_space">Verbinde Deinen Space</string>
+    <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen</string>
+    <string name="app_tag_line">Sichere Bewahrung mobiler Medien</string>
+    <string name="action_next">Weiter</string>
+    <string name="status_flagged">Besonderer Inhalt</string>
+    <string name="action_media_stored">Richte ein, wo Deine Medien gespeichert werden sollen.</string>
+    <string name="create_new_project">Neues Projekt erstellen</string>
+    <string name="menu_edit">Bearbeiten</string>
+    <string name="menu_done">Fertig</string>
+    <string name="remove_from_app">Aus App entfernen</string>
+    <string name="action_remove">Entfernen</string>
+    <string name="action_archive_project">Projekt archivieren</string>
+    <string name="action_unarchive_project">Projekt entarchivieren</string>
+    <string name="access_key">Access Key</string>
+    <string name="secret_key">Secret Key</string>
+    <string name="action_acquire_keys">Schlüssel holen</string>
+    <string name="title_new_project">Neues Projekt</string>
+    <string name="label_ia">Internet Archive</string>
+    <string name="open_link">Link öffnen</string>
+    <string name="save_by_openarchive">von OpenArchive</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="title_dropbox">Dropbox</string>
+    <string name="metadata">Metadaten</string>
+    <string name="remove_from_app_media">Medien entfernen</string>
+    <string name="popup_flag_title">Besonderen Inhalt markieren</string>
+    <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>
+
+    <string name="popup_batch_title">Mehrere Elemente editieren</string>
+    <string name="popup_batch_desc">Um mehrere Elemente auf einmal zu editieren, die Elemente lange drücken.</string>
+
+    <string name="popup_ia_title">Internet Archive</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">Erlaube Creative Commons für alle Medien in diesem Projekt</string>
+
+    <string name="crash_dialog_title">Absturz-Berichterstattung</string>
+    <string name="crashreportemail">support@guardianproject.info</string>
+    <string name="action_install">Installieren</string>
+    <string name="action_enable">Aktivieren</string>
+    <string name="action_start">Start</string>
+    </resources>

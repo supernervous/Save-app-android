@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
-    <string name="app_subtext">Internet Archive 支持的项目\n<a href="#">了解更多</a></string>
-
-    <string name="main_activity_title">您的 OpenArchive</string>
+    <string name="app_name">保存</string>
+    <string name="main_activity_title">保存</string>
     <string name="title_activity_main">捕获媒体</string>
-    <string name="title_activity_login">登录 Internet Archive</string>
+    <string name="title_activity_login">登录</string>
     <string name="title_activity_settings">设置</string>
     <string name="title_activity_first_start">首次启动</string>
-    <string name="title_activity_view_media">查看媒体</string>
     <string name="title_activity_archive_metadata">元数据</string>
     <string name="title_media_list">上传</string>
 
@@ -21,19 +18,9 @@
     <string name="lblEditMetadata">编辑媒体</string>
     <string name="lblSave">保存</string>
     <string name="loading_title">上传媒体</string>
-    <string name="loading_message">正在将您的媒体上传到 Internet Archive，请稍候…</string>
-
     <!-- Default Values -->
     <string name="default_title">我的标题</string>
-    <string name="default_tags">openarchive</string>
-
-    <!-- Alert Values -->
-    <string name="alert_lbl_logout">注销？</string>
-    <string name="alert_logout">注销将删除您的所有设置，但仍会保留您的上传内容。</string>
-
-    <string name="alert_lbl_delete_media">删除媒体？</string>
-    <string name="alert_media_deleted">已成功删除媒体</string>
-    <string name="alert_delete_media">此媒体将被永久删除。</string>
+    <string name="default_tags">OpenArchive</string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">打开滑出导航</string>
@@ -43,26 +30,16 @@
 
     <string name="drawer_home">主页</string>
     <string name="drawer_uploads">上传</string>
-    <string name="drawer_logout">注销</string>
+    <string name="drawer_logout">登出</string>
     <string name="drawer_about">关于</string>
     <string name="drawer_settings">设置</string>
-
     <!-- EULA/Terms of Service -->
     <string name="eula_title">您同意：</string>
     <string name="eula_accept">接受</string>
     <string name="eula_refuse">拒绝</string>
     <string name="end_user_license_agreement">使用条款和隐私政策</string>
-    <string name="by_clicking_accept">单击“接受”即表示您同意我们的条款和政策：</string>
     <string name="tos_dialog_title">服务条款</string>
-    <string name="tos_dialog_msg">在继续之前，请接受我们的“服务条款”</string>
     <string name="tos_dialog_positive_button">知道了</string>
-
-    <!-- FirstStartActivity -->
-    <string name="sign_in_btn">登录 Archive.org</string>
-
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">没有帐户？\n<a href="https://archive.org/account/login.createaccount.php">免费注册！</a></string>
-    <string name="tos_btn">我同意服务条款。</string>
 
     <!-- MainFragment -->
     <string name="import_btn">导入</string>
@@ -75,37 +52,21 @@
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">主要图像</string>
 
-    <!-- Errors -->
-    <string name="error_file_not_found">未找到文件</string>
-    <string name="error_invalid_media_type">无法识别文件类型</string>
-    <string name="error_no_media">未找到媒体！</string>
-
     <!-- Server -->
     <string name="lbl_Yes">是</string>
     <string name="lbl_Cancel">取消</string>
     <string name="lbl_off">关</string>
     <string name="lbl_on">开</string>
-    <string name="lbl_ok">确定</string>
+    <string name="lbl_ok">好</string>
     <string name="lbl_settings">设置</string>
     <string name="lbl_cancelled">已取消</string>
-    <string name="lbl_success">成功</string>
+    <string name="lbl_success">完成</string>
     <string name="lbl_continue">继续</string>
-    <string name="archive_title">电子邮件确认</string>
-    <string name="archive_message">请确认您的电子邮箱并返回以连接您的 Archive 帐户。</string>
     <string name="upload_to_internet_archive">上传到 Internet Archive</string>
-    <string name="upload_securely_via_tor">通过 Tor 安全上传</string>
     <string name="lbl_share_prefs">共享首选项</string>
-    <string name="problem_authticating">进行 Internet Archive 验证时出现问题。</string>
-    <string name="uploading_to_internet_archive">正在上传到 Internet Archive…</string>
     <string name="lbl_update_value">更新值</string>
     <string name="lbl_enter_value">点按以输入值</string>
-    <string name="title_activity_about">关于 OpenArchive</string>
-
-    <string name="about_body">OpenArchive 是一个免费的开源移动应用程序，致力于维护您的媒体的隐私、出处和保存。利用此程序，您可以将元数据和 Creative Commons 许可添加到您的闭音视频媒体中，然后通过 Tor 将其发送到 Internet Archive；为您的媒体提供更多能动性，同时保护公民自由，为将来需要查找、再利用及混合您的媒体的人提供更好的互操作性。\n\n
-OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 合作开发的。该项目由 Natalie Cadranel 成立，得到了骑士基金会 (Knight Foundation) 的原型基金 (Prototype Fund) 的慷慨支持。\n\n如需了解更多，请访问 <a href="https://open-archive.net">https://open-archive.net</a>
-</string>
-
-    <string name="upload_success">现在，您的媒体在 Internet Archive 上可用！</string>
+    <string name="title_activity_about">关于</string>
 
     <string name="share_using">分享归档链接时通过</string>
     <string name="share_text">通过 OpenArchive 共享于</string>
@@ -122,30 +83,58 @@ OpenArchive 是与 Internet Archive、StoryMaker、Scal.io 和 Guardian Project 
     <string name="info_license_sharealike">要求他们像您一样分享？</string>
     <string name="info_license_comm">允许商业使用？</string>
 
-    <string name="orbot_detected">检测到 Orbot；正使用 Tor 网络连接以提高安全性…</string>
-
-    <string name="media_hint">单击 (+) 按钮导入或创建要添加到您的归档中的媒体</string>
-
-
     <string name="menu_import_media">导入媒体</string>
     <string name="menu_take_photo">拍照</string>
     <string name="menu_take_video">拍摄视频</string>
     <string name="menu_record_audio">录音</string>
-    <string name="menu_nearby_rec">附近的接收</string>
     <string name="hint_title">标题</string>
-    <string name="hint_description">描述</string>
     <string name="hint_author">作者</string>
-    <string name="hint_location">位置</string>
-    <string name="hint_tags">标签</string>
     <string name="hint_license">许可证（参见下面的问题）</string>
-
     <string name="answer_yes">是的</string>
     <string name="answer_no">不</string>
 
     <string name="nearby_public">公开</string>
     <string name="nearby_private">私人</string>
-    <string name="nearby_paired_only">仅限已配对设备？</string>
-
     <string name="action_cancel">取消</string>
 
+    <string name="action_open">打开</string>
+
+    <string name="status_error">错误</string>
+    <string name="status_public">公开</string>
+    <string name="prefs_nearby_title">附近</string>
+
+    <string name="prefs_data_title">元数据</string>
+    <string name="prefs_bt_title">蓝牙</string>
+    <string name="menu_share">分享</string>
+
+    <string name="action_received">已收到</string>
+    <string name="status_connecting">连接中…</string>
+    <string name="status_connected">连接成功！</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="error_incorrect_username_or_password">密码或者用户名错误</string>
+    <string name="error_field_required">该字段必填</string>
+    <string name="setup_nearby">附近</string>
+    <string name="title_welcome">欢迎</string>
+    <string name="header_settings">应用程序设置</string>
+    <string name="header_info">信息</string>
+    <string name="action_privacy">隐私</string>
+    <string name="action_about">关于</string>
+    <string name="title_uploads">上传</string>
+    <string name="action_upload">上传</string>
+    <string name="action_preview">预览</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">添加</string>
+    <string name="action_next">下一步</string>
+    <string name="menu_edit">编辑</string>
+    <string name="menu_done">完成</string>
+    <string name="action_remove">移除</string>
+    <string name="action_edit">编辑</string>
+    <string name="metadata">元数据</string>
+    <string name="action_install">安装</string>
+    <string name="action_enable">启用</string>
+    <string name="login_activity_logging_message">正在登录…</string>
     </resources>

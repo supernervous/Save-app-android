@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
-    <string name="app_subtext">مشروع على الأنترنت مدعوم من قبل Archive <a href="#">معرفة المزيد</a></string>
-
-    <string name="main_activity_title">OpenArchive الخاص بك</string>
+    <string name="app_name">حفظ</string>
+    <string name="main_activity_title">حفظ</string>
     <string name="title_activity_main">التقاط الوسائل</string>
-    <string name="title_activity_login">الدخول إلى الإنترنت الأرشيف</string>
+    <string name="title_activity_login">تسجيل الدخول</string>
     <string name="title_activity_settings">الإعدادات</string>
     <string name="title_activity_first_start">بدء أول</string>
-    <string name="title_activity_view_media">عرض الوسائط</string>
+    <string name="title_activity_view_media">أضف معلومات</string>
+    <string name="title_activity_batch_view_media">تعديل بالجملة</string>
     <string name="title_activity_archive_metadata">البيانات الوصفية</string>
     <string name="title_media_list">التحميلات
 </string>
@@ -22,19 +21,9 @@
     <string name="lblEditMetadata">تعديل الوسائط</string>
     <string name="lblSave">حفظ</string>
     <string name="loading_title">تحميل الوسائط جاري</string>
-    <string name="loading_message">يرجى الانتظار إلى حين انتهاء تحميل وسائطك إلى أرشيف الإنترنت . . .</string>
-
     <!-- Default Values -->
     <string name="default_title">عنواني</string>
-    <string name="default_tags">openarchive</string>
-
-    <!-- Alert Values -->
-    <string name="alert_lbl_logout">خروج ؟</string>
-    <string name="alert_logout">سوف يزيل تسجيل الخروج كافة  إعداداتك ولكن ستبقي التحميلات.</string>
-
-    <string name="alert_lbl_delete_media">حذف الوسائط ؟</string>
-    <string name="alert_media_deleted">تم حذف الوسائط بنجاح</string>
-    <string name="alert_delete_media">سيتم حذف الوسائط نهائيا.</string>
+    <string name="default_tags">OpenArchive</string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">فتح درج التصفح</string>
@@ -44,25 +33,23 @@
 
     <string name="drawer_home">الصفحة الرئيسية</string>
     <string name="drawer_uploads">التحميلات</string>
-    <string name="drawer_logout">خروج</string>
+    <string name="drawer_logout">تسجيل الخروج</string>
     <string name="drawer_about">معلومات</string>
     <string name="drawer_settings">الإعدادات</string>
+    <string name="action_new_project">مشروع جديد</string>
+
 
     <!-- EULA/Terms of Service -->
     <string name="eula_title">أنت توافق على : </string>
     <string name="eula_accept">قبول</string>
     <string name="eula_refuse">الرفض</string>
     <string name="end_user_license_agreement">شروط الاستخدام وسياسة الخصوصية</string>
-    <string name="by_clicking_accept">النقر على \'موافق\' أنتَ توافق على شروطنا وأحكامنا :</string>
     <string name="tos_dialog_title">شروط الخدمة</string>
-    <string name="tos_dialog_msg">يرجى قبول شروط الخدمة قبل المتابعة </string>
     <string name="tos_dialog_positive_button">فهمت</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">تسجيل الدخول إلى Archive.org</string>
+    <string name="sign_in_btn">Internet Archive</string>
 
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">ليس\ لديك حساب ؟\n <a href="https://archive.org/account/login.createaccount.php">قم بالتسجيل مجانا !</a></string>
     <string name="tos_btn">أوافق على شروط الخدمة.</string>
 
     <!-- MainFragment -->
@@ -76,11 +63,6 @@
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">صورة رئيسية</string>
 
-    <!-- Errors -->
-    <string name="error_file_not_found">لم يتم العثور على الملف</string>
-    <string name="error_invalid_media_type">نوع الملف غير معروف</string>
-    <string name="error_no_media">لم يتم العثور على وسائط !</string>
-
     <!-- Server -->
     <string name="lbl_Yes">نعم</string>
     <string name="lbl_Cancel">إلغاء</string>
@@ -89,24 +71,13 @@
     <string name="lbl_ok">موافق</string>
     <string name="lbl_settings">الإعدادات</string>
     <string name="lbl_cancelled">مُلغى</string>
-    <string name="lbl_success">نجاح</string>
+    <string name="lbl_success">مُنجَز</string>
     <string name="lbl_continue">واصل</string>
-    <string name="archive_title">تأكيد بالبريد الإلكتروني</string>
-    <string name="archive_message">يرجى التأكد من صحة بريدك الإلكتروني والعودة إلى دخول حساب الأرشيف الخاص بك.</string>
     <string name="upload_to_internet_archive">التحميل لأرشيف الأنترنيت</string>
-    <string name="upload_securely_via_tor">قم بالتحميل بشكل آمن عبر Tor</string>
     <string name="lbl_share_prefs">مشاركة التفضيلات</string>
-    <string name="problem_authticating">هناك مشكلة مصادقة مع أرشيف الإنترنت.</string>
-    <string name="uploading_to_internet_archive">التحميل لأرشيف الإنترنت . . .</string>
     <string name="lbl_update_value">تحديث القيمة</string>
     <string name="lbl_enter_value">انقر لإدخال قيمة.</string>
-    <string name="title_activity_about">حول OpenArchive</string>
-
-    <string name="about_body">OpenArchive تطبيق هاتف مجاني و مصدر مفتوح مخصص للحفاظ على الخصوصية ومصدر وسائطك. يسمح لك بإضافة البيانات الوصفية والمشاع الإبداعي الذي يرخِّص لوسائطك السمعية والبصرية ومن ثم يقوم بإرسالها إلى أرشيف الإنترنت عبر Tor مقدِّماً المزيد من التحكم لوسائطك، في حين يحمي الحريات المدنية ويزيد قابلية التشغيل البيني لأولئك الذين يرغبون في العثور عليها وإعادة استخدامها وتعديلها في المستقبل.\n\n
-تم تطوير OpenArchive في شراكة مع أرشيف الإنترنت، StoryMaker، Scal.io، وGuardian Project. تأسس المشروع من قبل ناتالي كادرانيل بدعم سخي من صندوق نموذج Knight Foundation.\n\n اعرف المزيد على <a href="https://open-archive.net">https://open-archive.net</a>
-</string>
-
-    <string name="upload_success">وسائطك متاحة الآن على أرشيف الإنترنت !</string>
+    <string name="title_activity_about">عن</string>
 
     <string name="share_using">مشاركة رابط الأرشيف عبر</string>
     <string name="share_text">تمت المشاركة عبر OpenArchive في</string>
@@ -123,29 +94,106 @@
     <string name="info_license_sharealike">اطلب منهم المشاركة مثل مشاركتك ؟</string>
     <string name="info_license_comm">السماح بالاستخدام التجاري ؟</string>
 
-    <string name="orbot_detected">تم اكتشاف Orbot؛ باستخدام شبكة Tor للاتصال بأكثر أمان . . .</string>
-
-    <string name="media_hint">انقر على زر (+) لاستيراد أو إنشاء وسائط لإضافتها إلى الأرشيف</string>
-
     <string name="menu_import_media">استيراد الوسائط</string>
     <string name="menu_take_photo">التقاط صورة</string>
     <string name="menu_take_video">التقاط فيديو</string>
     <string name="menu_record_audio">تسجيل صوت</string>
-    <string name="menu_nearby_rec">الاستقبال القريب</string>
-    <string name="hint_title">العنوان</string>
-    <string name="hint_description">الوصف</string>
-    <string name="hint_author">المؤلف</string>
-    <string name="hint_location">الموقع</string>
-    <string name="hint_tags">الوسوم</string>
-    <string name="hint_license">الرخصة (انظر الأسئلة أدناه)</string>
+    <string name="menu_delete">احذف الوسائط</string>
 
+    <string name="hint_title">العنوان</string>
+    <string name="hint_description">أضف ملاحظات</string>
+    <string name="hint_author">المؤلف</string>
+    <string name="hint_location">أضف الموقع</string>
+    <string name="hint_tags">أضف أشخاص</string>
+    <string name="hint_license">الرخصة (انظر الأسئلة أدناه)</string>
+    <string name="hint_flag">اضغط لإضافة علامة محتوى مميز</string>
     <string name="answer_yes">نعم</string>
     <string name="answer_no">لا</string>
 
     <string name="nearby_public">عام</string>
     <string name="nearby_private">خاص</string>
-    <string name="nearby_paired_only">هل تريد استخدام الأجهزة المقترنة فقط؟</string>
-
     <string name="action_cancel">إلغاء</string>
 
+    <string name="action_open">مفتوح</string>
+
+    <string name="status_waiting">‮في الانتظار</string>
+    <string name="status_error">خطأ</string>
+    <string name="status_public">عمومي</string>
+    <string name="status_uploading">جارى الرفع</string>
+    <string name="prefs_nearby_title">قريب منك</string>
+
+    <string name="prefs_data_title">البيانات الوصفية</string>
+    <string name="prefs_bt_title">بلوتوث</string>
+    <string name="menu_share">شارك</string>
+
+    <string name="action_received">المُستلَمة</string>
+    <string name="status_connecting">جاري الاتصال …</string>
+    <string name="status_connected">مُتّصل!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">اسم المستخدم</string>
+    <string name="prompt_password">‮كلمة السّر</string>
+    <string name="action_sign_in">الولوج</string>
+    <string name="action_sign_in_short">الولوج</string>
+    <string name="error_incorrect_username_or_password">اسم المستخدم أو كلمة السر غير صحيحة</string>
+    <string name="error_field_required">هذا الحقل إلزامي</string>
+    <string name="setup_nearby">قريب منك</string>
+    <string name="title_welcome">مرحباً</string>
+    <string name="status_uploaded">رفع</string>
+    <string name="header_settings">إعدادات التطبيق</string>
+    <string name="header_projects">إعدادات المشروع</string>
+
+    <string name="header_info">معلومة</string>
+    <string name="action_data_use"> إستخدام البيانات</string>
+    <string name="action_privacy">الخصوصية</string>
+    <string name="action_about">عن التطبيق</string>
+    <string name="header_new_project">أضف مشروع</string>
+    <string name="action_browse_projects">إستعرض المشاريع الحالية</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">الملفات المرفوعة</string>
+    <string name="title_uploading">تحميل…</string>
+
+    <string name="title_activity_batch_media_review">المعاينة</string>
+    <string name="action_upload">رفع</string>
+    <string name="action_preview">معاينة</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">إضافة</string>
+    <string name="connect_your_space">اتصل بالمكان الخاص بك</string>
+    <string name="upload_to_the_internet_archive">ارفع إلى Internet Archive</string>
+    <string name="app_tag_line">الحفظ الآمن لوسائط المحمول</string>
+    <string name="action_next">التالي</string>
+    <string name="status_flagged">محتوى مميز</string>
+    <string name="action_media_stored">إعداد المكان الذى تريد تخزين الوسائط فيه</string>
+    <string name="create_new_project">إنشاء مشروع جديد</string>
+    <string name="menu_edit">عدّل</string>
+    <string name="menu_done">مُنجَز</string>
+    <string name="remove_from_app">احذف من التطبيق</string>
+    <string name="action_remove">إزالة</string>
+    <string name="action_archive_project">حول المشروع إلى الأرشيف</string>
+    <string name="action_unarchive_project">أخرج المشروع من الارشيف</string>
+    <string name="access_key">مفتاح الدخول</string>
+    <string name="secret_key">المفتاح السري</string>
+    <string name="action_acquire_keys">اكتسب المفاتيح</string>
+    <string name="title_new_project">مشروع جديد</string>
+    <string name="label_ia">Internet Archive</string>
+    <string name="open_link">افتح الرابط</string>
+    <string name="save_by_openarchive">من إصدار OpenArchive</string>
+    <string name="action_edit">عدّل</string>
+    <string name="metadata">البيانات الوصفية</string>
+    <string name="remove_from_app_media">احذف الوسائط</string>
+    <string name="popup_flag_title">علامة محتوى مميز</string>
+    <string name="popup_flag_desc">عندما تضيف العلامة على وحدة، يتم وضعها فى مجلد خاص تحت مجلد المشروع المختار على الخادوم الخاص.</string>
+
+    <string name="popup_batch_title">تعديل وحدات متعددة</string>
+    <string name="popup_batch_desc">لتعديل وحدات متعددة، اضغط لمدة على كل وحدة.</string>
+
+    <string name="popup_ia_title">Internet Archive</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">اسمح بالمشاع الإبداعى \"Creative Commons\" لكل الوسائط فى هذا المشروع</string>
+
+    <string name="crash_dialog_title">التبليغ عن التعطيلات </string>
+    <string name="crashreportemail">support@guardianproject.info</string>
+    <string name="action_install">تثبيت</string>
+    <string name="action_enable">تمكين</string>
+    <string name="action_start">ابدأ</string>
     </resources>

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
-    <string name="app_name">SAVE</string>
-    <string name="app_subtext">یک پروژه قدرت گرفته توسط آرشیو اینترنت:<a href='#'>بیشتر بدانید</a></string>
-
-    <string name="main_activity_title">آرشیوباز شما</string>
+    <string name="app_name">ذخیره</string>
+    <string name="main_activity_title">ذخیره</string>
     <string name="title_activity_main">رسانه بگیر</string>
-    <string name="title_activity_login">به آرشیو وارد شو</string>
+    <string name="title_activity_login">ورود</string>
     <string name="title_activity_settings">تنظیمات</string>
     <string name="title_activity_first_start">اولین آغاز</string>
-    <string name="title_activity_view_media">رسانه را ببین</string>
+    <string name="title_activity_view_media">افزودن اطلاعات</string>
+    <string name="title_activity_batch_view_media">ویرایش گروهی</string>
     <string name="title_activity_archive_metadata">متادیتا</string>
     <string name="title_media_list">آپلود</string>
 
@@ -21,19 +20,9 @@
     <string name="lblEditMetadata">تدوین رسانه</string>
     <string name="lblSave">ذخیره</string>
     <string name="loading_title">رسانه آپلود میشود</string>
-    <string name="loading_message">لطفا صبر کن تا رسانه به آرشیو اینترنت آپلود شود…</string>
-
     <!-- Default Values -->
     <string name="default_title">عنوان من</string>
     <string name="default_tags">آرشیو باز</string>
-
-    <!-- Alert Values -->
-    <string name="alert_lbl_logout">خروج؟</string>
-    <string name="alert_logout">خروج تمام تنظیمات شما را از میان میبرد اما محتوای آپلود شده باقی میماند</string>
-
-    <string name="alert_lbl_delete_media">حذف رسانه؟</string>
-    <string name="alert_media_deleted">رسانه با موفقیت حذف شد</string>
-    <string name="alert_delete_media">رسانه برای همیشه پاک خواهد شد</string>
 
     <!-- NavigationDrawer -->
     <string name="navigation_drawer_open">منوی اصلی را باز کن</string>
@@ -46,23 +35,21 @@
     <string name="drawer_logout">خروج</string>
     <string name="drawer_about">درباره</string>
     <string name="drawer_settings">تنظیمات</string>
+    <string name="action_new_project">پروژه جدید</string>
+
 
     <!-- EULA/Terms of Service -->
     <string name="eula_title">با این موافقت میکنید:</string>
     <string name="eula_accept">تایید</string>
     <string name="eula_refuse">تکذیب</string>
     <string name="end_user_license_agreement">شرایط استفاده و سیاستهای حریم خصوصی</string>
-    <string name="by_clicking_accept">با کلیک روی تایید با تمام شرایط و سیاستها موافقت میکنید</string>
     <string name="tos_dialog_title">شرایط سرویس</string>
-    <string name="tos_dialog_msg">لطفا پیش از جلو رفتن شرایط سرویس را قبول کنید</string>
     <string name="tos_dialog_positive_button">متوجه شدم</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">وارد آرشیو دات اورگ شو</string>
+    <string name="sign_in_btn">بایگانی اینترنت</string>
 
-    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free!</a></string>-->
-    <string name="sign_up_btn">حساب ندارید؟ به رایگان حساب درست کنید</string>
-    <string name="tos_btn">با شرایط سرویس موافقم</string>
+    <string name="tos_btn">با شرایط استفاده از خدمات موافقم</string>
 
     <!-- MainFragment -->
     <string name="import_btn">وارد کن</string>
@@ -75,38 +62,21 @@
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">عکس اصلی</string>
 
-    <!-- Errors -->
-    <string name="error_file_not_found">فایل پیدا نشد</string>
-    <string name="error_invalid_media_type">نوع فایل تشخیص داده نشد</string>
-    <string name="error_no_media">رسانه ای پیدا نشد</string>
-
     <!-- Server -->
     <string name="lbl_Yes">بله</string>
     <string name="lbl_Cancel">لغو</string>
     <string name="lbl_off">خاموش</string>
     <string name="lbl_on">روشن</string>
-    <string name="lbl_ok">بله</string>
+    <string name="lbl_ok">قابل قبول</string>
     <string name="lbl_settings">تنظیمات</string>
     <string name="lbl_cancelled">لغو شد</string>
-    <string name="lbl_success">موفقیت</string>
+    <string name="lbl_success">انجام شد</string>
     <string name="lbl_continue">ادامه</string>
-    <string name="archive_title">تایید ایمیل</string>
-    <string name="archive_message">لطفا ایمیل خود را تایید کرده و باز برای ورود به آرشیو باز برگردید</string>
     <string name="upload_to_internet_archive">به آرشیو اینترنت آپلود کن</string>
-    <string name="upload_securely_via_tor">با استفاده از تور آپلود امن انجام بده</string>
     <string name="lbl_share_prefs"> مشخصات به اشتراک گذاری</string>
-    <string name="problem_authticating">مشکلی در تایید صحت هویت وجود دارد</string>
-    <string name="uploading_to_internet_archive">در حال آپلود به آرشیو اینترنت</string>
     <string name="lbl_update_value">ارزش آپلود</string>
     <string name="lbl_enter_value">برای ورود ارزش کلیک کنید</string>
-    <string name="title_activity_about">آرشیو باز یک اپ رایگان و کد باز است برای </string>
-
-    <string name="about_body">آرشیپ باز یک اپ رایگان و کد باز است برای حفاظت از حریم خصوصی، اصلیت، و بقای رسانه های شما. به شما اجازه میدهد به رسانه های خود پروانه حق تکثیر کریتیو کامنز و دیگر اطلاعات را اضافه کنید و سپس آنرا از طریق اینترنت و با استفاده از شبکه ناشناسی تور آنرا منتشر کنید. اینکار ضمن دادن قدرت مدیریت بیشتر فایلها به شما، به دیگران اجازه میدهد رسانه شما را راحت پیدا کرده و از آن استفاده کنند. آرشیو باز با همکاری بنیادهای پروژه گاردین، استوری میکر، اسکالیو، و آرشیو اینترنت ساخته شده. این پروژه توسط ناتالی کادرانل و حمایت مالی سخاوتمندانه بنیاد نایت آغاز شد. برای اطلاع بیشتر از این پروژه به آدرس زیر مراجعه کنید.
-
-https://open-archive.net
-</string>
-
-    <string name="upload_success">رسانه شما حالا در آرشیو اینترنت قابل دسترسی است</string>
+    <string name="title_activity_about">درباره‌ی Psiphon</string>
 
     <string name="share_using">لینک آرشیو را از این طریق به اشتراک بذار</string>
     <string name="share_text">توسط آرشیو باز و از این طریق به اشتراک گذاشته شد:</string>
@@ -123,29 +93,108 @@ https://open-archive.net
     <string name="info_license_sharealike">بخواه که مانند خودت به اشتراک بگذارند؟</string>
     <string name="info_license_comm">اجازه استفاده تجاری بده؟</string>
 
-    <string name="orbot_detected">اپ اوربات تشخیص داده شد. برای اتصال امن تر از شبکه تور استفاده میشود…</string>
-
-    <string name="media_hint">برای وارد کردن رسانه و یا ساخت رسانه جدید و اضافه کردن آن به آرشیو خود، روی علامت + کلیک کن</string>
-
     <string name="menu_import_media">رسانه وارد کن</string>
     <string name="menu_take_photo">عکس بگیر</string>
     <string name="menu_take_video">ویدیو بگیر</string>
     <string name="menu_record_audio">صدا ضبط کن</string>
-    <string name="menu_nearby_rec">گرفتن در نزدیکی</string>
-    <string name="hint_title">عنوان</string>
-    <string name="hint_description">توضیحات</string>
-    <string name="hint_author">نویسنده</string>
-    <string name="hint_location">موقعیت</string>
-    <string name="hint_tags">تگ ها</string>
-    <string name="hint_license">گواهی (سوالهای زیر را ببین)</string>
+    <string name="menu_delete">حذف فایل رسانه‌ای</string>
 
+    <string name="hint_title">عنوان</string>
+    <string name="hint_description">افزودن یادداشت</string>
+    <string name="hint_author">نویسنده</string>
+    <string name="hint_location">افزودن مکان</string>
+    <string name="hint_tags">افزودن افراد</string>
+    <string name="hint_license">گواهی (سوالهای زیر را ببین)</string>
+    <string name="hint_flag">برای نشانه‌گذاری به عنوان محتوای مهم، روی پرچم بزنید.</string>
     <string name="answer_yes">بله</string>
     <string name="answer_no">خیر</string>
 
     <string name="nearby_public">عمومی</string>
     <string name="nearby_private">خصوصی</string>
-    <string name="nearby_paired_only">فقط دستگاه های شناخته شده؟</string>
-
     <string name="action_cancel">لغو</string>
 
+    <string name="action_open">بازکن</string>
+
+    <string name="status_waiting">در حال انتظار</string>
+    <string name="status_error">خطا</string>
+    <string name="status_public">عمومی</string>
+    <string name="status_uploading">در حال بارگذاری</string>
+    <string name="prefs_nearby_title">نزدیکی</string>
+
+    <string name="prefs_data_title">فرا داده</string>
+    <string name="prefs_bt_title">بلوتوث</string>
+    <string name="menu_share">اشتراک گذاری</string>
+
+    <string name="action_received">دریاف شد</string>
+    <string name="status_connecting">در حال اتصال…</string>
+    <string name="status_connected">متصل شد!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">نام کاربری</string>
+    <string name="prompt_password">گذرواژه</string>
+    <string name="action_sign_in">ورود</string>
+    <string name="action_sign_in_short">ورود</string>
+    <string name="error_incorrect_username_or_password">نام کاربری یا گذرواژه‌ نادرست است</string>
+    <string name="error_field_required">این فیلد ضروری می باشد</string>
+    <string name="setup_nearby">نزدیکی</string>
+    <string name="title_welcome">خوش آمدید</string>
+    <string name="status_uploaded">آپلود شد</string>
+    <string name="header_settings">تنظیمات برنامه</string>
+    <string name="header_projects">تنظیمات پروژه</string>
+
+    <string name="header_info">اطلاعات</string>
+    <string name="action_data_use">مصرف داده</string>
+    <string name="action_privacy">حریم خصوصی</string>
+    <string name="action_about">درباره‌ تور</string>
+    <string name="header_new_project">افزودن پروژه</string>
+    <string name="action_browse_projects">مشاهده پروژه‌های موجود</string>
+    <string name="action_plus">+</string>
+    <string name="title_uploads">آپلودها</string>
+    <string name="title_uploading">بارگذاری.......</string>
+
+    <string name="title_activity_batch_media_review">پیش‌نمایش</string>
+    <string name="action_upload">آپلود</string>
+    <string name="action_preview">مرور </string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">افزودن</string>
+    <string name="connect_your_space">به فضای خود متصل شوید</string>
+    <string name="upload_to_the_internet_archive">در بایگانی اینترنت بارگذاری کنید</string>
+    <string name="app_tag_line">حفظ ایمن رسانه‌های موبایل</string>
+    <string name="action_next">بعدی</string>
+    <string name="status_flagged">محتوای مهم</string>
+    <string name="action_media_stored">جایی که فایل‌های رسانه‌ای شما باید ذخیره شوند را تنظیم کنید.</string>
+    <string name="create_new_project">پروژه جدید بسازید</string>
+    <string name="menu_edit">ویرایش</string>
+    <string name="menu_done">انجام شد</string>
+    <string name="remove_from_app">حذف از برنامه</string>
+    <string name="action_remove">حذف </string>
+    <string name="action_archive_project">بایگانی کردن پروژه</string>
+    <string name="action_unarchive_project">خروج پروژه از بایگانی</string>
+    <string name="access_key">کلید دسترسی</string>
+    <string name="secret_key">کلید خصوصی</string>
+    <string name="action_acquire_keys">به دست آوردن کلیدها</string>
+    <string name="title_new_project">پروژه جدید</string>
+    <string name="label_ia">بایگانی اینترنت</string>
+    <string name="open_link">باز کردن پیوند</string>
+    <string name="save_by_openarchive">توسط OpenArchive</string>
+    <string name="action_edit">ویرایش</string>
+    <string name="title_dropbox">Dropbox</string>
+    <string name="metadata">فرا داده</string>
+    <string name="remove_from_app_media">حذف فایل رسانه‌ای</string>
+    <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
+    <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
+
+    <string name="popup_batch_title">ویرایش چند انتخاب</string>
+    <string name="popup_batch_desc">برای ویرایش چند انتخاب، روی هرکدام ضربه زده و نگه دارید.</string>
+
+    <string name="popup_ia_title">بایگانی اینترنت</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">اجازه به استفاده کریتیو کامنز برای تمام رسانه‌های این پروژه</string>
+
+    <string name="crash_dialog_title">گزارش خرابی</string>
+    <string name="crashreportemail">support@guardianproject.info</string>
+    <string name="action_install">نصب</string>
+    <string name="action_enable">فعال کن</string>
+    <string name="action_start">آغاز</string>
+    <string name="login_activity_logging_message">در حال ورود…</string>
     </resources>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Activities -->
+    <string name="app_name">Зберегти</string>
+    <string name="main_activity_title">Зберегти</string>
+    <string name="title_activity_login">Увійти</string>
+    <string name="title_activity_settings">Налаштування</string>
+    <string name="title_activity_view_media">Додати дані</string>
+    <string name="title_activity_batch_view_media">Редагувати пакет</string>
+    <string name="title_activity_archive_metadata">Метадані</string>
+    <!-- General -->
+    <string name="menu_item_publish">Опублікувати</string>
+    <string name="lblSave">Зберегти</string>
+    <string name="default_tags">OpenArchive</string>
+
+    <!-- NavigationDrawer -->
+    <string name="navigation_drawer_open">Відкрити панель навігації</string>
+    <string name="navigation_drawer_close">Закрити панель навігації</string>
+    <string name="action_settings">Налаштування</string>
+
+    <string name="drawer_home">Домівка</string>
+    <string name="drawer_logout">Вийти</string>
+    <string name="drawer_about">Про</string>
+    <string name="drawer_settings">Налаштування</string>
+    <string name="action_new_project">Новий проєкт</string>
+
+
+    <string name="eula_accept">Прийняти</string>
+    <string name="tos_dialog_title">Умови обслуговування</string>
+    <string name="tos_dialog_positive_button">Зрозуміло</string>
+
+    <!-- MainFragment -->
+    <string name="import_btn">Імпортувати</string>
+    <string name="capture_photo">Фото</string>
+    <string name="capture_video">Відео</string>
+    <string name="capture_audio">Аудіо</string>
+
+    <!-- Server -->
+    <string name="lbl_Yes">Так</string>
+    <string name="lbl_Cancel">Скасувати</string>
+    <string name="lbl_off">Вимк.</string>
+    <string name="lbl_on">Увімк.</string>
+    <string name="lbl_ok">Гаразд</string>
+    <string name="lbl_settings">Налаштування</string>
+    <string name="lbl_success">Готово</string>
+    <string name="lbl_continue">Продовжити</string>
+    <string name="title_activity_about">Про</string>
+
+    <string name="menu_delete">Вилучити медіа</string>
+
+    <string name="hint_title">Заголовок</string>
+    <string name="hint_description">Додати нотатки</string>
+    <string name="hint_author">Автор</string>
+    <string name="hint_location">Додати місцеперебування</string>
+    <string name="hint_tags">Додати людей</string>
+    <string name="hint_flag">Торкніться, щоб позначити як важливий вміст</string>
+    <string name="answer_yes">Так</string>
+    <string name="answer_no">Ні</string>
+
+    <string name="nearby_public">Публічний</string>
+    <string name="nearby_private">Приватний</string>
+    <string name="action_cancel">Скасувати</string>
+
+    <string name="action_open">Відкрити</string>
+
+    <string name="status_waiting">Очікування</string>
+    <string name="status_error">Помилка</string>
+    <string name="status_public">Публічний</string>
+    <string name="status_uploading">Завантаження</string>
+    <string name="prefs_nearby_title">З пристроями поруч</string>
+
+    <string name="prefs_data_title">Метадані</string>
+    <string name="prefs_bt_title">Bluetooth</string>
+    <string name="menu_share">Поділитися</string>
+
+    <string name="action_received">Отримано</string>
+    <string name="status_connecting">Під\'єднання…</string>
+    <string name="status_connected">Під\'єднаний!</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Ім\'я користувача</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Увійти</string>
+    <string name="action_sign_in_short">Увійти</string>
+    <string name="error_incorrect_username_or_password">Неправильний логін або пароль</string>
+    <string name="error_field_required">Це поле - обов\'язкове</string>
+    <string name="setup_nearby">З пристроями поруч</string>
+    <string name="title_welcome">Ласкаво просимо</string>
+    <string name="header_settings">Налаштування застосунку</string>
+    <string name="header_projects">Налаштування проєкту</string>
+
+    <string name="header_info">Відомості</string>
+    <string name="action_data_use">Використання даних</string>
+    <string name="action_privacy">Приватність</string>
+    <string name="action_about">Про</string>
+    <string name="header_new_project">Додати проєкт</string>
+    <string name="action_browse_projects">Перегляньте існуючі проекти</string>
+    <string name="title_uploading">Завантаження…</string>
+
+    <string name="title_activity_batch_media_review">Попередній перегляд</string>
+    <string name="action_upload">Додати</string>
+    <string name="action_preview">Попередній перегляд</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="button_sure_default">Додати</string>
+    <string name="connect_your_space">Підключіть свій простір для зберігання</string>
+    <string name="upload_to_the_internet_archive">Завантажити до InternetArchive</string>
+    <string name="action_next">Вперед</string>
+    <string name="action_media_stored">Налаштуйте, де ви хочете зберігати свої медіафайли.</string>
+    <string name="create_new_project">Створити новий проєкт</string>
+    <string name="menu_edit">Змінити</string>
+    <string name="menu_done">Готово</string>
+    <string name="remove_from_app">Вилучити із застосунку</string>
+    <string name="action_remove">Видалити</string>
+    <string name="action_archive_project">Заархівувати проект</string>
+    <string name="action_unarchive_project">Розархівувати проєкт</string>
+    <string name="access_key">Ключ доступу</string>
+    <string name="secret_key">Секретний Ключ</string>
+    <string name="action_acquire_keys">Отримати ключі</string>
+    <string name="title_new_project">Новий проєкт</string>
+    <string name="open_link">Відкрити посилання</string>
+    <string name="action_edit">Змінити</string>
+    <string name="title_dropbox">Dropbox</string>
+    <string name="metadata">Метадані</string>
+    <string name="remove_from_app_media">Вилучити медіа</string>
+    <string name="popup_flag_title">Позначте важливий контент</string>
+    <string name="popup_batch_title">Редагувати кілька елементів</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_project">Дозволити використовувати Creative Commons для всіх медіа в цьому проекті</string>
+
+    <string name="action_install">Встановити</string>
+    <string name="action_enable">Увімкнути</string>
+    <string name="action_start">Почати</string>
+    <string name="login_activity_logging_message">Вхід…</string>
+    </resources>
