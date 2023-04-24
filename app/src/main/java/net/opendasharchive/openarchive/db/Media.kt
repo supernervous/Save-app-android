@@ -73,17 +73,6 @@ data class Media(
                 null, "status, id DESC", null)
         }
 
-        fun getByCollection(collectionId: Long): List<Media> {
-            return find(Media::class.java, "collection_id = ?", arrayOf(collectionId.toString()),
-                null, null, null)
-        }
-
-        fun getByProjectAndCollection(projectId: Long, collectionId: Long): List<Media> {
-            return find(Media::class.java, "project_id = ? AND collection_id = ?",
-                arrayOf(projectId.toString(), collectionId.toString()),
-                null, "status, id DESC", null)
-        }
-
         fun getByStatus(statuses: List<Status>, order: String? = null): List<Media> {
             return find(Media::class.java,
                 statuses.map { "status = ?" }.joinToString(" OR "),

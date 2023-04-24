@@ -72,13 +72,11 @@ class BrowseProjectsActivity : BaseActivity() {
 
 
     private fun projectExists(name: String): Boolean {
-        val space = Space.getCurrent()
-        space?.let {
-            //check for duplicate name
-            Project.getAllBySpace(it.id, false).forEach { project ->
-                if (project.description == name) return true
-            }
+        // Check for duplicate name.
+        Space.getCurrent()?.projects?.forEach { project ->
+            if (project.description == name) return true
         }
+
         return false
     }
 

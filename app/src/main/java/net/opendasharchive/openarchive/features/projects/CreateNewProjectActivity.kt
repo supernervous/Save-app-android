@@ -67,26 +67,24 @@ class CreateNewProjectActivity : BaseActivity() {
     }
 
     private fun createProject(description: String): Boolean {
-        Space.getCurrent()?.let { currentSpace ->
-            Project.getAllBySpace(currentSpace.id, false).forEach { project ->
-                if (project.description == description) {
-                    Toast.makeText(this, getString(R.string.error_project_exists),
-                        Toast.LENGTH_LONG).show()
+        val space = Space.getCurrent() ?: return false
 
-                    return false
-                }
+        space.projects.forEach { project ->
+            if (project.description == description) {
+                Toast.makeText(this, getString(R.string.error_project_exists),
+                    Toast.LENGTH_LONG).show()
+
+                return false
             }
-
-            val project = Project()
-            project.created = Date()
-            project.description = description
-            project.spaceId = currentSpace.id
-            project.save()
-
-            return true
         }
 
-        return false
+        val project = Project()
+        project.created = Date()
+        project.description = description
+        project.spaceId = space.id
+        project.save()
+
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

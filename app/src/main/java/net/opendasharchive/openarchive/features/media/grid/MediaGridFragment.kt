@@ -60,7 +60,7 @@ class MediaGridFragment : MediaListFragment() {
         }
     }
 
-    private fun initLayout(listCollections: List<Collection>?) {
+    private fun initLayout(collections: List<Collection>?) {
         mAdapters = HashMap()
         mSection = HashMap()
 
@@ -68,16 +68,16 @@ class MediaGridFragment : MediaListFragment() {
 
         var addedView = false
 
-        listCollections?.forEach { collection ->
-            val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
+        collections?.forEach { collection ->
+            val media = collection.media
 
-            if (listMedia.isNotEmpty()) {
+            if (media.isNotEmpty()) {
                 if (!addedView) {
                     mBinding.mediacontainer.removeAllViews()
                     addedView = true
                 }
 
-                mBinding.mediacontainer.addView(createMediaList(collection, listMedia))
+                mBinding.mediacontainer.addView(createMediaList(collection, media))
             }
         }
 
@@ -159,17 +159,17 @@ class MediaGridFragment : MediaListFragment() {
 
     override fun refresh() {
         Collection.getAll().forEach { collection ->
-            val listMedia = Media.getByProjectAndCollection(getProjectId(), collection.id)
+            val media = if (collection.projectId == getProjectId()) collection.media else listOf()
+
             val adapter = mAdapters[collection.id]
             val holder = mSection[collection.id]
-            val listMediaArray = ArrayList(listMedia)
 
             if (adapter != null) {
-                adapter.updateData(listMediaArray)
-                if (holder != null) setSectionHeaders(collection, listMedia, holder)
+                adapter.updateData(ArrayList(media))
+                if (holder != null) setSectionHeaders(collection, media, holder)
             }
-            else if (listMedia.isNotEmpty()) {
-                val view = createMediaList(collection, listMedia)
+            else if (media.isNotEmpty()) {
+                val view = createMediaList(collection, media)
 
                 mBinding.mediacontainer.addView(view, 0)
                 mBinding.addMediaHint.visibility = View.GONE

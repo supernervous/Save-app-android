@@ -15,15 +15,14 @@ data class Collection(
             return find(Collection::class.java, null, arrayOf(),
                 null, "id DESC", null)
         }
-
-        fun getByProject(projectId: Long): List<Collection> {
-              return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
-                  null, null, "")
-        }
     }
 
+    val media: List<Media>
+        get() = find(Media::class.java, "collection_id = ?", arrayOf(id.toString()), null, "status, id DESC", null)
+
+
     override fun delete(): Boolean {
-        Media.getByCollection(id ?: -1).forEach {
+        media.forEach {
             it.delete()
         }
 

@@ -97,6 +97,9 @@ data class Space(
             type = (value ?: Type.WEBDAV).id
         }
 
+    val projects: List<Project>
+        get() = find(Project::class.java, "space_id = ?", arrayOf(id.toString()), null, "id DESC", null)
+
     fun setAvatar(view: ImageView) {
         when (tType) {
             Type.INTERNET_ARCHIVE -> {
@@ -137,7 +140,7 @@ data class Space(
     }
 
     override fun delete(): Boolean {
-        Project.getAllBySpace(id ?: -1).forEach {
+        projects.forEach {
             it.delete()
         }
 

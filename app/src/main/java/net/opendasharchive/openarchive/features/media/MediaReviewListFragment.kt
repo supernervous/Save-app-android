@@ -39,12 +39,10 @@ open class MediaReviewListFragment : MediaListFragment() {
             mBinding.recyclerview.layoutManager = LinearLayoutManager(activity)
             mBinding.recyclerview.setHasFixedSize(true)
 
-            val listMedia: List<Media> = Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY)
-
-            val listMediaArray = ArrayList(listMedia)
+            val media = ArrayList(Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY))
             val mediaAdapter = MediaAdapter(requireActivity(),
                 R.layout.activity_media_list_row,
-                listMediaArray,
+                media,
                 mBinding.recyclerview,
                 object : OnStartDragListener {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {

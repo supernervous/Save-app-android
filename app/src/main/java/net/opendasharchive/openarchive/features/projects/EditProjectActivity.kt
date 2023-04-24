@@ -7,7 +7,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
-import net.opendasharchive.openarchive.db.Collection.Companion.getByProject
+import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Project.Companion.getById
 import net.opendasharchive.openarchive.db.Space
@@ -18,7 +18,7 @@ import net.opendasharchive.openarchive.util.Globals
 class EditProjectActivity : BaseActivity() {
 
     private var mProject: Project? = null
-    private var mCollection: List<net.opendasharchive.openarchive.db.Collection>? = null
+    private var mCollections: List<Collection>? = null
     private lateinit var mBinding: ActivityEditProjectBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class EditProjectActivity : BaseActivity() {
 
         if (projectId != -1L) {
             mProject = getById(projectId)
-            mCollection = getByProject(projectId)
+            mCollections = mProject?.collections
             if (mProject == null) {
                 finish()
                 return
@@ -177,10 +177,10 @@ class EditProjectActivity : BaseActivity() {
                 mProject?.delete()
                 mProject = null
 
-                mCollection?.forEach {
+                mCollections?.forEach {
                     it.delete()
                 }
-                mCollection = null
+                mCollections = null
 
                 Space.navigate(this)
             },

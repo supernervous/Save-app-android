@@ -14,26 +14,16 @@ data class Project(
 
     companion object {
 
-        fun getAllBySpace(spaceId: Long, archived: Boolean? = null): List<Project> {
-            var whereClause = "space_id = ?"
-            val whereArgs = mutableListOf(spaceId.toString())
-
-            if (archived != null) {
-                whereClause = "$whereClause AND archived = ?"
-                whereArgs.add(if (archived) "1" else "0")
-            }
-
-            return find(Project::class.java, whereClause, whereArgs.toTypedArray(), null,
-                "id DESC", null)
-        }
-
         fun getById(projectId: Long): Project? {
             return findById(Project::class.java, projectId)
         }
     }
 
+    val collections: List<Collection>
+        get() = find(Collection::class.java, "project_id = ?", id.toString())
+
     override fun delete(): Boolean {
-        Collection.getByProject(id ?: -1).forEach {
+        collections.forEach {
             it.delete()
         }
 
