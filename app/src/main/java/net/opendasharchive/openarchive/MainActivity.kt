@@ -409,19 +409,12 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         val config = ImagePickerConfig {
             mode = ImagePickerMode.MULTIPLE
             isShowCamera = false
-            language = "en"
             returnMode = ReturnMode.NONE
             isFolderMode = true
             isIncludeVideo = true
             arrowColor = Color.WHITE
-            folderTitle = "Folder"
-            imageTitle = "Tap to select"
-            doneButtonText = "DONE"
             limit = 99
-            savePath = ImagePickerSavePath(
-                Environment.getExternalStorageDirectory().path,
-                isRelative = false
-            ) // can be a full path
+            savePath = ImagePickerSavePath(Environment.getExternalStorageDirectory().path, false)
         }
 
         mPickerLauncher.launch(config)
