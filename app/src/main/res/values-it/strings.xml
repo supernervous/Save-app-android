@@ -132,7 +132,6 @@
     <string name="secret_key">Chiave Segreta</string>
     <string name="action_acquire_keys">Acquisisci Chiavi</string>
     <string name="title_new_project">Nuovo Progetto</string>
-    <string name="label_ia">Archivio Internet</string>
     <string name="open_link">Apri Link</string>
     <string name="save_by_openarchive">da OpenArchive</string>
     <string name="action_edit">Modifica</string>

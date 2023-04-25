@@ -173,7 +173,6 @@
     <string name="secret_key">کلید خصوصی</string>
     <string name="action_acquire_keys">به دست آوردن کلیدها</string>
     <string name="title_new_project">پروژه جدید</string>
-    <string name="label_ia">بایگانی اینترنت</string>
     <string name="open_link">باز کردن پیوند</string>
     <string name="save_by_openarchive">توسط OpenArchive</string>
     <string name="action_edit">ویرایش</string>

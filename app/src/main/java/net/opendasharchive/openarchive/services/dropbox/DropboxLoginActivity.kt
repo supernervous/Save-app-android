@@ -82,14 +82,14 @@ class DropboxLoginActivity : BaseActivity() {
                         try {
                             val client = SaveClient.getDropbox(this@DropboxLoginActivity, accessToken)
 
-                            val username: String = try {
-                                client.users()?.currentAccount?.email ?: ""
+                            val username = try {
+                                client.users()?.currentAccount?.email ?: Auth.getUid()
                             }
                             catch (e: Exception) {
-                                Auth.getUid() ?: Constants.DROPBOX_USERNAME
+                                Auth.getUid()
                             }
 
-                            mSpace.username = username
+                            username?.let { mSpace.username = it }
                             mSpace.password = accessToken
                             mSpace.save()
                             Prefs.setCurrentSpaceId(mSpace.id)

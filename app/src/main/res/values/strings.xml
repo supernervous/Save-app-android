@@ -302,7 +302,6 @@
     <string name="action_acquire_keys">Acquire Keys</string>
     <string name="title_new_project">New Project</string>
     <string name="warning_special_chars">Please do not include special characters in the name</string>
-    <string name="label_ia">Internet Archive</string>
     <string name="confirm_remove_space">Are you sure you want to remove this space from the app?</string>
     <string name="open_link">Open Link</string>
     <string name="share_link">Share Link</string>

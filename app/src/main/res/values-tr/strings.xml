@@ -296,7 +296,6 @@
     <string name="action_acquire_keys">Anahtarları al</string>
     <string name="title_new_project">Yeni proje</string>
     <string name="warning_special_chars">Lütfen ad içinde özel karakterler kullanmayın</string>
-    <string name="label_ia">Internet Archive</string>
     <string name="confirm_remove_space">Bu alanı uygulamadan kaldırmak istediğinize emin misiniz?</string>
     <string name="open_link">Bağlantıyı aç</string>
     <string name="share_link">Bağlantıyı paylaş</string>

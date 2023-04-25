@@ -174,7 +174,6 @@
     <string name="secret_key">المفتاح السري</string>
     <string name="action_acquire_keys">اكتسب المفاتيح</string>
     <string name="title_new_project">مشروع جديد</string>
-    <string name="label_ia">Internet Archive</string>
     <string name="open_link">افتح الرابط</string>
     <string name="save_by_openarchive">من إصدار OpenArchive</string>
     <string name="action_edit">عدّل</string>

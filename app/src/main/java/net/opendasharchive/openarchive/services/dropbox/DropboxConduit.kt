@@ -24,6 +24,11 @@ class DropboxConduit(
     jobId: String?
 ) : Conduit(media, context, listener, jobId) {
 
+    companion object {
+        const val NAME = "dropbox"
+        const val HOST = "dropbox.com"
+    }
+
     private var mContinueUpload = true
     private var mTask: UploadFileTask? = null
 

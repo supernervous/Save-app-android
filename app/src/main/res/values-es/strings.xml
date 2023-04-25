@@ -184,7 +184,6 @@
     <string name="secret_key">Clave secreta</string>
     <string name="action_acquire_keys">Adquirir claves</string>
     <string name="title_new_project">Nuevo Proyecto</string>
-    <string name="label_ia">Internet Archive</string>
     <string name="open_link">Abrir enlace</string>
     <string name="save_by_openarchive">por OpenArchive</string>
     <string name="action_edit">Editar</string>

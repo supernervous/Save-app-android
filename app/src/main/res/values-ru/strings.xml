@@ -136,7 +136,6 @@
     <string name="secret_key">Секретный ключ</string>
     <string name="action_acquire_keys">Получить ключи</string>
     <string name="title_new_project">Новый проект</string>
-    <string name="label_ia">Интернет архив</string>
     <string name="open_link">Открыть ссылку</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Редактировать</string>

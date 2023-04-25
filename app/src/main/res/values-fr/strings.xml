@@ -139,7 +139,6 @@
     <string name="secret_key">Clé secrète</string>
     <string name="action_acquire_keys">Obtenir les clés</string>
     <string name="title_new_project">Nouveau projet</string>
-    <string name="label_ia">Archive Internet</string>
     <string name="open_link">Ouvrir le lien</string>
     <string name="save_by_openarchive">par OpenArchive</string>
     <string name="action_edit">Modifier</string>

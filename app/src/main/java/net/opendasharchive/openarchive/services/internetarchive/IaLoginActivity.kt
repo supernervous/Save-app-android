@@ -36,14 +36,14 @@ class IaLoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra("space")) {
-            mSpace = Space.get(intent.getLongExtra("space", -1L)) ?: Space()
+            mSpace = Space.get(intent.getLongExtra("space", -1L)) ?: Space(Space.Type.INTERNET_ARCHIVE)
             mBinding.removeSpaceBt.show()
             mBinding.removeSpaceBt.setOnClickListener {
                 removeProject()
             }
         }
         else {
-            mSpace = Space()
+            mSpace = Space(Space.Type.INTERNET_ARCHIVE)
         }
 
         mBinding.accessKey.setText(mSpace.username)
@@ -112,9 +112,6 @@ class IaLoginActivity : BaseActivity() {
             return
         }
 
-        mSpace.tType = Space.Type.INTERNET_ARCHIVE
-        mSpace.host = IaConduit.ARCHIVE_BASE_URL
-        mSpace.name = getString(R.string.label_ia)
         mSpace.username = accessKey
         mSpace.password = secretKey
         mSpace.save()

@@ -9,7 +9,8 @@ import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.util.Constants
+import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
+import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.util.Prefs
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -28,12 +29,15 @@ data class Space(
         tType = type
 
         when (type) {
-            Type.WEBDAV -> TODO()
-            Type.INTERNET_ARCHIVE -> TODO()
+            Type.WEBDAV -> {}
+            Type.INTERNET_ARCHIVE -> {
+                name = IaConduit.NAME
+                host = IaConduit.ARCHIVE_BASE_URL
+            }
             Type.DROPBOX -> {
-                name = Constants.DROPBOX_NAME
-                host = Constants.DROPBOX_HOST
-                username = Constants.DROPBOX_USERNAME
+                name = DropboxConduit.NAME
+                host = DropboxConduit.HOST
+                username = DropboxConduit.HOST
             }
         }
     }

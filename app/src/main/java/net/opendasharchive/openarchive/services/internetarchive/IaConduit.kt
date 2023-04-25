@@ -22,6 +22,8 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
 
     companion object {
         const val ARCHIVE_BASE_URL = "https://archive.org/"
+        const val NAME = "Internet Archive"
+
         private const val ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org"
         private const val ARCHIVE_DETAILS_ENDPOINT = "https://archive.org/details/"
 
@@ -117,7 +119,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             basePath
         )
 
-        put("$ARCHIVE_API_ENDPOINT/$basePath/$uploadFile.name",
+        put("$ARCHIVE_API_ENDPOINT/$basePath/${uploadFile.name}",
             requestBody,
             metadataHeader())
     }

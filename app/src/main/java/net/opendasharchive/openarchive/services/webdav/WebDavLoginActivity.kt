@@ -50,14 +50,14 @@ class WebDavLoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(Constants.SPACE_EXTRA)) {
-            mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space()
+            mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space(Space.Type.WEBDAV)
             mBinding.removeSpaceBt.show()
             mBinding.removeSpaceBt.setOnClickListener {
                 removeProject()
             }
         }
         else {
-            mSpace = Space()
+            mSpace = Space(Space.Type.WEBDAV)
         }
 
         with(intent) {
@@ -199,7 +199,6 @@ class WebDavLoginActivity : BaseActivity() {
             try {
                 loginUserIntoWebDav(mSpace)
 
-                mSpace.tType = Space.Type.WEBDAV
                 mSpace.save()
 
                 setCurrentSpaceId(mSpace.id)
