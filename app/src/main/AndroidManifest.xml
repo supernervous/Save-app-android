@@ -47,8 +47,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:taskAffinity="">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -102,15 +101,13 @@
             android:taskAffinity="" />
         <activity
             android:name=".services.dropbox.DropboxLoginActivity"
-            android:label="@string/title_activity_login"
-            android:taskAffinity="" />
+            android:label="@string/title_activity_login" />
 
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:taskAffinity="">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -127,8 +124,7 @@
         <activity
             android:name=".features.settings.SpaceSettingsActivity"
             android:exported="true"
-            android:label="@string/title_activity_space_settings"
-            android:taskAffinity="">
+            android:label="@string/title_activity_space_settings">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -149,7 +145,6 @@
             android:label="@string/title_activity_view_media"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
             android:windowSoftInputMode="stateHidden" />
 
         <activity
@@ -177,8 +172,7 @@
         <activity
             android:name=".features.onboarding.SpaceSetupActivity"
             android:label="@string/title_activity_first_start"
-            android:screenOrientation="portrait"
-            android:taskAffinity="" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".features.onboarding.OAAppIntro"
