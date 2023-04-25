@@ -17,6 +17,15 @@
         <package android:name="com.dropbox.android" />
     </queries>
 
+    <!--
+    NOTE: The empty `taskAffinity=""` attributes should improve security, so other apps cannot
+    inject activities. However, it also breaks functionality. Namely: Dropbox login via dropbox.com
+    website authentication. To remedy this, the taskAffinity needs to be left alone in all
+    activities, which belong to the task with `com.dropbox.core.android.AuthActivity` on top!
+
+    See https://github.com/OpenArchive/OA-Trail-of-Bits/issues/23
+    -->
+
     <application
         android:name=".OpenArchiveApp"
         android:allowBackup="false"
