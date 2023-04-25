@@ -106,8 +106,14 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         ProviderInstaller.installIfNeededAsync(this, this)
+
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
         mPickerLauncher = registerImagePicker { result: List<Image> ->
             val uriList = ArrayList<Uri>()
             result.forEach { image ->
@@ -140,13 +146,6 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             )
         }
 
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
-        initLayout()
-    }
-
-    private fun initLayout() {
-
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
@@ -156,11 +155,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
 
-        mSnackBar =
-            mBinding.pager.createSnackBar(
-                getString(R.string.importing_media),
-                Snackbar.LENGTH_INDEFINITE
-            )
+        mSnackBar = mBinding.pager.createSnackBar(getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE)
         val snackView = mSnackBar?.view as? SnackbarLayout
         snackView?.addView(ProgressBar(this))
 
@@ -209,7 +204,6 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
         //check for any queued uploads and restart
         (application as OpenArchiveApp).startUploadService()
-
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
