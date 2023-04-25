@@ -9,6 +9,7 @@ import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -22,6 +23,20 @@ data class Space(
     var password: String = "",
     var host: String = ""
 ) : SugarRecord() {
+
+    constructor(type: Type) : this() {
+        tType = type
+
+        when (type) {
+            Type.WEBDAV -> TODO()
+            Type.INTERNET_ARCHIVE -> TODO()
+            Type.DROPBOX -> {
+                name = Constants.DROPBOX_NAME
+                host = Constants.DROPBOX_HOST
+                username = Constants.DROPBOX_USERNAME
+            }
+        }
+    }
 
     enum class Type(val id: Int) {
         WEBDAV(0),

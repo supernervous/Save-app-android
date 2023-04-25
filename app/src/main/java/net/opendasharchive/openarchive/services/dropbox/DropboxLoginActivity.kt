@@ -19,31 +19,29 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Constants.DROPBOX_HOST
-import net.opendasharchive.openarchive.util.Constants.DROPBOX_NAME
-import net.opendasharchive.openarchive.util.Constants.DROPBOX_USERNAME
-import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
+import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 
 
 class DropboxLoginActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityLoginDropboxBinding
+    private lateinit var mBinding: ActivityLoginDropboxBinding
     private lateinit var mSpace: Space
-    private var isNewSpace: Boolean = false
-    private var isTokenExist: Boolean = false
-    private var isSuccessLogin: Boolean = false
+
+    private var isNewSpace = false
+    private var awaitingAuth = false
+    private var success = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        binding = ActivityLoginDropboxBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        mBinding = ActivityLoginDropboxBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -52,85 +50,78 @@ class DropboxLoginActivity : BaseActivity() {
             }
         })
 
-        if (intent.hasExtra(SPACE_EXTRA)) {
-            mSpace = Space.get(intent.getLongExtra(SPACE_EXTRA, -1L)) ?: Space()
-            binding.removeSpaceBt.show()
+        if (intent.hasExtra(Constants.SPACE_EXTRA)) {
+            mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space(Space.Type.DROPBOX)
+
+            mBinding.removeSpaceBt.show()
         }
         else {
+            mSpace = Space(Space.Type.DROPBOX)
+
             isNewSpace = true
-            if (Auth.getOAuth2Token() != null) {
-                isTokenExist = true
-            }
-            mSpace = Space()
-            if (mSpace.password.isEmpty()) attemptLogin()
         }
 
-        binding.email.text = mSpace.username
+        mBinding.email.text = mSpace.username
 
-        binding.removeSpaceBt.setOnClickListener {
+        mBinding.removeSpaceBt.setOnClickListener {
             removeProject()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isTokenExist = false
     }
 
     override fun onResume() {
         super.onResume()
 
-        val accessToken = Auth.getOAuth2Token()
+        if (isNewSpace) {
+            if (awaitingAuth) {
+                val accessToken = Auth.getOAuth2Token()
 
-        if (!isNewSpace || isTokenExist || accessToken.isNullOrEmpty()) {
-            return
-        }
+                if (accessToken != null) {
+                    awaitingAuth = false
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val client = SaveClient.getDropbox(this@DropboxLoginActivity, accessToken)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val client = SaveClient.getDropbox(this@DropboxLoginActivity, accessToken)
 
-                val username: String = try {
-                    client.users()?.currentAccount?.email ?: ""
-                }
-                catch (e: Exception) {
-                    Auth.getUid() ?: ""
-                }
+                            val username: String = try {
+                                client.users()?.currentAccount?.email ?: ""
+                            }
+                            catch (e: Exception) {
+                                Auth.getUid() ?: Constants.DROPBOX_USERNAME
+                            }
 
-                mSpace.username = username
-                mSpace.password = accessToken
-                mSpace.save()
-                Prefs.setCurrentSpaceId(mSpace.id)
+                            mSpace.username = username
+                            mSpace.password = accessToken
+                            mSpace.save()
+                            Prefs.setCurrentSpaceId(mSpace.id)
 
-                MainScope().launch {
-                    binding.email.text = mSpace.username
-                    binding.removeSpaceBt.show()
-                    isSuccessLogin = true
+                            MainScope().launch {
+                                mBinding.email.text = mSpace.username
+                                mBinding.removeSpaceBt.show()
+
+                                success = true
+                                navigate()
+                            }
+                        }
+                        catch (e: Exception) {
+                            MainScope().launch {
+                                Toast.makeText(
+                                    applicationContext,
+                                    e.localizedMessage,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
                 }
             }
-            catch (e: Exception) {
-                MainScope().launch {
-                    Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
-                }
+            else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                Auth.startOAuth2Authentication(this, "gd5sputfo57s1l1")
+
+                awaitingAuth = true
             }
         }
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private fun attemptLogin() {
-        // Store values at the time of the login attempt.
-        mSpace.tType = Space.Type.DROPBOX
-        mSpace.name = DROPBOX_NAME
-        mSpace.host = DROPBOX_HOST
-        mSpace.username = DROPBOX_USERNAME
-
-        // Show a progress spinner, and kick off a background task to
-        // perform the user login attempt.
-        Auth.startOAuth2Authentication(this, "gd5sputfo57s1l1")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -148,7 +139,7 @@ class DropboxLoginActivity : BaseActivity() {
     }
 
     private fun navigate() {
-        if (isSuccessLogin) {
+        if (success) {
             finishAffinity()
             startActivity(Intent(this@DropboxLoginActivity, MainActivity::class.java))
         }
