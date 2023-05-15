@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -93,12 +92,6 @@ class WebDavLoginActivity : BaseActivity() {
 
             false
         }
-
-        mSnackbar = Snackbar.make(
-            mBinding.loginForm,
-            getString(R.string.login_activity_logging_message),
-            Snackbar.LENGTH_INDEFINITE
-        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -193,6 +186,9 @@ class WebDavLoginActivity : BaseActivity() {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
+        mSnackbar = Snackbar.make(mBinding.loginForm,
+            getString(R.string.login_activity_logging_message),
+            Snackbar.LENGTH_INDEFINITE)
         mSnackbar.show()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -262,7 +258,11 @@ class WebDavLoginActivity : BaseActivity() {
                 mBinding.password.requestFocus()
             }
             else {
-                Toast.makeText(applicationContext, text, Toast.LENGTH_LONG).show()
+                mSnackbar = Snackbar.make(mBinding.loginForm,
+                    text,
+                    Snackbar.LENGTH_LONG)
+                mSnackbar.show()
+
                 mBinding.server.requestFocus()
             }
         }
