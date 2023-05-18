@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.*
@@ -400,6 +401,12 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
 
     private fun importMedia() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (needAskForPermission(arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO))) {
+                return
+            }
+        }
+
         val config = ImagePickerConfig {
             mode = ImagePickerMode.MULTIPLE
             isShowCamera = false
@@ -414,26 +421,21 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         mPickerLauncher.launch(config)
     }
 
+    private fun needAskForPermission(permissions: Array<String>): Boolean {
+        var needAsk = false
 
-    @Suppress("SameParameterValue")
-    private fun askForPermission(permission: String, requestCode: Int): Boolean {
-        if (ContextCompat.checkSelfPermission(this, permission)
-            != PackageManager.PERMISSION_GRANTED)
-        {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                //This is called if user has denied the permission before
-                //In this case I am just asking the permission again
-                ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
-            }
-            else {
-                ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
-            }
+        for (permission in permissions) {
+            needAsk = ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 
-            return true
+            if (needAsk) break
         }
 
-        return false
+        if (!needAsk) return false
+
+        ActivityCompat.requestPermissions(this, permissions, 2)
+
+        return true
     }
 
     override fun onRequestPermissionsResult(
@@ -442,8 +444,8 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         when (requestCode) {
-            1 -> askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 2)
             2 -> importMedia()
         }
     }
