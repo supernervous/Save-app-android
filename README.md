@@ -56,7 +56,7 @@ Follow us on Twitter: [twitter.com/open_archive](https://twitter.com/open_archiv
 Follow us on Instagram: [instagram.com/open__archive](https://www.instagram.com/open__archive)
 
 ## FAQ❓
-Need more information about the Save app, OpenArchive, and the work it does? Please check our [FAQ page](https://open-archive.org/faq/).
+Need more information about the Save app, OpenArchive, and the work it does? Please check our [FAQ page](https://open-archive.org/faq).
 
 ## License📄
 [GNU General Public License v3.0](https://github.com/OpenArchive/Save-app-ios/blob/master/LICENSE)
