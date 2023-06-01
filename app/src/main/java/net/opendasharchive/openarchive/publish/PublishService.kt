@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
@@ -16,7 +17,7 @@ import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.util.Prefs.getUploadWifiOnly
+import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
@@ -59,7 +60,7 @@ class PublishService : Service(), Runnable {
     }
 
     private fun shouldPublish(): Boolean {
-        if (getUploadWifiOnly()) {
+        if (Prefs.uploadWifiOnly) {
             if (isNetworkAvailable(true)) return true
         }
         else if (isNetworkAvailable(false)) {
@@ -175,9 +176,32 @@ class PublishService : Service(), Runnable {
     }
 
     private fun isNetworkAvailable(requireWifi: Boolean): Boolean {
-        val info = (getSystemService(CONNECTIVITY_SERVICE) as? ConnectivityManager)?.activeNetworkInfo
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
 
-        return info?.isConnected == true && (!requireWifi || info.type == ConnectivityManager.TYPE_WIFI)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val cap = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+
+            when {
+                cap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    return true
+                }
+                cap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    return !requireWifi
+                }
+                cap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    return !requireWifi
+                }
+            }
+
+            return false
+        }
+        else {
+            @Suppress("DEPRECATION")
+            val info = cm.activeNetworkInfo
+
+            @Suppress("DEPRECATION")
+            return info?.isConnected == true && (!requireWifi || info.type == ConnectivityManager.TYPE_WIFI)
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

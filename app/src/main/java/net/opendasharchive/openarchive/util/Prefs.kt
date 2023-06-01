@@ -2,91 +2,126 @@ package net.opendasharchive.openarchive.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import androidx.preference.PreferenceManager
+import org.witness.proofmode.ProofMode
 
 object Prefs{
 
-    private const val PREF_UPLOAD_WIFI_ONLY = "upload_wifi_only"
-    private const val PREF_NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
-    private const val PREF_NEARBY_USE_WIFI = "nearby_use_wifi"
-    private const val PREF_USE_TOR = "use_tor"
-    private const val PREF_USE_PROOFMODE = "use_proofmode"
-    private const val PREF_USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
-    private const val PREF_CURRENT_SPACE_ID = "current_space"
-    const val TRACK_LOCATION = "trackLocation"
+    private const val UPLOAD_WIFI_ONLY = "upload_wifi_only"
+    private const val NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
+    private const val NEARBY_USE_WIFI = "nearby_use_wifi"
+    private const val USE_TOR = "use_tor"
+    private const val USE_PROOFMODE = "use_proofmode"
+    private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
+    private const val CURRENT_SPACE_ID = "current_space"
+    private const val FLAG_HINT_SHOWN = "ft.flag"
+    private const val BATCH_HINT_SHOWN = "ft.batch"
+    private const val IA_HINT_SHOWN = "ft.ia"
+    private const val TRACK_LOCATION = "trackLocation"
+    private const val NEXTCLOUD_USER_DATA = "next_cloud_user_data"
+    private const val LICENSE_URL = "archive_pref_share_license_url"
+    private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
 
     private var prefs: SharedPreferences? = null
 
-    fun setContext(context: Context?) {
-        if (prefs == null && context != null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    fun load(context: Context) {
+        if (prefs == null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-    fun putBoolean(key: String?, value: Boolean) {
-        prefs?.edit()?.putBoolean(key, value)?.apply()
-    }
+    var nextCloudModel: String?
+        get() = prefs?.getString(NEXTCLOUD_USER_DATA, "") ?: ""
+        set(value) {
+            prefs?.edit()?.putString(NEXTCLOUD_USER_DATA, value)?.apply()
+        }
 
-    fun getBoolean(key: String?): Boolean {
-        return prefs?.getBoolean(key, false) ?: false
-    }
+    val useNextcloudChunking: Boolean
+        get() = prefs?.getBoolean(USE_NEXTCLOUD_CHUNKING, false) ?: false
 
-    /**
-     * TODO: What the fuck is this? What is this used for and why isn't this stored in the database?
-     *      Or is it, and this is a duplicate?
-     */
-    fun getNextCloudModel(): String {
-        return prefs?.getString(Globals.PREF_NEXTCLOUD_USER_DATA, "") ?: ""
-    }
+    var uploadWifiOnly: Boolean
+        get() = prefs?.getBoolean(UPLOAD_WIFI_ONLY, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(UPLOAD_WIFI_ONLY, value)?.apply()
+        }
 
-    fun putString(key: String?, value: String?) {
-        prefs?.edit()?.putString(key, value)?.apply()
-    }
+    var nearbyUseBluetooth: Boolean
+        get() = prefs?.getBoolean(NEARBY_USE_BLUETOOTH, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(NEARBY_USE_BLUETOOTH, value)?.apply()
+        }
 
-    fun useNextcloudChunking(): Boolean {
-        return prefs?.getBoolean(PREF_USE_NEXTCLOUD_CHUNKING, false) ?: false
-    }
+    var nearbyUseWifi: Boolean
+        get() = prefs?.getBoolean(NEARBY_USE_WIFI, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(NEARBY_USE_WIFI, value)?.apply()
+        }
 
-    fun getUploadWifiOnly(): Boolean {
-        return prefs?.getBoolean(PREF_UPLOAD_WIFI_ONLY, false) ?: false
-    }
+    val useProofMode: Boolean
+        get() = prefs?.getBoolean(USE_PROOFMODE, false) ?: false
 
-    fun setUploadWifiOnly(wifiOnly: Boolean) {
-        putBoolean(PREF_UPLOAD_WIFI_ONLY, wifiOnly)
-    }
+    var useTor: Boolean
+        get() = prefs?.getBoolean(USE_TOR, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(USE_TOR, value)?.apply()
+        }
 
-    fun getNearbyUseBluetooth(): Boolean {
-        return prefs?.getBoolean(PREF_NEARBY_USE_BLUETOOTH, false) ?: false
-    }
+    var currentSpaceId: Long
+        get() = prefs?.getLong(CURRENT_SPACE_ID, -1) ?: -1
+        set(value) {
+            prefs?.edit()?.putLong(CURRENT_SPACE_ID, value)?.apply()
+        }
 
-    fun setNearbyUseBluetooth(useBluetooth: Boolean) {
-        putBoolean(PREF_NEARBY_USE_BLUETOOTH, useBluetooth)
-    }
+    var flagHintShown: Boolean
+        get() = prefs?.getBoolean(FLAG_HINT_SHOWN, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(FLAG_HINT_SHOWN, value)?.apply()
+        }
 
-    fun getNearbyUseWifi(): Boolean {
-        return prefs?.getBoolean(PREF_NEARBY_USE_WIFI, false) ?: false
-    }
+    var batchHintShown: Boolean
+        get() = prefs?.getBoolean(BATCH_HINT_SHOWN, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(BATCH_HINT_SHOWN, value)?.apply()
+        }
 
-    fun setNearbyUseWifi(useWifi: Boolean) {
-        putBoolean(PREF_NEARBY_USE_WIFI, useWifi)
-    }
+    var iaHintShown: Boolean
+        get() = prefs?.getBoolean(IA_HINT_SHOWN, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(IA_HINT_SHOWN, value)?.apply()
+        }
 
-    fun getUseProofMode(): Boolean {
-        return prefs?.getBoolean(PREF_USE_PROOFMODE, false) ?: false
-    }
+    var trackLocation: Boolean
+        get() = prefs?.getBoolean(TRACK_LOCATION, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(TRACK_LOCATION, value)?.apply()
+        }
 
-    fun getUseTor(): Boolean {
-        return prefs?.getBoolean(PREF_USE_TOR, false) ?: false
-    }
+    var proofModeLocation: Boolean
+        get() = prefs?.getBoolean(ProofMode.PREF_OPTION_LOCATION, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(ProofMode.PREF_OPTION_LOCATION, value)?.apply()
+        }
 
-    fun setUseTor(useTor: Boolean) {
-        putBoolean(PREF_USE_TOR, useTor)
-    }
+    var proofModeNetwork: Boolean
+        get() = prefs?.getBoolean(ProofMode.PREF_OPTION_NETWORK, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(ProofMode.PREF_OPTION_NETWORK, value)?.apply()
+        }
 
-    fun getCurrentSpaceId(): Long {
-        return prefs?.getLong(PREF_CURRENT_SPACE_ID, -1L) ?: -1L
-    }
+    var licenseUrl: String?
+        get() = prefs?.getString(LICENSE_URL, null)
+        set(value) {
+            prefs?.edit()?.putString(LICENSE_URL, value)?.apply()
+        }
 
-    fun setCurrentSpaceId(spaceId: Long) {
-        prefs?.edit()?.putLong(PREF_CURRENT_SPACE_ID, spaceId)?.apply()
-    }
+    var proofModeEncryptedPassphrase: ByteArray?
+        get() {
+            val passphrase = prefs?.getString(PROOFMODE_ENCRYPTED_PASSPHRASE, null) ?: return null
 
+            return Base64.decode(passphrase, Base64.DEFAULT)
+        }
+        set(value) {
+            val passphrase = if (value == null) null else Base64.encodeToString(value, Base64.DEFAULT)
+
+            prefs?.edit()?.putString(PROOFMODE_ENCRYPTED_PASSPHRASE, passphrase)?.apply()
+        }
 }

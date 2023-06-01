@@ -12,7 +12,7 @@ class SpaceRepositoryImpl : SpaceRepository {
     }
 
     override suspend fun getCurrent(): Space? {
-        val spaceId = Prefs.getCurrentSpaceId()
+        val spaceId = Prefs.currentSpaceId
         if (spaceId > -1) {
             return try {
                 SugarRecord.findById(Space::class.java, spaceId)

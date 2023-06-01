@@ -116,7 +116,7 @@ class IaLoginActivity : BaseActivity() {
         mSpace.password = secretKey
         mSpace.save()
 
-        Prefs.setCurrentSpaceId(mSpace.id)
+        Prefs.currentSpaceId = mSpace.id
 
         isSuccessLogin = true
 
@@ -165,10 +165,10 @@ class IaLoginActivity : BaseActivity() {
     }
 
     private fun showFirstTimeIa() {
-        if (Prefs.getBoolean("ft.ia")) return
+        if (Prefs.iaHintShown) return
 
         AlertHelper.show(this, R.string.popup_ia_desc, R.string.popup_ia_title)
 
-        Prefs.putBoolean("ft.ia", true)
+        Prefs.iaHintShown = true
     }
 }

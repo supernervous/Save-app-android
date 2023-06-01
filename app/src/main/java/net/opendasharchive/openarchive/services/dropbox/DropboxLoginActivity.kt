@@ -92,7 +92,7 @@ class DropboxLoginActivity : BaseActivity() {
                             username?.let { mSpace.username = it }
                             mSpace.password = accessToken
                             mSpace.save()
-                            Prefs.setCurrentSpaceId(mSpace.id)
+                            Prefs.currentSpaceId = mSpace.id
 
                             MainScope().launch {
                                 mBinding.email.text = mSpace.username

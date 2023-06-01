@@ -143,7 +143,7 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
-        val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+        val nextCloudModel = Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
         var totalUploadsContent = 0.0
         for (media in listMedia) {
             totalUploadsContent += media.contentLength

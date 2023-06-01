@@ -260,7 +260,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
                 if (listSpaces.hasNext()) {
                     mSpace = listSpaces.next()
                     setTitle(it.friendlyName)
-                    Prefs.setCurrentSpaceId(it.id)
+                    Prefs.currentSpaceId = it.id
                 } else {
                     setTitle(R.string.main_activity_title)
                 }

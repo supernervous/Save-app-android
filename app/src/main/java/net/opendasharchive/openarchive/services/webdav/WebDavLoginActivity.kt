@@ -20,9 +20,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.Prefs.setCurrentSpaceId
 import net.opendasharchive.openarchive.util.extensions.show
 import okhttp3.Call
 import okhttp3.Callback
@@ -197,7 +195,7 @@ class WebDavLoginActivity : BaseActivity() {
 
                 mSpace.save()
 
-                setCurrentSpaceId(mSpace.id)
+                Prefs.currentSpaceId = mSpace.id
 
                 finishAffinity()
                 startActivity(Intent(this@WebDavLoginActivity, MainActivity::class.java))
@@ -241,7 +239,7 @@ class WebDavLoginActivity : BaseActivity() {
                         return it.resumeWith(Result.failure(IOException("$code $message")))
                     }
 
-                    Prefs.putString(Globals.PREF_NEXTCLOUD_USER_DATA, body)
+                    Prefs.nextCloudModel = body
 
                     it.resumeWith(Result.success(Unit))
                 }

@@ -11,7 +11,6 @@ import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.Prefs.TRACK_LOCATION
 import timber.log.Timber
 
 class OpenArchiveApp : SugarApp() {
@@ -33,12 +32,12 @@ class OpenArchiveApp : SugarApp() {
             .build()
 
         Fresco.initialize(this, config)
-        Prefs.setContext(this)
+        Prefs.load(this)
 
         //disable proofmode GPS dat tracking by default
-        Prefs.putBoolean(TRACK_LOCATION, false)
+        Prefs.trackLocation = false
 
-        if (Prefs.getUseTor()) initNetCipher()
+        if (Prefs.useTor) initNetCipher()
     }
 
     /**

@@ -76,7 +76,7 @@ data class Space(
         }
 
         fun getCurrent(): Space? {
-            val id = Prefs.getCurrentSpaceId()
+            val id = Prefs.currentSpaceId
 
             if (id <= 0) return null
 

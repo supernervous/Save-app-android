@@ -242,7 +242,7 @@ class BatchReviewMediaActivity : BaseActivity() {
         if (space?.tType == Space.Type.WEBDAV) {
             if (space.host.contains("https://sam.nl.tab.digital")) {
                 val nextCloudModel =
-                    Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+                    Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
                 var totalUploadsContent = 0.0
                 for (media in listMedia) {
                     totalUploadsContent += media.contentLength

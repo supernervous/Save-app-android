@@ -39,11 +39,11 @@ abstract class Conduit(
 
 
     fun getProof(): Array<out File> {
-        if (!Prefs.getUseProofMode()) return emptyArray()
+        if (!Prefs.useProofMode) return emptyArray()
 
         // Don't use geolocation and network information.
-        Prefs.putBoolean(ProofMode.PREF_OPTION_LOCATION, false)
-        Prefs.putBoolean(ProofMode.PREF_OPTION_NETWORK, false)
+        Prefs.proofModeLocation = false
+        Prefs.proofModeNetwork = false
 
         try {
             var hash = ProofMode.generateProof(

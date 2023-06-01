@@ -41,7 +41,7 @@ class TorOnboardingScreen : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         if (OrbotHelper.isOrbotInstalled(context)) {
             if (OrbotHelper.requestStartTor(context)) {
-                Prefs.setUseTor(true)
+                Prefs.useTor = true
             }
 
             activity?.finish()

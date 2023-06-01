@@ -47,7 +47,7 @@ class SpaceSettingsViewModel : ViewModel() {
             val latestSpace = spaceList.value?.lastOrNull()
             latestSpace?.let {
                 _currentSpace.value = it
-                Prefs.setCurrentSpaceId(it.id)
+                Prefs.currentSpaceId = it.id
             }
         }
     }

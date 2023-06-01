@@ -144,7 +144,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
             val image: ImageView =
                 getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
             image.setOnClickListener {
-                Prefs.setCurrentSpaceId(space.id)
+                Prefs.currentSpaceId = space.id
                 showCurrentSpace(space)
             }
             mBinding.spaceview.addView(image)

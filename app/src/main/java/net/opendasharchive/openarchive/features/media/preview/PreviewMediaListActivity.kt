@@ -109,7 +109,7 @@ class PreviewMediaListActivity : BaseActivity() {
     }
 
     private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
-        val nextCloudModel = Gson().fromJson(Prefs.getNextCloudModel(), WebDAVModel::class.java)
+        val nextCloudModel = Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
         var totalUploadsContent = 0.0
         for (media in listMedia) {
             totalUploadsContent += media.contentLength
@@ -120,10 +120,10 @@ class PreviewMediaListActivity : BaseActivity() {
     }
 
     private fun showFirstTimeBatch() {
-        if ((mFrag?.getMediaList() ?: listOf()).isEmpty() || Prefs.getBoolean("ft.batch")) return
+        if ((mFrag?.getMediaList() ?: listOf()).isEmpty() || Prefs.batchHintShown) return
 
         AlertHelper.show(this, R.string.popup_batch_desc, R.string.popup_batch_title)
 
-        Prefs.putBoolean("ft.batch", true)
+        Prefs.batchHintShown = true
     }
 }

@@ -135,11 +135,11 @@ class MediaAdapter(
     }
 
     private fun showFirstTimeFlag() {
-        if (Prefs.getBoolean("ft.flag")) return
+        if (Prefs.flagHintShown) return
 
         AlertHelper.show(mContext, R.string.popup_flag_desc, R.string.popup_flag_title)
 
-        Prefs.putBoolean("ft.flag", true)
+        Prefs.flagHintShown = true
     }
 
     private fun selectView(view: View) {

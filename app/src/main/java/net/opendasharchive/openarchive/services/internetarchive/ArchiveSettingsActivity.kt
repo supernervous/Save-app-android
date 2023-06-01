@@ -86,7 +86,7 @@ class ArchiveSettingsActivity : BaseActivity() {
     }
 
     private fun saveMediaMetadata() {
-        Prefs.putString(Globals.PREF_LICENSE_URL, LICENSE_URL)
+        Prefs.licenseUrl = LICENSE_URL
 
         // save value changes in db
         mMedia?.apply {
