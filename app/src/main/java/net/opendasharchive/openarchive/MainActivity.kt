@@ -47,6 +47,7 @@ import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.ui.BadgeDrawable
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.Hbks
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.createSnackBar
@@ -205,6 +206,23 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
         //check for any queued uploads and restart
         (application as OpenArchiveApp).startUploadService()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
+            val key = Hbks.loadKey()
+
+            if (encryptedPassphrase != null && key != null) {
+                Hbks.decrypt(encryptedPassphrase, key, this) { passphrase ->
+                    if (passphrase != null) {
+                        // TODO: Hand over to ProofMode, as soon as latest version is available which supports that.
+                    }
+                }
+            }
+        }
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {

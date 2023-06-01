@@ -4,11 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -18,9 +21,13 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDataUsageBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
+import net.opendasharchive.openarchive.util.Hbks
+import net.opendasharchive.openarchive.util.Prefs
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.IOException
+import java.util.*
+import javax.crypto.SecretKey
 
 class SettingsActivity : BaseActivity() {
 
@@ -105,6 +112,39 @@ class SettingsActivity : BaseActivity() {
 
                         true
                     }
+
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        findPreference<Preference>("proofmode_key_encryption")?.setOnPreferenceChangeListener { preference, newValue ->
+//                            if (newValue as Boolean) {
+//                                val key = Hbks.loadKey() ?: Hbks.createKey()
+//
+//                                if (key != null && Prefs.proofModeEncryptedPassphrase == null) {
+//                                    createPassphrase(key, activity) {
+//                                        if (it != null) {
+//                                            // TODO: Update ProofMode, when available.
+//                                        } else {
+//                                            Hbks.removeKey()
+//
+//                                            (preference as? SwitchPreferenceCompat)?.isChecked = false
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                            else {
+//                                if (Prefs.proofModeEncryptedPassphrase != null) {
+//                                    Prefs.proofModeEncryptedPassphrase = null
+//
+//                                    Hbks.removeKey()
+//                                }
+//                            }
+//
+//                            true
+//                        }
+//                    }
+//                    else {
+//                        // No proper key store before Android 6. Don't support.
+                        findPreference<Preference>("proofmode_key_encryption")?.isVisible = false
+//                    }
                 }
                 else if (type == KEY_NETWORKING) {
                     addPreferencesFromResource(R.xml.app_prefs_networking)
@@ -149,6 +189,29 @@ class SettingsActivity : BaseActivity() {
             }
             catch (ioe: IOException) {
                 Timber.d("error publishing key")
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        private fun createPassphrase(key: SecretKey, activity: FragmentActivity?, completed: (passphrase: String?) -> Unit) {
+            val passphrase = UUID.randomUUID().toString()
+
+            Hbks.encrypt(passphrase, key, activity) { ciphertext ->
+                if (ciphertext == null) {
+                    return@encrypt completed(null)
+                }
+
+                Prefs.proofModeEncryptedPassphrase = ciphertext
+
+                Hbks.decrypt(Prefs.proofModeEncryptedPassphrase, key, activity) { decrpytedPassphrase ->
+                    if (decrpytedPassphrase == null || decrpytedPassphrase != passphrase) {
+                        Prefs.proofModeEncryptedPassphrase = null
+
+                        return@decrypt completed(null)
+                    }
+
+                    completed(passphrase)
+                }
             }
         }
     }
