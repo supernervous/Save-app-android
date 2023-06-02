@@ -1,6 +1,6 @@
 package net.opendasharchive.openarchive.util
 
-import android.app.KeyguardManager
+import android.content.Context
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -16,17 +16,32 @@ import java.security.cert.CertificateException
 import javax.crypto.*
 import javax.crypto.spec.GCMParameterSpec
 
-@RequiresApi(Build.VERSION_CODES.M)
 object Hbks {
+
+    enum class BiometryType(val value: Int) {
+        StrongBiometry(BiometricManager.Authenticators.BIOMETRIC_STRONG),
+        DeviceCredential(BiometricManager.Authenticators.DEVICE_CREDENTIAL),
+        Both(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL),
+        None(0)
+    }
+
 
     private const val alias = "save-main-key"
     private const val type = "AndroidKeyStore"
+
+    @RequiresApi(Build.VERSION_CODES.M)
     private const val algorithm = KeyProperties.KEY_ALGORITHM_AES
+
+    @RequiresApi(Build.VERSION_CODES.M)
     private const val blockMode = KeyProperties.BLOCK_MODE_GCM
+
+    @RequiresApi(Build.VERSION_CODES.M)
     private const val padding = KeyProperties.ENCRYPTION_PADDING_NONE
 
     private var mCipher: Cipher? = null
+
     private val cipher: Cipher?
+        @RequiresApi(Build.VERSION_CODES.M)
         get() {
             if (mCipher == null) {
                 try {
@@ -39,6 +54,8 @@ object Hbks {
             return mCipher
         }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     fun createKey(): SecretKey? {
         try {
             val keyGenerator = KeyGenerator.getInstance(algorithm, type)
@@ -111,6 +128,7 @@ object Hbks {
         return false
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun encrypt(plaintext: String?, key: SecretKey?, activity: FragmentActivity? = null, completed: (ciphertext: ByteArray?) -> Unit) {
         val cipher = Hbks.cipher
 
@@ -142,6 +160,7 @@ object Hbks {
         completed(run(Cipher.ENCRYPT_MODE, cipher, plaintext.toByteArray()))
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun decrypt(ciphertext: ByteArray?, key: SecretKey?, activity: FragmentActivity? = null, completed: (plaintext: String?) -> Unit) {
         val cipher = Hbks.cipher
 
@@ -211,7 +230,37 @@ object Hbks {
         return null
     }
 
+    fun deviceSecured(context: Context): Boolean {
+        return biometryType(context) != BiometryType.None
+    }
+
+    fun biometryType(context: Context): BiometryType {
+        // No proper hardware keystore below Android 6 / SDK 23. Do not support!
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return BiometryType.None
+        }
+
+        val manager = BiometricManager.from(context)
+        var type = BiometryType.None
+
+        if (manager.canAuthenticate(BiometryType.DeviceCredential.value) == BiometricManager.BIOMETRIC_SUCCESS) {
+            type = BiometryType.DeviceCredential
+        }
+
+        if (manager.canAuthenticate(BiometryType.StrongBiometry.value) == BiometricManager.BIOMETRIC_SUCCESS) {
+            type = if (type == BiometryType.None) BiometryType.StrongBiometry else BiometryType.Both
+        }
+
+        return type
+    }
+
     private fun authenticate(activity: FragmentActivity, completed: (success: Boolean) -> Unit) {
+        val type = biometryType(activity)
+
+        if (type == BiometryType.None) {
+            return completed(false)
+        }
+
         val prompt = BiometricPrompt(activity, object : BiometricPrompt.AuthenticationCallback() {
 
             override fun onAuthenticationError(
@@ -238,28 +287,12 @@ object Hbks {
 
         val info = BiometricPrompt.PromptInfo.Builder()
             .setTitle(activity.getString(R.string.biometrics_title))
-
-        var withDeviceCredentials = false
-
-        val keyguardManager = activity.getSystemService(KeyguardManager::class.java)
-
-        // D'oh. This interface is so ugly. Why the hell isn't all this handled automatically?
-
-        if (keyguardManager.isDeviceSecure) {
-
-            // "BIOMETRIC_STRONG | DEVICE_CREDENTIAL is unsupported on API 28-29"
-            if (Build.VERSION.SDK_INT != Build.VERSION_CODES.P && Build.VERSION.SDK_INT != Build.VERSION_CODES.Q) {
-                info.setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG
-                        or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
-
-                withDeviceCredentials = true
-            }
-        }
+            .setAllowedAuthenticators(type.value)
 
         // "Using this method to enable device credential authentication (with DEVICE_CREDENTIAL)
         // will replace the negative button on the prompt, making it an error to also call
         // setNegativeButtonText(CharSequence)."
-        if (!withDeviceCredentials) {
+        if (type == BiometryType.StrongBiometry) {
             info.setNegativeButtonText(activity.getString(R.string.action_cancel))
         }
 

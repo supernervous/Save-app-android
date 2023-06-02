@@ -12,7 +12,7 @@
             android:defaultValue="false"
             android:key="proofmode_key_encryption"
             android:summary="@string/prefs_proofmode_key_encryption_summary"
-            android:title="@string/prefs_proofmode_key_encryption_title" />
+            android:title="@string/prefs_proofmode_key_encryption_title_all" />
 
         <androidx.preference.Preference
             android:key="share_proofmode"

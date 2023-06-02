@@ -363,7 +363,9 @@
     <string name="waiting_for_upload">Waiting for upload…</string>
     <string name="uploading_now">Uploading now…</string>
     <string name="add_new_space">Add new Space</string>
-    <string name="prefs_proofmode_key_encryption_title">Secure ProofMode Key with Biometrics or Device Passcode</string>
+    <string name="prefs_proofmode_key_encryption_title_all">Secure ProofMode Key with Biometrics or Device Passcode</string>
+    <string name="prefs_proofmode_key_encryption_title_biometrics">Secure ProofMode Key with Biometrics</string>
+    <string name="prefs_proofmode_key_encryption_title_passcode">Secure ProofMode Key with Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_summary">Changing this will create a new key! If you exported and signed that one before, you will need to do it again with the new one.</string>
     <string name="biometrics_title">Unlock ProofMode Key</string>
 </resources>

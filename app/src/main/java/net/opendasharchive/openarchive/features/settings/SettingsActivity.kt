@@ -113,8 +113,21 @@ class SettingsActivity : BaseActivity() {
                         true
                     }
 
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        findPreference<Preference>("proofmode_key_encryption")?.setOnPreferenceChangeListener { preference, newValue ->
+                    val pkePreference = findPreference<SwitchPreferenceCompat>("proofmode_key_encryption")
+//                    val context = context
+//
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && Hbks.deviceSecured(context)) {
+//                        pkePreference?.isSingleLineTitle = false
+//
+//                        pkePreference?.setTitle(when (Hbks.biometryType(context)) {
+//                            Hbks.BiometryType.StrongBiometry -> R.string.prefs_proofmode_key_encryption_title_biometrics
+//
+//                            Hbks.BiometryType.DeviceCredential -> R.string.prefs_proofmode_key_encryption_title_passcode
+//
+//                            else -> R.string.prefs_proofmode_key_encryption_title_all
+//                        })
+//
+//                        pkePreference?.setOnPreferenceChangeListener { _, newValue ->
 //                            if (newValue as Boolean) {
 //                                val key = Hbks.loadKey() ?: Hbks.createKey()
 //
@@ -125,7 +138,7 @@ class SettingsActivity : BaseActivity() {
 //                                        } else {
 //                                            Hbks.removeKey()
 //
-//                                            (preference as? SwitchPreferenceCompat)?.isChecked = false
+//                                            pkePreference.isChecked = false
 //                                        }
 //                                    }
 //                                }
@@ -142,8 +155,7 @@ class SettingsActivity : BaseActivity() {
 //                        }
 //                    }
 //                    else {
-//                        // No proper key store before Android 6. Don't support.
-                        findPreference<Preference>("proofmode_key_encryption")?.isVisible = false
+                        pkePreference?.isVisible = false
 //                    }
                 }
                 else if (type == KEY_NETWORKING) {
