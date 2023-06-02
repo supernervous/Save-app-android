@@ -215,11 +215,18 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
             val key = Hbks.loadKey()
 
-            if (encryptedPassphrase != null && key != null) {
-                Hbks.decrypt(encryptedPassphrase, key, this) { passphrase ->
-                    if (passphrase != null) {
-                        // TODO: Hand over to ProofMode, as soon as latest version is available which supports that.
+            if (encryptedPassphrase != null) {
+                if (key != null) {
+                    Hbks.decrypt(encryptedPassphrase, key, this) { passphrase ->
+                        if (passphrase != null) {
+                            // TODO: Hand over to ProofMode, as soon as latest version is available which supports that.
+                        }
                     }
+                } else {
+                    // Oh, oh. User removed passphrase lock.
+                    Prefs.proofModeEncryptedPassphrase = null
+
+                    // TODO: Remove secured ProofMode PGP key.
                 }
             }
         }

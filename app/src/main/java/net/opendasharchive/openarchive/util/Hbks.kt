@@ -22,7 +22,11 @@ object Hbks {
         StrongBiometry(BiometricManager.Authenticators.BIOMETRIC_STRONG),
         DeviceCredential(BiometricManager.Authenticators.DEVICE_CREDENTIAL),
         Both(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL),
-        None(0)
+        None(0);
+
+        fun canAuthenticate(manager: BiometricManager): Boolean {
+            return manager.canAuthenticate(value) == BiometricManager.BIOMETRIC_SUCCESS
+        }
     }
 
 
@@ -241,17 +245,19 @@ object Hbks {
         }
 
         val manager = BiometricManager.from(context)
-        var type = BiometryType.None
 
-        if (manager.canAuthenticate(BiometryType.DeviceCredential.value) == BiometricManager.BIOMETRIC_SUCCESS) {
-            type = BiometryType.DeviceCredential
+        // Goddamnit. There's a logic error in the Biometrics library for SDKs below 30.
+        // We need to first test the combination and then the single options.
+        // If we only test single options and then combine the result,
+        // We will actually not get a correct result for DeviceCredential.
+
+        for (type in arrayOf(BiometryType.Both, BiometryType.StrongBiometry, BiometryType.DeviceCredential)) {
+            if (type.canAuthenticate(manager)) {
+                return type
+            }
         }
 
-        if (manager.canAuthenticate(BiometryType.StrongBiometry.value) == BiometricManager.BIOMETRIC_SUCCESS) {
-            type = if (type == BiometryType.None) BiometryType.StrongBiometry else BiometryType.Both
-        }
-
-        return type
+        return BiometryType.None
     }
 
     private fun authenticate(activity: FragmentActivity, completed: (success: Boolean) -> Unit) {
