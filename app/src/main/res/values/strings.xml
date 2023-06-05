@@ -368,4 +368,6 @@
     <string name="prefs_proofmode_key_encryption_title_passcode">Secure ProofMode Key with Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_summary">Changing this will create a new key! If you exported and signed that one before, you will need to do it again with the new one.</string>
     <string name="biometrics_title">Unlock ProofMode Key</string>
+    <string name="folders">Folders</string>
+    <string name="new_folder">New Folder</string>
 </resources>

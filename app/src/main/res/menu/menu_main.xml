@@ -1,29 +1,21 @@
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:filterTouchesWhenObscured="true"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    tools:context=".MainActivity">
 
-
-
-    <item android:id="@+id/menu_upload_manager"
+    <item
+        android:id="@+id/menu_upload_manager"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|collapseActionView|withText"
-        android:text=""
+        android:title="@string/title_media_list"
         android:visible="false"
-        />
+        app:showAsAction="ifRoom|collapseActionView|withText" />
 
-
-    <!--
-    <item android:id="@+id/action_settings"
-        android:title="@string/drawer_settings"
-        android:icon="@drawable/ic_action_settings"
-        android:orderInCategory="100"
-        />
-
-    <item android:id="@+id/action_about" android:title="@string/drawer_about"
-        android:orderInCategory="100"
-        />
--->
+    <item
+        android:id="@+id/menu_folders"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="200"
+        android:title="@string/folders"
+        app:showAsAction="always" />
 
 </menu>

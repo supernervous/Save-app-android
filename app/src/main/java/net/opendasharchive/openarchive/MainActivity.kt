@@ -11,13 +11,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
@@ -25,10 +29,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.orm.SugarRecord.findById
-import net.opendasharchive.openarchive.services.Conduit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
@@ -44,6 +45,7 @@ import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
 import net.opendasharchive.openarchive.features.projects.AddProjectActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
+import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.ui.BadgeDrawable
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import net.opendasharchive.openarchive.util.Globals
@@ -57,9 +59,11 @@ import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
+import java.text.NumberFormat
 import java.util.*
 
-class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.ProviderInstallListener {
+class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
+    FolderAdapterClickListener {
 
     companion object {
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
@@ -74,6 +78,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
+    private lateinit var mFolderAdapter: FolderAdapter
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
@@ -156,6 +161,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         }
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
+        mFolderAdapter = FolderAdapter(this)
 
         mSnackBar = mBinding.pager.createSnackBar(getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE)
         val snackView = mSnackBar?.view as? SnackbarLayout
@@ -164,13 +170,13 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         mSpace?.let {
             val projects = it.projects
             mPagerAdapter.updateData(projects)
+            mFolderAdapter.update(projects)
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
-            mBinding.tabs.removeOnTabSelectedListener(this)
         } ?: run {
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = 0
-            mBinding.tabs.addOnTabSelectedListener(this)
+            mBinding.folders.adapter = mFolderAdapter
         }
 
 
@@ -196,13 +202,36 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
             override fun onPageSelected(position: Int) {
                 lastTab = position
-                if (position == 0) promptAddProject()
+
+                if (position == 0) {
+                    promptAddProject()
+                }
+
+                val project = mPagerAdapter.getProject(position) ?: return
+
+                mBinding.currentFolderIcon.setImageResource(when (project.space?.tType) {
+                    Space.Type.WEBDAV -> 0
+                    Space.Type.INTERNET_ARCHIVE -> R.drawable.ialogo512
+                    Space.Type.DROPBOX -> R.drawable.dropbox
+                    else -> 0
+                })
+
+                mBinding.currentFolderName.text = project.description
+
+                mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
+                    project.collections.map { it.media.count() }
+                        .reduceOrNull { acc, count -> acc + count } ?: 0)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
 
-        mBinding.tabs.setupWithViewPager(mBinding.pager)
+        mBinding.folders.layoutManager = LinearLayoutManager(this)
+        mBinding.folders.adapter = mFolderAdapter
+
+        mBinding.newFolder.setOnClickListener {
+            mBinding.pager.currentItem = 0
+        }
 
         //check for any queued uploads and restart
         (application as OpenArchiveApp).startUploadService()
@@ -232,18 +261,6 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
         }
     }
 
-    override fun onTabSelected(tab: TabLayout.Tab?) {
-        //NO-Op
-    }
-
-    override fun onTabUnselected(tab: TabLayout.Tab?) {
-        //No-Op
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab?) {
-        if (mSpace == null || mPagerAdapter.count <= 1) promptAddProject()
-    }
-
     fun promptAddProject() {
         requestNewProjectNameResultLauncher.launch(Intent(this, AddProjectActivity::class.java))
     }
@@ -253,6 +270,7 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
             val projects = it.projects
             mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
             mPagerAdapter.updateData(projects)
+            mFolderAdapter.update(projects)
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
         }
@@ -541,6 +559,17 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
 
                 return true
             }
+
+            R.id.menu_folders -> {
+                // https://stackoverflow.com/questions/21796209/how-to-create-a-custom-navigation-drawer-in-android
+
+                if (mBinding.root.isDrawerOpen(mBinding.folderBar)) {
+                    mBinding.root.closeDrawer(mBinding.folderBar)
+                }
+                else {
+                    mBinding.root.openDrawer(mBinding.folderBar)
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -592,5 +621,14 @@ class MainActivity : BaseActivity(), OnTabSelectedListener, ProviderInstaller.Pr
      */
     override fun onProviderInstalled() {
         mBinding.alertIcon.visibility = View.GONE
+    }
+
+    override fun projectClicked(projectId: Long) {
+        for (i in 0 until mPagerAdapter.count) {
+            if (mPagerAdapter.getProject(i)?.id == projectId) {
+                mBinding.pager.currentItem = i
+                break
+            }
+        }
     }
 }
