@@ -97,6 +97,14 @@
             android:textSize="22sp" />
 
         <TextView
+            android:id="@+id/btnUserInterface"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/user_interface"
+            android:textSize="22sp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"

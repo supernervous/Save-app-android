@@ -14,6 +14,7 @@ object Prefs{
     private const val USE_TOR = "use_tor"
     private const val USE_PROOFMODE = "use_proofmode"
     private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
+    private const val PREF_THEME = "theme"
     private const val CURRENT_SPACE_ID = "current_space"
     private const val FLAG_HINT_SHOWN = "ft.flag"
     private const val BATCH_HINT_SHOWN = "ft.batch"
@@ -123,5 +124,15 @@ object Prefs{
             val passphrase = if (value == null) null else Base64.encodeToString(value, Base64.DEFAULT)
 
             prefs?.edit()?.putString(PROOFMODE_ENCRYPTED_PASSPHRASE, passphrase)?.apply()
+        }
+
+    var theme: String
+        get() = prefs?.getString(PREF_THEME, null) ?: "system"
+        set(value) {
+            var v: String = value
+            if (!arrayOf("light", "dark").contains(value)) {
+                v = "system"
+            }
+            prefs?.edit()?.putString(PREF_THEME, v)?.apply()
         }
 }

@@ -176,6 +176,16 @@
     <string name="prefs_upload_wifi_only_summary">Wait for Wi-Fi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>
 
+    <string name="prefs_user_interface_title">User Interface</string>
+    <string name="prefs_theme_title">Select Theme</string>
+    <string name="prefs_theme_summary">Change how Safe looks.</string>
+    <string name="prefs_theme_system">system default</string>
+    <string name="prefs_theme_light">light theme</string>
+    <string name="prefs_theme_dark">dark theme</string>
+    <string name="prefs_theme_val_system" translatable="false">system</string>
+    <string name="prefs_theme_val_light" translatable="false">light</string>
+    <string name="prefs_theme_val_dark" translatable="false">dark</string>
+
     <string name="prefs_data_title">Metadata</string>
     <string name="prefs_use_proofmode_title">Enable ProofMode</string>
     <string name="prefs_use_proofmode_summary">Capture extra metadata and notarize all media</string>
@@ -312,6 +322,7 @@
     <string name="description_dropbox">Securely access the commercial cloud</string>
     <string name="metadata">Metadata</string>
     <string name="networking">Networking</string>
+    <string name="user_interface">User Interface</string>
     <string name="pref_nextcloud_title">Enable NextCloud Chunking</string>
     <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 

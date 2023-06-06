@@ -93,6 +93,12 @@ class SpaceSettingsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
+            contentSpaceLayout.btnUserInterface.setOnClickListener {
+                val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
+                intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_USER_INTERFACE)
+                startActivity(intent)
+            }
+
             contentSpaceLayout.btnPrivacy.setOnClickListener {
                 openBrowser("https://open-archive.org/privacy")
             }
