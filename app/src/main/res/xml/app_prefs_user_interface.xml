@@ -1,0 +1,15 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.preference.PreferenceCategory android:title="@string/prefs_user_interface_title">
+
+        <androidx.preference.ListPreference
+            android:defaultValue="@string/prefs_theme_val_system"
+            android:entries="@array/ar_prefs_theme_labels"
+            android:entryValues="@array/ar_prefs_theme_val"
+            android:key="theme"
+            android:summary="@string/prefs_theme_summary"
+            android:title="@string/prefs_theme_title" />
+
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

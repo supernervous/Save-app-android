@@ -12,4 +12,14 @@
         <item>@string/drawer_about</item>
         <item>@string/drawer_settings</item>
     </string-array>
+    <string-array name="ar_prefs_theme_val">
+        <item>@string/prefs_theme_val_system</item>
+        <item>@string/prefs_theme_val_light</item>
+        <item>@string/prefs_theme_val_dark</item>
+    </string-array>
+    <string-array name="ar_prefs_theme_labels">
+        <item>@string/prefs_theme_system</item>
+        <item>@string/prefs_theme_light</item>
+        <item>@string/prefs_theme_dark</item>
+    </string-array>
 </resources>

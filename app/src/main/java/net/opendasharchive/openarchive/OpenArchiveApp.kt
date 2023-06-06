@@ -11,6 +11,7 @@ import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.publish.PublishService
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.ThemeHelper
 import timber.log.Timber
 
 class OpenArchiveApp : SugarApp() {
@@ -38,6 +39,8 @@ class OpenArchiveApp : SugarApp() {
         Prefs.trackLocation = false
 
         if (Prefs.useTor) initNetCipher()
+
+        ThemeHelper.setTheme(this, Prefs.theme)
     }
 
     /**

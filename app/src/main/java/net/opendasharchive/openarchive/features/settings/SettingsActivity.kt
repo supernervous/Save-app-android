@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Hbks
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.ThemeHelper
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.IOException
@@ -68,6 +69,7 @@ class SettingsActivity : BaseActivity() {
         const val KEY_DATAUSE = "datause"
         const val KEY_METADATA = "metadata"
         const val KEY_NETWORKING = "networking"
+        const val KEY_USER_INTERFACE = "user_interface"
 
         class SettingsFragment : PreferenceFragmentCompat() {
             override fun onCreatePreferences(bundle: Bundle?, s: String?) {
@@ -181,6 +183,15 @@ class SettingsActivity : BaseActivity() {
                             }
                         }
 
+                        true
+                    }
+                }
+                else if (type == KEY_USER_INTERFACE) {
+                    addPreferencesFromResource(R.xml.app_prefs_user_interface)
+
+                    findPreference<Preference>("theme")?.setOnPreferenceChangeListener { _, newValue ->
+                        val activity = activity ?: return@setOnPreferenceChangeListener true
+                        ThemeHelper.setTheme(activity.applicationContext, newValue as String)
                         true
                     }
                 }
