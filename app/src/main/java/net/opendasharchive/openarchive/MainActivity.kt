@@ -167,15 +167,19 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         val snackView = mSnackBar?.view as? SnackbarLayout
         snackView?.addView(ProgressBar(this))
 
-        mSpace?.let {
-            val projects = it.projects
+        mSpace?.projects?.let { projects ->
             mPagerAdapter.updateData(projects)
-            mFolderAdapter.update(projects)
+
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+
+            mFolderAdapter.update(projects, mBinding.pager.currentItem - 1)
+            mBinding.folders.adapter = mFolderAdapter
         } ?: run {
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = 0
+
+            mFolderAdapter.update(emptyList(), mBinding.pager.currentItem - 1)
             mBinding.folders.adapter = mFolderAdapter
         }
 
@@ -264,13 +268,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private fun refreshProjects() {
-        mSpace?.let {
-            val projects = it.projects
+        mSpace?.projects?.let { projects ->
             mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
             mPagerAdapter.updateData(projects)
-            mFolderAdapter.update(projects)
+
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+
+            mFolderAdapter.update(projects, mBinding.pager.currentItem - 1)
         }
 
         updateMenu()
@@ -625,6 +630,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         for (i in 0 until mPagerAdapter.count) {
             if (mPagerAdapter.getProject(i)?.id == projectId) {
                 mBinding.pager.currentItem = i
+
+                mFolderAdapter.update(mBinding.pager.currentItem - 1)
 
                 mBinding.root.closeDrawer(mBinding.folderBar)
 

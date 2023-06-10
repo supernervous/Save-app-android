@@ -1,5 +1,7 @@
 package net.opendasharchive.openarchive
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -19,11 +21,20 @@ class FolderAdapter(listener: FolderAdapterClickListener?) : ListAdapter<Project
 
     class ViewHolder(private val binding: RvSimpleRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(listener: WeakReference<FolderAdapterClickListener>?, project: Project?) {
+        fun bind(listener: WeakReference<FolderAdapterClickListener>?, project: Project?, selected: Boolean) {
             binding.rvTitle.text = project?.description
 
-            binding.rvTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                ContextCompat.getDrawable(binding.rvTitle.context, R.drawable.ic_folder),
+            val context = binding.rvTitle.context
+            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_folder)
+
+            if (selected) {
+                val color = ContextCompat.getColor(context, R.color.oablue)
+
+                binding.rvTitle.setTextColor(color)
+                drawable?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+
+            binding.rvTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable,
                 null, null, null)
 
             val id = project?.id
@@ -52,6 +63,8 @@ class FolderAdapter(listener: FolderAdapterClickListener?) : ListAdapter<Project
 
     private val mListener: WeakReference<FolderAdapterClickListener>?
 
+    private var mSelected: Int? = null
+
     init {
         mListener = WeakReference(listener)
     }
@@ -62,10 +75,28 @@ class FolderAdapter(listener: FolderAdapterClickListener?) : ListAdapter<Project
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(mListener, getItem(position))
+        val project = getItem(position)
+
+        holder.bind(mListener, project, position == mSelected)
     }
 
-    fun update(projects: List<Project>) {
+    fun update(projects: List<Project>, selected: Int) {
         submitList(projects)
+
+        mSelected = selected
+    }
+
+    fun update(selected: Int) {
+        val oldSelected = mSelected
+
+        if (oldSelected != null) {
+            notifyItemChanged(oldSelected)
+        }
+
+        if (selected != oldSelected) {
+            mSelected = selected
+
+            notifyItemChanged(selected)
+        }
     }
 }
