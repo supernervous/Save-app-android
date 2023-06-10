@@ -27,7 +27,7 @@ class BrowseProjectsAdapter(
     inner class BrowseProjectsViewHolder(val binding: RvSimpleRowBinding, val onClick: (fileName: String) -> Unit) :
         RecyclerView.ViewHolder(binding.root){
         fun onBindView(fileName: String) {
-            binding.rvRowTitle.text = fileName
+            binding.rvTitle.text = fileName
             binding.root.setOnClickListener {
                 onClick.invoke(fileName)
             }

@@ -7,60 +7,54 @@ import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
-import net.opendasharchive.openarchive.features.media.NewProjectFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 
-class ProjectAdapter( private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
+class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
-    private var data: List<Project>? = null
+    private var mProjects = listOf<Project>()
 
     override fun getItem(position: Int): Fragment {
         return if (position == 0) {
-            NewProjectFragment()
-        } else {
+            NewFolderFragment()
+        }
+        else {
             MediaGridFragment().also { fragment ->
                 getProject(position)?.let { project ->
                     fragment.setProjectId(project.id)
                 }
+
                 fragment.arguments = Bundle()
             }
         }
     }
 
     override fun getCount(): Int {
-        return if (data != null) data!!.size + 1 else 0
+        return mProjects.size + 1
     }
 
     fun getProject(i: Int): Project? {
-        return data?.let {
-            if (i > 0) {
-                it[i - 1]
-            } else {
-                null
-            }
-        }
+        return if (i > 0 && i <= mProjects.size) mProjects[i - 1] else null
     }
 
-    fun updateData(data: List<Project>?) {
-        this.data = data
+    fun updateData(projects: List<Project>) {
+        mProjects = projects
+
         notifyDataSetChanged()
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
         return if (position == 0) {
             val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black_24dp)
+
             val spannableString = SpannableString(" ")
-            val start = 0
-            val end = 1
-            val flag = 0
-            spannableString.setSpan(imageSpan, start, end, flag)
+            spannableString.setSpan(imageSpan, 0, 1, 0)
+
             spannableString
-        } else {
-            data?.let {
-                it[position - 1].description
-            }
+        }
+        else {
+            getProject(position)?.description
         }
     }
-
 }

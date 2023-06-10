@@ -144,8 +144,8 @@
     <string name="action_data_use"> إستخدام البيانات</string>
     <string name="action_privacy">الخصوصية</string>
     <string name="action_about">عن التطبيق</string>
-    <string name="header_new_project">أضف مشروع</string>
-    <string name="action_browse_projects">إستعرض المشاريع الحالية</string>
+    <string name="header_new_folder">أضف مشروع</string>
+    <string name="action_browse_folders">إستعرض المشاريع الحالية</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">الملفات المرفوعة</string>
     <string name="title_uploading">تحميل…</string>
@@ -163,7 +163,7 @@
     <string name="action_next">التالي</string>
     <string name="status_flagged">محتوى مميز</string>
     <string name="action_media_stored">إعداد المكان الذى تريد تخزين الوسائط فيه</string>
-    <string name="create_new_project">إنشاء مشروع جديد</string>
+    <string name="create_new_folder">إنشاء مشروع جديد</string>
     <string name="menu_edit">عدّل</string>
     <string name="menu_done">مُنجَز</string>
     <string name="remove_from_app">احذف من التطبيق</string>

@@ -102,8 +102,8 @@
     <string name="action_data_use">Utilizzo dati</string>
     <string name="action_privacy">Privacy</string>
     <string name="action_about">Informazioni</string>
-    <string name="header_new_project">Aggiungi un Progetto</string>
-    <string name="action_browse_projects">Sfoglia Progetti Esistenti</string>
+    <string name="header_new_folder">Aggiungi un Progetto</string>
+    <string name="action_browse_folders">Sfoglia Progetti Esistenti</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Upload</string>
     <string name="title_uploading">Caricamento…</string>
@@ -121,7 +121,7 @@
     <string name="action_next">Successivo</string>
     <string name="status_flagged">Contenuto Significativo</string>
     <string name="action_media_stored">Imposta dove archiviare i tuoi media</string>
-    <string name="create_new_project">Crea un Nuovo Progetto</string>
+    <string name="create_new_folder">Crea un Nuovo Progetto</string>
     <string name="menu_edit">Modifica</string>
     <string name="menu_done">Fatto</string>
     <string name="remove_from_app">Rimuovi dall\' App</string>

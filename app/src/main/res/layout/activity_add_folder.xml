@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.projects.AddProjectActivity">
+    android:filterTouchesWhenObscured="true"
+    tools:context=".features.projects.AddFolderActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -27,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/header_new_project"
+            android:text="@string/header_new_folder"
             android:textColor="@color/oablue"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -58,7 +57,7 @@
                 android:id="@+id/title_create_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/create_new_project"
+                android:text="@string/create_new_folder"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -96,7 +95,7 @@
                 android:id="@+id/title_browse_projects"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/action_browse_projects"
+                android:text="@string/action_browse_folders"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 

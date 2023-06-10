@@ -143,8 +143,8 @@
     <string name="action_data_use">مصرف داده</string>
     <string name="action_privacy">حریم خصوصی</string>
     <string name="action_about">درباره‌ تور</string>
-    <string name="header_new_project">افزودن پروژه</string>
-    <string name="action_browse_projects">مشاهده پروژه‌های موجود</string>
+    <string name="header_new_folder">افزودن پروژه</string>
+    <string name="action_browse_folders">مشاهده پروژه‌های موجود</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">آپلودها</string>
     <string name="title_uploading">بارگذاری.......</string>
@@ -162,7 +162,7 @@
     <string name="action_next">بعدی</string>
     <string name="status_flagged">محتوای مهم</string>
     <string name="action_media_stored">جایی که فایل‌های رسانه‌ای شما باید ذخیره شوند را تنظیم کنید.</string>
-    <string name="create_new_project">پروژه جدید بسازید</string>
+    <string name="create_new_folder">پروژه جدید بسازید</string>
     <string name="menu_edit">ویرایش</string>
     <string name="menu_done">انجام شد</string>
     <string name="remove_from_app">حذف از برنامه</string>

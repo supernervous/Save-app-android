@@ -91,8 +91,8 @@
     <string name="action_data_use">Використання даних</string>
     <string name="action_privacy">Приватність</string>
     <string name="action_about">Про</string>
-    <string name="header_new_project">Додати проєкт</string>
-    <string name="action_browse_projects">Перегляньте існуючі проекти</string>
+    <string name="header_new_folder">Додати проєкт</string>
+    <string name="action_browse_folders">Перегляньте існуючі проекти</string>
     <string name="title_uploading">Завантаження…</string>
 
     <string name="title_activity_batch_media_review">Попередній перегляд</string>
@@ -106,7 +106,7 @@
     <string name="upload_to_the_internet_archive">Завантажити до InternetArchive</string>
     <string name="action_next">Вперед</string>
     <string name="action_media_stored">Налаштуйте, де ви хочете зберігати свої медіафайли.</string>
-    <string name="create_new_project">Створити новий проєкт</string>
+    <string name="create_new_folder">Створити новий проєкт</string>
     <string name="menu_edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>

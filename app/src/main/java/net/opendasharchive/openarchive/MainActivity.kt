@@ -42,7 +42,7 @@ import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
-import net.opendasharchive.openarchive.features.projects.AddProjectActivity
+import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
@@ -188,7 +188,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 importMedia()
             }
             else {
-                promptAddProject()
+                addProject()
             }
         }
 
@@ -204,17 +204,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 lastTab = position
 
                 if (position == 0) {
-                    promptAddProject()
+                    addProject()
                 }
 
                 val project = mPagerAdapter.getProject(position) ?: return
 
-                mBinding.currentFolderIcon.setImageResource(when (project.space?.tType) {
-                    Space.Type.WEBDAV -> 0
-                    Space.Type.INTERNET_ARCHIVE -> R.drawable.ialogo512
-                    Space.Type.DROPBOX -> R.drawable.dropbox
-                    else -> 0
-                })
+                project.space?.setAvatar(mBinding.currentFolderIcon)
 
                 mBinding.currentFolderName.text = project.description
 
@@ -230,7 +225,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.folders.adapter = mFolderAdapter
 
         mBinding.newFolder.setOnClickListener {
-            mBinding.pager.currentItem = 0
+            addProject()
         }
 
         //check for any queued uploads and restart
@@ -248,21 +243,24 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 if (key != null) {
                     Hbks.decrypt(encryptedPassphrase, key, this) { passphrase ->
                         if (passphrase != null) {
-                            // TODO: Hand over to ProofMode, as soon as latest version is available which supports that.
+                            TODO("Hand over to ProofMode, as soon as latest version is available which supports that.")
                         }
                     }
                 } else {
                     // Oh, oh. User removed passphrase lock.
                     Prefs.proofModeEncryptedPassphrase = null
 
-                    // TODO: Remove secured ProofMode PGP key.
+                    TODO("Remove secured ProofMode PGP key.")
                 }
             }
         }
     }
 
-    fun promptAddProject() {
-        requestNewProjectNameResultLauncher.launch(Intent(this, AddProjectActivity::class.java))
+    fun addProject() {
+        requestNewProjectNameResultLauncher.launch(
+            Intent(this, AddFolderActivity::class.java))
+
+        mBinding.root.closeDrawer(mBinding.folderBar)
     }
 
     private fun refreshProjects() {
@@ -627,6 +625,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         for (i in 0 until mPagerAdapter.count) {
             if (mPagerAdapter.getProject(i)?.id == projectId) {
                 mBinding.pager.currentItem = i
+
+                mBinding.root.closeDrawer(mBinding.folderBar)
+
                 break
             }
         }

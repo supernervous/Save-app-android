@@ -232,8 +232,8 @@
     <string name="action_privacy">Gizlilik</string>
     <string name="action_about">Hakkında</string>
     <string name="title_activity_new_project">Yeni_proje_işlemi</string>
-    <string name="header_new_project">Proje ekle</string>
-    <string name="action_browse_projects">Var olan projelere bak</string>
+    <string name="header_new_folder">Proje ekle</string>
+    <string name="action_browse_folders">Var olan projelere bak</string>
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
     <string name="action_plus">+</string>
@@ -270,7 +270,7 @@
     <string name="action_next">Sonraki</string>
     <string name="status_flagged">Önemli içerik</string>
     <string name="action_media_stored">Ortamlarınızın saklanacağı yeri seçin.</string>
-    <string name="create_new_project">Yeni proje oluştur</string>
+    <string name="create_new_folder">Yeni proje oluştur</string>
     <string name="add_a_project_folder_to_the_server">Sunucuya bir proje klasörü ekleyin</string>
     <string name="action_choose_folder">Sunucudan bir proje klasörü seçin</string>
     <string name="prompt_arrow"><![CDATA[>]]></string>

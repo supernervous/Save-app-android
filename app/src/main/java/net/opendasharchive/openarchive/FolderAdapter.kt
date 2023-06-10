@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,11 @@ class FolderAdapter(listener: FolderAdapterClickListener?) : ListAdapter<Project
     class ViewHolder(private val binding: RvSimpleRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterClickListener>?, project: Project?) {
-            binding.rvRowTitle.text = project?.description
+            binding.rvTitle.text = project?.description
+
+            binding.rvTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                ContextCompat.getDrawable(binding.rvTitle.context, R.drawable.ic_folder),
+                null, null, null)
 
             val id = project?.id
             if (id != null) {

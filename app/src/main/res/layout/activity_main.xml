@@ -64,39 +64,49 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
-            <ImageView
-                android:id="@+id/current_folder_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/current_folder"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/current_folder_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                app:layout_constraintStart_toEndOf="@id/current_folder_icon"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/current_folder_icon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/current_folder_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                app:layout_constraintStart_toEndOf="@id/current_folder_name"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/current_folder_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/current_folder_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/current_folder_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="@drawable/pill"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/current_folder_name"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <net.opendasharchive.openarchive.util.SelectiveViewPager
                 android:id="@+id/pager"
@@ -105,7 +115,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/current_folder_name" />
+                app:layout_constraintTop_toBottomOf="@id/current_folder" />
 
             <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floating_menu"
@@ -144,15 +154,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <TextView
                 android:id="@+id/new_folder"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:text="@string/new_folder"
                 android:textColor="@color/oablue"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:drawableStartCompat="@drawable/ic_add" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

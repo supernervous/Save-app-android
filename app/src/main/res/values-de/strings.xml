@@ -110,8 +110,8 @@
     <string name="action_data_use">Datennutzung</string>
     <string name="action_privacy">Privatsphäre</string>
     <string name="action_about">Infos</string>
-    <string name="header_new_project">Projekt hinzufügen</string>
-    <string name="action_browse_projects">Benütze existierendes Projekt</string>
+    <string name="header_new_folder">Ordner hinzufügen</string>
+    <string name="action_browse_folders">Benütze existierenden Ordner</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Hochladen…</string>
@@ -130,7 +130,7 @@
     <string name="action_next">Weiter</string>
     <string name="status_flagged">Besonderer Inhalt</string>
     <string name="action_media_stored">Richte ein, wo Deine Medien gespeichert werden sollen.</string>
-    <string name="create_new_project">Neues Projekt erstellen</string>
+    <string name="create_new_folder">Neuen Ordner erstellen</string>
     <string name="menu_edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
     <string name="remove_from_app">Aus App entfernen</string>
