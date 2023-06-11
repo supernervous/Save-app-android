@@ -370,4 +370,5 @@
     <string name="biometrics_title">Unlock ProofMode Key</string>
     <string name="folders">Folders</string>
     <string name="new_folder">New Folder</string>
+    <string name="creative_commons" translatable="false">Creative Commons</string>
 </resources>

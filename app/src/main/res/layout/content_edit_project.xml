@@ -2,171 +2,141 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="top"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.opendasharchive.openarchive.projects.EditProjectActivity"
-    tools:showIn="@layout/activity_edit_project"
-    android:padding="6dp"
     android:layout_marginTop="48dp"
-    >
-
-
+    android:filterTouchesWhenObscured="true"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:padding="6dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".features.projects.EditProjectActivity"
+    tools:showIn="@layout/activity_edit_project">
 
     <EditText
+        android:id="@+id/edtProjectName"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint=""
-        android:textSize="18dp"
-        android:id="@+id/edtProjectName"
-        android:singleLine="true"
         android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:textSize="18sp"
         tools:text="The Project Name"
-        />
-
-
-
+        android:autofillHints="name"
+        android:inputType="text"
+        tools:ignore="LabelFor" />
 
     <LinearLayout
+        android:id="@+id/groupLicenseChooser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/groupLicenseChooser"
         android:padding="8dp"
-        android:visibility="visible"
-        >
+        android:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CREATIVE COMMONS"
-            android:textSize="12dp"
-            android:textStyle="bold"
-            android:textColor="@color/oablue"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
-
-            />
+            android:text="@string/creative_commons"
+            android:textAllCaps="true"
+            android:textColor="@color/oablue"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/tb_cc_deriv_enable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
+                android:layout_alignParentEnd="true"
                 android:checked="false"
                 android:showText="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes" />
+
             <TextView
                 android:id="@+id/tb_cc_deriv_label_enable"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:text="@string/allow_creative_commons_use_for_all_media_in_this_project"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-
-                />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/cc_row_1"
-            >
-
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/tb_cc_deriv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
+                android:layout_alignParentEnd="true"
                 android:checked="false"
                 android:showText="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes" />
+
             <TextView
                 android:id="@+id/tb_cc_deriv_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info_license_deriv"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-
-                />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </RelativeLayout>
 
-
-
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/cc_row_2"
-            >
-
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tb_cc_sharealike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
-                android:checked="false"
-                android:id="@+id/tb_cc_sharealike"
-
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:checked="false"
                 android:gravity="center_vertical"
-                />
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes" />
+
             <TextView
                 android:id="@+id/tb_cc_sharealike_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info_license_sharealike"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-
-                />
+                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 
-
-
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/cc_row_3"
-            >
-
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tb_cc_comm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
+                android:layout_alignParentEnd="true"
                 android:checked="false"
-                android:id="@+id/tb_cc_comm"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:textOff="@string/answer_no"
+                android:textOn="@string/answer_yes" />
 
             <TextView
+                android:id="@+id/tb_cc_comm_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info_license_comm"
-                android:id="@+id/tb_cc_comm_label"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                />
-
+                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 
@@ -175,41 +145,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="https://creativecommons.org"
-            />
+            tools:text="https://creativecommons.org" />
 
     </LinearLayout>
 
-
     <TextView
+        android:id="@+id/action_remove_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/remove_from_app"
-        android:id="@+id/action_remove_project"
-        android:textColor="@color/red"
         android:layout_margin="12dp"
-        android:textSize="18dp"
         android:gravity="center"
-        android:onClick="removeProject"
-        />
-
+        android:text="@string/remove_from_app"
+        android:textColor="@color/red"
+        android:textSize="18sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/light_grey"
         android:layout_marginTop="6dp"
-        />
+        android:background="@color/light_grey" />
+
     <TextView
+        android:id="@+id/action_archive_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_archive_project"
-        android:id="@+id/action_archive_project"
-        android:textColor="@color/oablue"
         android:layout_margin="12dp"
-        android:textSize="18dp"
         android:gravity="center"
-        android:onClick="archiveProject"
-        />
+        android:text="@string/action_archive_project"
+        android:textColor="@color/oablue"
+        android:textSize="18sp" />
 
 </LinearLayout>

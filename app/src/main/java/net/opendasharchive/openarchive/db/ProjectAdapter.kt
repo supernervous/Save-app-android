@@ -13,7 +13,8 @@ import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 
 class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
-    private var mProjects = listOf<Project>()
+    var projects = listOf<Project>()
+        private set
 
     override fun getItem(position: Int): Fragment {
         return if (position == 0) {
@@ -31,15 +32,15 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
     }
 
     override fun getCount(): Int {
-        return mProjects.size + 1
+        return projects.size + 1
     }
 
     fun getProject(i: Int): Project? {
-        return if (i > 0 && i <= mProjects.size) mProjects[i - 1] else null
+        return if (i > 0 && i <= projects.size) projects[i - 1] else null
     }
 
     fun updateData(projects: List<Project>) {
-        mProjects = projects
+        this.projects = projects
 
         notifyDataSetChanged()
     }

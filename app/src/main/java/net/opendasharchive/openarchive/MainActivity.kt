@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -29,14 +31,12 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
-import com.orm.SugarRecord.findById
+import com.orm.SugarRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
+import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.ProjectAdapter
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
@@ -63,7 +63,7 @@ import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
-    FolderAdapterClickListener {
+    FolderAdapterListener {
 
     companion object {
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
@@ -159,6 +159,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.spaceAvatar.setOnClickListener {
             showSpaceSettings()
         }
+        mBinding.spaceName.setOnClickListener {
+            showSpaceSettings()
+        }
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
         mFolderAdapter = FolderAdapter(this)
@@ -167,22 +170,16 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         val snackView = mSnackBar?.view as? SnackbarLayout
         snackView?.addView(ProgressBar(this))
 
-        mSpace?.projects?.let { projects ->
-            mPagerAdapter.updateData(projects)
 
-            mBinding.pager.adapter = mPagerAdapter
-            mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+        val projects = mSpace?.projects ?: emptyList()
 
-            mFolderAdapter.update(projects, mBinding.pager.currentItem - 1)
-            mBinding.folders.adapter = mFolderAdapter
-        } ?: run {
-            mBinding.pager.adapter = mPagerAdapter
-            mBinding.pager.currentItem = 0
+        mPagerAdapter.updateData(projects)
+        mBinding.pager.adapter = mPagerAdapter
 
-            mFolderAdapter.update(emptyList(), mBinding.pager.currentItem - 1)
-            mBinding.folders.adapter = mFolderAdapter
-        }
+        mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
 
+        mFolderAdapter.update(projects)
+        mBinding.folders.adapter = mFolderAdapter
 
         // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mBinding.pager.pageMargin = 0
@@ -228,6 +225,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.folders.layoutManager = LinearLayoutManager(this)
         mBinding.folders.adapter = mFolderAdapter
 
+        for (drawable in mBinding.newFolder.compoundDrawablesRelative) {
+            drawable?.colorFilter = PorterDuffColorFilter(mBinding.newFolder.currentTextColor, PorterDuff.Mode.SRC_IN)
+        }
         mBinding.newFolder.setOnClickListener {
             addProject()
         }
@@ -254,14 +254,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     // Oh, oh. User removed passphrase lock.
                     Prefs.proofModeEncryptedPassphrase = null
 
-                    TODO("Remove secured ProofMode PGP key.")
+                    // TODO("Remove secured ProofMode PGP key.")
                 }
             }
         }
     }
 
     fun addProject() {
-        requestNewProjectNameResultLauncher.launch(
+        mRequestNewProjectNameResultLauncher.launch(
             Intent(this, AddFolderActivity::class.java))
 
         mBinding.root.closeDrawer(mBinding.folderBar)
@@ -275,73 +275,52 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             mBinding.pager.adapter = mPagerAdapter
             mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
 
-            mFolderAdapter.update(projects, mBinding.pager.currentItem - 1)
+            mFolderAdapter.update(projects)
         }
 
         updateMenu()
     }
 
     private fun refreshCurrentProject() {
-        mBinding.pager.let {
-            if (mBinding.pager.currentItem > 0) {
-                val frag =
-                    mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as? MediaListFragment
-                frag?.refresh()
-            }
-            updateMenu()
+        if (mBinding.pager.currentItem > 0) {
+            (mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as? MediaListFragment)
+                ?.refresh()
         }
+
+        updateMenu()
     }
 
     private fun setTitle(title: String) {
         mBinding.spaceName.text = title
     }
 
-    private fun initSpace(space: Space) {
-        mSpace = space
-        mSpace?.let {
-            if (it.friendlyName.isNotEmpty()) {
-                setTitle(it.friendlyName)
-            } else {
-                val listSpaces = Space.getAll()
-                if (listSpaces.hasNext()) {
-                    mSpace = listSpaces.next()
-                    setTitle(it.friendlyName)
-                    Prefs.currentSpaceId = it.id
-                } else {
-                    setTitle(R.string.main_activity_title)
-                }
-            }
-
-            it.setAvatar(mBinding.spaceAvatar)
-        }
-    }
-
     private fun importSharedMedia(data: Intent?) {
-        if (data != null && data.clipData != null) {
-            val mClipData = data.clipData?.getItemAt(0)?.uri?.path
-            if (mClipData != null && !mClipData.contains(packageName)) {
-                data.let {
-                    scope.executeAsyncTask(
-                        onPreExecute = {
-                            mSnackBar?.show()
-                        },
-                        doInBackground = {
-                            handleOutsideMedia(data)
-                        },
-                        onPostExecute = { media ->
-                            if (media != null) {
-                                val reviewMediaIntent =
-                                    Intent(this, ReviewMediaActivity::class.java)
-                                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.id)
-                                startActivity(reviewMediaIntent)
-                            }
-                            mSnackBar?.dismiss()
-                            intent = null
-                        }
-                    )
+        if (data?.action != Intent.ACTION_SEND) return
+
+        val uri = data.data ?: if ((data.clipData?.itemCount ?: 0) > 0) data.clipData?.getItemAt(0)?.uri else null
+        val path = uri?.path ?: return
+
+        if (path.contains(packageName)) return
+
+        scope.executeAsyncTask(
+            onPreExecute = {
+                mSnackBar?.show()
+            },
+            doInBackground = {
+                importMedia(uri)
+            },
+            onPostExecute = { media ->
+                if (media != null) {
+                    val reviewMediaIntent =
+                        Intent(this, ReviewMediaActivity::class.java)
+                    reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.id)
+                    startActivity(reviewMediaIntent)
                 }
+
+                mSnackBar?.dismiss()
+                intent = null
             }
-        }
+        )
     }
 
     private fun updateMenu() {
@@ -366,57 +345,61 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun importMedia(importUri: List<Uri>): ArrayList<Media> {
         val result = ArrayList<Media>()
+
         for (uri in importUri) {
             val media = importMedia(uri)
             if (media != null) result.add(media)
         }
+
         return result
     }
 
-    private fun importMedia(uri: Uri?): Media? {
-        if (uri == null) return null
+    private fun importMedia(uri: Uri): Media? {
         val title = Utility.getUriDisplayName(this, uri) ?: ""
-        val mimeType = Utility.getMimeType(this, uri)
         val fileImport = Utility.getOutputMediaFileByCache(this, title)
+
         try {
             val imported = Utility.writeStreamToFile(
-                contentResolver.openInputStream(uri), fileImport
-            )
+                contentResolver.openInputStream(uri), fileImport)
+
             if (!imported) return null
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+        }
+        catch (e: FileNotFoundException) {
+            Timber.e(e)
+
             return null
         }
+
         val project = mPagerAdapter.getProject(lastTab) ?: return null
 
         // create media
         val media = Media()
-        var coll: Collection?
-        if (project.openCollectionId == -1L) {
+
+        var coll = SugarRecord.findById(Collection::class.java, project.openCollectionId)
+        if (coll?.uploadDate != null) {
             coll = Collection()
             coll.projectId = project.id
             coll.save()
+
             project.openCollectionId = coll.id
             project.save()
-        } else {
-            coll = findById(Collection::class.java, project.openCollectionId)
-            if (coll == null || coll.uploadDate != null) {
-                coll = Collection()
-                coll.projectId = project.id
-                coll.save()
-                project.openCollectionId = coll.id
-                project.save()
-            }
         }
+
         media.collectionId = coll.id
+
         val fileSource = uri.path?.let { File(it) }
         var createDate = Date()
-        if (fileSource!!.exists()) {
+
+        if (fileSource?.exists() == true) {
             createDate = Date(fileSource.lastModified())
             media.contentLength = fileSource.length()
-        } else media.contentLength = fileImport?.length() ?: 0
+        }
+        else {
+            media.contentLength = fileImport?.length() ?: 0
+        }
+
         media.originalFilePath = Uri.fromFile(fileImport).toString()
-        media.mimeType = mimeType ?: ""
+        media.mimeType = Utility.getMimeType(this, uri) ?: ""
         media.createDate = createDate
         media.updateDate = media.createDate
         media.sStatus = Media.Status.Local
@@ -425,26 +408,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         media.projectId = project.id
         media.title = title
         media.save()
+
         return media
     }
-
-    private fun handleOutsideMedia(intent: Intent?): Media? {
-        var media: Media? = null
-        if (intent != null && intent.action != null && intent.action == Intent.ACTION_SEND) {
-            var uri = intent.data
-            if (uri == null) {
-                uri =
-                    if (intent.clipData != null && intent.clipData!!.itemCount > 0) {
-                        intent.clipData!!.getItemAt(0).uri
-                    } else {
-                        return null
-                    }
-            }
-            media = importMedia(uri)
-        }
-        return media
-    }
-
 
     private fun importMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -504,17 +470,30 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
 
-        Space.getCurrent()?.let { currentSpace ->
-            val space = mSpace
+        var currentSpace = Space.getCurrent()
+        if (currentSpace == null) {
+            currentSpace = mSpace
 
-            if (space == null || currentSpace.id != space.id || space.projects.size != mPagerAdapter.count - 1) {
-                initSpace(currentSpace)
+            if (currentSpace == null) {
+                val spaceIterator = Space.getAll()
+
+                if (spaceIterator.hasNext()) {
+                    currentSpace = spaceIterator.next()
+                }
             }
 
-            refreshProjects()
-
-            refreshCurrentProject()
+            Prefs.currentSpaceId = currentSpace?.id ?: -1
         }
+
+        mSpace = currentSpace
+
+        setTitle(mSpace?.friendlyName ?: getString(R.string.main_activity_title))
+
+        mSpace?.setAvatar(mBinding.spaceAvatar)
+
+        refreshProjects()
+
+        refreshCurrentProject()
 
         if (mSpace?.host.isNullOrEmpty()) {
             startActivity(Intent(this, OAAppIntro::class.java))
@@ -578,7 +557,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         return super.onOptionsItemSelected(item)
     }
 
-    val requestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val mRequestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
             refreshProjects()
         }
@@ -591,7 +570,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
         GoogleApiAvailability.getInstance().apply {
             if (isUserResolvableError(errorCode)) {
-
                 showErrorDialogFragment(this@MainActivity, errorCode, mErrorDialogResultLauncher) {
                     // The user chose not to take the recovery action.
                     showAlertIcon()
@@ -626,17 +604,13 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.alertIcon.visibility = View.GONE
     }
 
-    override fun projectClicked(projectId: Long) {
-        for (i in 0 until mPagerAdapter.count) {
-            if (mPagerAdapter.getProject(i)?.id == projectId) {
-                mBinding.pager.currentItem = i
+    override fun projectClicked(project: Project) {
+        mBinding.pager.currentItem = mPagerAdapter.projects.indexOf(project) + 1
 
-                mFolderAdapter.update(mBinding.pager.currentItem - 1)
+        mBinding.root.closeDrawer(mBinding.folderBar)
+    }
 
-                mBinding.root.closeDrawer(mBinding.folderBar)
-
-                break
-            }
-        }
+    override fun getSelected(): Project? {
+        return mPagerAdapter.getProject(mBinding.pager.currentItem)
     }
 }
