@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 
 class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
@@ -57,5 +58,9 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         else {
             getProject(position)?.description
         }
+    }
+
+    fun getRegisteredMediaListFragment(position: Int): MediaListFragment? {
+        return getRegisteredFragment(position) as? MediaListFragment
     }
 }

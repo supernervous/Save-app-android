@@ -2,13 +2,13 @@ package net.opendasharchive.openarchive.features.media.browse
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.extensions.toggle
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -37,7 +37,7 @@ class BrowseProjectsActivity : BaseActivity() {
 
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        val space = Space.getCurrent()
+        val space = Space.current
 
         if (space != null) {
             viewModel.getFileList(this, space)
@@ -66,14 +66,14 @@ class BrowseProjectsActivity : BaseActivity() {
         val project = Project()
         project.created = Date()
         project.description = description
-        project.spaceId = Space.getCurrent()?.id
+        project.spaceId = Space.current?.id
         project.save()
     }
 
 
     private fun projectExists(name: String): Boolean {
         // Check for duplicate name.
-        Space.getCurrent()?.projects?.forEach { project ->
+        Space.current?.projects?.forEach { project ->
             if (project.description == name) return true
         }
 
@@ -82,12 +82,12 @@ class BrowseProjectsActivity : BaseActivity() {
 
     private fun registerObservable() {
         viewModel.fileList.observe(this) {
-            mBinding.tvProjectsEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            mBinding.tvProjectsEmpty.toggle(it.isEmpty())
             setupProjectList(it)
         }
 
         viewModel.progressBarFlag.observe(this) {
-            mBinding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+            mBinding.progressBar.toggle(it)
         }
     }
 

@@ -13,12 +13,13 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import java.lang.ref.WeakReference
+import kotlin.math.roundToInt
 
 interface FolderAdapterListener {
 
     fun projectClicked(project: Project)
 
-    fun getSelected(): Project?
+    fun getSelectedProject(): Project?
 }
 
 class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, FolderAdapter.ViewHolder>(DIFF_CALLBACK), FolderAdapterListener {
@@ -29,9 +30,11 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
             binding.rvTitle.text = project?.description
 
             binding.rvTitle.setTextColor(getColor(binding.rvTitle.context,
-                listener?.get()?.getSelected()?.id == project?.id))
+                listener?.get()?.getSelectedProject()?.id == project?.id))
 
             binding.rvTitle.setDrawable(R.drawable.ic_folder, Position.Start, 0.75)
+            binding.rvTitle.compoundDrawablePadding =
+                binding.rvTitle.context.resources.getDimension(R.dimen.ef_padding_small).roundToInt()
 
             if (project != null) {
                 binding.root.setOnClickListener {
@@ -58,7 +61,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
         private var highlightColor: Int? = null
         private var defaultColor: Int? = null
 
-        private fun getColor(context: Context, highlight: Boolean): Int {
+        fun getColor(context: Context, highlight: Boolean): Int {
             if (highlight) {
                 var color = highlightColor
 
@@ -108,14 +111,14 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
     }
 
     override fun projectClicked(project: Project) {
-        notifyItemChanged(getIndex(getSelected()))
+        notifyItemChanged(getIndex(getSelectedProject()))
         notifyItemChanged(getIndex(project))
 
         mListener?.get()?.projectClicked(project)
     }
 
-    override fun getSelected(): Project? {
-        mLastSelected = mListener?.get()?.getSelected()
+    override fun getSelectedProject(): Project? {
+        mLastSelected = mListener?.get()?.getSelectedProject()
 
         return mLastSelected
     }

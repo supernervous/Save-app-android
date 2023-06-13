@@ -10,6 +10,7 @@ import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.CustomOnboardingMainBinding
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.show
 
 class TorOnboardingScreen : Fragment(), View.OnClickListener {
 
@@ -20,9 +21,9 @@ class TorOnboardingScreen : Fragment(), View.OnClickListener {
 
         mBinding.customSlideBigText.setText(R.string.onboarding_archive_over_tor)
 
-        mBinding.customSlideBigTextSub.visibility = View.VISIBLE
+        mBinding.customSlideBigTextSub.show()
 
-        mBinding.customSlideButton.visibility = View.VISIBLE
+        mBinding.customSlideButton.show()
         mBinding.customSlideButton.setOnClickListener(this)
 
         setDynamicTexts()

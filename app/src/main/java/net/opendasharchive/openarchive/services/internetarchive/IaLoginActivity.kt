@@ -116,7 +116,7 @@ class IaLoginActivity : BaseActivity() {
         mSpace.password = secretKey
         mSpace.save()
 
-        Prefs.currentSpaceId = mSpace.id
+        Space.current = mSpace
 
         isSuccessLogin = true
 

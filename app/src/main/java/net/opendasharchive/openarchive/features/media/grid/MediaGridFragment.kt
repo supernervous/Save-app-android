@@ -24,6 +24,9 @@ import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListAc
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.cloak
+import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
 
 class MediaGridFragment : MediaListFragment() {
@@ -81,7 +84,7 @@ class MediaGridFragment : MediaListFragment() {
             }
         }
 
-        mBinding.addMediaHint.visibility = if (addedView) View.GONE else View.VISIBLE
+        mBinding.addMediaHint.toggle(!addedView)
     }
 
     private fun performBatchUpload(listMedia: List<Media>) {
@@ -114,21 +117,25 @@ class MediaGridFragment : MediaListFragment() {
                 }, onDelete = {
                     refresh()
                 }, onUpload = {
-                    if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
-                        if(Space.getCurrent()!!.host.contains("https://sam.nl.tab.digital")){
+                    if (Space.current?.tType == Space.Type.WEBDAV) {
+                        // TODO: WTF is this DUPLICATED special casing here?!?
+                        if (Space.current?.host?.contains("https://sam.nl.tab.digital") == true) {
                             val availableSpace = getAvailableStorageSpace(it)
                             val totalUploadsContent = availableSpace.first
                             val totalStorage = availableSpace.second
-                            if(totalStorage < totalUploadsContent){
+                            if(totalStorage < totalUploadsContent) {
                                 Toast.makeText(activity, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-                            }else{
+                            }
+                            else {
                                 performBatchUpload(it)
                             }
-                        }else {
+                        }
+                        else {
                             //for NON nextcloud providers
                             performBatchUpload(it)
                         }
-                    }else{
+                    }
+                    else {
                         //for non webDAV protocols.
                         performBatchUpload(it)
                     }
@@ -172,7 +179,7 @@ class MediaGridFragment : MediaListFragment() {
                 val view = createMediaList(collection, media)
 
                 mBinding.mediacontainer.addView(view, 0)
-                mBinding.addMediaHint.visibility = View.GONE
+                mBinding.addMediaHint.hide()
             }
         }
     }
@@ -193,7 +200,7 @@ class MediaGridFragment : MediaListFragment() {
                 Media.Status.Local -> {
                     holder.sectionStatus.text = getString(R.string.status_ready_to_upload)
                     holder.sectionTimestamp.text = "${listMedia.size} ${getString(R.string.label_items)}"
-                    holder.action.visibility = View.INVISIBLE
+                    holder.action.cloak()
                     holder.action.setOnClickListener {
                         startActivity(Intent(requireActivity(), PreviewMediaListActivity::class.java))
                     }
@@ -206,7 +213,7 @@ class MediaGridFragment : MediaListFragment() {
                     val count = listMedia.filter { it.sStatus == Media.Status.Uploaded }.size
 
                     holder.sectionTimestamp.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
-                    holder.action.visibility = View.INVISIBLE
+                    holder.action.cloak()
 
                     return@forEach
                 }
@@ -215,11 +222,11 @@ class MediaGridFragment : MediaListFragment() {
 
                     if (count == listMedia.size) {
                         holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
-                        holder.action.visibility = View.INVISIBLE
+                        holder.action.cloak()
                     }
                     else {
                         holder.sectionStatus.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
-                        holder.action.visibility = View.INVISIBLE
+                        holder.action.cloak()
                     }
 
                     collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
@@ -236,7 +243,7 @@ class MediaGridFragment : MediaListFragment() {
 
                     collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
 
-                    holder.action.visibility = View.INVISIBLE
+                    holder.action.cloak()
                 }
                 else -> {
                     holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
@@ -248,7 +255,7 @@ class MediaGridFragment : MediaListFragment() {
                             }
                         }
 
-                    holder.action.visibility = View.INVISIBLE
+                    holder.action.cloak()
                 }
             }
         }

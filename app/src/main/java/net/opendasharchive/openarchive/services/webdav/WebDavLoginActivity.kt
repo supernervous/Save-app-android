@@ -194,7 +194,7 @@ class WebDavLoginActivity : BaseActivity() {
 
                 mSpace.save()
 
-                Prefs.currentSpaceId = mSpace.id
+                Space.current = mSpace
 
                 finishAffinity()
                 startActivity(Intent(this@WebDavLoginActivity, MainActivity::class.java))

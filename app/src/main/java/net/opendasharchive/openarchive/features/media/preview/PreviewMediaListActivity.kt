@@ -78,23 +78,29 @@ class PreviewMediaListActivity : BaseActivity() {
 
     private fun batchUpload() {
         val listMedia = mFrag?.getMediaList() ?: listOf()
-        if (Space.getCurrent()?.tType == Space.Type.WEBDAV) {
+        val space = Space.current
 
-             if(Space.getCurrent()?.host?.contains("https://sam.nl.tab.digital") == true){
+        if (space?.tType == Space.Type.WEBDAV) {
+            // TODO: WTF is this DUPLICATED special casing here?!?
+            if (space.host.contains("https://sam.nl.tab.digital")) {
                  //currently ticket #319 only supports nextcloud. Need to figure out a solution on the webDAV layer, that works across the board.
                  val availableSpace = getAvailableStorageSpace(listMedia)
                  val totalUploadsContent = availableSpace.first
                  val totalStorage = availableSpace.second
-                 if(totalStorage < totalUploadsContent){
+
+                 if (totalStorage < totalUploadsContent) {
                      Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-                 }else{
+                 }
+                 else {
                      performBatchUpload(listMedia)
                  }
-            }else {
+            }
+             else {
                  //for NON nextcloud providers
                  performBatchUpload(listMedia)
              }
-        }else{
+        }
+        else {
             //for non webDAV protocols.
             performBatchUpload(listMedia)
         }

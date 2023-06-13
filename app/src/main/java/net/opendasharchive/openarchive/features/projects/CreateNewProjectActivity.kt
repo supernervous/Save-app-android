@@ -67,7 +67,7 @@ class CreateNewProjectActivity : BaseActivity() {
     }
 
     private fun createProject(description: String): Boolean {
-        val space = Space.getCurrent() ?: return false
+        val space = Space.current ?: return false
 
         space.projects.forEach { project ->
             if (project.description == description) {

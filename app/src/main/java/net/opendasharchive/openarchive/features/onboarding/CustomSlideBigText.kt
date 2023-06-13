@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.databinding.CustomSlideBigTextBinding
+import net.opendasharchive.openarchive.util.extensions.show
 
 class CustomSlideBigText : Fragment() {
 
@@ -26,7 +27,7 @@ class CustomSlideBigText : Fragment() {
 
         if (mSubTitle != 0) {
             binding.customSlideBigTextSub.setText(mSubTitle)
-            binding.customSlideBigTextSub.visibility = View.VISIBLE
+            binding.customSlideBigTextSub.show()
         }
 
         return binding.root

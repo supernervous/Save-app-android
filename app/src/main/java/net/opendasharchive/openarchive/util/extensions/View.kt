@@ -11,10 +11,21 @@ fun View.hide() {
     visibility = View.GONE
 }
 
-@Suppress("unused")
-fun View.invisible() {
+fun View.cloak() {
     visibility = View.INVISIBLE
 }
+
+fun View.toggle(state: Boolean? = null) {
+    if (state ?: isVisible) {
+        hide()
+    }
+    else {
+        show()
+    }
+}
+
+val View.isVisible: Boolean
+    get() = visibility == View.VISIBLE
 
 fun View.makeSnackBar(message: CharSequence, duration: Int = Snackbar.LENGTH_INDEFINITE): Snackbar {
     return Snackbar.make(this, message, duration)

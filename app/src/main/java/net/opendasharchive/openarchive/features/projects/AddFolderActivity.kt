@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
@@ -11,6 +10,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.util.extensions.hide
 
 class AddFolderActivity : BaseActivity() {
 
@@ -38,8 +38,8 @@ class AddFolderActivity : BaseActivity() {
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.
-        if (Space.getCurrent()?.tType == Space.Type.INTERNET_ARCHIVE) {
-            mBinding.browseProjects.visibility = View.GONE
+        if (Space.current?.tType == Space.Type.INTERNET_ARCHIVE) {
+            mBinding.browseProjects.hide()
 
             finish()
             setFolder(false)
@@ -64,7 +64,7 @@ class AddFolderActivity : BaseActivity() {
     }
 
     private fun setFolder(browse: Boolean) {
-        if (Space.getCurrent() == null) {
+        if (Space.current == null) {
             finish()
             startActivity(Intent(this, SpaceSetupActivity::class.java))
 

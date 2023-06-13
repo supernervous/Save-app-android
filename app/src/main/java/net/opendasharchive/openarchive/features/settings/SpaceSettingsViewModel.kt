@@ -11,7 +11,6 @@ import net.opendasharchive.openarchive.repository.ProjectRepository
 import net.opendasharchive.openarchive.repository.ProjectRepositoryImpl
 import net.opendasharchive.openarchive.repository.SpaceRepository
 import net.opendasharchive.openarchive.repository.SpaceRepositoryImpl
-import net.opendasharchive.openarchive.util.Prefs
 
 class SpaceSettingsViewModel : ViewModel() {
 
@@ -47,7 +46,7 @@ class SpaceSettingsViewModel : ViewModel() {
             val latestSpace = spaceList.value?.lastOrNull()
             latestSpace?.let {
                 _currentSpace.value = it
-                Prefs.currentSpaceId = it.id
+                Space.current = it
             }
         }
     }

@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,7 +35,6 @@ import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
@@ -59,7 +57,7 @@ import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
-    FolderAdapterListener {
+    FolderAdapterListener, SpaceAdapterListener {
 
     companion object {
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
@@ -74,37 +72,49 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
+    private lateinit var mSpaceAdapter: SpaceAdapter
     private lateinit var mFolderAdapter: FolderAdapter
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+
         override fun onReceive(context: Context, intent: Intent) {
             // Get extra data included in the Intent
-            Timber.tag("receiver").d( "Updating media")
-            val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
-            val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
-            val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
-            if (status == Media.Status.Uploaded.id) {
-                mBinding.pager.let {
+            Timber.d( "Updating media")
+
+            when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
+                Media.Status.Uploaded.id -> {
                     if (mBinding.pager.currentItem > 0) {
-                        val frag =
-                            mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as MediaListFragment
-                        frag.refresh()
+                        mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)
+                            ?.refresh()
+
                         updateMenu()
                     }
                 }
-            } else if (status == Media.Status.Uploading.id) {
-                mBinding.pager.let {
+                Media.Status.Uploading.id -> {
+                    val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
+
                     if (mediaId != -1L && mBinding.pager.currentItem > 0) {
-                        val frag =
-                            mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as MediaListFragment
-                        frag.updateItem(mediaId, progress)
+                        val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
+
+                        mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)
+                            ?.updateItem(mediaId, progress)
                     }
                 }
             }
         }
+    }
+
+    private val mRequestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            refreshProjects()
+        }
+    }
+
+    private val mErrorDialogResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+        retryProviderInstall = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,10 +128,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         setContentView(mBinding.root)
 
         mPickerLauncher = registerImagePicker { result: List<Image> ->
-            val uriList = ArrayList<Uri>()
-            result.forEach { image ->
-                uriList.add(image.uri)
-            }
             val bar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
             (bar.view as? SnackbarLayout)?.addView(ProgressBar(this))
 
@@ -130,7 +136,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     bar.show()
                 },
                 doInBackground = {
-                    importMedia(uriList)
+                    importMedia(result.map { it.uri })
                 },
                 onPostExecute = { media ->
                     bar.dismiss()
@@ -148,6 +154,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        mSnackBar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
+        (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
+
         mBinding.spaceAvatar.setOnClickListener {
             showSpaceSettings()
         }
@@ -156,23 +165,47 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
-        mFolderAdapter = FolderAdapter(this)
-
-        mSnackBar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
-        (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
-
-        val projects = mSpace?.projects ?: emptyList()
-
-        mPagerAdapter.updateData(projects)
         mBinding.pager.adapter = mPagerAdapter
-
-        mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
-
-        mFolderAdapter.update(projects)
-        mBinding.folders.adapter = mFolderAdapter
 
         // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mBinding.pager.pageMargin = 0
+
+        mBinding.pager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float,
+                                        positionOffsetPixels: Int) { }
+
+            override fun onPageSelected(position: Int) {
+                lastTab = position
+
+                if (position == 0) {
+                    addProject()
+                }
+                else {
+                    refreshCurrentProject()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) { }
+        })
+
+        mBinding.space.setOnClickListener {
+            mBinding.spaces.toggle()
+            mBinding.space.setDrawable(if (mBinding.spaces.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+        }
+        mBinding.space.setDrawable(if (mBinding.spaces.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+
+        mSpaceAdapter = SpaceAdapter(this)
+        mBinding.spaces.layoutManager = LinearLayoutManager(this)
+        mBinding.spaces.adapter = mSpaceAdapter
+
+        mFolderAdapter = FolderAdapter(this)
+        mBinding.folders.layoutManager = LinearLayoutManager(this)
+        mBinding.folders.adapter = mFolderAdapter
+
+        mBinding.newFolder.scaleAndTintDrawable(Position.Start, 0.75)
+        mBinding.newFolder.setOnClickListener {
+            addProject()
+        }
 
         mBinding.floatingMenu.setOnClickListener {
             if (mPagerAdapter.count > 1 && lastTab > 0) {
@@ -181,44 +214,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             else {
                 addProject()
             }
-        }
-
-        mBinding.pager.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                lastTab = position
-
-                if (position == 0) {
-                    addProject()
-                }
-
-                val project = mPagerAdapter.getProject(position) ?: return
-
-                project.space?.setAvatar(mBinding.currentFolderIcon)
-
-                mBinding.currentFolderName.text = project.description
-
-                mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
-                    project.collections.map { it.media.count() }
-                        .reduceOrNull { acc, count -> acc + count } ?: 0)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
-
-        mBinding.folders.layoutManager = LinearLayoutManager(this)
-        mBinding.folders.adapter = mFolderAdapter
-
-        mBinding.newFolder.scaleAndTintDrawable(Position.Start, 0.75)
-
-        mBinding.newFolder.setOnClickListener {
-            addProject()
         }
 
         //check for any queued uploads and restart
@@ -249,6 +244,87 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
+
+        refreshSpace()
+
+        if (mSpace?.host.isNullOrEmpty()) {
+            startActivity(Intent(this, OAAppIntro::class.java))
+        }
+
+        importSharedMedia(intent)
+
+        if (mBinding.pager.currentItem == 0 && mPagerAdapter.count > 1) {
+            mBinding.pager.currentItem = 1
+        }
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+
+        if (retryProviderInstall) {
+            // It's safe to retry installation.
+            ProviderInstaller.installIfNeededAsync(this, this)
+        }
+
+        retryProviderInstall = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        importSharedMedia(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        mMenuUpload = menu.findItem(R.id.menu_upload_manager)
+
+        updateMenu()
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                showSpaceSettings()
+
+                return true
+            }
+            R.id.menu_upload_manager -> {
+                startActivity(Intent(this, UploadManagerActivity::class.java).also {
+                    it.putExtra(PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
+                })
+
+                return true
+            }
+
+            R.id.menu_folders -> {
+                // https://stackoverflow.com/questions/21796209/how-to-create-a-custom-navigation-drawer-in-android
+
+                if (mBinding.root.isDrawerOpen(mBinding.folderBar)) {
+                    mBinding.root.closeDrawer(mBinding.folderBar)
+                }
+                else {
+                    mBinding.root.openDrawer(mBinding.folderBar)
+                }
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     fun addProject() {
         mRequestNewProjectNameResultLauncher.launch(
             Intent(this, AddFolderActivity::class.java))
@@ -256,31 +332,90 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.root.closeDrawer(mBinding.folderBar)
     }
 
-    private fun refreshProjects() {
-        mSpace?.projects?.let { projects ->
-            mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
-            mPagerAdapter.updateData(projects)
+    private fun refreshSpace() {
+        val currentSpace = Space.current
+        mSpace = currentSpace
 
-            mBinding.pager.adapter = mPagerAdapter
-            mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+        if (currentSpace != null) {
+            // Main header
+            currentSpace.setAvatar(mBinding.spaceAvatar)
+            mBinding.spaceName.text = currentSpace.friendlyName
 
-            mFolderAdapter.update(projects)
+            // Drawer header
+            mBinding.space.setDrawable(currentSpace.getAvatar(this)
+                ?.scaled(32, this), Position.Start, tint = false)
+        }
+        else {
+            mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
+            mBinding.spaceName.text = getString(R.string.main_activity_title)
+
+            mBinding.space.setDrawable(R.drawable.avatar_default, Position.Start, tint = false)
         }
 
-        updateMenu()
+        // Drawer header
+        mBinding.space.text = mBinding.spaceName.text
+
+        mSpaceAdapter.update(Space.getAll().asSequence().toList())
+
+        refreshProjects()
+    }
+
+    private fun refreshProjects() {
+        val projects = mSpace?.projects ?: emptyList()
+
+        mPagerAdapter.updateData(projects)
+
+        mBinding.pager.adapter = mPagerAdapter
+        mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+
+        mFolderAdapter.update(projects)
+
+        refreshCurrentProject()
     }
 
     private fun refreshCurrentProject() {
-        if (mBinding.pager.currentItem > 0) {
-            (mPagerAdapter.getRegisteredFragment(mBinding.pager.currentItem) as? MediaListFragment)
-                ?.refresh()
+        val project = mPagerAdapter.getProject(mBinding.pager.currentItem)
+
+        if (project != null) {
+            mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)?.refresh()
+
+            project.space?.setAvatar(mBinding.currentFolderIcon)
+            mBinding.currentFolderIcon.show()
+
+            mBinding.currentFolderName.text = project.description
+            mBinding.currentFolderName.show()
+
+            mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
+                project.collections.map { it.media.count() }
+                    .reduceOrNull { acc, count -> acc + count } ?: 0)
+            mBinding.currentFolderCount.show()
+        }
+        else {
+            mBinding.currentFolderIcon.cloak()
+            mBinding.currentFolderName.cloak()
+            mBinding.currentFolderCount.cloak()
         }
 
         updateMenu()
     }
 
-    private fun setTitle(title: String) {
-        mBinding.spaceName.text = title
+    private fun updateMenu() {
+        val item = mMenuUpload ?: return
+
+        val uploadCount = Media.getByStatus(listOf(Media.Status.Uploading, Media.Status.Queued),
+            Media.ORDER_PRIORITY).size
+
+        if (uploadCount > 0) {
+            item.icon = BadgeDrawable(this).setCount("$uploadCount")
+            item.isVisible = true
+        }
+        else {
+            item.isVisible = false
+        }
+    }
+
+    private fun showSpaceSettings() {
+        startActivity(Intent(this, SpaceSettingsActivity::class.java))
     }
 
     private fun importSharedMedia(data: Intent?) {
@@ -310,26 +445,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 intent = null
             }
         )
-    }
-
-    private fun updateMenu() {
-        mMenuUpload?.let {
-            val uploadCount = Media.getByStatus(listOf(Media.Status.Uploading, Media.Status.Queued), Media.ORDER_PRIORITY).size
-
-            if (uploadCount > 0) {
-                it.isVisible = true
-                val bg = BadgeDrawable(this)
-                bg.setCount("$uploadCount")
-                it.icon = bg
-            } else {
-                it.isVisible = false
-            }
-        }
-    }
-
-    private fun showSpaceSettings() {
-        val intent = Intent(this, SpaceSettingsActivity::class.java)
-        startActivity(intent)
     }
 
     private fun importMedia(importUri: List<Uri>): ArrayList<Media> {
@@ -365,7 +480,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         val media = Media()
 
         var coll = SugarRecord.findById(Collection::class.java, project.openCollectionId)
-        if (coll?.uploadDate != null) {
+        if (coll?.uploadDate == null) {
             coll = Collection()
             coll.projectId = project.id
             coll.save()
@@ -451,111 +566,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
-
-        mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
-
-        var currentSpace = Space.getCurrent()
-        if (currentSpace == null) {
-            currentSpace = mSpace
-
-            if (currentSpace == null) {
-                val spaceIterator = Space.getAll()
-
-                if (spaceIterator.hasNext()) {
-                    currentSpace = spaceIterator.next()
-                }
-            }
-
-            Prefs.currentSpaceId = currentSpace?.id ?: -1
-        }
-
-        mSpace = currentSpace
-
-        setTitle(mSpace?.friendlyName ?: getString(R.string.main_activity_title))
-
-        mSpace?.setAvatar(mBinding.spaceAvatar)
-
-        refreshProjects()
-
-        refreshCurrentProject()
-
-        if (mSpace?.host.isNullOrEmpty()) {
-            startActivity(Intent(this, OAAppIntro::class.java))
-        }
-
-        importSharedMedia(intent)
-
-        if (mBinding.pager.currentItem == 0 && mPagerAdapter.count > 1) {
-            mBinding.pager.currentItem = 1
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-
-        importSharedMedia(intent)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        mMenuUpload = menu.findItem(R.id.menu_upload_manager)
-
-        updateMenu()
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                showSpaceSettings()
-
-                return true
-            }
-            R.id.menu_upload_manager -> {
-                startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    it.putExtra(PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
-                })
-
-                return true
-            }
-
-            R.id.menu_folders -> {
-                // https://stackoverflow.com/questions/21796209/how-to-create-a-custom-navigation-drawer-in-android
-
-                if (mBinding.root.isDrawerOpen(mBinding.folderBar)) {
-                    mBinding.root.closeDrawer(mBinding.folderBar)
-                }
-                else {
-                    mBinding.root.openDrawer(mBinding.folderBar)
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    private val mRequestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            refreshProjects()
-        }
-    }
-
-    private val mErrorDialogResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        retryProviderInstall = true
-    }
-
     override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
         GoogleApiAvailability.getInstance().apply {
             if (isUserResolvableError(errorCode)) {
@@ -571,26 +581,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private fun showAlertIcon() {
-        mBinding.alertIcon.visibility = View.VISIBLE
+        mBinding.alertIcon.show()
         TooltipCompat.setTooltipText(mBinding.alertIcon, getString(R.string.unsecured_internet_connection))
-    }
-
-    override fun onPostResume() {
-        super.onPostResume()
-
-        if (retryProviderInstall) {
-            // It's safe to retry installation.
-            ProviderInstaller.installIfNeededAsync(this, this)
-        }
-
-        retryProviderInstall = false
     }
 
     /**
      * This is triggered if the security provider is up-to-date.
      */
     override fun onProviderInstalled() {
-        mBinding.alertIcon.visibility = View.GONE
+        mBinding.alertIcon.hide()
     }
 
     override fun projectClicked(project: Project) {
@@ -599,7 +598,19 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.root.closeDrawer(mBinding.folderBar)
     }
 
-    override fun getSelected(): Project? {
+    override fun getSelectedProject(): Project? {
         return mPagerAdapter.getProject(mBinding.pager.currentItem)
+    }
+
+    override fun spaceClicked(space: Space) {
+        Space.current = space
+
+        refreshSpace()
+
+        mBinding.root.closeDrawer(mBinding.folderBar)
+    }
+
+    override fun getSelectedSpace(): Space? {
+        return mSpace
     }
 }

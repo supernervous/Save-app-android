@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.databinding.CustomOnboardingMainBinding
+import net.opendasharchive.openarchive.util.extensions.show
 
 class CustomOnboardingScreen : Fragment() {
 
@@ -28,7 +29,7 @@ class CustomOnboardingScreen : Fragment() {
 
         if (mSubTitle != 0) {
             binding.customSlideBigTextSub.setText(mSubTitle)
-            binding.customSlideBigTextSub.visibility = View.VISIBLE
+            binding.customSlideBigTextSub.show()
         }
 
         binding.customSlideImage.setImageResource(mImageResource)

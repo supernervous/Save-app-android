@@ -20,7 +20,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 
 
@@ -92,7 +91,7 @@ class DropboxLoginActivity : BaseActivity() {
                             username?.let { mSpace.username = it }
                             mSpace.password = accessToken
                             mSpace.save()
-                            Prefs.currentSpaceId = mSpace.id
+                            Space.current = mSpace
 
                             MainScope().launch {
                                 mBinding.email.text = mSpace.username

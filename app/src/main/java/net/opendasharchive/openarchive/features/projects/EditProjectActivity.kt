@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.features.projects
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import net.opendasharchive.openarchive.R
@@ -13,6 +12,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.extensions.toggle
 
 class EditProjectActivity : BaseActivity() {
 
@@ -87,17 +87,14 @@ class EditProjectActivity : BaseActivity() {
 
             editProjectLayout.tbCcDerivEnable.isChecked = !project.licenseUrl.isNullOrEmpty()
 
-            editProjectLayout.ccRow1.visibility =
-                if (editProjectLayout.tbCcDerivEnable.isChecked) View.VISIBLE else View.GONE
-            editProjectLayout.ccRow2.visibility =
-                if (editProjectLayout.tbCcDerivEnable.isChecked) View.VISIBLE else View.GONE
-            editProjectLayout.ccRow3.visibility =
-                if (editProjectLayout.tbCcDerivEnable.isChecked) View.VISIBLE else View.GONE
+            editProjectLayout.ccRow1.toggle(editProjectLayout.tbCcDerivEnable.isChecked)
+            editProjectLayout.ccRow2.toggle(editProjectLayout.tbCcDerivEnable.isChecked)
+            editProjectLayout.ccRow3.toggle(editProjectLayout.tbCcDerivEnable.isChecked)
 
             editProjectLayout.tbCcDerivEnable.setOnCheckedChangeListener { _, isChecked ->
-                editProjectLayout.ccRow1.visibility = if (isChecked) View.VISIBLE else View.GONE
-                editProjectLayout.ccRow2.visibility = if (isChecked) View.VISIBLE else View.GONE
-                editProjectLayout.ccRow3.visibility = if (isChecked) View.VISIBLE else View.GONE
+                editProjectLayout.ccRow1.toggle(isChecked)
+                editProjectLayout.ccRow2.toggle(isChecked)
+                editProjectLayout.ccRow3.toggle(isChecked)
                 updateLicense()
             }
 

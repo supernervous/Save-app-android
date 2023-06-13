@@ -236,10 +236,11 @@ class BatchReviewMediaActivity : BaseActivity() {
     }
 
     private fun uploadMedia() {
-        val space = Space.getCurrent()
+        val space = Space.current
         val listMedia = mediaList
 
         if (space?.tType == Space.Type.WEBDAV) {
+            // TODO: WTF is this DUPLICATED special casing here?!?
             if (space.host.contains("https://sam.nl.tab.digital")) {
                 val nextCloudModel =
                     Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)

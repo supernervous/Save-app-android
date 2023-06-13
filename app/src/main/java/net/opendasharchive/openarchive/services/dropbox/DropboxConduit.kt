@@ -25,7 +25,7 @@ class DropboxConduit(
 ) : Conduit(media, context, listener, jobId) {
 
     companion object {
-        const val NAME = "dropbox"
+        const val NAME = "Dropbox"
         const val HOST = "dropbox.com"
     }
 

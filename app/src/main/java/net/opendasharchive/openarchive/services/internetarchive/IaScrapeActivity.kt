@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -18,6 +17,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
 import net.opendasharchive.openarchive.util.AlertHelper
+import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -48,7 +48,7 @@ class IaScrapeActivity : BaseActivity() {
     private fun login(currentURL: String) {
         mBinding.webView.settings.javaScriptEnabled = true
         mBinding.webView.addJavascriptInterface(JSInterface(), "htmlout")
-        mBinding.webView.visibility = View.VISIBLE
+        mBinding.webView.show()
 
         mBinding.webView.webViewClient = object : WebViewClient() {
 

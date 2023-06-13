@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -32,6 +31,8 @@ import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
+import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
 import java.io.File
 
@@ -119,8 +120,8 @@ class ReviewMediaActivity : BaseActivity() {
         if ((mMedia.sStatus != Media.Status.Local
                     && mMedia.sStatus != Media.Status.New) && !mMedia.flag
         ) {
-            mBinding.reviewMetadata.ivEditFlag.visibility = View.GONE
-            mBinding.reviewMetadata.tvFlagLbl.visibility = View.GONE
+            mBinding.reviewMetadata.ivEditFlag.hide()
+            mBinding.reviewMetadata.tvFlagLbl.hide()
         }
     }
 
@@ -158,11 +159,11 @@ class ReviewMediaActivity : BaseActivity() {
                     }
                     Media.Status.Queued -> {
                         tvUrl.text = getString(R.string.waiting_for_upload)
-                        tvUrl.visibility = View.VISIBLE
+                        tvUrl.show()
                     }
                     Media.Status.Uploading -> {
                         tvUrl.text = getString(R.string.uploading_now)
-                        tvUrl.visibility = View.VISIBLE
+                        tvUrl.show()
                     }
                     else -> {}
                 }
@@ -172,7 +173,7 @@ class ReviewMediaActivity : BaseActivity() {
                 reviewMetadata.tvDescriptionLbl.isEnabled = false
 
                 if (mMedia.description.isEmpty()) {
-                    reviewMetadata.ivEditNotes.visibility = View.GONE
+                    reviewMetadata.ivEditNotes.hide()
                     reviewMetadata.tvDescriptionLbl.hint = ""
                 }
 
@@ -180,17 +181,17 @@ class ReviewMediaActivity : BaseActivity() {
                 reviewMetadata.tvLocationLbl.isEnabled = false
 
                 if (mMedia.location.isEmpty()) {
-                    reviewMetadata.ivEditLocation.visibility = View.GONE
+                    reviewMetadata.ivEditLocation.hide()
                     reviewMetadata.tvLocationLbl.hint = ""
                 }
 
                 reviewMetadata.tvTagsLbl.isEnabled = false
                 if (mMedia.getTags().isEmpty()) {
-                    reviewMetadata.ivEditTags.visibility = View.GONE
+                    reviewMetadata.ivEditTags.hide()
                     reviewMetadata.tvTagsLbl.hint = ""
                 }
                 reviewMetadata.tvCcLicense.isEnabled = false
-                reviewMetadata.groupLicenseChooser.visibility = View.GONE
+                reviewMetadata.groupLicenseChooser.hide()
 
             } else {
                 reviewMetadata.rowFlag.setOnClickListener {
@@ -305,8 +306,8 @@ class ReviewMediaActivity : BaseActivity() {
             val soundFile = MediaViewHolder.mSoundFileCache[mMedia.originalFilePath]
             if (soundFile != null) {
                 mBinding.swMedia.setAudioFile(soundFile)
-                mBinding.swMedia.visibility = View.VISIBLE
-                mBinding.ivMedia.visibility = View.GONE
+                mBinding.swMedia.show()
+                mBinding.ivMedia.hide()
             }
         } else mBinding.ivMedia.setImageDrawable(
             ContextCompat.getDrawable(
@@ -329,14 +330,14 @@ class ReviewMediaActivity : BaseActivity() {
     }
 
     private fun checkPermission() {
-        val space = Space.getCurrent()
-        if (space != null) {
-            //mark queued
+        if (Space.current != null) {
+            // mark queued
             mMedia.sStatus = Media.Status.Queued
             saveMedia()
             bindMedia()
             viewModel.applyMedia()
-        } else {
+        }
+        else {
             val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
             startActivity(firstStartIntent)
         }

@@ -113,16 +113,16 @@ class MediaViewHolder(
 
                 Glide.with(ivIcon.context).load(Uri.parse(currentMedia.originalFilePath))
                     .placeholder(circularProgress).fitCenter().into(ivIcon)
-                ivIcon.visibility = View.VISIBLE
-                tvWave?.visibility = View.GONE
-                ivIsVideo?.visibility = View.GONE
+                ivIcon.show()
+                tvWave?.hide()
+                ivIsVideo?.hide()
             } else if (currentMedia.mimeType.startsWith("video")) {
                 mPicasso?.let {
                     it.load(VideoRequestHandler.SCHEME_VIDEO + ":" + currentMedia.originalFilePath)
                         .fit().centerCrop().into(ivIcon)
-                    ivIcon.visibility = View.VISIBLE
-                    tvWave?.visibility = View.GONE
-                    ivIsVideo?.visibility = View.VISIBLE
+                    ivIcon.show()
+                    tvWave?.hide()
+                    ivIsVideo?.show()
                 }
             } else if (currentMedia.mimeType.startsWith("audio")) {
                 ivIcon.setImageDrawable(
@@ -131,7 +131,7 @@ class MediaViewHolder(
                         R.drawable.no_thumbnail
                     )
                 )
-                ivIsVideo?.visibility = View.GONE
+                ivIsVideo?.hide()
                 if (mSoundFileCache[mediaPath] == null) {
                     scope.executeAsyncTask(
                         onPreExecute = {
@@ -163,15 +163,15 @@ class MediaViewHolder(
                         onPostExecute = { result ->
                             (result as? SoundFile)?.let {
                                 tvWave?.setAudioFile(it)
-                                tvWave?.visibility = View.VISIBLE
-                                ivIcon.visibility = View.GONE
+                                tvWave?.show()
+                                ivIcon.hide()
                             }
                         }
                     )
                 } else {
                     tvWave?.setAudioFile(mSoundFileCache[mediaPath])
-                    tvWave?.visibility = View.VISIBLE
-                    ivIcon.visibility = View.GONE
+                    tvWave?.show()
+                    ivIcon.hide()
                 }
             } else {
                 ivIcon.setImageDrawable(
@@ -207,9 +207,9 @@ class MediaViewHolder(
         if (currentMedia.sStatus == Media.Status.Error) {
             sbTitle.append(mContext.getString(R.string.status_error))
             progressBar?.let { progressBar ->
-                progressBar.visibility = View.GONE
-                progressBarCircular?.visibility = View.GONE
-                tvProgress?.visibility = View.GONE
+                progressBar.hide()
+                progressBarCircular?.hide()
+                tvProgress?.hide()
                 progressBar.progress = 0
                 tvProgress?.text = "0%"
 
@@ -219,9 +219,9 @@ class MediaViewHolder(
         } else if (currentMedia.sStatus == Media.Status.Queued) {
             sbTitle.append(mContext.getString(R.string.status_waiting))
             progressBar?.let { progressBar ->
-                progressBar.visibility = View.GONE
-                progressBarCircular?.visibility = View.VISIBLE
-                tvProgress?.visibility = View.VISIBLE
+                progressBar.hide()
+                progressBarCircular?.show()
+                tvProgress?.show()
                 tvProgress?.text = "0%"
 
             }
@@ -231,9 +231,9 @@ class MediaViewHolder(
             if (currentMedia.contentLength > 0) perc =
                 (currentMedia.progress.toFloat() / currentMedia.contentLength.toFloat() * 100f).toInt()
             progressBar?.let { progressBar ->
-                progressBar.visibility = View.VISIBLE
-                progressBarCircular?.visibility = View.GONE
-                tvProgress?.visibility = View.VISIBLE
+                progressBar.show()
+                progressBarCircular?.hide()
+                tvProgress?.show()
                 progressBar.progress = perc
                 tvProgress?.text = "$perc%"
             } ?: run {
@@ -242,8 +242,8 @@ class MediaViewHolder(
         } else if (currentMedia.sStatus == Media.Status.Uploaded) {
             sbTitle.append(mContext.getString(R.string.status_uploaded))
             progressBar?.let { progressBar ->
-                progressBar.visibility = View.GONE
-                tvProgress?.visibility = View.GONE
+                progressBar.hide()
+                tvProgress?.hide()
             }
         }
         if (sbTitle.isNotEmpty()) sbTitle.append(": ")

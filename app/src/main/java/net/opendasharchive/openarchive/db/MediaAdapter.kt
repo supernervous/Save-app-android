@@ -18,6 +18,7 @@ import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.toggle
 
 class MediaAdapter(
     private val mContext: Context,
@@ -87,8 +88,7 @@ class MediaAdapter(
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bindData(data[position], mActionMode != null)
-        if (isEditMode) holder.handleView?.visibility =
-            View.VISIBLE else holder.handleView?.visibility = View.GONE
+        holder.handleView?.toggle(isEditMode)
         holder.handleView?.setOnTouchListener { _, event ->
             val action = event.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {

@@ -1,6 +1,8 @@
 package net.opendasharchive.openarchive.db
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -75,13 +77,11 @@ data class Space(
             return get(type, host, username).isNotEmpty()
         }
 
-        fun getCurrent(): Space? {
-            val id = Prefs.currentSpaceId
-
-            if (id <= 0) return null
-
-            return get(id)
-        }
+        var current: Space?
+            get() = get(Prefs.currentSpaceId) ?: this.getAll().asSequence().firstOrNull()
+            set(value) {
+                Prefs.currentSpaceId = value?.id ?: -1
+            }
 
         fun get(id: Long): Space? {
             return findById(Space::class.java, id)
@@ -107,6 +107,9 @@ data class Space(
             return hostUrl?.host ?: name
         }
 
+    val initial: String
+        get() = (friendlyName.firstOrNull() ?: 'X').uppercase(Locale.getDefault())
+
     val hostUrl: HttpUrl?
         get() = host.toHttpUrlOrNull()
 
@@ -119,40 +122,35 @@ data class Space(
     val projects: List<Project>
         get() = find(Project::class.java, "space_id = ?", arrayOf(id.toString()), null, "id DESC", null)
 
+    fun getAvatar(context: Context): Drawable? {
+        return when (tType) {
+            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ialogo128)
+
+            Type.DROPBOX -> ContextCompat.getDrawable(context, R.drawable.dropbox)
+
+            else -> TextDrawable.builder().buildRound(initial,
+                ContextCompat.getColor(context, R.color.oablue))
+        }
+    }
+
     fun setAvatar(view: ImageView) {
         when (tType) {
-            Type.INTERNET_ARCHIVE -> {
+            Type.INTERNET_ARCHIVE, Type.DROPBOX -> {
                 if (view is AvatarImageView) {
                     view.state = AvatarImageView.SHOW_IMAGE
                 }
 
-                view.setImageResource(R.drawable.ialogo128)
-            }
-
-            Type.DROPBOX -> {
-                if (view is AvatarImageView) {
-                    view.state = AvatarImageView.SHOW_IMAGE
-                }
-
-                view.post {
-                    view.setImageResource(R.drawable.dropbox)
-                }
+                view.setImageDrawable(getAvatar(view.context))
             }
 
             else -> {
                 if (view is AvatarImageView) {
                     view.state = AvatarImageView.SHOW_INITIAL
-                    view.setText((friendlyName.firstOrNull() ?: 'X').uppercase(Locale.getDefault()))
+                    view.setText(initial)
                     view.avatarBackgroundColor = ContextCompat.getColor(view.context, R.color.oablue)
                 }
                 else {
-                    val drawable = TextDrawable.builder()
-                        .buildRound(
-                            friendlyName.firstOrNull()?.uppercase(Locale.getDefault()),
-                            ContextCompat.getColor(view.context, R.color.oablue)
-                        )
-
-                    view.setImageDrawable(drawable)
+                    view.setImageDrawable(getAvatar(view.context))
                 }
             }
         }

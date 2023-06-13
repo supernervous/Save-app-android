@@ -27,7 +27,6 @@ import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
-import net.opendasharchive.openarchive.util.Prefs
 
 class SpaceSettingsActivity : AppCompatActivity() {
 
@@ -144,7 +143,7 @@ class SpaceSettingsActivity : AppCompatActivity() {
             val image: ImageView =
                 getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
             image.setOnClickListener {
-                Prefs.currentSpaceId = space.id
+                Space.current = space
                 showCurrentSpace(space)
             }
             mBinding.spaceview.addView(image)

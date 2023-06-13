@@ -34,7 +34,7 @@ fun TextView.setDrawable(drawable: Drawable?, position: Position, scale: Double 
 
     if (tint) drawable?.tint(currentTextColor)
 
-    val list = mutableListOf<Drawable?>(null, null, null, null)
+    val list = compoundDrawablesRelative.toMutableList()
     list[position.ordinal] = drawable
 
     setCompoundDrawablesRelativeWithIntrinsicBounds(list)
