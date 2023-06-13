@@ -88,8 +88,7 @@
             android:exported="false"
             android:label="@string/title_activity_archive_metadata"
             android:screenOrientation="portrait"
-            android:taskAffinity=""
-            android:theme="@style/SettingsTheme" />
+            android:taskAffinity="" />
         <activity
             android:name=".services.internetarchive.IaScrapeActivity"
             android:exported="false"

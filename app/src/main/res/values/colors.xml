@@ -38,4 +38,11 @@
 
     <color name="float_transparent">#AAAAAAAA</color>
 
+    <!-- new colors from 2023 redesign -->
+
+    <color name="c23_dark_grey">#ff696666</color>
+    <color name="c23_gray">#ff9f9f9f</color>
+    <color name="c23_teal">#ff00b4a6</color>
+    <color name="c23_black">#ff000000</color>
+
 </resources>

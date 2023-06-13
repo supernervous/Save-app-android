@@ -4,12 +4,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:buttonStyle">@style/Button</item>
-        <item name="android:textViewStyle">@style/TextView</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-
-
     </style>
 
     <style name="AppMediaTheme" parent="Theme.MaterialComponents.NoActionBar">
@@ -24,26 +21,11 @@
         <item name="android:textColorHint">@color/light_grey</item>
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-
     </style>
-
 
     <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
         <item name="textAllCaps">false</item>
         <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
-        <item name="android:textColor">@color/oablue</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:background">@color/dark_grey</item>
-    </style>
-
-    <!-- Settings Theme to show action bar -->
-    <style name="SettingsTheme" parent="AppTheme">
-        <item name="android:windowNoTitle">false</item>
-        <item name="android:windowActionBar">true</item>
-        <item name="android:textColor">@color/light_black</item>
     </style>
 
     <style name="Button" parent="android:Widget.Button">
@@ -66,35 +48,12 @@
         <item name="android:textColor">@color/oablue</item>
     </style>
 
-    <style name="TextView" parent="android:Widget.TextView">
-        <item name="android:alpha">1</item>
-    </style>
-
-    <style name="Spinner" parent="android:Widget.Spinner">
-        <item name="android:background">@android:drawable/btn_default</item>
-    </style>
-
     <style name="TextViewBase">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
     <!-- General -->
-    <style name="TextViewLabel" parent="TextViewBase">
-        <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-    </style>
-
-    <style name="TextViewAlert" parent="TextViewBase">
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textColor">@color/light_black</item>
-        <item name="android:textColorHint">@color/light_grey</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
 
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>
@@ -105,32 +64,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="viewPagerTitleStrip">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/oablue</item>
-        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="android:textColor">@color/light_grey</item>
-        <item name="tabIndicatorColor">@color/oablue</item>
-    </style>
-
-    <style name="CustomTextAppearanceTab" parent="TextAppearance.Design.Tab">
-        <item name="textAllCaps">false</item>
-        <item name="android:textAllCaps">false</item>
     </style>
 
 </resources>
