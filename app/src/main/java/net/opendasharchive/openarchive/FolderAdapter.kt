@@ -1,8 +1,6 @@
 package net.opendasharchive.openarchive
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -12,6 +10,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.databinding.RvSimpleRowBinding
 import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.util.extensions.Position
+import net.opendasharchive.openarchive.util.extensions.setDrawable
 import java.lang.ref.WeakReference
 
 interface FolderAdapterListener {
@@ -28,16 +28,10 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
         fun bind(listener: WeakReference<FolderAdapterListener>?, project: Project?) {
             binding.rvTitle.text = project?.description
 
-            val context = binding.rvTitle.context
-            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_folder)
+            binding.rvTitle.setTextColor(getColor(binding.rvTitle.context,
+                listener?.get()?.getSelected()?.id == project?.id))
 
-            val color = getColor(context, listener?.get()?.getSelected()?.id == project?.id)
-
-            binding.rvTitle.setTextColor(color)
-            drawable?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
-
-            binding.rvTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable,
-                null, null, null)
+            binding.rvTitle.setDrawable(R.drawable.ic_folder, Position.Start, 0.75)
 
             if (project != null) {
                 binding.root.setOnClickListener {

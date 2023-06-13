@@ -7,8 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -52,9 +50,7 @@ import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Hbks
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.createSnackBar
-import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
-import net.opendasharchive.openarchive.util.extensions.executeAsyncTaskWithList
+import net.opendasharchive.openarchive.util.extensions.*
 import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
@@ -126,12 +122,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             result.forEach { image ->
                 uriList.add(image.uri)
             }
-            val bar = mBinding.pager.createSnackBar(
-                getString(R.string.importing_media),
-                Snackbar.LENGTH_INDEFINITE
-            )
-            val snackView = bar.view as SnackbarLayout
-            snackView.addView(ProgressBar(this))
+            val bar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
+            (bar.view as? SnackbarLayout)?.addView(ProgressBar(this))
 
             scope.executeAsyncTaskWithList(
                 onPreExecute = {
@@ -166,10 +158,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
         mFolderAdapter = FolderAdapter(this)
 
-        mSnackBar = mBinding.pager.createSnackBar(getString(R.string.importing_media), Snackbar.LENGTH_INDEFINITE)
-        val snackView = mSnackBar?.view as? SnackbarLayout
-        snackView?.addView(ProgressBar(this))
-
+        mSnackBar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
+        (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
 
         val projects = mSpace?.projects ?: emptyList()
 
@@ -225,9 +215,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.folders.layoutManager = LinearLayoutManager(this)
         mBinding.folders.adapter = mFolderAdapter
 
-        for (drawable in mBinding.newFolder.compoundDrawablesRelative) {
-            drawable?.colorFilter = PorterDuffColorFilter(mBinding.newFolder.currentTextColor, PorterDuff.Mode.SRC_IN)
-        }
+        mBinding.newFolder.scaleAndTintDrawable(Position.Start, 0.75)
+
         mBinding.newFolder.setOnClickListener {
             addProject()
         }

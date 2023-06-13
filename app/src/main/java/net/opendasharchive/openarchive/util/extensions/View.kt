@@ -11,10 +11,11 @@ fun View.hide() {
     visibility = View.GONE
 }
 
+@Suppress("unused")
 fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
-fun View.createSnackBar(message: String, duration: Int): Snackbar {
+fun View.makeSnackBar(message: CharSequence, duration: Int = Snackbar.LENGTH_INDEFINITE): Snackbar {
     return Snackbar.make(this, message, duration)
 }

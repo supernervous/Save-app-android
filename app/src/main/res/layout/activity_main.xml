@@ -160,7 +160,7 @@
                 android:layout_height="48dp"
                 android:text="@string/new_folder"
                 android:gravity="center_vertical"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

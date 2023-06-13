@@ -21,6 +21,7 @@ import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import net.opendasharchive.openarchive.util.extensions.show
 import okhttp3.Call
 import okhttp3.Callback
@@ -184,9 +185,7 @@ class WebDavLoginActivity : BaseActivity() {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mSnackbar = Snackbar.make(mBinding.loginForm,
-            getString(R.string.login_activity_logging_message),
-            Snackbar.LENGTH_INDEFINITE)
+        mSnackbar = mBinding.loginForm.makeSnackBar(getString(R.string.login_activity_logging_message))
         mSnackbar.show()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -256,9 +255,7 @@ class WebDavLoginActivity : BaseActivity() {
                 mBinding.password.requestFocus()
             }
             else {
-                mSnackbar = Snackbar.make(mBinding.loginForm,
-                    text,
-                    Snackbar.LENGTH_LONG)
+                mSnackbar = mBinding.loginForm.makeSnackBar(text, Snackbar.LENGTH_LONG)
                 mSnackbar.show()
 
                 mBinding.server.requestFocus()
