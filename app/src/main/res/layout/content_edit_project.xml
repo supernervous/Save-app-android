@@ -40,7 +40,7 @@
             android:layout_marginBottom="18dp"
             android:text="@string/creative_commons"
             android:textAllCaps="true"
-            android:textColor="@color/oablue"
+            android:textColor="?colorAccent"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -172,7 +172,7 @@
         android:layout_margin="12dp"
         android:gravity="center"
         android:text="@string/action_archive_project"
-        android:textColor="@color/oablue"
+        android:textColor="?colorAccent"
         android:textSize="18sp" />
 
 </LinearLayout>

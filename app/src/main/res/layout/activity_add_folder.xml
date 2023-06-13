@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/header_new_folder"
-            android:textColor="@color/oablue"
+            android:textColor="?colorAccent"
             android:textSize="28sp"
             android:textStyle="bold" />
 
