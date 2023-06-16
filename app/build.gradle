@@ -84,7 +84,6 @@ dependencies {
    // implementation libraries.okio
 
     implementation libraries.satyan_sugar
-    implementation libraries.i2p_floating_action
     implementation libraries.amulyakhare_textdrawable
     implementation libraries.appintro
     implementation libraries.picasso
