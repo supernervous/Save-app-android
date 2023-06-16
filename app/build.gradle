@@ -126,7 +126,7 @@ dependencies {
 
     implementation libraries.appcompat
     implementation libraries.constraint_layout
-    implementation libraries.material
+    implementation "com.google.android.material:material:1.4.0"
 
     implementation libraries.dropbox_core_sdk
     implementation libraries.legacy_support_v4
