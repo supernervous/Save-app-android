@@ -45,7 +45,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="6dp"
                 app:srcCompat="@drawable/ic_add_circle_outline"
-                app:tint="?colorAccent"
+                app:tint="@color/colorPrimary"
                 android:contentDescription="@string/add_new_space" />
 
         </RelativeLayout>

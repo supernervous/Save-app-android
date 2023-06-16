@@ -2,31 +2,32 @@
 
     <!-- themes -->
 
-    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="NoActionBarBaseTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:textColor">@color/colorOnBackground</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
+    </style>
+
+    <style name="AppTheme" parent="NoActionBarBaseTheme">
         <item name="android:buttonStyle">@style/Button</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-        <item name="colorAccent">@color/oablue</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="NoActionBarBaseTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-        <item name="colorAccent">@color/oablue</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
     </style>
 
-    <style name="AppMediaTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="AppMediaTheme" parent="NoActionBarBaseTheme">
         <item name="android:colorBackground">@color/black</item>
         <item name="android:background">@color/dark_grey</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/black</item>
         <item name="android:buttonStyle">@style/Button</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:textColor">@color/white</item>
@@ -34,9 +35,6 @@
         <item name="android:textColorHint">@color/light_grey</item>
         <item name="android:backgroundTint">@color/dark_grey</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-        <item name="colorAccent">@color/oablue</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
     </style>
 
     <!-- dialogs / alerts -->
@@ -44,7 +42,7 @@
     <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">14sp</item>
     </style>
 
@@ -52,15 +50,15 @@
 
     <style name="Button" parent="android:Widget.Button">
         <!-- item name="android:alpha">1</item -->
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">

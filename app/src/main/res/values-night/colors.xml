@@ -3,6 +3,11 @@
 
     <!-- night theme colors -->
 
+    <color name="colorBackground">@color/black</color>
+    <color name="colorOnBackground">@color/white</color>
+    <color name="colorOnPrimary">@color/white</color>
+    <color name="colorPrimary">@color/c23_teal</color>
+    <color name="colorPrimaryDark">@color/c23_teal_40</color>
     <color name="statusBarColor">@color/black</color>
 
 </resources>
