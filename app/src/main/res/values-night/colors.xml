@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- night theme colors -->
+
+    <color name="statusBarColor">@color/black</color>
+
+</resources>

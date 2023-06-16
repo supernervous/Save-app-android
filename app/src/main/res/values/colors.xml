@@ -45,4 +45,8 @@
     <color name="c23_teal">#ff00b4a6</color>
     <color name="c23_black">#ff000000</color>
 
+    <!-- day theme colors -->
+
+    <color name="statusBarColor">@color/white</color>
+
 </resources>
