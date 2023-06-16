@@ -218,10 +218,10 @@ class BatchReviewMediaActivity : BaseActivity() {
         saveMedia()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_review_media, menu)
-        menuPublish = menu?.findItem(R.id.menu_upload)
-        menuDelete = menu?.findItem(R.id.menu_delete)
+        menuPublish = menu.findItem(R.id.menu_upload)
+        menuDelete = menu.findItem(R.id.menu_delete)
         menuPublish?.isVisible = true
         menuDelete?.isVisible = false
         return true
