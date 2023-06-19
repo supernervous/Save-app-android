@@ -14,13 +14,13 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:theme="@style/AppBarStyle">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar">
+                android:theme="@style/AppBarStyle">
 
                 <ImageView
                     android:id="@+id/alertIcon"
@@ -123,20 +123,23 @@
             android:id="@+id/floating_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:layout_gravity="bottom|end"
-            app:tint="@color/colorOnPrimary"
+            android:layout_margin="16dp"
             android:backgroundTint="@color/colorPrimary"
-            app:srcCompat="@drawable/baseline_add_white_24" />
+            app:srcCompat="@drawable/baseline_add_white_24"
+            app:tint="@color/colorOnPrimary" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <!-- note: altering corner size is breaking with material3 design guidelines -->
+    <!-- did it to comply with the design from figma -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/folder_bar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:drawerLayoutCornerSize="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
