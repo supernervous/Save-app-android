@@ -22,13 +22,14 @@ import net.opendasharchive.openarchive.databinding.ActivitySpaceSettingsBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 
-class SpaceSettingsActivity : AppCompatActivity() {
+class SpaceSettingsActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivitySpaceSettingsBinding
     private lateinit var viewModel: SpaceSettingsViewModel
@@ -37,21 +38,15 @@ class SpaceSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         mBinding = ActivitySpaceSettingsBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[SpaceSettingsViewModel::class.java]
         setContentView(mBinding.root)
         initLayout()
         observeData()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && event != null) {
-            val obscuredTouch = event.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
-            if (obscuredTouch) return false
-        }
-
-        return super.dispatchTouchEvent(event)
     }
 
     private fun initLayout() {
@@ -111,14 +106,13 @@ class SpaceSettingsActivity : AppCompatActivity() {
         try {
             val pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-            }
-            else {
+            } else {
                 @Suppress("DEPRECATION")
                 packageManager.getPackageInfo(packageName, 0)
             }
-            mBinding.contentSpaceLayout.txtVersion.text = getString(R.string.__version__, getString(R.string.app_name), pInfo.versionName)
-        }
-        catch (e: PackageManager.NameNotFoundException) {
+            mBinding.contentSpaceLayout.txtVersion.text =
+                getString(R.string.__version__, getString(R.string.app_name), pInfo.versionName)
+        } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
     }

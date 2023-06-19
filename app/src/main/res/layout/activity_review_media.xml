@@ -2,10 +2,12 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:id="@+id/bgLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
+    android:paddingTop="@dimen/padding_status_bar_height"
+    android:paddingBottom="@dimen/padding_navigation_bar_height"
     android:theme="@style/AppMediaTheme"
     tools:context="net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity">
 
@@ -77,7 +79,9 @@
                         android:visibility="gone" />
                 </TableRow>
 
-                <include android:id="@+id/review_metadata" layout="@layout/activity_archive_metadata" />
+                <include
+                    android:id="@+id/review_metadata"
+                    layout="@layout/activity_archive_metadata" />
 
             </TableLayout>
 

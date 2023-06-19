@@ -1,111 +1,123 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin"
     tools:context=".features.onboarding.SpaceSetupActivity">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/connect_your_space"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/padding_status_bar_height"
+        android:layout_marginBottom="@dimen/padding_navigation_bar_height">
 
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/set_up_where_you_want_your_media_to_be_stored"
-        android:textAlignment="center" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:id="@+id/web_dav_bt"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in_private_btn"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:filterTouchesWhenObscured="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/send_directly_to_a_private_server" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/connect_your_space"
 
-    </LinearLayout>
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_up_where_you_want_your_media_to_be_stored"
+                android:textAlignment="center" />
 
-    <LinearLayout
-        android:id="@+id/ia_frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:padding="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        <TextView
-            android:id="@+id/ia_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sign_in_btn"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/web_dav_bt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_in_private_btn"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_to_the_internet_archive" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_directly_to_a_private_server" />
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <View
-        android:id="@+id/ia_divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider" />
 
-    <LinearLayout
-        android:id="@+id/dropbox_frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:padding="20dp">
+            <LinearLayout
+                android:id="@+id/ia_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        <TextView
-            android:id="@+id/dropbox_bt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_dropbox"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/ia_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sign_in_btn"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/description_dropbox" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload_to_the_internet_archive" />
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <View
-        android:id="@+id/dropbox_divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="?android:attr/listDivider" />
+            <View
+                android:id="@+id/ia_divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider" />
 
-</LinearLayout>
+            <LinearLayout
+                android:id="@+id/dropbox_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/dropbox_bt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_dropbox"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/description_dropbox" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/dropbox_divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

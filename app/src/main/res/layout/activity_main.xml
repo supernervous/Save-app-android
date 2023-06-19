@@ -9,7 +9,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/appintro_statusbar_height"
+        android:paddingBottom="@dimen/navigation_bar_height">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -139,6 +141,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
+        android:paddingTop="@dimen/appintro_statusbar_height"
+        android:paddingBottom="@dimen/navigation_bar_height"
         app:drawerLayoutCornerSize="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

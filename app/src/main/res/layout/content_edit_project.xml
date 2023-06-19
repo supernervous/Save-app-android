@@ -17,13 +17,13 @@
         android:id="@+id/edtProjectName"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:autofillHints="name"
         android:imeOptions="actionDone"
+        android:inputType="text"
         android:singleLine="true"
         android:textSize="18sp"
-        tools:text="The Project Name"
-        android:autofillHints="name"
-        android:inputType="text"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        tools:text="The Project Name" />
 
     <LinearLayout
         android:id="@+id/groupLicenseChooser"

@@ -1,273 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp" >
-
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_author_lbl"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
-            android:hint="@string/hint_author" />
-
-
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        >
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/padding_status_bar_height"
+        android:layout_marginBottom="@dimen/navigation_bar_height"
+        android:filterTouchesWhenObscured="true"
+        android:paddingTop="@dimen/padding_status_bar_height"
+        android:paddingBottom="@dimen/padding_navigation_bar_height">
 
-
-        <ImageView android:id="@+id/ivEditTitle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_tag_unselected"
-            android:layout_marginRight="12dp"
-            android:background="@color/float_transparent"
-            android:layout_gravity="center_vertical"
-
-            />
-
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_title_lbl"
-            android:layout_centerVertical="true"
-            android:hint="@string/hint_title" />
+            android:orientation="vertical"
+            android:padding="8dp">
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
-
-        <ImageView android:id="@+id/ivEditTags"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_tag_unselected"
-            android:layout_marginRight="12dp"
-            android:background="@color/float_transparent"
-            android:layout_gravity="center_vertical"
-
-            />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_tags_lbl"
-            android:layout_centerVertical="true"
-            android:hint="@string/hint_tags" />
+            <EditText
+                android:id="@+id/tv_author_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="@string/hint_author"
+                android:visibility="gone" />
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
 
-        <ImageView android:id="@+id/ivEditLocation"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_location_unselected"
-            android:layout_marginRight="12dp"
-            android:background="@color/float_transparent"
-            android:layout_gravity="center_vertical"
+                <ImageView
+                    android:id="@+id/ivEditTitle"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:background="@color/float_transparent"
+                    app:srcCompat="@drawable/ic_tag_unselected"
 
-            />
+                    />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_location_lbl"
-            android:layout_centerVertical="true"
-            android:hint="@string/hint_location" />
-
-
-
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/tv_title_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:hint="@string/hint_title" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
 
-        <ImageView android:id="@+id/ivEditNotes"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_edit_unselected"
-            android:layout_marginRight="12dp"
-            android:background="@color/float_transparent"
-            android:layout_gravity="center_vertical"
+                <ImageView
+                    android:id="@+id/ivEditTags"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:background="@color/float_transparent"
+                    app:srcCompat="@drawable/ic_tag_unselected"
 
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_description_lbl"
-            android:hint="@string/hint_description" />
+                    />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/row_flag"
-        android:layout_marginTop="3dp"
-        >
+                <EditText
+                    android:id="@+id/tv_tags_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:hint="@string/hint_tags" />
 
 
-        <ImageView android:id="@+id/ivEditFlag"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_flag_unselected"
-            android:layout_marginRight="12dp"
-            android:background="@color/float_transparent"
-            android:layout_gravity="center_vertical"
+            </LinearLayout>
 
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tv_flag_lbl"
-            android:hint="@string/hint_flag"
-            android:textSize="18dp"
-            android:padding="3dp"
-            />
-
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
 
-    <EditText
-        android:id="@+id/tv_cc_license"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_license"
-        android:visibility="gone"
-        />
+                <ImageView
+                    android:id="@+id/ivEditLocation"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:background="@color/float_transparent"
+                    app:srcCompat="@drawable/ic_location_unselected"
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/groupLicenseChooser"
-        android:padding="8dp"
-        android:visibility="gone"
-        >
+                    />
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+                <EditText
+                    android:id="@+id/tv_location_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:hint="@string/hint_location" />
 
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/tb_cc_deriv"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
-                android:checked="true"
-                android:showText="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                />
-        <TextView
-            android:id="@+id/tb_cc_deriv_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_license_deriv"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-
-            />
-
-</RelativeLayout>
+            </LinearLayout>
 
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
-                android:checked="false"
-                android:id="@+id/tb_cc_sharealike"
-
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:gravity="center_vertical"
-                />
-        <TextView
-            android:id="@+id/tb_cc_sharealike_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_license_sharealike"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-
-            />
-
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
 
+                <ImageView
+                    android:id="@+id/ivEditNotes"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:background="@color/float_transparent"
+                    app:srcCompat="@drawable/ic_edit_unselected"
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+                    />
 
+                <EditText
+                    android:id="@+id/tv_description_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_description" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textOff="@string/answer_no"
-                android:textOn="@string/answer_yes"
-                android:checked="true"
-                android:id="@+id/tb_cc_comm"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_license_comm"
-            android:id="@+id/tb_cc_comm_label"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            />
-
-
-</RelativeLayout>
+            <LinearLayout
+                android:id="@+id/row_flag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
 
 
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/ivEditFlag"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="12dp"
+                    android:background="@color/float_transparent"
+                    app:srcCompat="@drawable/ic_flag_unselected"
 
-</LinearLayout>
-</ScrollView>
+                    />
+
+                <TextView
+                    android:id="@+id/tv_flag_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_flag"
+                    android:padding="3dp"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/tv_cc_license"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_license"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/groupLicenseChooser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/tb_cc_deriv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:checked="true"
+                        android:showText="true"
+                        android:textOff="@string/answer_no"
+                        android:textOn="@string/answer_yes" />
+
+                    <TextView
+                        android:id="@+id/tb_cc_deriv_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/info_license_deriv"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+
+                        />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/tb_cc_sharealike"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:checked="false"
+
+                        android:gravity="center_vertical"
+                        android:textOff="@string/answer_no"
+                        android:textOn="@string/answer_yes" />
+
+                    <TextView
+                        android:id="@+id/tb_cc_sharealike_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/info_license_sharealike"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+
+                        />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/tb_cc_comm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:checked="true"
+                        android:textOff="@string/answer_no"
+                        android:textOn="@string/answer_yes" />
+
+                    <TextView
+                        android:id="@+id/tb_cc_comm_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/info_license_comm"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

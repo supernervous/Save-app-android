@@ -7,6 +7,8 @@
     android:filterTouchesWhenObscured="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:paddingTop="@dimen/padding_status_bar_height"
+    android:paddingBottom="@dimen/padding_navigation_bar_height"
     tools:context=".features.settings.SpaceSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -44,9 +46,9 @@
                 android:layout_height="36dp"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="6dp"
+                android:contentDescription="@string/add_new_space"
                 app:srcCompat="@drawable/ic_add_circle_outline"
-                app:tint="@color/colorPrimary"
-                android:contentDescription="@string/add_new_space" />
+                app:tint="@color/colorPrimary" />
 
         </RelativeLayout>
 
