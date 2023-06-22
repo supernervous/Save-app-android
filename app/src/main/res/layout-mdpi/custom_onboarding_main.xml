@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oablue"
+    android:background="@color/colorPrimary"
     android:filterTouchesWhenObscured="true"
     android:orientation="vertical">
 
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:background="@color/oablue"
+        android:background="@color/colorPrimary"
         android:gravity="start"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
@@ -38,7 +38,7 @@
         android:layout_below="@+id/custom_slide_big_text"
         android:layout_gravity="start"
         android:layout_marginBottom="12dp"
-        android:background="@color/oablue"
+        android:background="@color/colorPrimary"
         android:paddingLeft="12dp"
         android:paddingTop="6dp"
         android:paddingRight="12dp"
@@ -52,7 +52,7 @@
         android:layout_below="@+id/custom_slide_big_text_sub"
         android:layout_marginStart="12dp"
         android:layout_marginTop="6dp"
-        android:textColor="@color/oablue"
+        android:textColor="@color/colorPrimary"
         android:visibility="gone" />
 
 </RelativeLayout>

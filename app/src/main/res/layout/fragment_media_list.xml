@@ -21,7 +21,7 @@
             android:layout_margin="48dp"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/tap_to_add"
-            android:textColor="@color/oablue"
+            android:textColor="@color/colorPrimary"
             android:textSize="28dp"
             android:visibility="gone" />
 

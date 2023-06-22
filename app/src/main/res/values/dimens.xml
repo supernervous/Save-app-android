@@ -13,4 +13,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="badge_text_size">14dp</dimen>
+
+    <dimen name="padding_status_bar_height">@dimen/appintro_statusbar_height</dimen>
+    <dimen name="padding_navigation_bar_height">@dimen/navigation_bar_height</dimen>
 </resources>

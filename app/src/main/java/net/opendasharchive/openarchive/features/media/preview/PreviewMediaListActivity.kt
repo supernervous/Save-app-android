@@ -56,7 +56,7 @@ class PreviewMediaListActivity : BaseActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_batch_review_media, menu)
         return true
     }

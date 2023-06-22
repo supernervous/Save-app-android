@@ -84,7 +84,6 @@ dependencies {
    // implementation libraries.okio
 
     implementation libraries.satyan_sugar
-    implementation libraries.i2p_floating_action
     implementation libraries.amulyakhare_textdrawable
     implementation libraries.appintro
     implementation libraries.picasso
@@ -126,7 +125,7 @@ dependencies {
 
     implementation libraries.appcompat
     implementation libraries.constraint_layout
-    implementation libraries.material
+    implementation "com.google.android.material:material:1.9.0"
 
     implementation libraries.dropbox_core_sdk
     implementation libraries.legacy_support_v4
