@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.browse.BrowseProjectsActivity
+import net.opendasharchive.openarchive.features.media.browse.BrowseFoldersActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.setDrawable
+import net.opendasharchive.openarchive.util.extensions.tint
 
 class AddFolderActivity : BaseActivity() {
 
@@ -24,13 +29,19 @@ class AddFolderActivity : BaseActivity() {
         mBinding = ActivityAddFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.newProject.setOnClickListener {
+        mBinding.newFolder.setOnClickListener {
             setFolder(false)
         }
 
-        mBinding.browseProjects.setOnClickListener {
+        mBinding.browseFolders.setOnClickListener {
             setFolder(true)
         }
+
+        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_appintro_arrow)
+        arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
+
+        mBinding.newFolderText.setDrawable(arrow, Position.End, tint = false)
+        mBinding.browseFoldersText.setDrawable(arrow, Position.End, tint = false)
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = ""
@@ -39,7 +50,7 @@ class AddFolderActivity : BaseActivity() {
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.
         if (Space.current?.tType == Space.Type.INTERNET_ARCHIVE) {
-            mBinding.browseProjects.hide()
+            mBinding.browseFolders.hide()
 
             finish()
             setFolder(false)
@@ -72,6 +83,6 @@ class AddFolderActivity : BaseActivity() {
         }
 
         mResultLauncher.launch(Intent(this,
-            if (browse) BrowseProjectsActivity::class.java else CreateNewProjectActivity::class.java))
+            if (browse) BrowseFoldersActivity::class.java else CreateNewFolderActivity::class.java))
     }
 }

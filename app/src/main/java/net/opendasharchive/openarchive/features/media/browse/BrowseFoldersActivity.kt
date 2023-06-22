@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.opendasharchive.openarchive.databinding.ActivityBrowseProjectsBinding
+import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -15,25 +16,25 @@ import java.net.URLDecoder
 import java.util.*
 
 
-class BrowseProjectsActivity : BaseActivity() {
+class BrowseFoldersActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityBrowseProjectsBinding
-    private lateinit var viewModel: BrowseProjectsViewModel
+    private lateinit var mBinding: ActivityBrowseFoldersBinding
+    private lateinit var viewModel: BrowseFoldersViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        mBinding = ActivityBrowseProjectsBinding.inflate(layoutInflater)
+        mBinding = ActivityBrowseFoldersBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        viewModel = BrowseProjectsViewModel()
+        viewModel = BrowseFoldersViewModel()
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = ""
+        title = getString(R.string.browse_existing)
 
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
@@ -43,7 +44,14 @@ class BrowseProjectsActivity : BaseActivity() {
             viewModel.getFileList(this, space)
         }
 
-        registerObservable()
+        viewModel.fileList.observe(this) {
+            mBinding.projectsEmpty.toggle(it.isEmpty())
+            setupProjectList(it)
+        }
+
+        viewModel.progressBarFlag.observe(this) {
+            mBinding.progressBar.toggle(it)
+        }
     }
 
     private fun setupProjectList(fileList: ArrayList<File>) {
@@ -63,32 +71,7 @@ class BrowseProjectsActivity : BaseActivity() {
     }
 
     private fun createProject(description: String) {
-        val project = Project()
-        project.created = Date()
-        project.description = description
-        project.spaceId = Space.current?.id
-        project.save()
-    }
-
-
-    private fun projectExists(name: String): Boolean {
-        // Check for duplicate name.
-        Space.current?.projects?.forEach { project ->
-            if (project.description == name) return true
-        }
-
-        return false
-    }
-
-    private fun registerObservable() {
-        viewModel.fileList.observe(this) {
-            mBinding.tvProjectsEmpty.toggle(it.isEmpty())
-            setupProjectList(it)
-        }
-
-        viewModel.progressBarFlag.observe(this) {
-            mBinding.progressBar.toggle(it)
-        }
+        Project(description, Date(), Space.current?.id).save()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -99,5 +82,9 @@ class BrowseProjectsActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun projectExists(name: String): Boolean {
+        return Space.current?.projects?.firstOrNull { it.description == name } != null
     }
 }

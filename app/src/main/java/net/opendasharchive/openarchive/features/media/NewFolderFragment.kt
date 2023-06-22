@@ -21,7 +21,7 @@ class NewFolderFragment : Fragment() {
         mBinding = FragmentNewFolderBinding.inflate(inflater, container, false)
 
         mBinding.tvAddProject.setOnClickListener {
-            (activity as? MainActivity)?.addProject()
+            (activity as? MainActivity)?.addFolder()
         }
 
         return mBinding.root

@@ -154,8 +154,6 @@
     <string name="action_data_use">Uso de datos</string>
     <string name="action_privacy">Privacidad</string>
     <string name="action_about">Acerca de</string>
-    <string name="header_new_folder">Agregar un proyecto</string>
-    <string name="action_browse_folders">Examinar Proyectos Existentes</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Subidas</string>
     <string name="title_uploading">Subiendo…</string>
@@ -172,8 +170,7 @@
     <string name="app_tag_line">Preservación segura de medios móvil</string>
     <string name="action_next">Seguir</string>
     <string name="status_flagged">Contenido Importante</string>
-    <string name="action_media_stored">Configura donde quieres que se guarden tus medios.</string>
-    <string name="create_new_folder">Crear nuevo proyecto</string>
+    <string name="select_where_to_store_your_media">Configura donde quieres que se guarden tus medios.</string>
     <string name="menu_edit">Editar</string>
     <string name="menu_done">Listo</string>
     <string name="remove_from_app">Eliminar de la aplicación</string>
@@ -183,7 +180,6 @@
     <string name="access_key">Clave de acceso</string>
     <string name="secret_key">Clave secreta</string>
     <string name="action_acquire_keys">Adquirir claves</string>
-    <string name="title_new_project">Nuevo Proyecto</string>
     <string name="open_link">Abrir enlace</string>
     <string name="save_by_openarchive">por OpenArchive</string>
     <string name="action_edit">Editar</string>

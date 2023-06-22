@@ -16,7 +16,7 @@ import java.io.IOException
 import java.util.Date
 import java.util.ArrayList
 
-class BrowseProjectsViewModel: ViewModel() {
+class BrowseFoldersViewModel: ViewModel() {
 
     private val _fileList = MutableLiveData<ArrayList<File>>()
     val fileList: LiveData<ArrayList<File>>

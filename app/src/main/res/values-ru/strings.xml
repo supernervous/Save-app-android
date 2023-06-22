@@ -106,8 +106,6 @@
     <string name="action_data_use">Трафик</string>
     <string name="action_privacy">Приватность</string>
     <string name="action_about">О программе</string>
-    <string name="header_new_folder">Добавить проект</string>
-    <string name="action_browse_folders">Просмотр существующих проектов</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Загруженная информация</string>
     <string name="title_uploading">Загрузка…</string>
@@ -124,8 +122,7 @@
     <string name="app_tag_line">Безопасное сохранение мобильных медиа данных</string>
     <string name="action_next">Далее</string>
     <string name="status_flagged">Важное содержание</string>
-    <string name="action_media_stored">Установить место хранения ваших медиа данных по умолчанию.</string>
-    <string name="create_new_folder">Создать новый проект</string>
+    <string name="select_where_to_store_your_media">Установить место хранения ваших медиа данных по умолчанию.</string>
     <string name="menu_edit">Редактировать</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Удалить из приложения</string>
@@ -135,7 +132,6 @@
     <string name="access_key">Ключ доступа</string>
     <string name="secret_key">Секретный ключ</string>
     <string name="action_acquire_keys">Получить ключи</string>
-    <string name="title_new_project">Новый проект</string>
     <string name="open_link">Открыть ссылку</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Редактировать</string>

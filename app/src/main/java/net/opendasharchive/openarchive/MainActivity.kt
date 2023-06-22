@@ -107,7 +107,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
     }
 
-    private val mRequestNewProjectNameResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val mNewFolderResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
             refreshProjects()
         }
@@ -178,7 +178,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 lastTab = position
 
                 if (position == 0) {
-                    addProject()
+                    addFolder()
                 }
                 else {
                     refreshCurrentProject()
@@ -204,7 +204,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         mBinding.newFolder.scaleAndTintDrawable(Position.Start, 0.75)
         mBinding.newFolder.setOnClickListener {
-            addProject()
+            addFolder()
         }
 
         mBinding.floatingMenu.setOnClickListener {
@@ -212,7 +212,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 importMedia()
             }
             else {
-                addProject()
+                addFolder()
             }
         }
 
@@ -325,9 +325,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         return super.onOptionsItemSelected(item)
     }
 
-    fun addProject() {
-        mRequestNewProjectNameResultLauncher.launch(
-            Intent(this, AddFolderActivity::class.java))
+    fun addFolder() {
+        mNewFolderResultLauncher.launch(Intent(this, AddFolderActivity::class.java))
 
         mBinding.root.closeDrawer(mBinding.folderBar)
     }

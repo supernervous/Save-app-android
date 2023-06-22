@@ -109,8 +109,6 @@
     <string name="action_data_use">Utilisation des données</string>
     <string name="action_privacy">Confidentialité</string>
     <string name="action_about">À propos</string>
-    <string name="header_new_folder">Ajouter un projet</string>
-    <string name="action_browse_folders">Parcourir les projets existants</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Téléversements</string>
     <string name="title_uploading">Téléversement…</string>
@@ -127,8 +125,7 @@
     <string name="app_tag_line">Préservation mobile sécurisée de contenus multimédias</string>
     <string name="action_next">Suivant</string>
     <string name="status_flagged">Contenu important</string>
-    <string name="action_media_stored">Choisissez l’emplacement de stockage de vos médias.</string>
-    <string name="create_new_folder">Créer un nouveau projet</string>
+    <string name="select_where_to_store_your_media">Choisissez l’emplacement de stockage de vos médias.</string>
     <string name="menu_edit">Modifier</string>
     <string name="menu_done">Terminé</string>
     <string name="remove_from_app">Supprimer de l’appli</string>
@@ -138,7 +135,6 @@
     <string name="access_key">Clé d’accès</string>
     <string name="secret_key">Clé secrète</string>
     <string name="action_acquire_keys">Obtenir les clés</string>
-    <string name="title_new_project">Nouveau projet</string>
     <string name="open_link">Ouvrir le lien</string>
     <string name="save_by_openarchive">par OpenArchive</string>
     <string name="action_edit">Modifier</string>

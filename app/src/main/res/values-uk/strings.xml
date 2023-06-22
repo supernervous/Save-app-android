@@ -91,8 +91,6 @@
     <string name="action_data_use">Використання даних</string>
     <string name="action_privacy">Приватність</string>
     <string name="action_about">Про</string>
-    <string name="header_new_folder">Додати проєкт</string>
-    <string name="action_browse_folders">Перегляньте існуючі проекти</string>
     <string name="title_uploading">Завантаження…</string>
 
     <string name="title_activity_batch_media_review">Попередній перегляд</string>
@@ -105,8 +103,7 @@
     <string name="connect_your_space">Підключіть свій простір для зберігання</string>
     <string name="upload_to_the_internet_archive">Завантажити до InternetArchive</string>
     <string name="action_next">Вперед</string>
-    <string name="action_media_stored">Налаштуйте, де ви хочете зберігати свої медіафайли.</string>
-    <string name="create_new_folder">Створити новий проєкт</string>
+    <string name="select_where_to_store_your_media">Налаштуйте, де ви хочете зберігати свої медіафайли.</string>
     <string name="menu_edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>
@@ -116,7 +113,6 @@
     <string name="access_key">Ключ доступу</string>
     <string name="secret_key">Секретний Ключ</string>
     <string name="action_acquire_keys">Отримати ключі</string>
-    <string name="title_new_project">Новий проєкт</string>
     <string name="open_link">Відкрити посилання</string>
     <string name="action_edit">Змінити</string>
     <string name="title_dropbox">Dropbox</string>

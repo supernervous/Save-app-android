@@ -17,11 +17,11 @@ fun View.cloak() {
 }
 
 fun View.toggle(state: Boolean? = null) {
-    if (state ?: isVisible) {
-        hide()
+    if (state ?: !isVisible) {
+        show()
     }
     else {
-        show()
+        hide()
     }
 }
 

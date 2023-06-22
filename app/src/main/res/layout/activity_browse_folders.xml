@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
-    tools:context=".features.media.browse.BrowseProjectsActivity">
+    tools:context=".features.media.browse.BrowseFoldersActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -25,16 +25,15 @@
             android:layout_marginTop="?attr/actionBarSize" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone" />
+            android:layout_marginBottom="8dp" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvProjectsEmpty"
+            android:id="@+id/projects_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

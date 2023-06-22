@@ -110,8 +110,8 @@
     <string name="action_data_use">Datennutzung</string>
     <string name="action_privacy">Privatsphäre</string>
     <string name="action_about">Infos</string>
-    <string name="header_new_folder">Ordner hinzufügen</string>
-    <string name="action_browse_folders">Benütze existierenden Ordner</string>
+    <string name="add_a_folder">Ordner hinzufügen</string>
+    <string name="browse_existing_folders">Benütze existierenden Ordner</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Hochladen…</string>
@@ -129,8 +129,8 @@
     <string name="app_tag_line">Sichere Bewahrung mobiler Medien</string>
     <string name="action_next">Weiter</string>
     <string name="status_flagged">Besonderer Inhalt</string>
-    <string name="action_media_stored">Richte ein, wo Deine Medien gespeichert werden sollen.</string>
-    <string name="create_new_folder">Neuen Ordner erstellen</string>
+    <string name="select_where_to_store_your_media">Richte ein, wo Deine Medien gespeichert werden sollen.</string>
+    <string name="create_a_new_folder">Neuen Ordner erstellen</string>
     <string name="menu_edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
     <string name="remove_from_app">Aus App entfernen</string>
@@ -140,7 +140,7 @@
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>
     <string name="action_acquire_keys">Schlüssel holen</string>
-    <string name="title_new_project">Neues Projekt</string>
+    <string name="new_folder">Neuer Ordner</string>
     <string name="open_link">Link öffnen</string>
     <string name="save_by_openarchive">von OpenArchive</string>
     <string name="action_edit">Bearbeiten</string>

@@ -143,8 +143,6 @@
     <string name="action_data_use">مصرف داده</string>
     <string name="action_privacy">حریم خصوصی</string>
     <string name="action_about">درباره‌ تور</string>
-    <string name="header_new_folder">افزودن پروژه</string>
-    <string name="action_browse_folders">مشاهده پروژه‌های موجود</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">آپلودها</string>
     <string name="title_uploading">بارگذاری.......</string>
@@ -161,8 +159,7 @@
     <string name="app_tag_line">حفظ ایمن رسانه‌های موبایل</string>
     <string name="action_next">بعدی</string>
     <string name="status_flagged">محتوای مهم</string>
-    <string name="action_media_stored">جایی که فایل‌های رسانه‌ای شما باید ذخیره شوند را تنظیم کنید.</string>
-    <string name="create_new_folder">پروژه جدید بسازید</string>
+    <string name="select_where_to_store_your_media">جایی که فایل‌های رسانه‌ای شما باید ذخیره شوند را تنظیم کنید.</string>
     <string name="menu_edit">ویرایش</string>
     <string name="menu_done">انجام شد</string>
     <string name="remove_from_app">حذف از برنامه</string>
@@ -172,7 +169,6 @@
     <string name="access_key">کلید دسترسی</string>
     <string name="secret_key">کلید خصوصی</string>
     <string name="action_acquire_keys">به دست آوردن کلیدها</string>
-    <string name="title_new_project">پروژه جدید</string>
     <string name="open_link">باز کردن پیوند</string>
     <string name="save_by_openarchive">توسط OpenArchive</string>
     <string name="action_edit">ویرایش</string>
