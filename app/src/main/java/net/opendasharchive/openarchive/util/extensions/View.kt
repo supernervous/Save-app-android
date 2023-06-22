@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.util.extensions
 
 import android.view.View
+import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 
 fun View.show() {
@@ -22,6 +23,17 @@ fun View.toggle(state: Boolean? = null) {
     else {
         show()
     }
+}
+
+fun View.disableAnimation(around: () -> Unit) {
+    val p = parent as? ViewGroup
+
+    val original = p?.layoutTransition
+    p?.layoutTransition = null
+
+    around()
+
+    p?.layoutTransition = original
 }
 
 val View.isVisible: Boolean

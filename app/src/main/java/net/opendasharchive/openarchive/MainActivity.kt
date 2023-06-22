@@ -189,10 +189,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         })
 
         mBinding.space.setOnClickListener {
-            mBinding.spaces.toggle()
-            mBinding.space.setDrawable(if (mBinding.spaces.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+            mBinding.spacesCard.toggle()
+            mBinding.space.setDrawable(if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
         }
-        mBinding.space.setDrawable(if (mBinding.spaces.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+        mBinding.space.setDrawable(if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
 
         mSpaceAdapter = SpaceAdapter(this)
         mBinding.spaces.layoutManager = LinearLayoutManager(this)
@@ -596,6 +596,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.pager.currentItem = mPagerAdapter.projects.indexOf(project) + 1
 
         mBinding.root.closeDrawer(mBinding.folderBar)
+
+        mBinding.spacesCard.disableAnimation {
+            mBinding.spacesCard.hide()
+        }
     }
 
     override fun getSelectedProject(): Project? {
@@ -608,6 +612,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         refreshSpace()
 
         mBinding.root.closeDrawer(mBinding.folderBar)
+
+        mBinding.spacesCard.disableAnimation {
+            mBinding.spacesCard.hide()
+        }
     }
 
     override fun getSelectedSpace(): Space? {
