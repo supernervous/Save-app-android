@@ -1,10 +1,12 @@
 package net.opendasharchive.openarchive.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import androidx.preference.PreferenceManager
 import org.witness.proofmode.ProofMode
+import org.witness.proofmode.ProofModeConstants
 
 object Prefs {
 
@@ -13,13 +15,13 @@ object Prefs {
     private const val NEARBY_USE_WIFI = "nearby_use_wifi"
     const val USE_TOR = "use_tor"
     const val USE_PROOFMODE = "use_proofmode"
+    const val USE_PROOFMODE_KEY_ENCRYPTION = "proofmode_key_encryption"
     private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
     const val THEME = "theme"
     private const val CURRENT_SPACE_ID = "current_space"
     private const val FLAG_HINT_SHOWN = "ft.flag"
     private const val BATCH_HINT_SHOWN = "ft.batch"
     private const val IA_HINT_SHOWN = "ft.ia"
-    private const val TRACK_LOCATION = "trackLocation"
     private const val NEXTCLOUD_USER_DATA = "next_cloud_user_data"
     private const val LICENSE_URL = "archive_pref_share_license_url"
     private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
@@ -28,6 +30,11 @@ object Prefs {
 
     fun load(context: Context) {
         if (prefs == null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    @SuppressLint("ApplySharedPref")
+    fun store() {
+        prefs?.edit()?.commit()
     }
 
     var nextCloudModel: String?
@@ -90,10 +97,10 @@ object Prefs {
             prefs?.edit()?.putBoolean(IA_HINT_SHOWN, value)?.apply()
         }
 
-    var trackLocation: Boolean
-        get() = prefs?.getBoolean(TRACK_LOCATION, false) ?: false
+    var licenseUrl: String?
+        get() = prefs?.getString(LICENSE_URL, null)
         set(value) {
-            prefs?.edit()?.putBoolean(TRACK_LOCATION, value)?.apply()
+            prefs?.edit()?.putString(LICENSE_URL, value)?.apply()
         }
 
     var proofModeLocation: Boolean
@@ -108,10 +115,10 @@ object Prefs {
             prefs?.edit()?.putBoolean(ProofMode.PREF_OPTION_NETWORK, value)?.apply()
         }
 
-    var licenseUrl: String?
-        get() = prefs?.getString(LICENSE_URL, null)
+    var useProofModeKeyEncryption: Boolean
+        get() = prefs?.getBoolean(USE_PROOFMODE_KEY_ENCRYPTION, false) ?: false
         set(value) {
-            prefs?.edit()?.putString(LICENSE_URL, value)?.apply()
+            prefs?.edit()?.putBoolean(USE_PROOFMODE_KEY_ENCRYPTION, value)?.apply()
         }
 
     var proofModeEncryptedPassphrase: ByteArray?
@@ -125,6 +132,17 @@ object Prefs {
                 if (value == null) null else Base64.encodeToString(value, Base64.DEFAULT)
 
             prefs?.edit()?.putString(PROOFMODE_ENCRYPTED_PASSPHRASE, passphrase)?.apply()
+        }
+
+    /**
+     * Only set this right before initializing `MediaWatcher`!
+     * This needs to be the unencrypted passphrase for `MediaWatcher` to read.
+     * But we don't want to store this, so overwrite right after!
+     */
+    var temporaryUnencryptedProofModePassphrase: String?
+        get() = prefs?.getString(ProofModeConstants.PREFS_KEY_PASSPHRASE, null) ?: ProofModeConstants.PREFS_KEY_PASSPHRASE_DEFAULT
+        set(value) {
+            prefs?.edit()?.putString(ProofModeConstants.PREFS_KEY_PASSPHRASE, value)?.apply()
         }
 
     val theme: Theme

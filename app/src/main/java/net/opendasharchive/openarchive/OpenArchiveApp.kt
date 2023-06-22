@@ -35,9 +35,6 @@ class OpenArchiveApp : SugarApp() {
         Fresco.initialize(this, config)
         Prefs.load(this)
 
-        //disable proofmode GPS dat tracking by default
-        Prefs.trackLocation = false
-
         if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)

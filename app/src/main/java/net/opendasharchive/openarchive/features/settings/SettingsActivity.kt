@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Hbks
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Theme
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
@@ -115,50 +116,58 @@ class SettingsActivity : BaseActivity() {
                         true
                     }
 
-                    val pkePreference = findPreference<SwitchPreferenceCompat>("proofmode_key_encryption")
-//                    val context = context
-//
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && Hbks.deviceSecured(context)) {
-//                        pkePreference?.isSingleLineTitle = false
-//
-//                        pkePreference?.setTitle(when (Hbks.biometryType(context)) {
-//                            Hbks.BiometryType.StrongBiometry -> R.string.prefs_proofmode_key_encryption_title_biometrics
-//
-//                            Hbks.BiometryType.DeviceCredential -> R.string.prefs_proofmode_key_encryption_title_passcode
-//
-//                            else -> R.string.prefs_proofmode_key_encryption_title_all
-//                        })
-//
-//                        pkePreference?.setOnPreferenceChangeListener { _, newValue ->
-//                            if (newValue as Boolean) {
-//                                val key = Hbks.loadKey() ?: Hbks.createKey()
-//
-//                                if (key != null && Prefs.proofModeEncryptedPassphrase == null) {
-//                                    createPassphrase(key, activity) {
-//                                        if (it != null) {
-//                                            // TODO: Update ProofMode, when available.
-//                                        } else {
-//                                            Hbks.removeKey()
-//
-//                                            pkePreference.isChecked = false
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            else {
-//                                if (Prefs.proofModeEncryptedPassphrase != null) {
-//                                    Prefs.proofModeEncryptedPassphrase = null
-//
-//                                    Hbks.removeKey()
-//                                }
-//                            }
-//
-//                            true
-//                        }
-//                    }
-//                    else {
+                    val pkePreference = findPreference<SwitchPreferenceCompat>(Prefs.USE_PROOFMODE_KEY_ENCRYPTION)
+                    val activity = activity
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity != null && Hbks.deviceSecured(activity)) {
+                        pkePreference?.isSingleLineTitle = false
+
+                        pkePreference?.setTitle(when (Hbks.biometryType(activity)) {
+                            Hbks.BiometryType.StrongBiometry -> R.string.prefs_proofmode_key_encryption_title_biometrics
+
+                            Hbks.BiometryType.DeviceCredential -> R.string.prefs_proofmode_key_encryption_title_passcode
+
+                            else -> R.string.prefs_proofmode_key_encryption_title_all
+                        })
+
+                        pkePreference?.setOnPreferenceChangeListener { _, newValue ->
+                            if (newValue as Boolean) {
+                                val key = Hbks.loadKey() ?: Hbks.createKey()
+
+                                if (key != null && Prefs.proofModeEncryptedPassphrase == null) {
+                                    createPassphrase(key, activity) {
+                                        if (it != null) {
+                                            ProofModeHelper.removePgpKey(activity)
+
+                                            // We need to kill the app and restart,
+                                            // since the ProofMode singleton loads the passphrase
+                                            // in its singleton constructor. Urgh.
+                                            ProofModeHelper.restartApp(activity)
+                                        }
+                                        else {
+                                            Hbks.removeKey()
+
+                                            pkePreference.isChecked = false
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                if (Prefs.proofModeEncryptedPassphrase != null) {
+                                    Prefs.proofModeEncryptedPassphrase = null
+
+                                    Hbks.removeKey()
+
+                                    ProofModeHelper.restartApp(activity)
+                                }
+                            }
+
+                            true
+                        }
+                    }
+                    else {
                         pkePreference?.isVisible = false
-//                    }
+                    }
                 }
                 else if (type == KEY_NETWORKING) {
                     addPreferencesFromResource(R.xml.app_prefs_networking)
@@ -200,7 +209,7 @@ class SettingsActivity : BaseActivity() {
 
         fun shareKey(activity: Activity) {
             try {
-                val mPgpUtils = PgpUtils.getInstance(activity, PgpUtils.DEFAULT_PASSWORD)
+                val mPgpUtils = PgpUtils.getInstance(activity, null)
                 val pubKey = mPgpUtils.publicKeyString
 
                 if (pubKey.isNotEmpty()) {

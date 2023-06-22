@@ -74,7 +74,7 @@ allprojects {
         maven {
             url 'https://raw.githubusercontent.com/guardianproject/gpmaven/master'
             content {
-                includeModule 'org.witness', 'android-libproofmode'
+                includeModule 'org.proofmode', 'android-libproofmode'
             }
         }
 

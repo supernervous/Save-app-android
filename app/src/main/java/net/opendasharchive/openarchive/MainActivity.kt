@@ -22,7 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.esafirm.imagepicker.features.*
+import com.esafirm.imagepicker.features.ImagePickerConfig
+import com.esafirm.imagepicker.features.ImagePickerLauncher
+import com.esafirm.imagepicker.features.ImagePickerMode
+import com.esafirm.imagepicker.features.ImagePickerSavePath
+import com.esafirm.imagepicker.features.ReturnMode
+import com.esafirm.imagepicker.features.registerImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
@@ -32,8 +37,11 @@ import com.orm.SugarRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
-import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
+import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.db.ProjectAdapter
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
@@ -45,16 +53,27 @@ import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.ui.BadgeDrawable
 import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import net.opendasharchive.openarchive.util.Globals
-import net.opendasharchive.openarchive.util.Hbks
-import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.*
+import net.opendasharchive.openarchive.util.extensions.Position
+import net.opendasharchive.openarchive.util.extensions.cloak
+import net.opendasharchive.openarchive.util.extensions.disableAnimation
+import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
+import net.opendasharchive.openarchive.util.extensions.executeAsyncTaskWithList
+import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.isVisible
+import net.opendasharchive.openarchive.util.extensions.makeSnackBar
+import net.opendasharchive.openarchive.util.extensions.scaleAndTintDrawable
+import net.opendasharchive.openarchive.util.extensions.scaled
+import net.opendasharchive.openarchive.util.extensions.setDrawable
+import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.util.extensions.toggle
 import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.text.NumberFormat
-import java.util.*
+import java.util.Date
 
 class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     FolderAdapterListener, SpaceAdapterListener {
@@ -215,32 +234,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 addFolder()
             }
         }
-
-        //check for any queued uploads and restart
-        (application as OpenArchiveApp).startUploadService()
     }
 
     override fun onStart() {
         super.onStart()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
-            val key = Hbks.loadKey()
-
-            if (encryptedPassphrase != null) {
-                if (key != null) {
-                    Hbks.decrypt(encryptedPassphrase, key, this) { passphrase ->
-                        if (passphrase != null) {
-                            TODO("Hand over to ProofMode, as soon as latest version is available which supports that.")
-                        }
-                    }
-                } else {
-                    // Oh, oh. User removed passphrase lock.
-                    Prefs.proofModeEncryptedPassphrase = null
-
-                    // TODO("Remove secured ProofMode PGP key.")
-                }
-            }
+        ProofModeHelper.init(this) {
+            // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
+            (application as OpenArchiveApp).startUploadService()
         }
     }
 
