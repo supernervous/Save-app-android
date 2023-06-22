@@ -23,7 +23,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Hbks
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.ThemeHelper
+import net.opendasharchive.openarchive.util.Theme
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import timber.log.Timber
 import java.io.IOException
@@ -87,7 +87,7 @@ class SettingsActivity : BaseActivity() {
                             true
                         }
 
-                    findPreference<Preference>("use_proofmode")?.setOnPreferenceChangeListener { preference, newValue ->
+                    findPreference<Preference>(Prefs.USE_PROOFMODE)?.setOnPreferenceChangeListener { preference, newValue ->
                         if (newValue as Boolean) {
                             PermissionX.init(this)
                                 .permissions(
@@ -163,7 +163,7 @@ class SettingsActivity : BaseActivity() {
                 else if (type == KEY_NETWORKING) {
                     addPreferencesFromResource(R.xml.app_prefs_networking)
 
-                    findPreference<Preference>("use_tor")?.setOnPreferenceChangeListener { _, newValue ->
+                    findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
                         val activity = activity ?: return@setOnPreferenceChangeListener true
 
                         if (newValue as Boolean) {
@@ -189,9 +189,9 @@ class SettingsActivity : BaseActivity() {
                 else if (type == KEY_USER_INTERFACE) {
                     addPreferencesFromResource(R.xml.app_prefs_user_interface)
 
-                    findPreference<Preference>("theme")?.setOnPreferenceChangeListener { _, newValue ->
-                        val activity = activity ?: return@setOnPreferenceChangeListener true
-                        ThemeHelper.setTheme(activity.applicationContext, newValue as String)
+                    findPreference<Preference>(Prefs.THEME)?.setOnPreferenceChangeListener { _, newValue ->
+                        Theme.set(Theme.get(newValue as? String))
+
                         true
                     }
                 }

@@ -2,22 +2,19 @@ package net.opendasharchive.openarchive.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.util.Base64
 import androidx.preference.PreferenceManager
-import net.opendasharchive.openarchive.R
 import org.witness.proofmode.ProofMode
-import java.lang.ref.WeakReference
 
 object Prefs {
 
     private const val UPLOAD_WIFI_ONLY = "upload_wifi_only"
     private const val NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
     private const val NEARBY_USE_WIFI = "nearby_use_wifi"
-    private const val USE_TOR = "use_tor"
-    private const val USE_PROOFMODE = "use_proofmode"
+    const val USE_TOR = "use_tor"
+    const val USE_PROOFMODE = "use_proofmode"
     private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
-    private const val PREF_THEME = "theme"
+    const val THEME = "theme"
     private const val CURRENT_SPACE_ID = "current_space"
     private const val FLAG_HINT_SHOWN = "ft.flag"
     private const val BATCH_HINT_SHOWN = "ft.batch"
@@ -28,10 +25,8 @@ object Prefs {
     private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
 
     private var prefs: SharedPreferences? = null
-    private lateinit var resources: Resources
 
     fun load(context: Context) {
-        resources = context.applicationContext.resources
         if (prefs == null) prefs = PreferenceManager.getDefaultSharedPreferences(context)
     }
 
@@ -132,20 +127,6 @@ object Prefs {
             prefs?.edit()?.putString(PROOFMODE_ENCRYPTED_PASSPHRASE, passphrase)?.apply()
         }
 
-    var theme: String
-        get() {
-            return prefs?.getString(PREF_THEME, null)
-                ?: resources.getString(R.string.prefs_theme_val_system)
-        }
-        set(value) {
-            var v: String = value
-            if (!arrayOf(
-                    resources.getString(R.string.prefs_theme_val_light),
-                    resources.getString(R.string.prefs_theme_val_dark)
-                ).contains(value)
-            ) {
-                v = resources.getString(R.string.prefs_theme_val_system)
-            }
-            prefs?.edit()?.putString(PREF_THEME, v)?.apply()
-        }
+    val theme: Theme
+        get() = Theme.get(prefs?.getString(THEME, null))
 }
