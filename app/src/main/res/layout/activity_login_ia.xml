@@ -95,7 +95,7 @@
                 android:layout_margin="12dp"
                 android:gravity="center"
                 android:text="@string/remove_from_app"
-                android:textColor="@color/red"
+                android:textColor="@color/colorDanger"
                 android:textSize="18sp"
                 android:visibility="gone" />
 

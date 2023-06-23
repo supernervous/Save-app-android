@@ -63,6 +63,27 @@
 
     <!-- custom day colors -->
 
-    <color name="navigationDrawerBackground">@color/colorBackground</color>
+    <color name="colorNavigationDrawerBackground">@color/colorBackground</color>
+
+    <!--
+
+      custom colors
+
+      These legacy colors are used at random spots all over the project. They're collected here in
+      case we need to refactor them at some point. They're not setup to support day/night mode and
+      aren't mapped to the materials color system.
+
+     -->
+
+    <color name="colorPill">@color/extra_light_grey</color>
+    <color name="colorMediaOverlayIcon">@color/white</color>
+    <color name="colorDanger">@color/red</color>
+    <color name="colorDivider">@color/light_grey</color>
+    <color name="colorImageBackground">@color/black</color>
+    <color name="colorFloatIconBackground">@color/float_transparent</color>
+    <color name="colorSectionHeaderText">@color/grey</color>
+    <color name="colorMediaTitleText">@color/light_grey</color>
+    <color name="colorWaveformIndicator">#aa0000</color>
+    <color name="colorWaveform">#999999</color>
 
 </resources>

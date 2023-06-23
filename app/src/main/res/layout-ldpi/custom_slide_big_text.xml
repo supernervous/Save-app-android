@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
-    android:background="@color/white"
+    android:background="@color/colorBackground"
     android:padding="36dp"
     >
     <ImageView
@@ -55,7 +55,7 @@
         android:layout_height="40dp"
         android:textColor="@color/colorPrimary"
         android:text="Get Started >"
-        android:background="@color/white"
+        android:background="@color/colorOnPrimary"
         android:layout_gravity="end"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

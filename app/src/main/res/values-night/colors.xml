@@ -9,6 +9,6 @@
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>
 
-    <color name="navigationDrawerBackground">@color/c23_nav_drawer_night</color>
+    <color name="colorNavigationDrawerBackground">@color/c23_nav_drawer_night</color>
 
 </resources>

@@ -38,7 +38,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="12dp"
-                    android:background="@color/float_transparent"
+                    android:background="@color/colorFloatIconBackground"
                     app:srcCompat="@drawable/ic_tag_unselected"
 
                     />
@@ -65,7 +65,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="12dp"
-                    android:background="@color/float_transparent"
+                    android:background="@color/colorFloatIconBackground"
                     app:srcCompat="@drawable/ic_tag_unselected"
 
                     />
@@ -92,7 +92,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="12dp"
-                    android:background="@color/float_transparent"
+                    android:background="@color/colorFloatIconBackground"
                     app:srcCompat="@drawable/ic_location_unselected"
 
                     />
@@ -120,7 +120,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="12dp"
-                    android:background="@color/float_transparent"
+                    android:background="@color/colorFloatIconBackground"
                     app:srcCompat="@drawable/ic_edit_unselected"
 
                     />
@@ -147,7 +147,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="12dp"
-                    android:background="@color/float_transparent"
+                    android:background="@color/colorFloatIconBackground"
                     app:srcCompat="@drawable/ic_flag_unselected"
 
                     />

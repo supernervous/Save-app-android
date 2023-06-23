@@ -129,7 +129,7 @@ data class Space(
             Type.DROPBOX -> ContextCompat.getDrawable(context, R.drawable.dropbox)
 
             else -> TextDrawable.builder().buildRound(initial,
-                ContextCompat.getColor(context, R.color.oablue))
+                ContextCompat.getColor(context, R.color.colorPrimary))
         }
     }
 
@@ -147,7 +147,7 @@ data class Space(
                 if (view is AvatarImageView) {
                     view.state = AvatarImageView.SHOW_INITIAL
                     view.setText(initial)
-                    view.avatarBackgroundColor = ContextCompat.getColor(view.context, R.color.oablue)
+                    view.avatarBackgroundColor = ContextCompat.getColor(view.context, R.color.colorPrimary)
                 }
                 else {
                     view.setImageDrawable(getAvatar(view.context))
