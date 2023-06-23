@@ -11,6 +11,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import net.opendasharchive.openarchive.R
 import java.io.IOException
+import java.lang.Exception
+import java.lang.NullPointerException
 import java.security.*
 import java.security.cert.CertificateException
 import javax.crypto.*
@@ -133,19 +135,19 @@ object Hbks {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun encrypt(plaintext: String?, key: SecretKey?, activity: FragmentActivity? = null, completed: (ciphertext: ByteArray?) -> Unit) {
+    fun encrypt(plaintext: String?, key: SecretKey?, activity: FragmentActivity? = null, completed: (ciphertext: ByteArray?, exception: Exception?) -> Unit) {
         val cipher = Hbks.cipher
 
         if (plaintext == null || key == null || cipher == null) {
-            return completed(null)
+            return completed(null, NullPointerException())
         }
 
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key)
         }
-        catch (_: UserNotAuthenticatedException) {
+        catch (e: UserNotAuthenticatedException) {
             if (activity == null) {
-                return completed(null)
+                return completed(null, e)
             }
 
             return authenticate(activity) {
@@ -153,34 +155,39 @@ object Hbks {
                     encrypt(plaintext, key, activity, completed)
                 }
                 else {
-                    completed(null)
+                    completed(null, e)
                 }
             }
         }
         catch (e: InvalidKeyException) {
-            return completed(null)
+            return completed(null, e)
         }
 
-        completed(run(Cipher.ENCRYPT_MODE, cipher, plaintext.toByteArray()))
+        try {
+            completed(run(Cipher.ENCRYPT_MODE, cipher, plaintext.toByteArray()), null)
+        }
+        catch (e: Exception) {
+            completed(null, e)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun decrypt(ciphertext: ByteArray?, key: SecretKey?, activity: FragmentActivity? = null, completed: (plaintext: String?) -> Unit) {
+    fun decrypt(ciphertext: ByteArray?, key: SecretKey?, activity: FragmentActivity? = null, completed: (plaintext: String?, exception: Exception?) -> Unit) {
         val cipher = Hbks.cipher
 
         if (key == null || cipher == null || ciphertext == null || ciphertext.size < 12) {
-            return completed(null)
+            return completed(null, NullPointerException())
         }
 
         try {
             cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(128, ciphertext.copyOfRange(0, 12)))
         }
-        catch (_: InvalidAlgorithmParameterException) {
-            return completed(null)
+        catch (e: InvalidAlgorithmParameterException) {
+            return completed(null, e)
         }
-        catch(_: UserNotAuthenticatedException) {
+        catch(e: UserNotAuthenticatedException) {
             if (activity == null) {
-                return completed(null)
+                return completed(null, e)
             }
 
             return authenticate(activity) { success ->
@@ -188,50 +195,41 @@ object Hbks {
                     decrypt(ciphertext, key, activity, completed)
                 }
                 else {
-                    completed(null)
+                    completed(null, e)
                 }
             }
         }
-        catch (_: InvalidKeyException) {
-            return completed(null)
+        catch (e: InvalidKeyException) {
+            return completed(null, e)
         }
 
-        val plaintext = run(Cipher.DECRYPT_MODE, cipher, ciphertext) ?: return completed(null)
-
-        completed(String(plaintext))
+        try {
+            completed(String(run(Cipher.DECRYPT_MODE, cipher, ciphertext)), null)
+        }
+        catch (e: Exception) {
+            completed(null, e)
+        }
     }
 
-    private fun run(opmode: Int, cipher: Cipher, input: ByteArray): ByteArray? {
+    private fun run(opmode: Int, cipher: Cipher, input: ByteArray): ByteArray {
         @Suppress("NAME_SHADOWING")
         var input = input
 
-        try {
-            if (opmode == Cipher.DECRYPT_MODE) {
-                input = input.copyOfRange(12, input.size)
-            }
-
-            val output = cipher.doFinal(input)
-
-            if (opmode == Cipher.ENCRYPT_MODE) {
-                val iv = cipher.iv
-
-                if (iv != null && iv.isNotEmpty()) {
-                    return iv + output
-                }
-            }
-
-            return output
+        if (opmode == Cipher.DECRYPT_MODE) {
+            input = input.copyOfRange(12, input.size)
         }
-        catch (_: NoSuchAlgorithmException) { }
-        catch (_: NoSuchPaddingException) { }
-        catch (_: InvalidAlgorithmParameterException) { }
-        catch (_: InvalidKeyException) { }
-        catch (_: IllegalStateException) { }
-        catch (_: IllegalBlockSizeException) { }
-        catch (_: BadPaddingException) { }
-        catch (_: AEADBadTagException) { }
 
-        return null
+        val output = cipher.doFinal(input)
+
+        if (opmode == Cipher.ENCRYPT_MODE) {
+            val iv = cipher.iv
+
+            if (iv != null && iv.isNotEmpty()) {
+                return iv + output
+            }
+        }
+
+        return output
     }
 
     fun deviceSecured(context: Context): Boolean {

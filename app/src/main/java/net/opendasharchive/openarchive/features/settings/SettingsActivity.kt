@@ -228,14 +228,14 @@ class SettingsActivity : BaseActivity() {
         private fun createPassphrase(key: SecretKey, activity: FragmentActivity?, completed: (passphrase: String?) -> Unit) {
             val passphrase = UUID.randomUUID().toString()
 
-            Hbks.encrypt(passphrase, key, activity) { ciphertext ->
+            Hbks.encrypt(passphrase, key, activity) { ciphertext, _ ->
                 if (ciphertext == null) {
                     return@encrypt completed(null)
                 }
 
                 Prefs.proofModeEncryptedPassphrase = ciphertext
 
-                Hbks.decrypt(Prefs.proofModeEncryptedPassphrase, key, activity) { decrpytedPassphrase ->
+                Hbks.decrypt(Prefs.proofModeEncryptedPassphrase, key, activity) { decrpytedPassphrase, _ ->
                     if (decrpytedPassphrase == null || decrpytedPassphrase != passphrase) {
                         Prefs.proofModeEncryptedPassphrase = null
 

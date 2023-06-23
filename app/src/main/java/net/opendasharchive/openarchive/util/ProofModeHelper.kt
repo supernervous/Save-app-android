@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.security.keystore.UserNotAuthenticatedException
 import androidx.fragment.app.FragmentActivity
 import net.opendasharchive.openarchive.MainActivity
 import org.witness.proofmode.crypto.pgp.PgpUtils
@@ -13,7 +14,11 @@ import java.io.File
 
 object ProofModeHelper {
 
+    private var initialized = false
+
     fun init(activity: FragmentActivity, completed: () -> Unit) {
+        if (initialized) return completed()
+
         // Disable ProofMode GPS data tracking by default.
         if (Prefs.proofModeLocation) Prefs.proofModeLocation = false
 
@@ -27,22 +32,14 @@ object ProofModeHelper {
                 val key = Hbks.loadKey()
 
                 if (key != null) {
-                    Hbks.decrypt(encryptedPassphrase, Hbks.loadKey(), activity) {
-
-                        // Store unencrypted passphrase so MediaWatcher can read it.
-                        Prefs.temporaryUnencryptedProofModePassphrase = it
-
-                        // Load or create PGP key using the decrypted passphrase OR the default passphrase.
-                        PgpUtils.getInstance(activity,
-                            Prefs.temporaryUnencryptedProofModePassphrase)
-
-                        // Initialize MediaWatcher with the correct passphrase.
-                        MediaWatcher.getInstance(activity)
-
-                        // Remove again to avoid leaking unencrypted passphrase.
-                        Prefs.temporaryUnencryptedProofModePassphrase = null
-
-                        completed()
+                    Hbks.decrypt(encryptedPassphrase, Hbks.loadKey(), activity) { plaintext, e ->
+                        // User failed or denied authentication. Stop app in that case.
+                        if (e is UserNotAuthenticatedException) {
+                            Runtime.getRuntime().exit(0)
+                        }
+                        else {
+                            finishInit(activity, completed, plaintext)
+                        }
                     }
                 }
                 else {
@@ -52,19 +49,38 @@ object ProofModeHelper {
 
                     removePgpKey(activity)
 
-                    completed()
+                    finishInit(activity, completed)
                 }
             }
             else {
                 // Sometimes this gets out of sync because of the restarts.
                 Prefs.useProofModeKeyEncryption = false
 
-                completed()
+                finishInit(activity, completed)
             }
         }
         else {
-            completed()
+            finishInit(activity, completed)
         }
+    }
+
+    private fun finishInit(context: Context, completed: () -> Unit, passphrase: String? = null) {
+        // Store unencrypted passphrase so MediaWatcher can read it.
+        Prefs.temporaryUnencryptedProofModePassphrase = passphrase
+
+        // Load or create PGP key using the decrypted passphrase OR the default passphrase.
+        PgpUtils.getInstance(context,
+            Prefs.temporaryUnencryptedProofModePassphrase)
+
+        // Initialize MediaWatcher with the correct passphrase.
+        MediaWatcher.getInstance(context)
+
+        // Remove again to avoid leaking unencrypted passphrase.
+        Prefs.temporaryUnencryptedProofModePassphrase = null
+
+        initialized = true
+
+        completed()
     }
 
     fun removePgpKey(context: Context) {
