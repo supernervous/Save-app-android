@@ -91,10 +91,7 @@ class SettingsActivity : BaseActivity() {
                     findPreference<Preference>(Prefs.USE_PROOFMODE)?.setOnPreferenceChangeListener { preference, newValue ->
                         if (newValue as Boolean) {
                             PermissionX.init(this)
-                                .permissions(
-                                    Manifest.permission.READ_PHONE_STATE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE
-                                )
+                                .permissions(Manifest.permission.READ_PHONE_STATE)
                                 .onExplainRequestReason { _, _ ->
                                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                     val uri = Uri.fromParts("package", activity?.packageName, null)
