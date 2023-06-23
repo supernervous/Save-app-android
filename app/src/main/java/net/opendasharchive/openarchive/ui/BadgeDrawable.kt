@@ -17,7 +17,7 @@ class BadgeDrawable(context: Context) : Drawable() {
 
     init {
         val mTextSize = context.resources.getDimension(R.dimen.badge_text_size)
-        val color = ContextCompat.getColor(context.applicationContext, R.color.oablue)
+        val color = ContextCompat.getColor(context.applicationContext, R.color.colorPrimary)
         mBadgePaint = Paint()
         mBadgePaint?.apply {
             this.color = color

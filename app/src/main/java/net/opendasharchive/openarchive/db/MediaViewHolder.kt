@@ -82,7 +82,7 @@ class MediaViewHolder(
         mView.tag = currentMedia.id
 
         if (currentMedia.selected && isBatchMode) {
-            mView.setBackgroundResource(R.color.oablue)
+            mView.setBackgroundResource(R.color.colorPrimary)
         } else {
             mView.setBackgroundResource(android.R.color.transparent)
         }

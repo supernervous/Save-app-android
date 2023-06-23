@@ -83,7 +83,7 @@
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_videocam_black_24dp"
         android:visibility="gone"
-        app:tint="@color/white"
+        app:tint="@color/colorMediaOverlayIcon"
         tools:text="title"
         tools:visibility="visible" />
 </RelativeLayout>

@@ -17,7 +17,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
-        android:textColor="@color/grey"
+        android:textColor="@color/colorSectionHeaderText"
         android:textStyle="bold"
         tools:text="This is a section"/>
 

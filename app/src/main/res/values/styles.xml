@@ -34,7 +34,7 @@
     </style>
 
     <style name="NavigationViewStyle" parent="Widget.Material3.NavigationView">
-        <item name="android:background">@color/navigationDrawerBackground</item>
+        <item name="android:background">@color/colorNavigationDrawerBackground</item>
     </style>
 
     <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.Dialog.Alert">

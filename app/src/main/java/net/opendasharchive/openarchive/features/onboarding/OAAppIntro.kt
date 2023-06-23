@@ -35,12 +35,12 @@ class OAAppIntro : AppIntro() {
 
         addSlide(TorOnboardingScreen())
 
-        setColorDoneText(ContextCompat.getColor(this, R.color.white))
-        setSeparatorColor(ContextCompat.getColor(this, R.color.white))
-        setBarColor(ContextCompat.getColor(this, R.color.oablue))
+        setColorDoneText(ContextCompat.getColor(this, R.color.colorOnPrimary))
+        setSeparatorColor(ContextCompat.getColor(this, R.color.colorOnPrimary))
+        setBarColor(ContextCompat.getColor(this, R.color.colorPrimary))
         showStatusBar(true)
-        setStatusBarColor(ContextCompat.getColor(this, R.color.oablue))
-        setNavBarColor(ContextCompat.getColor(this, R.color.oablue))
+        setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        setNavBarColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
         // Hide Skip/Done button.
         isSkipButtonEnabled = false

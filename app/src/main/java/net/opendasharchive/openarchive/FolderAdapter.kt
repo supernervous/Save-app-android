@@ -67,7 +67,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
 
                 if (color != null) return color
 
-                color = ContextCompat.getColor(context, R.color.oablue)
+                color = ContextCompat.getColor(context, R.color.colorPrimary)
                 highlightColor = color
 
                 return color

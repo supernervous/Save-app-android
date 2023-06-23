@@ -156,14 +156,14 @@
         android:layout_margin="12dp"
         android:gravity="center"
         android:text="@string/remove_from_app"
-        android:textColor="@color/red"
+        android:textColor="@color/colorDanger"
         android:textSize="18sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="6dp"
-        android:background="@color/light_grey" />
+        android:background="@color/colorDivider" />
 
     <TextView
         android:id="@+id/action_archive_project"
