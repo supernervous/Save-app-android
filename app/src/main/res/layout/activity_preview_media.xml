@@ -7,8 +7,6 @@
     android:filterTouchesWhenObscured="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_status_bar_height"
-    android:paddingBottom="@dimen/padding_navigation_bar_height"
     android:theme="@style/AppMediaTheme"
     tools:context="net.opendasharchive.openarchive.publish.UploadManagerActivity">
 

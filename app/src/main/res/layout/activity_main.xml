@@ -9,9 +9,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/appintro_statusbar_height"
-        android:paddingBottom="@dimen/navigation_bar_height">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -128,9 +126,9 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/tap_to_add"
             app:srcCompat="@drawable/baseline_add_white_24"
-            app:tint="@color/colorOnPrimary"
-            android:contentDescription="@string/tap_to_add" />
+            app:tint="@color/colorOnPrimary" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -142,8 +140,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
-        android:paddingTop="@dimen/appintro_statusbar_height"
-        android:paddingBottom="@dimen/navigation_bar_height"
         app:drawerLayoutCornerSize="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
