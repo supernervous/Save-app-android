@@ -4,6 +4,6 @@ ext.config = [
         minSdkVersion    : 21,
         targetSdkVersion : 33,
         appcompat        : 'com.android.support:appcompat-v7:28.0.0',
-        versionName      : '0.2.6',
-        versionCode      : 20529
+        versionName      : '0.3.0-alpha1',
+        versionCode      : 20530
 ]
