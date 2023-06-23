@@ -176,19 +176,19 @@
     <string name="prefs_upload_wifi_only_summary">Wait for Wi-Fi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>
 
-    <string name="prefs_user_interface_title">User Interface</string>
-    <string name="prefs_theme_title">Select Theme</string>
+    <string name="prefs_user_interface_title">Presentation</string>
+    <string name="prefs_theme_title">Style</string>
     <string name="prefs_theme_summary">Change how Safe looks.</string>
-    <string name="prefs_theme_system">System Default</string>
-    <string name="prefs_theme_light">Light Theme</string>
-    <string name="prefs_theme_dark">Dark Theme</string>
+    <string name="prefs_theme_system">System Controlled</string>
+    <string name="prefs_theme_light">Light</string>
+    <string name="prefs_theme_dark">Dark</string>
     <string name="prefs_theme_val_system" translatable="false">system</string>
     <string name="prefs_theme_val_light" translatable="false">light</string>
     <string name="prefs_theme_val_dark" translatable="false">dark</string>
 
     <string name="prefs_data_title">Metadata</string>
     <string name="prefs_use_proofmode_title">Enable ProofMode</string>
-    <string name="prefs_use_proofmode_summary">Capture extra metadata and notarize all media</string>
+    <string name="prefs_use_proofmode_summary">Capture extra metadata and notarize all media.</string>
 
     <string name="prefs_share_proofmode_title">ProofMode Identity</string>
     <string name="prefs_share_proofmode_summary">Share ProofMode Public Key</string>
@@ -321,7 +321,7 @@
     <string name="description_dropbox">Securely access the commercial cloud</string>
     <string name="metadata">Metadata</string>
     <string name="networking">Networking</string>
-    <string name="user_interface">User Interface</string>
+    <string name="user_interface">Presentation</string>
     <string name="pref_nextcloud_title">Enable NextCloud Chunking</string>
     <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 
@@ -345,7 +345,7 @@
     <string name="crash_dialog_title">Crash Reporting</string>
     <string name="crash_dialog_comment_prompt">What were you doing when the crash occurred?</string>
 
-    <string name="crashreportemail">support@guardianproject.info</string>
+    <string name="crashreportemail" translatable="false">support@guardianproject.info</string>
     <string name="onboarding_archive_over_tor">Save over Tor</string>
     <string name="onboarding_archive_over_tor_install_orbot">To enable advanced network security, please install Orbot: Tor for Android</string>
     <string name="archive_over_tor_enable_orbot">To enable advanced network security, you should enable the \"Use Orbot\" option now or later in settings</string>
