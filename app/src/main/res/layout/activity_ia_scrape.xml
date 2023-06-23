@@ -1,24 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
+    android:orientation="vertical"
     tools:context=".services.internetarchive.IaScrapeActivity"
     tools:ignore="MergeRootFrame">
 
-    <LinearLayout
-        android:id="@+id/container"
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/padding_status_bar_height"
-        android:layout_marginBottom="@dimen/padding_navigation_bar_height"
-        android:orientation="vertical">
+        android:layout_gravity="center_horizontal" />
 
-        <WebView
-            android:id="@+id/webView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal" />
-
-    </LinearLayout>
-</FrameLayout>
+</LinearLayout>
