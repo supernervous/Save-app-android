@@ -60,7 +60,7 @@
     <string name="tos_dialog_positive_button">Anladım</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Internet Archive</string>
+    <string name="internet_archive">Internet Archive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
     <string name="sign_up_btn">Bir hesabınız yok mu?\n<a href="https://archive.org/account/login.createaccount.php">Ücretsiz hesap açın.</a></string>
@@ -215,7 +215,6 @@
         gereklidir.\"
     </string>
 
-    <string name="sign_in_private_btn">Özel sunucu</string>
     <string name="importing_media">Ortam içe aktarılıyor…</string>
 
     <string name="setup_nearby">Yakındaki</string>
@@ -295,8 +294,7 @@
     <string name="folder_name_already_exists">Proje adı zaten var</string>
     <string name="save_by_openarchive">OpenArchive tarafından</string>
     <string name="action_edit">Düzenle</string>
-    <string name="title_dropbox">Dropbox</string>
-    <string name="description_dropbox">Ticari buluta güvenle erişin</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Üst veriler</string>
     <string name="networking">Ağ yapılandırması</string>
     <string name="pref_nextcloud_title">NextCloud paketleri kullanılsın</string>

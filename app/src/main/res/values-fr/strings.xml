@@ -35,7 +35,7 @@
     <string name="tos_dialog_positive_button">D’accord</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Archive Internet</string>
+    <string name="internet_archive">Archive Internet</string>
 
     <string name="tos_btn">J’accepte les conditions générales d’utilisation.</string>
 
@@ -138,7 +138,7 @@
     <string name="open_link">Ouvrir le lien</string>
     <string name="save_by_openarchive">par OpenArchive</string>
     <string name="action_edit">Modifier</string>
-    <string name="title_dropbox">Dropbox</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Métadonnées</string>
     <string name="networking">Mise en réseau</string>
     <string name="remove_from_app_media">Supprimer le média</string>

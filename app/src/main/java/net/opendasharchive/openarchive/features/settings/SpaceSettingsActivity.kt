@@ -8,12 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.abdularis.civ.AvatarImageView
@@ -24,7 +22,7 @@ import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
+import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
@@ -197,7 +195,7 @@ class SpaceSettingsActivity : BaseActivity() {
         mSpace?.let {
             val clazz = when (it.tType) {
                 Space.Type.INTERNET_ARCHIVE -> IaLoginActivity::class.java
-                Space.Type.DROPBOX -> DropboxLoginActivity::class.java
+                Space.Type.DROPBOX -> DropboxActivity::class.java
                 else -> WebDavLoginActivity::class.java
             }
 

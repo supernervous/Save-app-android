@@ -33,7 +33,7 @@
     <string name="tos_dialog_positive_button">Ho capito</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Archivio Internet</string>
+    <string name="internet_archive">Archivio Internet</string>
 
     <string name="tos_btn">Sottoscrivo i Termini di Servizio.</string>
 
@@ -131,7 +131,7 @@
     <string name="open_link">Apri Link</string>
     <string name="save_by_openarchive">da OpenArchive</string>
     <string name="action_edit">Modifica</string>
-    <string name="title_dropbox">Dropbox</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadati</string>
     <string name="remove_from_app_media">Rimuovi media</string>
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>

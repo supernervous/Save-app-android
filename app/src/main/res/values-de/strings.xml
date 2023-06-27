@@ -36,7 +36,7 @@
     <string name="tos_dialog_positive_button">Verstanden</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Internet Archive</string>
+    <string name="internet_archive">Internet Archive</string>
 
     <string name="tos_btn">Ich akzeptiere die Allgemeinen Geschäftsbedingungen.</string>
 
@@ -133,7 +133,7 @@
     <string name="button_sure_default">Hinzufügen</string>
     <string name="tap_to_add">Den Button unten verwenden um Medien zu Deinem Projekt hinzuzufügen.</string>
     <string name="connect_your_space">Verbinde Deinen Space</string>
-    <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen</string>
+    <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen.</string>
     <string name="app_tag_line">Sichere Bewahrung mobiler Medien</string>
     <string name="action_next">Weiter</string>
     <string name="status_flagged">Besonderer Inhalt</string>
@@ -152,7 +152,7 @@
     <string name="open_link">Link öffnen</string>
     <string name="save_by_openarchive">von OpenArchive</string>
     <string name="action_edit">Bearbeiten</string>
-    <string name="title_dropbox">Dropbox</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadaten</string>
     <string name="networking">Netzwerk</string>
     <string name="user_interface">Darstellung</string>
@@ -183,5 +183,8 @@
     <string name="browse_existing">Existierende Ordner</string>
     <string name="add">Hinzufügen</string>
     <string name="no_more_folders">Keine (weiteren) Ordner</string>
+    <string name="private_webdav_server">Privater (WebDAV) Server</string>
+    <string name="send_directly_to_a_private_server">Schicke Daten direkt auf einen privaten Server.</string>
+    <string name="upload_to_dropbox">Zu Dropbox hochladen</string>
 
 </resources>

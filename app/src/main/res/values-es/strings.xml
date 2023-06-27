@@ -47,7 +47,7 @@
     <string name="tos_dialog_positive_button">Lo tengo</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Internet Archive</string>
+    <string name="internet_archive">Internet Archive</string>
 
     <string name="tos_btn">Acepto las Condiciones del Servicio.</string>
 

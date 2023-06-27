@@ -115,7 +115,7 @@
     <string name="action_acquire_keys">Отримати ключі</string>
     <string name="open_link">Відкрити посилання</string>
     <string name="action_edit">Змінити</string>
-    <string name="title_dropbox">Dropbox</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Метадані</string>
     <string name="remove_from_app_media">Вилучити медіа</string>
     <string name="popup_flag_title">Позначте важливий контент</string>

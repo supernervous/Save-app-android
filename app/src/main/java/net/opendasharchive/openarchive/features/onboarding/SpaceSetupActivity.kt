@@ -2,52 +2,80 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Window
+import android.view.MenuItem
 import android.view.WindowManager
-import net.opendasharchive.openarchive.databinding.ActivitySignInBinding
+import androidx.core.content.ContextCompat
+import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
-import net.opendasharchive.openarchive.services.dropbox.DropboxLoginActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
+import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.setDrawable
+import net.opendasharchive.openarchive.util.extensions.tint
 
 class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
 
-    private lateinit var mBinding: ActivitySignInBinding
+    private lateinit var mBinding: ActivitySpaceSetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        mBinding = ActivitySignInBinding.inflate(layoutInflater)
+        mBinding = ActivitySpaceSetupBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.webDavBt.setOnClickListener {
+        setSupportActionBar(mBinding.toolbar)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val color = ContextCompat.getColor(this, R.color.colorPrimary)
+        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_appintro_arrow)
+        arrow?.tint(color)
+
+        mBinding.webdavIcon.setColorFilter(color)
+
+        mBinding.webdavText.setDrawable(arrow, Position.End, tint = false)
+        mBinding.dropboxText.setDrawable(arrow, Position.End, tint = false)
+        mBinding.internetArchiveText.setDrawable(arrow, Position.End, tint = false)
+
+        mBinding.webdav.setOnClickListener {
             startActivity(Intent(this, WebDavLoginActivity::class.java))
         }
 
-        if (Space.has(Space.Type.INTERNET_ARCHIVE)) {
-            mBinding.iaFrame.hide()
-            mBinding.iaDivider.hide()
+        if (Space.has(Space.Type.DROPBOX)) {
+            mBinding.dropbox.hide()
         }
         else {
-            mBinding.iaButton.setOnClickListener {
-                startActivity(Intent(this, IaLoginActivity::class.java))
+            mBinding.dropbox.setOnClickListener {
+                startActivity(Intent(this, DropboxActivity::class.java))
             }
         }
 
-        if (Space.has(Space.Type.DROPBOX)) {
-            mBinding.dropboxFrame.hide()
-            mBinding.dropboxDivider.hide()
+        if (Space.has(Space.Type.INTERNET_ARCHIVE)) {
+            mBinding.internetArchive.hide()
         }
         else {
-            mBinding.dropboxBt.setOnClickListener {
-                startActivity(Intent(this, DropboxLoginActivity::class.java))
+            mBinding.internetArchive.setOnClickListener {
+                startActivity(Intent(this, IaLoginActivity::class.java))
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onEulaAgreedTo() {

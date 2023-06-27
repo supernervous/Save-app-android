@@ -46,7 +46,7 @@
     <string name="tos_dialog_positive_button">فهمت</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Internet Archive</string>
+    <string name="internet_archive">Internet Archive</string>
 
     <string name="tos_btn">أوافق على شروط الخدمة.</string>
 

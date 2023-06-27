@@ -63,7 +63,7 @@
     <string name="tos_dialog_positive_button">Got it</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Internet Archive</string>
+    <string name="internet_archive">Internet Archive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
     <string name="sign_up_btn">Don\'t have an account?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>
@@ -231,7 +231,6 @@
         completions."
     </string>
 
-    <string name="sign_in_private_btn">Private Server</string>
     <string name="importing_media">Importing media…</string>
 
     <string name="setup_nearby">Nearby</string>
@@ -316,8 +315,7 @@
     <string name="folder_name_already_exists">Folder name already exists.</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Edit</string>
-    <string name="title_dropbox">Dropbox</string>
-    <string name="description_dropbox">Securely access the commercial cloud</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadata</string>
     <string name="networking">Networking</string>
     <string name="user_interface">Presentation</string>
@@ -384,4 +382,10 @@
     <string name="create">Create</string>
     <string name="add">Add</string>
     <string name="no_more_folders">No (more) folders</string>
+    <string name="private_webdav_server">Private (WebDAV) Server</string>
+    <string name="upload_to_dropbox">Upload to Dropbox</string>
+    <string name="sign_in_or_create_an_account_with_dropbox">Sign in or create an account with Dropbox</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
+    <string name="back">Back</string>
 </resources>

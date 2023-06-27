@@ -36,7 +36,7 @@
     <string name="tos_dialog_positive_button">Понятно</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">Интернет архив</string>
+    <string name="internet_archive">Интернет архив</string>
 
     <string name="tos_btn">Я соглашаюсь с условиями обслуживания.</string>
 
@@ -135,7 +135,7 @@
     <string name="open_link">Открыть ссылку</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Редактировать</string>
-    <string name="title_dropbox">Внесите свои данные, чтобы стать частью решения.</string>
+    <string name="dropbox">Внесите свои данные, чтобы стать частью решения.</string>
     <string name="metadata">Метаданные</string>
     <string name="remove_from_app_media">Удалить медиа данные</string>
     <string name="popup_flag_title">Отметить важное содержание</string>

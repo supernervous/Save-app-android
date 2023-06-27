@@ -45,7 +45,7 @@
     <string name="tos_dialog_positive_button">متوجه شدم</string>
 
     <!-- FirstStartActivity -->
-    <string name="sign_in_btn">بایگانی اینترنت</string>
+    <string name="internet_archive">بایگانی اینترنت</string>
 
     <string name="tos_btn">با شرایط استفاده از خدمات موافقم</string>
 
@@ -172,7 +172,7 @@
     <string name="open_link">باز کردن پیوند</string>
     <string name="save_by_openarchive">توسط OpenArchive</string>
     <string name="action_edit">ویرایش</string>
-    <string name="title_dropbox">Dropbox</string>
+    <string name="dropbox">Dropbox</string>
     <string name="metadata">فرا داده</string>
     <string name="remove_from_app_media">حذف فایل رسانه‌ای</string>
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
