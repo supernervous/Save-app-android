@@ -217,7 +217,6 @@
 
     <string name="sign_in_private_btn">Özel sunucu</string>
     <string name="importing_media">Ortam içe aktarılıyor…</string>
-    <string name="title_no_projects">Henüz bir proje yok</string>
 
     <string name="setup_nearby">Yakındaki</string>
     <string name="title_activity_space_settings">Alanınız</string>

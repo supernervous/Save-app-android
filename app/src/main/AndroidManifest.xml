@@ -42,7 +42,7 @@
         Trail of bits ticket: https://github.com/OpenArchive/OA-Trail-of-Bits/issues/23
         -->
         <activity
-            android:name=".features.media.browse.BrowseFoldersActivity"
+            android:name=".features.projects.BrowseFoldersActivity"
             android:exported="false"
             android:label="@string/title_activity_browser_projects"
             android:taskAffinity=""

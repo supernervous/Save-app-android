@@ -177,4 +177,11 @@
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
     <string name="prefs_proofmode_key_encryption_summary">Wenn Du das änderst, wird ein neuer Schlüssel generiert! Wenn Du den Vorherigen exportiert und signiert hast, wirst Du das mit dem Neuen wiederholen müssen.</string>
     <string name="biometrics_title">ProofMode-Schlüssel entsperren</string>
+    <string name="create_folder_name">Erstelle Ordnernamen</string>
+    <string name="folder_name">Ordnername</string>
+    <string name="create">Erstellen</string>
+    <string name="browse_existing">Existierende Ordner</string>
+    <string name="add">Hinzufügen</string>
+    <string name="no_more_folders">Keine (weiteren) Ordner</string>
+
 </resources>

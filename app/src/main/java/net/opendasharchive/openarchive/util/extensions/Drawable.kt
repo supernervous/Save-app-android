@@ -43,3 +43,7 @@ fun Drawable.tint(color: Int): Drawable {
 
     return this
 }
+
+fun Drawable.clone(): Drawable? {
+    return this.constantState?.newDrawable()?.mutate()
+}

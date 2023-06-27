@@ -122,6 +122,11 @@ data class Space(
     val projects: List<Project>
         get() = find(Project::class.java, "space_id = ?", arrayOf(id.toString()), null, "id DESC", null)
 
+    fun hasProject(description: String): Boolean {
+        // Cannot use `count` from Kotlin due to strange <T> in method signature.
+        return find(Project::class.java, "space_id = ? AND description = ?", id.toString(), description).size > 0
+    }
+
     fun getAvatar(context: Context): Drawable? {
         return when (tType) {
             Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ialogo128)

@@ -77,7 +77,7 @@ class CreateNewFolderActivity : BaseActivity() {
 
         val space = Space.current ?: return
 
-        if (space.projects.firstOrNull { it.description == name } != null) {
+        if (space.hasProject(name)) {
             Toast.makeText(this, getString(R.string.folder_name_already_exists),
                 Toast.LENGTH_LONG).show()
 
