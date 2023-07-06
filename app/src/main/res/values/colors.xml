@@ -52,6 +52,7 @@
     <color name="c23_teal_30">#ff004e48</color> <!-- v=30.6 -->
     <color name="c23_teal_20">#ff003530</color> <!-- v=20.6 -->
     <color name="c23_teal_10">#ff001b19</color> <!-- v=10.6 -->
+    <color name="c23_powder_blue">#ffaae6e1</color>
 
     <!-- theme day colors -->
 
@@ -60,6 +61,7 @@
     <color name="colorOnPrimary">@color/white</color>
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>
+    <color name="colorPrimaryBright">@color/c23_powder_blue</color>
 
     <!-- custom day colors -->
 

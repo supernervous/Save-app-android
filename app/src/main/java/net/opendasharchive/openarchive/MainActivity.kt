@@ -45,8 +45,8 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
-import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.features.onboarding23.Onboarding23Activity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
@@ -289,7 +289,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         refreshSpace()
 
         if (mSpace?.host.isNullOrEmpty()) {
-            startActivity(Intent(this, OAAppIntro::class.java))
+            startActivity(Intent(this, Onboarding23Activity::class.java))
         }
 
         importSharedMedia(intent)

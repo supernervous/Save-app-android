@@ -127,6 +127,8 @@ dependencies {
     implementation libraries.constraint_layout
     implementation "com.google.android.material:material:1.9.0"
 
+    implementation "com.tbuonomo:dotsindicator:5.0"
+
     implementation libraries.dropbox_core_sdk
     implementation libraries.legacy_support_v4
     implementation libraries.coordinator_layout

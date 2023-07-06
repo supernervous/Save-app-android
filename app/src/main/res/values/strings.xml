@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
     <string name="app_name" translatable="false">Save</string>
@@ -380,4 +380,33 @@
     <string name="security">Security</string>
     <string name="proofmode">ProofMode</string>
     <string name="no_webbrowser_found_error">No application can handle this request. Please install a webbrowser.</string>
+
+    <string name="intro_header_share" translatable="false">SHARE</string>
+    <string name="intro_header_archive" translatable="false">ARCHIVE</string>
+    <string name="intro_header_verify" translatable="false">VERIFY</string>
+    <string name="intro_header_encrypt" translatable="false">ENCRYPT</string>
+    <string name="intro_text_share">
+        Upload verified media to your chosen server. Add a Creative Commons license to communicate
+        your intentions for future use.
+    </string>
+    <string name="intro_text_archive">
+        Keep your media safe and organized for the long-term and create in-app project folders that
+        map your personal or organizational media archive.
+    </string>
+    <string name="intro_text_verify">
+        Authenticate your media with a cryptographic verification sha256 hash, and optional
+        ProofMode. Add critical metadata like notes, people, and location with each upload.
+    </string>
+    <string name="intro_text_encrypt"><![CDATA[
+        Automatically upload over TLS (Transport Layer Security) and use Orbot to protect your
+        media in transit over the Tor network.<br />
+        <br />
+        <b>Install Orbot</b> to enable advanced network security.]]>
+    </string>
+    <string name="next">Next</string>
+    <string name="lorem_ipsum_short_paragraph">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus.
+    </string>
 </resources>
