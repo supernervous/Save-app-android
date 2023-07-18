@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="8dp"
-                android:drawablePadding="@dimen/ef_padding_small"
+                android:drawablePadding="@dimen/padding_small"
                 android:gravity="center_vertical"
                 android:textSize="17sp"
                 app:layout_constraintEnd_toEndOf="parent"

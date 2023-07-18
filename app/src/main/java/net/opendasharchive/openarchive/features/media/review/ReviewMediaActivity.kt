@@ -264,7 +264,7 @@ class ReviewMediaActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.home -> finish()
+            android.R.id.home -> finish()
             R.id.menu_upload -> checkPermission()
             R.id.menu_item_share_link -> shareLink()
             R.id.menu_item_open_link -> openLink()

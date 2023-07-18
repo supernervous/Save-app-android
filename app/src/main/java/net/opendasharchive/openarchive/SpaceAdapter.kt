@@ -40,7 +40,7 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
                 Position.Start, tint = false)
 
             binding.rvTitle.compoundDrawablePadding =
-                context.resources.getDimension(R.dimen.ef_padding_small).roundToInt()
+                context.resources.getDimension(R.dimen.padding_small).roundToInt()
 
             if (space != null) {
                 binding.root.setOnClickListener {

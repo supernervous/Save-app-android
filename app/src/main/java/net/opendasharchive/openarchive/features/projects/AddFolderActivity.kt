@@ -36,7 +36,7 @@ class AddFolderActivity : BaseActivity() {
             setFolder(true)
         }
 
-        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_appintro_arrow)
+        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
         arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
 
         mBinding.newFolderText.setDrawable(arrow, Position.End, tint = false)

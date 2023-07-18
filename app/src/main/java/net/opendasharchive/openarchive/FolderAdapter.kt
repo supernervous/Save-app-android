@@ -34,7 +34,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
 
             binding.rvTitle.setDrawable(R.drawable.ic_folder, Position.Start, 0.75)
             binding.rvTitle.compoundDrawablePadding =
-                binding.rvTitle.context.resources.getDimension(R.dimen.ef_padding_small).roundToInt()
+                binding.rvTitle.context.resources.getDimension(R.dimen.padding_small).roundToInt()
 
             if (project != null) {
                 binding.root.setOnClickListener {

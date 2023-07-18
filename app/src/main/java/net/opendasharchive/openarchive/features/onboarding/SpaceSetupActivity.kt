@@ -34,7 +34,7 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val color = ContextCompat.getColor(this, R.color.colorPrimary)
-        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_appintro_arrow)
+        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
         arrow?.tint(color)
 
         mBinding.webdavIcon.setColorFilter(color)
