@@ -5,7 +5,6 @@
     <string name="app_name" translatable="false">Save</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
 
-    <string name="main_activity_title">Save</string>
     <string name="title_activity_main">Capture Media</string>
     <string name="title_activity_login">Log in</string>
     <string name="title_activity_settings">Settings</string>
@@ -388,4 +387,5 @@
     <string name="authenticate">Authenticate</string>
     <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
     <string name="back">Back</string>
+    <string name="my_media">My Media</string>
 </resources>

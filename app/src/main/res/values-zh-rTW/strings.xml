@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">儲存</string>
     <string name="title_activity_login">登入</string>
     <string name="title_activity_settings">設定</string>
     <string name="title_activity_archive_metadata">中繼資料</string>

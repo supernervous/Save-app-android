@@ -46,6 +46,14 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         notifyDataSetChanged()
     }
 
+    fun getIndex(project: Project?): Int {
+        if (project == null) {
+            return if (projects.isNotEmpty()) 1 else 0
+        }
+
+        return projects.indexOf(project) + 1
+    }
+
     override fun getPageTitle(position: Int): CharSequence? {
         return if (position == 0) {
             val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black_24dp)

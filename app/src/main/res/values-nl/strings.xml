@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">Opslaan</string>
     <string name="title_activity_login">Inloggen</string>
     <string name="title_activity_settings">Instellingen</string>
     <string name="title_activity_archive_metadata">Metadata</string>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">Enregistrer</string>
     <string name="title_activity_login">Connexion</string>
     <string name="title_activity_settings">Paramètres</string>
     <string name="title_activity_view_media">Ajouter des infos</string>

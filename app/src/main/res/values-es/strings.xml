@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">Guardar</string>
     <string name="title_activity_main">Capturar multimedia</string>
     <string name="title_activity_login">Iniciar sesión</string>
     <string name="title_activity_settings">Ajustes</string>

@@ -172,16 +172,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.title = null
 
         mSnackBar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
         (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
-
-        mBinding.spaceAvatar.setOnClickListener {
-            showSpaceSettings()
-        }
-        mBinding.spaceName.setOnClickListener {
-            showSpaceSettings()
-        }
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
         mBinding.pager.adapter = mPagerAdapter
@@ -226,12 +220,24 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             addFolder()
         }
 
-        mBinding.floatingMenu.setOnClickListener {
-            if (mPagerAdapter.count > 1 && lastTab > 0) {
-                importMedia()
-            }
-            else {
-                addFolder()
+        mBinding.bottomMenu.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.add -> {
+                    if (mPagerAdapter.count > 1 && lastTab > 0) {
+                        importMedia()
+                    }
+                    else {
+                        addFolder()
+                    }
+
+                    true
+                }
+                R.id.settings -> {
+                    showSpaceSettings()
+
+                    true
+                }
+                else -> false
             }
         }
     }
@@ -258,10 +264,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
 
         importSharedMedia(intent)
-
-        if (mBinding.pager.currentItem == 0 && mPagerAdapter.count > 1) {
-            mBinding.pager.currentItem = 1
-        }
     }
 
     override fun onPostResume() {
@@ -298,11 +300,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
-                showSpaceSettings()
-
-                return true
-            }
             R.id.menu_upload_manager -> {
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
                     it.putExtra(PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
@@ -337,23 +334,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mSpace = currentSpace
 
         if (currentSpace != null) {
-            // Main header
-            currentSpace.setAvatar(mBinding.spaceAvatar)
-            mBinding.spaceName.text = currentSpace.friendlyName
-
-            // Drawer header
             mBinding.space.setDrawable(currentSpace.getAvatar(this)
                 ?.scaled(32, this), Position.Start, tint = false)
+            mBinding.space.text = currentSpace.friendlyName
         }
         else {
-            mBinding.spaceAvatar.setImageResource(R.drawable.avatar_default)
-            mBinding.spaceName.text = getString(R.string.main_activity_title)
-
             mBinding.space.setDrawable(R.drawable.avatar_default, Position.Start, tint = false)
+            mBinding.space.text = getString(R.string.app_name)
         }
-
-        // Drawer header
-        mBinding.space.text = mBinding.spaceName.text
 
         mSpaceAdapter.update(Space.getAll().asSequence().toList())
 
@@ -363,10 +351,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private fun refreshProjects() {
         val projects = mSpace?.projects ?: emptyList()
 
+        val oldProject = mPagerAdapter.getProject(mBinding.pager.currentItem)
+
         mPagerAdapter.updateData(projects)
 
         mBinding.pager.adapter = mPagerAdapter
-        mBinding.pager.currentItem = if (projects.isNotEmpty()) 1 else 0
+        mBinding.pager.currentItem = mPagerAdapter.getIndex(oldProject)
 
         mFolderAdapter.update(projects)
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">保存</string>
     <string name="title_activity_main">捕获媒体</string>
     <string name="title_activity_login">登录</string>
     <string name="title_activity_settings">设置</string>

@@ -3,7 +3,6 @@
 
     <string name="app_subtext">Ortamlarınızı arşivleyin\n<a href="#">bilgi alın</a></string>
 
-    <string name="main_activity_title">Kaydet</string>
     <string name="title_activity_main">Ortam yakala</string>
     <string name="title_activity_login">Oturum açın</string>
     <string name="title_activity_settings">Ayarlar</string>

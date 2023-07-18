@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="main_activity_title">Зберегти</string>
     <string name="title_activity_login">Увійти</string>
     <string name="title_activity_settings">Налаштування</string>
     <string name="title_activity_view_media">Додати дані</string>
