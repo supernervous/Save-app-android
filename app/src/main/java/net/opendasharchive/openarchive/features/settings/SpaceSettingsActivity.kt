@@ -68,28 +68,8 @@ class SpaceSettingsActivity : BaseActivity() {
                 startSpaceAuthActivity()
             }
 
-            contentSpaceLayout.btnDataUse.setOnClickListener {
-                val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
-                intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_DATAUSE)
-                startActivity(intent)
-            }
-
-            contentSpaceLayout.btnMetadata.setOnClickListener {
-                val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
-                intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_METADATA)
-                startActivity(intent)
-            }
-
-            contentSpaceLayout.btnNetworking.setOnClickListener {
-                val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
-                intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_NETWORKING)
-                startActivity(intent)
-            }
-
-            contentSpaceLayout.btnUserInterface.setOnClickListener {
-                val intent = Intent(this@SpaceSettingsActivity, SettingsActivity::class.java)
-                intent.putExtra(SettingsActivity.KEY_TYPE, SettingsActivity.KEY_USER_INTERFACE)
-                startActivity(intent)
+            contentSpaceLayout.btGeneral.setOnClickListener {
+                startActivity(Intent(this@SpaceSettingsActivity, GeneralSettingsActivity::class.java))
             }
 
             contentSpaceLayout.btnPrivacy.setOnClickListener {

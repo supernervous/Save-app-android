@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/connectivity_data">
+
+        <SwitchPreferenceCompat
+            app:key="upload_wifi_only"
+            app:defaultValue="false"
+            app:title="@string/only_upload_media_when_you_are_connected_to_wi_fi"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:key="upload_nextcloud_chunks"
+            app:defaultValue="false"
+            app:title="@string/pref_nextcloud_title"
+            app:singleLineTitle="false"
+            app:summary="@string/pref_nextcloud_subject" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/metadata">
+
+        <Preference
+            app:key="proof_mode"
+            app:title="@string/proofmode"
+            app:singleLineTitle="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/security">
+
+        <SwitchPreferenceCompat
+            app:key="use_tor"
+            app:defaultValue="false"
+            app:title="@string/prefs_use_tor_title"
+            app:singleLineTitle="false"
+            app:summary="@string/prefs_use_tor_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/prefs_user_interface_title">
+
+        <ListPreference
+            app:key="theme"
+            app:defaultValue="@string/prefs_theme_val_system"
+            app:entries="@array/ar_prefs_theme_labels"
+            app:entryValues="@array/ar_prefs_theme_val"
+            app:title="@string/prefs_theme_title"
+            app:singleLineTitle="false"
+            app:summary="@string/prefs_theme_summary" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -145,6 +145,17 @@
                 <data android:scheme="nc" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".features.settings.GeneralSettingsActivity"
+            android:label="@string/general"
+            android:exported="false"
+            android:taskAffinity="" />
+
+        <activity android:name=".features.settings.ProofModeSettingsActivity"
+            android:label="@string/proofmode"
+            android:exported="false"
+            android:taskAffinity="" />
+
         <activity
             android:name=".features.media.preview.PreviewMediaListActivity"
             android:label="@string/title_activity_batch_media_review"
@@ -174,10 +185,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.opendasharchive.openarchive.MainActivity" />
         </activity>
-        <activity
-            android:name=".features.settings.SettingsActivity"
-            android:label="App Intro"
-            android:taskAffinity="" />
 
         <activity
             android:name=".features.onboarding.SpaceSetupActivity"

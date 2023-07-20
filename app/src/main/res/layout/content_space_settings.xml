@@ -73,35 +73,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/btnMetadata"
+            android:id="@+id/bt_general"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="@string/metadata"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/btnDataUse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/action_data_use"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/btnNetworking"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/networking"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/btnUserInterface"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/user_interface"
+            android:text="@string/general"
             android:textSize="22sp" />
 
         <TextView

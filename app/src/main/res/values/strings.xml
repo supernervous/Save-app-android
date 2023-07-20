@@ -391,4 +391,9 @@
     <string name="server_info">Server Info</string>
     <string name="enter_url">Enter URL</string>
     <string name="account">Account</string>
+    <string name="general">General</string>
+    <string name="connectivity_data"><![CDATA[Connectivity & Data]]></string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Only upload media when you are connected to Wi-Fi</string>
+    <string name="security">Security</string>
+    <string name="proofmode">ProofMode</string>
 </resources>
