@@ -23,7 +23,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
-import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
+import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 
@@ -194,7 +194,7 @@ class SpaceSettingsActivity : BaseActivity() {
     private fun startSpaceAuthActivity() {
         mSpace?.let {
             val clazz = when (it.tType) {
-                Space.Type.INTERNET_ARCHIVE -> IaLoginActivity::class.java
+                Space.Type.INTERNET_ARCHIVE -> InternetArchiveActivity::class.java
                 Space.Type.DROPBOX -> DropboxActivity::class.java
                 else -> WebDavLoginActivity::class.java
             }

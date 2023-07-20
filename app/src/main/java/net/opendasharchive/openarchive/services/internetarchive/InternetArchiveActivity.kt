@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivityLoginIaBinding
+import net.opendasharchive.openarchive.databinding.ActivityInternetArchiveBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
@@ -36,10 +36,10 @@ import java.io.IOException
 import java.io.InputStream
 import kotlin.coroutines.suspendCoroutine
 
-class IaLoginActivity : BaseActivity() {
+class InternetArchiveActivity : BaseActivity() {
 
     private lateinit var mSpace: Space
-    private lateinit var mBinding: ActivityLoginIaBinding
+    private lateinit var mBinding: ActivityInternetArchiveBinding
     private lateinit var mSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +47,7 @@ class IaLoginActivity : BaseActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        mBinding = ActivityLoginIaBinding.inflate(layoutInflater)
+        mBinding = ActivityInternetArchiveBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         if (intent.hasExtra("space")) {
@@ -55,6 +55,8 @@ class IaLoginActivity : BaseActivity() {
 
             setSupportActionBar(mBinding.toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            mBinding.header.hide()
 
             mBinding.accessKey.isEnabled = false
             mBinding.secretKey.isEnabled = false
@@ -183,7 +185,7 @@ class IaLoginActivity : BaseActivity() {
                 Space.current = mSpace
 
                 finishAffinity()
-                startActivity(Intent(this@IaLoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@InternetArchiveActivity, MainActivity::class.java))
             }
             catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {

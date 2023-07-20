@@ -7,7 +7,7 @@
     android:filterTouchesWhenObscured="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".services.internetarchive.IaLoginActivity">
+    tools:context=".services.internetarchive.InternetArchiveActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -35,6 +35,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

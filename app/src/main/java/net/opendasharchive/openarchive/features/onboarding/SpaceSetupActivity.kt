@@ -10,7 +10,7 @@ import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
-import net.opendasharchive.openarchive.services.internetarchive.IaLoginActivity
+import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -61,7 +61,7 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
         }
         else {
             mBinding.internetArchive.setOnClickListener {
-                startActivity(Intent(this, IaLoginActivity::class.java))
+                startActivity(Intent(this, InternetArchiveActivity::class.java))
             }
         }
     }

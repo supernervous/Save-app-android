@@ -106,7 +106,7 @@
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
         <activity
-            android:name=".services.internetarchive.IaLoginActivity"
+            android:name=".services.internetarchive.InternetArchiveActivity"
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
 
