@@ -11,7 +11,7 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
-import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
+import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -44,7 +44,7 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
         mBinding.internetArchiveText.setDrawable(arrow, Position.End, tint = false)
 
         mBinding.webdav.setOnClickListener {
-            startActivity(Intent(this, WebDavLoginActivity::class.java))
+            startActivity(Intent(this, WebDavActivity::class.java))
         }
 
         if (Space.has(Space.Type.DROPBOX)) {

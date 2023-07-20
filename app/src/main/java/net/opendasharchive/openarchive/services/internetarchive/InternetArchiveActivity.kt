@@ -40,7 +40,7 @@ class InternetArchiveActivity : BaseActivity() {
 
     private lateinit var mSpace: Space
     private lateinit var mBinding: ActivityInternetArchiveBinding
-    private lateinit var mSnackbar: Snackbar
+    private var mSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,13 +115,12 @@ class InternetArchiveActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-            }
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
         }
 
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     private val mAcquireKeysResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -174,7 +173,7 @@ class InternetArchiveActivity : BaseActivity() {
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
-        mSnackbar.show()
+        mSnackbar?.show()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -339,7 +338,7 @@ class InternetArchiveActivity : BaseActivity() {
 
     private fun showError(text: CharSequence, onForm: Boolean = false) {
         runOnUiThread {
-            mSnackbar.dismiss()
+            mSnackbar?.dismiss()
 
             if (onForm) {
                 mBinding.secretKey.error = text
@@ -347,7 +346,7 @@ class InternetArchiveActivity : BaseActivity() {
             }
             else {
                 mSnackbar = mBinding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
-                mSnackbar.show()
+                mSnackbar?.show()
 
                 mBinding.accessKey.requestFocus()
             }

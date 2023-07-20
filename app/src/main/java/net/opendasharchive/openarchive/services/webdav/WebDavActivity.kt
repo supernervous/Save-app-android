@@ -3,7 +3,8 @@ package net.opendasharchive.openarchive.services.webdav
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -14,14 +15,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivityLoginWebdavBinding
+import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.Position
+import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
+import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
 import okhttp3.Call
 import okhttp3.Callback
@@ -30,10 +34,10 @@ import okhttp3.Response
 import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
-class WebDavLoginActivity : BaseActivity() {
+class WebDavActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityLoginWebdavBinding
-    private lateinit var mSnackbar: Snackbar
+    private lateinit var mBinding: ActivityWebdavBinding
+    private var mSnackbar: Snackbar? = null
     private lateinit var mSpace: Space
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,21 +45,56 @@ class WebDavLoginActivity : BaseActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        mBinding = ActivityLoginWebdavBinding.inflate(layoutInflater)
+        mBinding = ActivityWebdavBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (intent.hasExtra(Constants.SPACE_EXTRA)) {
             mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space(Space.Type.WEBDAV)
-            mBinding.removeSpaceBt.show()
-            mBinding.removeSpaceBt.setOnClickListener {
+
+            setSupportActionBar(mBinding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            mBinding.header.hide()
+
+            mBinding.server.isEnabled = false
+            mBinding.username.isEnabled = false
+            mBinding.password.isEnabled = false
+
+            mBinding.name.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun afterTextChanged(name: Editable?) {
+                    if (name == null) return
+
+                    mSpace.name = name.toString()
+                    mSpace.save()
+                }
+            })
+
+            mBinding.btRemove.setDrawable(R.drawable.ic_delete, Position.Start, 0.5)
+            mBinding.btRemove.show()
+            mBinding.btRemove.setOnClickListener {
                 removeProject()
             }
+
+            mBinding.buttonBar.hide()
         }
         else {
             mSpace = Space(Space.Type.WEBDAV)
+
+            mBinding.toolbar.hide()
+
+            mBinding.btCancel.setOnClickListener {
+                finish()
+            }
+
+            mBinding.btAuthenticate.setOnClickListener {
+                attemptLogin()
+            }
         }
 
         with(intent) {
@@ -81,7 +120,7 @@ class WebDavLoginActivity : BaseActivity() {
             }
         }
 
-        mBinding.email.setText(mSpace.username)
+        mBinding.username.setText(mSpace.username)
 
         mBinding.password.setText(mSpace.password)
         mBinding.password.setOnEditorActionListener { _, actionId, _ ->
@@ -93,22 +132,10 @@ class WebDavLoginActivity : BaseActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_login, menu)
-
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_sign_in -> {
-                attemptLogin()
-                return true
-            }
-            android.R.id.home -> {
-                finish()
-                return true
-            }
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
         }
 
         return super.onOptionsItemSelected(item)
@@ -142,7 +169,7 @@ class WebDavLoginActivity : BaseActivity() {
      */
     private fun attemptLogin() {
         // Reset errors.
-        mBinding.email.error = null
+        mBinding.username.error = null
         mBinding.password.error = null
 
         // Store values at the time of the login attempt.
@@ -153,7 +180,7 @@ class WebDavLoginActivity : BaseActivity() {
         mSpace.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
         mBinding.server.setText(mSpace.host)
 
-        mSpace.username = mBinding.email.text?.toString() ?: ""
+        mSpace.username = mBinding.username.text?.toString() ?: ""
         mSpace.password = mBinding.password.text?.toString() ?: ""
 
         if (mSpace.host.isEmpty()) {
@@ -161,8 +188,8 @@ class WebDavLoginActivity : BaseActivity() {
             errorView = mBinding.server
         }
         else if (mSpace.username.isEmpty()) {
-            mBinding.email.error = getString(R.string.error_field_required)
-            errorView = mBinding.email
+            mBinding.username.error = getString(R.string.error_field_required)
+            errorView = mBinding.username
         }
         else if (mSpace.password.isEmpty()) {
             mBinding.password.error = getString(R.string.error_field_required)
@@ -185,8 +212,8 @@ class WebDavLoginActivity : BaseActivity() {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mSnackbar = mBinding.loginForm.makeSnackBar(getString(R.string.login_activity_logging_message))
-        mSnackbar.show()
+        mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
+        mSnackbar?.show()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -197,7 +224,7 @@ class WebDavLoginActivity : BaseActivity() {
                 Space.current = mSpace
 
                 finishAffinity()
-                startActivity(Intent(this@WebDavLoginActivity, MainActivity::class.java))
+                startActivity(Intent(this@WebDavActivity, MainActivity::class.java))
             }
             catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {
@@ -248,15 +275,15 @@ class WebDavLoginActivity : BaseActivity() {
 
     private fun showError(text: CharSequence, onForm: Boolean = false) {
         runOnUiThread {
-            mSnackbar.dismiss()
+            mSnackbar?.dismiss()
 
             if (onForm) {
                 mBinding.password.error = text
                 mBinding.password.requestFocus()
             }
             else {
-                mSnackbar = mBinding.loginForm.makeSnackBar(text, Snackbar.LENGTH_LONG)
-                mSnackbar.show()
+                mSnackbar = mBinding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
+                mSnackbar?.show()
 
                 mBinding.server.requestFocus()
             }

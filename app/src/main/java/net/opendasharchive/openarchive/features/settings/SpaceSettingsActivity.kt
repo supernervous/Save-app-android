@@ -24,7 +24,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
-import net.opendasharchive.openarchive.services.webdav.WebDavLoginActivity
+import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
 
 class SpaceSettingsActivity : BaseActivity() {
@@ -196,7 +196,7 @@ class SpaceSettingsActivity : BaseActivity() {
             val clazz = when (it.tType) {
                 Space.Type.INTERNET_ARCHIVE -> InternetArchiveActivity::class.java
                 Space.Type.DROPBOX -> DropboxActivity::class.java
-                else -> WebDavLoginActivity::class.java
+                else -> WebDavActivity::class.java
             }
 
             val intent = Intent(this@SpaceSettingsActivity, clazz)

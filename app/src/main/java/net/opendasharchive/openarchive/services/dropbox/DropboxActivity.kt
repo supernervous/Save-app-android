@@ -59,7 +59,7 @@ class DropboxActivity: BaseActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        mBinding.btRemove.setDrawable(R.drawable.ic_delete, Position.Start, 0.75)
+        mBinding.btRemove.setDrawable(R.drawable.ic_delete, Position.Start, 0.5)
         mBinding.btRemove.setOnClickListener {
             if (space != null) removeSpace(space)
         }

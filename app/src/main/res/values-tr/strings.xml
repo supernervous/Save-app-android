@@ -202,7 +202,6 @@
     <string name="tap_to_connect">Bağlantı kurmak için dokunun</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Kullanıcı adı</string>
-    <string name="prompt_server">WebDAV/Nextcloud sunucusu</string>
     <string name="prompt_password">Parola</string>
     <string name="action_sign_in">Oturum aç</string>
     <string name="action_sign_in_short">Oturum aç</string>
