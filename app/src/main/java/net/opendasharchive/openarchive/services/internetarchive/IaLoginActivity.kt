@@ -8,21 +8,39 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityLoginIaBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.Position
+import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.makeSnackBar
+import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
+import org.xmlpull.v1.XmlPullParserFactory
+import java.io.IOException
+import java.io.InputStream
+import kotlin.coroutines.suspendCoroutine
 
 class IaLoginActivity : BaseActivity() {
 
     private lateinit var mSpace: Space
     private lateinit var mBinding: ActivityLoginIaBinding
-
-    private var isSuccessLogin: Boolean = false
+    private lateinit var mSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,18 +50,29 @@ class IaLoginActivity : BaseActivity() {
         mBinding = ActivityLoginIaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         if (intent.hasExtra("space")) {
             mSpace = Space.get(intent.getLongExtra("space", -1L)) ?: Space(Space.Type.INTERNET_ARCHIVE)
-            mBinding.removeSpaceBt.show()
-            mBinding.removeSpaceBt.setOnClickListener {
+
+            setSupportActionBar(mBinding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            mBinding.accessKey.isEnabled = false
+            mBinding.secretKey.isEnabled = false
+
+            mBinding.btAcquireKeys.isEnabled = false
+
+            mBinding.btRemove.setDrawable(R.drawable.ic_delete, Position.Start, 0.5)
+            mBinding.btRemove.show()
+            mBinding.btRemove.setOnClickListener {
                 removeProject()
             }
+
+            mBinding.buttonBar.hide()
         }
         else {
             mSpace = Space(Space.Type.INTERNET_ARCHIVE)
+
+            mBinding.toolbar.hide()
         }
 
         mBinding.accessKey.setText(mSpace.username)
@@ -57,71 +86,40 @@ class IaLoginActivity : BaseActivity() {
             false
         }
 
-        mBinding.acquireKeysBt.setOnClickListener {
+        mBinding.btAcquireKeys.setOnClickListener {
             acquireKeys()
+        }
+
+        mBinding.btLearnHow.setOnClickListener {
+            Prefs.iaHintShown = false
+            showFirstTimeIa()
+        }
+
+        mBinding.btCancel.setOnClickListener {
+            finish()
+        }
+
+        mBinding.btAuthenticate.setOnClickListener {
+            attemptLogin()
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isSuccessLogin) {
-                    val intent = Intent(this@IaLoginActivity, MainActivity::class.java)
-                    finishAffinity()
-                    startActivity(intent)
-                }
-                else {
-                    finish()
-                }
+                finish()
             }
         })
 
         showFirstTimeIa()
     }
 
-    private fun acquireKeys() {
-        mAcquireKeysResultLauncher.launch(Intent(this, IaScrapeActivity::class.java))
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private fun attemptLogin() {
-        // Store values at the time of the login attempt.
-        val accessKey = mBinding.accessKey.text.toString()
-        val secretKey = mBinding.secretKey.text.toString()
-        var focusView: View? = null
-
-        // Check for a valid password, if the user entered one.
-        if (secretKey.isEmpty()) {
-            mBinding.secretKey.error = getString(R.string.error_invalid_password)
-            focusView = mBinding.secretKey
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
         }
 
-        // Check for a valid password, if the user entered one.
-        if (accessKey.isEmpty()) {
-            mBinding.accessKey.error = getString(R.string.error_invalid_password)
-            focusView = mBinding.accessKey
-        }
-
-        if (focusView != null) {
-            // There was an error; don't attempt login and focus the first form field with an error.
-            focusView.requestFocus()
-            Toast.makeText(this, getString(R.string.IA_login_error), Toast.LENGTH_SHORT).show()
-
-            return
-        }
-
-        mSpace.username = accessKey
-        mSpace.password = secretKey
-        mSpace.save()
-
-        Space.current = mSpace
-
-        isSuccessLogin = true
-
-        finishAffinity()
-        startActivity(Intent(this, MainActivity::class.java))
+        return true
     }
 
     private val mAcquireKeysResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -136,22 +134,222 @@ class IaLoginActivity : BaseActivity() {
         mBinding.secretKey.setText(credentials)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_login, menu)
-        return true
+    private fun acquireKeys() {
+        mAcquireKeysResultLauncher.launch(Intent(this, IaScrapeActivity::class.java))
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_sign_in -> {
-                attemptLogin()
-            }
-            android.R.id.home -> {
-                finish()
-            }
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private fun attemptLogin() {
+        // Store values at the time of the login attempt.
+        mSpace.username = mBinding.accessKey.text.toString()
+        mSpace.password = mBinding.secretKey.text.toString()
+        var focusView: View? = null
+
+        // Check for a valid password, if the user entered one.
+        if (mSpace.password.isEmpty()) {
+            mBinding.secretKey.error = getString(R.string.error_field_required)
+            focusView = mBinding.secretKey
         }
 
-        return true
+        // Check for a valid password, if the user entered one.
+        if (mSpace.username.isEmpty()) {
+            mBinding.accessKey.error = getString(R.string.error_field_required)
+            focusView = mBinding.accessKey
+        }
+
+        if (focusView != null) {
+            // There was an error; don't attempt login and focus the first form field with an error.
+            focusView.requestFocus()
+            Toast.makeText(this, getString(R.string.IA_login_error), Toast.LENGTH_SHORT).show()
+
+            return
+        }
+
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
+        mSnackbar.show()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                testConnection()
+
+                mSpace.save()
+
+                Space.current = mSpace
+
+                finishAffinity()
+                startActivity(Intent(this@IaLoginActivity, MainActivity::class.java))
+            }
+            catch (exception: IOException) {
+                if (exception.message?.startsWith("401") == true) {
+                    showError(getString(R.string.error_incorrect_username_or_password), true)
+                } else {
+                    showError(exception.localizedMessage ?: getString(R.string.status_error))
+                }
+            }
+        }
+    }
+
+    /**
+     * Unfortunately, this test actually only tests if the `access key` is correct.
+     * We can provide any `secret key` to the IA's S3 API.
+     *
+     * I couldn't find a test which proofs the latter, too, short of `PUT`ing an asset on their
+     * server. Which is a really bad idea, considering that we cannot `DELETE` the created bucket again.
+     */
+    private suspend fun testConnection() {
+        val url = mSpace.hostUrl ?: throw IOException("400 Bad Request")
+
+        val client = SaveClient.get(this)
+
+        val request = Request.Builder()
+            .url(url)
+            .method("GET", null)
+            .addHeader("Authorization", "LOW ${mSpace.username}:${mSpace.password}")
+            .build()
+
+        return suspendCoroutine {
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    it.resumeWith(Result.failure(e))
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val code = response.code
+                    val message = response.message
+
+                    val username = getUsername(response.body?.byteStream())
+
+                    response.close()
+
+                    if (code != 200 && code != 204) {
+                        return it.resumeWith(Result.failure(IOException("$code $message")))
+                    }
+
+                    if (username == null) {
+                        return it.resumeWith(Result.failure(IOException("401 Unauthorized")))
+                    }
+
+                    mSpace.displayname = username
+
+                    it.resumeWith(Result.success(Unit))
+                }
+            })
+        }
+    }
+
+    /**
+     * Parses the usernome out of an XML document which starts like this:
+     *
+     * ```
+     * <ListAllMyBucketsResult>
+     *     <Owner>
+     *         <ID>OpaqueIDStringGoesHere</ID>
+     *         <DisplayName>Readable ID Goes Here</DisplayName>
+     *     </Owner>
+     * </<ListAllMyBucketsResult>
+     * ```
+     *
+     * The username is expected in the first `DisplayName` tag in the first `Owner` tag in the
+     * first `ListAllMyBucketsResult` tag.
+     *
+     * A username of `"Readable ID Goes Here".lowercase()` is considered not to be a username.
+     * (That's what the Internet Archive S3 API should return, if authorization was unsuccessful.)
+     */
+    private fun getUsername(body: InputStream?): String? {
+        if (body == null) return null
+
+        try {
+            val xpp = XmlPullParserFactory.newInstance().newPullParser()
+            xpp.setInput(body, null)
+
+            var eventType = xpp.eventType
+
+            var container = false
+            var owner = false
+            var displayName = false
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                when (eventType) {
+                    XmlPullParser.START_TAG -> {
+                        when (xpp.name) {
+                            "ListAllMyBucketsResult" -> {
+                                container = true
+                            }
+                            "Owner" -> {
+                                if (container) owner = true
+                            }
+                            "DisplayName" -> {
+                                if (container && owner) displayName = true
+                            }
+                        }
+                    }
+                    XmlPullParser.END_TAG -> {
+                        when (xpp.name) {
+                            "ListAllMyBucketsResult" -> {
+                                // Almost done anyway.
+                                return null
+                            }
+                            "Owner" -> {
+                                // It should be the first "Owner" element.
+                                // If that went by without a "DisplayName" element, stop it.
+                                if (container) return null
+                            }
+                            "DisplayName" -> {
+                                // If the first "DisplayName" element in the first "Owner"
+                                // element doesn't have a name, stop it.
+                                if (container && owner) return null
+                            }
+                        }
+                    }
+                    XmlPullParser.TEXT -> {
+                        if (container && owner && displayName) {
+                            val username = xpp.text.trim()
+
+                            // If the access key wasn't correct, a dummy username is displayed. Ignore.
+                            if (username.isBlank() || username.lowercase() == "Readable ID Goes Here".lowercase()) {
+                                return null
+                            }
+
+                            // Yay! Found a username!
+                            return username
+                        }
+                    }
+                }
+
+                eventType = xpp.next()
+            }
+        }
+        catch (e: XmlPullParserException) {
+            // ignore
+        }
+        catch (e: IOException) {
+            // ignore
+        }
+
+        return null
+    }
+
+    private fun showError(text: CharSequence, onForm: Boolean = false) {
+        runOnUiThread {
+            mSnackbar.dismiss()
+
+            if (onForm) {
+                mBinding.secretKey.error = text
+                mBinding.secretKey.requestFocus()
+            }
+            else {
+                mSnackbar = mBinding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
+                mSnackbar.show()
+
+                mBinding.accessKey.requestFocus()
+            }
+        }
     }
 
     private fun removeProject() {

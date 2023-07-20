@@ -24,7 +24,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
         const val ARCHIVE_BASE_URL = "https://archive.org/"
         const val NAME = "Internet Archive"
 
-        private const val ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org"
+        const val ARCHIVE_API_ENDPOINT = "https://s3.us.archive.org"
         private const val ARCHIVE_DETAILS_ENDPOINT = "https://archive.org/details/"
 
         private fun getSlug(title: String): String {
@@ -83,7 +83,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             .addHeader("Accept", "*/*")
             .addHeader("x-archive-cascade-delete", "1")
             .addHeader("x-archive-keep-old-version", "0")
-            .addHeader("authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
+            .addHeader("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
 
         execute(builder.build())
 
@@ -186,7 +186,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             .add("x-amz-auto-make-bucket", "1")
             .add("x-archive-interactive-priority", "1")
             .add("x-archive-meta-language", "eng") // FIXME set based on locale or selected.
-            .add("authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
+            .add("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
 
         val author = mMedia.author
         if (author.isNotEmpty()) {
@@ -251,7 +251,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
         return Headers.Builder()
             .add("x-amz-auto-make-bucket", "1")
             .add("x-archive-meta-language","eng") // FIXME set based on locale or selected
-            .add("authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
+            .add("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
             .add("x-archive-meta-mediatype", "texts")
             .add("x-archive-meta-collection", "opensource")
             .build()

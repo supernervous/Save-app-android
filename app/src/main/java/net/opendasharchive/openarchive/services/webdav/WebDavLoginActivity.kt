@@ -190,7 +190,7 @@ class WebDavLoginActivity : BaseActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                loginUserIntoWebDav(mSpace)
+                testConnection()
 
                 mSpace.save()
 
@@ -209,10 +209,10 @@ class WebDavLoginActivity : BaseActivity() {
         }
     }
 
-    private suspend fun loginUserIntoWebDav(space: Space) {
-        val url = space.hostUrl ?: throw IOException("400 Bad Request")
+    private suspend fun testConnection() {
+        val url = mSpace.hostUrl ?: throw IOException("400 Bad Request")
 
-        val client = SaveClient.get(this@WebDavLoginActivity, space.username, space.password)
+        val client = SaveClient.get(this, mSpace.username, mSpace.password)
 
         val request = Request.Builder()
             .url(url)

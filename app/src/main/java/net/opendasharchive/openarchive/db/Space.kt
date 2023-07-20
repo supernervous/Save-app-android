@@ -23,6 +23,7 @@ data class Space(
     var type: Int = 0,
     var name: String = "",
     var username: String = "",
+    var displayname: String = "",
     var password: String = "",
     var host: String = ""
 ) : SugarRecord() {
@@ -34,7 +35,7 @@ data class Space(
             Type.WEBDAV -> {}
             Type.INTERNET_ARCHIVE -> {
                 name = IaConduit.NAME
-                host = IaConduit.ARCHIVE_BASE_URL
+                host = IaConduit.ARCHIVE_API_ENDPOINT
             }
             Type.DROPBOX -> {
                 name = DropboxConduit.NAME

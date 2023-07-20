@@ -182,7 +182,7 @@ class SpaceSettingsActivity : BaseActivity() {
         }
         mSpace?.let {
             mBinding.contentSpaceLayout.txtSpaceName.text = it.friendlyName
-            mBinding.contentSpaceLayout.txtSpaceUser.text = it.username
+            mBinding.contentSpaceLayout.txtSpaceUser.text = it.displayname.ifBlank { it.username }
 
             it.setAvatar(mBinding.contentSpaceLayout.spaceAvatar)
 
