@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.ui
+package net.opendasharchive.openarchive.util
 
 import android.content.Context
 import android.graphics.*

@@ -47,23 +47,11 @@
     <string name="drawer_accounts">Alanlar</string>
     <string name="action_new_project">Yeni proje</string>
 
-
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Şunu kabul etmelisiniz:</string>
-    <string name="eula_accept">Kabul et</string>
-    <string name="eula_refuse">Reddet</string>
-    <string name="end_user_license_agreement">Kullanım koşulları ve gizlilik ilkesi</string>
-    <string name="by_clicking_accept">\'Kabul et\' üzerine tıklayarak belirtilen koşul ve ilkeleri kabul etmiş olursunuz:</string>
-    <string name="tos_dialog_title">Kullanım koşulları</string>
-    <string name="tos_dialog_msg">Lütfen ilerlemeden önce hizmet koşullarını kabul edin</string>
-    <string name="tos_dialog_positive_button">Anladım</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
     <string name="sign_up_btn">Bir hesabınız yok mu?\n<a href="https://archive.org/account/login.createaccount.php">Ücretsiz hesap açın.</a></string>
-    <string name="tos_btn">Hizmet koşullarını kabul ediyorum</string>
 
     <!-- MainFragment -->
     <string name="import_btn">İçe aktar</string>
@@ -100,10 +88,6 @@
     <string name="uploading_to_internet_archive">Internet Archive üzerine yükleniyor…</string>
     <string name="lbl_update_value">Değeri güncelle</string>
     <string name="lbl_enter_value">Değer yazmak için dokunun.</string>
-    <string name="title_activity_about">Hakkında</string>
-
-    <string name="about_body">OpenArchive tarafından sunulan SAVE uygulaması.
-    </string>
 
     <string name="upload_success">Ortamınız kaydedildi!</string>
 

@@ -26,17 +26,8 @@
     <string name="action_new_project">Nouveau projet</string>
 
 
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Vous Accepter de:</string>
-    <string name="eula_accept">Accepter</string>
-    <string name="eula_refuse">Refuser</string>
-    <string name="tos_dialog_title">Conditions d’utilisation</string>
-    <string name="tos_dialog_positive_button">D’accord</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Archive Internet</string>
-
-    <string name="tos_btn">J’accepte les conditions générales d’utilisation.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importer</string>
@@ -57,7 +48,6 @@
     <string name="lbl_success">Terminé</string>
     <string name="lbl_continue">Poursuivre</string>
     <string name="upload_to_internet_archive">Charger vers l’archive Internet</string>
-    <string name="title_activity_about">À propos</string>
 
     <string name="menu_record_audio">Enregistrer audio</string>
     <string name="menu_delete">Supprimer le contenu multimédia</string>

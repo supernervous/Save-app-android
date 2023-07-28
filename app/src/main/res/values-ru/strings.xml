@@ -26,18 +26,8 @@
     <string name="drawer_settings">Настройки</string>
     <string name="action_new_project">Новый проект</string>
 
-
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Вы согласны с:</string>
-    <string name="eula_accept">Принять</string>
-    <string name="eula_refuse">Отказаться</string>
-    <string name="tos_dialog_title">Условия предоставления услуг</string>
-    <string name="tos_dialog_positive_button">Понятно</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Интернет архив</string>
-
-    <string name="tos_btn">Я соглашаюсь с условиями обслуживания.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Импортировать</string>
@@ -58,7 +48,6 @@
     <string name="lbl_success">Готово</string>
     <string name="lbl_continue">Продолжить</string>
     <string name="upload_to_internet_archive">Загрузить в интернет-архив</string>
-    <string name="title_activity_about">О приложении</string>
 
     <string name="menu_record_audio">Записать аудио</string>
     <string name="menu_delete">Удалить медиа данные</string>

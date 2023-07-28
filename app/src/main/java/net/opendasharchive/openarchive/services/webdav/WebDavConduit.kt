@@ -11,7 +11,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -33,7 +32,7 @@ class WebDavConduit(
     private var mContinueUpload = true
 
     @SuppressLint("SimpleDateFormat")
-    private val mDateFormat = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
+    private val mDateFormat = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
 
 
     override suspend fun upload(): Boolean {

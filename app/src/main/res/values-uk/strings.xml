@@ -22,11 +22,6 @@
     <string name="drawer_settings">Налаштування</string>
     <string name="action_new_project">Новий проєкт</string>
 
-
-    <string name="eula_accept">Прийняти</string>
-    <string name="tos_dialog_title">Умови обслуговування</string>
-    <string name="tos_dialog_positive_button">Зрозуміло</string>
-
     <!-- MainFragment -->
     <string name="import_btn">Імпортувати</string>
     <string name="capture_photo">Фото</string>
@@ -42,7 +37,6 @@
     <string name="lbl_settings">Налаштування</string>
     <string name="lbl_success">Готово</string>
     <string name="lbl_continue">Продовжити</string>
-    <string name="title_activity_about">Про</string>
 
     <string name="menu_delete">Вилучити медіа</string>
 

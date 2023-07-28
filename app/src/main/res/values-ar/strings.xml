@@ -36,18 +36,8 @@
     <string name="action_new_project">مشروع جديد</string>
 
 
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">أنت توافق على : </string>
-    <string name="eula_accept">قبول</string>
-    <string name="eula_refuse">الرفض</string>
-    <string name="end_user_license_agreement">شروط الاستخدام وسياسة الخصوصية</string>
-    <string name="tos_dialog_title">شروط الخدمة</string>
-    <string name="tos_dialog_positive_button">فهمت</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
-
-    <string name="tos_btn">أوافق على شروط الخدمة.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">استيراد</string>
@@ -74,7 +64,6 @@
     <string name="lbl_share_prefs">مشاركة التفضيلات</string>
     <string name="lbl_update_value">تحديث القيمة</string>
     <string name="lbl_enter_value">انقر لإدخال قيمة.</string>
-    <string name="title_activity_about">عن</string>
 
     <string name="share_using">مشاركة رابط الأرشيف عبر</string>
     <string name="share_text">تمت المشاركة عبر OpenArchive في</string>

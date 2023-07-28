@@ -30,15 +30,6 @@
     <string name="drawer_logout">Sair</string>
     <string name="drawer_about">Sobre</string>
     <string name="drawer_settings">Configurações</string>
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Concorda com: </string>
-    <string name="eula_accept">Aceitar </string>
-    <string name="eula_refuse">Recusar </string>
-    <string name="end_user_license_agreement">Termos de Utilização e Política de Privacidade </string>
-    <string name="tos_dialog_title">Termos de Serviço </string>
-    <string name="tos_dialog_positive_button">Entendi</string>
-
-    <string name="tos_btn">Concordo com os termos de licença.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importar</string>
@@ -65,7 +56,6 @@
     <string name="lbl_share_prefs">Partilhar Preferências </string>
     <string name="lbl_update_value">Atualizar Valor</string>
     <string name="lbl_enter_value">Clique para inserir um valor. </string>
-    <string name="title_activity_about">Sobre</string>
 
     <string name="share_using">Partilhar link do ficheiro via </string>
     <string name="share_text">partilhar via OpenArchive em </string>

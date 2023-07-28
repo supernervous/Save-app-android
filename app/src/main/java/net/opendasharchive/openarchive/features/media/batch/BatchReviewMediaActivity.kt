@@ -23,8 +23,8 @@ import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
+import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
@@ -277,7 +277,7 @@ class BatchReviewMediaActivity : BaseActivity() {
     private fun init() {
         mediaList.clear()
 
-        intent.getLongArrayExtra(Globals.EXTRA_CURRENT_MEDIA_ID)?.forEach {
+        intent.getLongArrayExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID)?.forEach {
             val media = Media.get(it) ?: return@forEach
             mediaList.add(media)
         }

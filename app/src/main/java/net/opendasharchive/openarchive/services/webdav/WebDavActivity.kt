@@ -36,6 +36,13 @@ import kotlin.coroutines.suspendCoroutine
 
 class WebDavActivity : BaseActivity() {
 
+    companion object {
+        private const val EXTRA_DATA_USER = "user"
+        private const val EXTRA_DATA_PASSWORD = "password"
+        private const val EXTRA_DATA_SERVER = "server"
+        private const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
+    }
+
     private lateinit var mBinding: ActivityWebdavBinding
     private var mSnackbar: Snackbar? = null
     private lateinit var mSpace: Space
@@ -98,14 +105,14 @@ class WebDavActivity : BaseActivity() {
         }
 
         with(intent) {
-            if (hasExtra(Constants.EXTRA_DATA_USER)) {
-                val host = getStringExtra(Constants.EXTRA_DATA_SERVER)
+            if (hasExtra(EXTRA_DATA_USER)) {
+                val host = getStringExtra(EXTRA_DATA_SERVER)
                 if (host != null) mSpace.host = host
 
-                val username = getStringExtra(Constants.EXTRA_DATA_USER)
+                val username = getStringExtra(EXTRA_DATA_USER)
                 if (username != null) mSpace.username = username
 
-                val password = getStringExtra(Constants.EXTRA_DATA_PASSWORD)
+                val password = getStringExtra(EXTRA_DATA_PASSWORD)
                 if (password != null) mSpace.password = password
             }
         }
@@ -153,10 +160,10 @@ class WebDavActivity : BaseActivity() {
 
         if (uri.authority.isNullOrBlank()) {
             builder.authority(uri.path)
-            builder.path(Constants.REMOTE_PHP_ADDRESS)
+            builder.path(REMOTE_PHP_ADDRESS)
         }
         else if (uri.path.isNullOrBlank() || uri.path == "/") {
-            builder.path(Constants.REMOTE_PHP_ADDRESS)
+            builder.path(REMOTE_PHP_ADDRESS)
         }
 
         return builder.build()

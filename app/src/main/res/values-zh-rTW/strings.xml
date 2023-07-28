@@ -19,11 +19,6 @@
     <string name="drawer_logout">登出</string>
     <string name="drawer_about">關於</string>
     <string name="drawer_settings">設定</string>
-    <string name="eula_accept">接受</string>
-    <string name="tos_dialog_title">服務條款</string>
-    <string name="tos_dialog_positive_button">收到</string>
-
-    <string name="tos_btn">我同意這份服務个款</string>
 
     <!-- MainFragment -->
     <string name="import_btn">匯入</string>
@@ -40,7 +35,6 @@
     <string name="lbl_settings">設定</string>
     <string name="lbl_success">完成</string>
     <string name="lbl_continue">繼續</string>
-    <string name="title_activity_about">關於</string>
 
     <string name="hint_title">標題</string>
     <string name="hint_author">作者</string>

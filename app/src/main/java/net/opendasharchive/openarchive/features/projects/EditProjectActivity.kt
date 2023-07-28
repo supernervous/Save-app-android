@@ -11,10 +11,13 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.extensions.toggle
 
 class EditProjectActivity : BaseActivity() {
+
+    companion object {
+        const val EXTRA_CURRENT_PROJECT_ID = "archive_extra_current_project_id"
+    }
 
     private var mProject: Project? = null
     private var mCollections: List<Collection>? = null
@@ -32,7 +35,7 @@ class EditProjectActivity : BaseActivity() {
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val projectId = intent.getLongExtra(Globals.EXTRA_CURRENT_PROJECT_ID, -1L)
+        val projectId = intent.getLongExtra(EXTRA_CURRENT_PROJECT_ID, -1L)
 
         mProject = Project.getById(projectId)
         mCollections = mProject?.collections

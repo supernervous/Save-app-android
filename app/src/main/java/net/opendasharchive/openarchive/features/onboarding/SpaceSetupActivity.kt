@@ -17,7 +17,7 @@ import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.tint
 
-class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
+class SpaceSetupActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivitySpaceSetupBinding
 
@@ -76,8 +76,5 @@ class SpaceSetupActivity : BaseActivity(), EulaActivity.OnEulaAgreedTo {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onEulaAgreedTo() {
     }
 }

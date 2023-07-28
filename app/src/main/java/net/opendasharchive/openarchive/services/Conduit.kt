@@ -129,6 +129,9 @@ abstract class Conduit(
         const val MESSAGE_KEY_STATUS = "status"
         const val MESSAGE_KEY_MEDIA_ID = "mediaId"
 
+        const val FOLDER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'GMT'ZZZZZ"
+
+
         @JvmStatic
         fun get(media: Media, context: Context, listener: ConduitListener?, jobId: String?
         ): Conduit? {

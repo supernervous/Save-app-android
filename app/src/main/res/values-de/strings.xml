@@ -27,17 +27,8 @@
     <string name="action_new_project">Neues Projekt</string>
 
 
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Sie stimmen zu:</string>
-    <string name="eula_accept">Zustimmen</string>
-    <string name="eula_refuse">Ablehnen</string>
-    <string name="tos_dialog_title">Nutzungsbedingungen</string>
-    <string name="tos_dialog_positive_button">Verstanden</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
-
-    <string name="tos_btn">Ich akzeptiere die Allgemeinen Geschäftsbedingungen.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Import</string>
@@ -55,7 +46,6 @@
     <string name="lbl_cancelled">Storniert</string>
     <string name="lbl_success">Fertig</string>
     <string name="lbl_continue">Weiter</string>
-    <string name="title_activity_about">Infos</string>
 
     <string name="menu_delete">Medien entfernen</string>
 

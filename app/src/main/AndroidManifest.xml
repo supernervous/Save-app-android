@@ -83,12 +83,7 @@
                 <data android:pathPattern=".*\\.png" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".services.internetarchive.ArchiveSettingsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_archive_metadata"
-            android:screenOrientation="portrait"
-            android:taskAffinity="" />
+
         <activity
             android:name=".services.internetarchive.IaScrapeActivity"
             android:exported="false"
@@ -174,16 +169,6 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:windowSoftInputMode="stateHidden" />
-
-        <activity
-            android:name=".features.core.AboutActivity"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity"
-            android:taskAffinity="">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.opendasharchive.openarchive.MainActivity" />
-        </activity>
 
         <activity
             android:name=".features.onboarding.SpaceSetupActivity"

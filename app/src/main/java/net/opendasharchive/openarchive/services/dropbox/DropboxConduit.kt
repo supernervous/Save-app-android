@@ -10,7 +10,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
-import net.opendasharchive.openarchive.util.Globals
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -42,7 +41,7 @@ class DropboxConduit(
         val fileName = getUploadFileName(mMedia, true)
 
         @SuppressLint("SimpleDateFormat")
-        val folderName = SimpleDateFormat(Globals.FOLDER_DATETIME_FORMAT)
+        val folderName = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
             .format(mMedia.createDate ?: System.currentTimeMillis())
 
         if (mMedia.contentLength == 0L) {

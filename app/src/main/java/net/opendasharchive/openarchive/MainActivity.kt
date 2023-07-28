@@ -50,9 +50,7 @@ import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.ui.BadgeDrawable
-import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
-import net.opendasharchive.openarchive.util.Globals
+import net.opendasharchive.openarchive.util.BadgeDrawable
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -302,7 +300,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         when (item.itemId) {
             R.id.menu_upload_manager -> {
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    it.putExtra(PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
+                    it.putExtra(UploadManagerActivity.PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
                 })
 
                 return true
@@ -427,7 +425,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 if (media != null) {
                     val reviewMediaIntent =
                         Intent(this, ReviewMediaActivity::class.java)
-                    reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, media.id)
+                    reviewMediaIntent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, media.id)
                     startActivity(reviewMediaIntent)
                 }
 

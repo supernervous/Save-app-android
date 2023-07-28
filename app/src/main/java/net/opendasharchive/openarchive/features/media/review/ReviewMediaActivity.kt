@@ -1,6 +1,10 @@
 package net.opendasharchive.openarchive.features.media.review
 
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -28,7 +32,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -38,6 +41,10 @@ import java.io.File
 
 
 class ReviewMediaActivity : BaseActivity() {
+
+    companion object {
+        const val EXTRA_CURRENT_MEDIA_ID = "archive_extra_current_media_id"
+    }
 
     private lateinit var mBinding: ActivityReviewMediaBinding
 
@@ -280,7 +287,7 @@ class ReviewMediaActivity : BaseActivity() {
         val intent = intent
 
         // get intent extras
-        currentMediaId = intent.getLongExtra(Globals.EXTRA_CURRENT_MEDIA_ID, -1)
+        currentMediaId = intent.getLongExtra(EXTRA_CURRENT_MEDIA_ID, -1)
 
         // check for new file or existing media
         if (currentMediaId >= 0) {

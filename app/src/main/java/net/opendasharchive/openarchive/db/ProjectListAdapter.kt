@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.projects.EditProjectActivity
-import net.opendasharchive.openarchive.util.Globals
 
 class ProjectListAdapter (
         private val mContext: Context,
@@ -24,7 +23,7 @@ class ProjectListAdapter (
             val itemPosition = mRV.getChildLayoutPosition(v)
             val p = mListProjects[itemPosition]
             val reviewProjectIntent = Intent(mContext, EditProjectActivity::class.java)
-            reviewProjectIntent.putExtra(Globals.EXTRA_CURRENT_PROJECT_ID, p.id)
+            reviewProjectIntent.putExtra(EditProjectActivity.EXTRA_CURRENT_PROJECT_ID, p.id)
             mContext.startActivity(reviewProjectIntent)
         }
         return pvh

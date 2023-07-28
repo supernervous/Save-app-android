@@ -18,11 +18,6 @@
     <string name="drawer_uploads">Uppladdningar</string>
     <string name="drawer_about">Om</string>
     <string name="drawer_settings">Inställningar</string>
-    <string name="eula_accept">Acceptera</string>
-    <string name="tos_dialog_title">Användarvillkor</string>
-    <string name="tos_dialog_positive_button">Förstått</string>
-
-    <string name="tos_btn">Jag godkänner användarvillkoren.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importera</string>
@@ -39,7 +34,6 @@
     <string name="lbl_settings">Inställningar</string>
     <string name="lbl_success">Färdig</string>
     <string name="lbl_continue">Fortsätt</string>
-    <string name="title_activity_about">Om</string>
 
     <string name="hint_title">Titel</string>
     <string name="hint_author">Författare</string>

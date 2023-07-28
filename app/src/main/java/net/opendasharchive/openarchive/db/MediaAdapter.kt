@@ -16,7 +16,6 @@ import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActi
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Globals
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
 
@@ -47,7 +46,7 @@ class MediaAdapter(
             } else {
                 val itemPosition: Int = recyclerView.getChildLayoutPosition(v)
                 val reviewMediaIntent = Intent(mContext, ReviewMediaActivity::class.java)
-                reviewMediaIntent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, data[itemPosition].id)
+                reviewMediaIntent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, data[itemPosition].id)
                 reviewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 mContext.startActivity(reviewMediaIntent)
             }
@@ -206,7 +205,7 @@ class MediaAdapter(
                             i++
                         }
                         val intent = Intent(mContext, BatchReviewMediaActivity::class.java)
-                        intent.putExtra(Globals.EXTRA_CURRENT_MEDIA_ID, selectedMediaIds)
+                        intent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, selectedMediaIds)
                         mContext.startActivity(intent)
                     }
                     true

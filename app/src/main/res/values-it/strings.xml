@@ -25,16 +25,8 @@
     <string name="drawer_settings">Impostazioni</string>
     <string name="action_new_project">Nuovo Progetto</string>
 
-
-    <string name="eula_accept">Accettazione</string>
-    <string name="eula_refuse">Rifiuta</string>
-    <string name="tos_dialog_title">Termini di Servizio</string>
-    <string name="tos_dialog_positive_button">Ho capito</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Archivio Internet</string>
-
-    <string name="tos_btn">Sottoscrivo i Termini di Servizio.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importa</string>
@@ -52,7 +44,6 @@
     <string name="lbl_cancelled">Cancellato</string>
     <string name="lbl_success">Fatto</string>
     <string name="lbl_continue">Continua</string>
-    <string name="title_activity_about">Informazioni</string>
 
     <string name="menu_delete">Rimuovi media</string>
 

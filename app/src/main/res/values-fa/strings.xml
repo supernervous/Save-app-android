@@ -35,18 +35,8 @@
     <string name="action_new_project">پروژه جدید</string>
 
 
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">با این موافقت میکنید:</string>
-    <string name="eula_accept">تایید</string>
-    <string name="eula_refuse">تکذیب</string>
-    <string name="end_user_license_agreement">شرایط استفاده و سیاستهای حریم خصوصی</string>
-    <string name="tos_dialog_title">شرایط سرویس</string>
-    <string name="tos_dialog_positive_button">متوجه شدم</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">بایگانی اینترنت</string>
-
-    <string name="tos_btn">با شرایط استفاده از خدمات موافقم</string>
 
     <!-- MainFragment -->
     <string name="import_btn">وارد کن</string>
@@ -73,7 +63,6 @@
     <string name="lbl_share_prefs"> مشخصات به اشتراک گذاری</string>
     <string name="lbl_update_value">ارزش آپلود</string>
     <string name="lbl_enter_value">برای ورود ارزش کلیک کنید</string>
-    <string name="title_activity_about">درباره‌ی Psiphon</string>
 
     <string name="share_using">لینک آرشیو را از این طریق به اشتراک بذار</string>
     <string name="share_text">توسط آرشیو باز و از این طریق به اشتراک گذاشته شد:</string>

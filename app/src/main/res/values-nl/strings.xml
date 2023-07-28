@@ -20,14 +20,6 @@
     <string name="drawer_logout">Uitloggen</string>
     <string name="drawer_about">Over</string>
     <string name="drawer_settings">Instellingen</string>
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Je stemt in met:</string>
-    <string name="eula_accept">Accepteer</string>
-    <string name="eula_refuse">Weigeren</string>
-    <string name="tos_dialog_title">Servicevoorwaarden</string>
-    <string name="tos_dialog_positive_button">Begrepen</string>
-
-    <string name="tos_btn">Ik ga akkoord met de Algemene Voorwaarden</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importeer</string>
@@ -48,7 +40,6 @@
     <string name="lbl_success">Gereed</string>
     <string name="lbl_continue">Ga verder</string>
     <string name="upload_to_internet_archive">Uploaden naar het Internet Archief</string>
-    <string name="title_activity_about">Over</string>
 
     <string name="hint_title">Titel</string>
     <string name="hint_author">Auteur</string>

@@ -37,18 +37,8 @@
     <string name="action_new_project">Nuevo Proyecto</string>
 
 
-    <!-- EULA/Terms of Service -->
-    <string name="eula_title">Aceptas:</string>
-    <string name="eula_accept">Aceptar</string>
-    <string name="eula_refuse">Rechazar</string>
-    <string name="end_user_license_agreement">Términos de usuario y Política de privacidad</string>
-    <string name="tos_dialog_title">Términos de servicio</string>
-    <string name="tos_dialog_positive_button">Lo tengo</string>
-
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
-
-    <string name="tos_btn">Acepto las Condiciones del Servicio.</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importar</string>
@@ -75,7 +65,6 @@
     <string name="lbl_share_prefs">Compartiendo preferencias</string>
     <string name="lbl_update_value">Actualizar valor</string>
     <string name="lbl_enter_value">Pulsa para ingresar un valor.</string>
-    <string name="title_activity_about">Acerca de</string>
 
     <string name="share_using">Compartir enlace del archivo a través de</string>
     <string name="share_text">compartir a través de OpenArchive en</string>

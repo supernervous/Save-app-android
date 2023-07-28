@@ -20,10 +20,13 @@ import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
-import net.opendasharchive.openarchive.util.Constants.PROJECT_ID
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
+
+    companion object {
+        const val PROJECT_ID = "PROJECT_ID"
+    }
 
     var mFrag: MediaListFragment? = null
     private var mMenuEdit: MenuItem? = null
