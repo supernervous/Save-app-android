@@ -345,5 +345,5 @@
     <string name="dropbox_id">Dropbox kimliği:</string>
     <string name="waiting_for_upload">Yükleme bekleniyor…</string>
     <string name="uploading_now">Yükleniyor…</string>
-    <string name="add_new_space">Yeni alan ekle</string>
+    <string name="add_another_account">Yeni alan ekle</string>
 </resources>

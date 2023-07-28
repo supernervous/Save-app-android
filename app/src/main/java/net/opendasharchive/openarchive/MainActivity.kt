@@ -40,12 +40,12 @@ import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.ProjectAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
@@ -606,6 +606,16 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.spacesCard.disableAnimation {
             mBinding.spacesCard.hide()
         }
+    }
+
+    override fun addSpaceClicked() {
+        mBinding.root.closeDrawer(mBinding.folderBar)
+
+        mBinding.spacesCard.disableAnimation {
+            mBinding.spacesCard.hide()
+        }
+
+        startActivity(Intent(this, SpaceSetupActivity::class.java))
     }
 
     override fun getSelectedSpace(): Space? {

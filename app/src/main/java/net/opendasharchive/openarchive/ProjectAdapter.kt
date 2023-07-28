@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.db
+package net.opendasharchive.openarchive
 
 import android.content.Context
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.text.SpannableString
 import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment

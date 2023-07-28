@@ -367,7 +367,7 @@
     <string name="dropbox_id">Dropbox ID:</string>
     <string name="waiting_for_upload">Waiting for upload…</string>
     <string name="uploading_now">Uploading now…</string>
-    <string name="add_new_space">Add new Space</string>
+    <string name="add_another_account">Add Another Account</string>
     <string name="prefs_proofmode_key_encryption_title_all">Secure ProofMode Key with Biometrics or Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Secure ProofMode Key with Biometrics</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Secure ProofMode Key with Device Passcode</string>

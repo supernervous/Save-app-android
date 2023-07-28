@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,8 @@ interface SpaceAdapterListener {
 
     fun spaceClicked(space: Space)
 
+    fun addSpaceClicked()
+
     fun getSelectedSpace(): Space?
 }
 
@@ -25,8 +28,6 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
     class ViewHolder(private val binding: RvSimpleRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<SpaceAdapterListener>?, space: Space?) {
-            binding.rvTitle.text = space?.friendlyName
-
             val context = binding.rvTitle.context
 
             if (listener?.get()?.getSelectedSpace()?.id == space?.id) {
@@ -36,11 +37,29 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
                 binding.root.setBackgroundColor(0)
             }
 
+            binding.rvTitle.compoundDrawablePadding =
+                context.resources.getDimension(R.dimen.padding_small).roundToInt()
+
+            if (space?.type == ADD_SPACE_ID) {
+                binding.rvTitle.text = context.getText(R.string.add_another_account)
+
+                binding.rvTitle.setDrawable(R.drawable.ic_add, Position.Start, 0.75)
+
+                binding.rvTitle.updatePaddingRelative(start = context.resources.getDimension(R.dimen.activity_horizontal_margin).roundToInt())
+
+                binding.root.setOnClickListener {
+                    listener?.get()?.addSpaceClicked()
+                }
+
+                return
+            }
+
+            binding.rvTitle.text = space?.friendlyName
+
             binding.rvTitle.setDrawable(space?.getAvatar(context)?.scaled(32, context),
                 Position.Start, tint = false)
 
-            binding.rvTitle.compoundDrawablePadding =
-                context.resources.getDimension(R.dimen.padding_small).roundToInt()
+            binding.rvTitle.updatePaddingRelative(start = 0)
 
             if (space != null) {
                 binding.root.setOnClickListener {
@@ -63,6 +82,8 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
                 return oldItem.friendlyName == newItem.friendlyName
             }
         }
+
+        private const val ADD_SPACE_ID = -1
     }
 
     private val mListener: WeakReference<SpaceAdapterListener>?
@@ -87,7 +108,15 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
     fun update(spaces: List<Space>) {
         notifyItemChanged(getIndex(mLastSelected))
 
+        @Suppress("NAME_SHADOWING")
+        val spaces = spaces.toMutableList()
+        spaces.add(Space(ADD_SPACE_ID))
+
         submitList(spaces)
+    }
+
+    override fun getItemCount(): Int {
+        return super.getItemCount()
     }
 
     override fun spaceClicked(space: Space) {
@@ -95,6 +124,10 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
         notifyItemChanged(getIndex(space))
 
         mListener?.get()?.spaceClicked(space)
+    }
+
+    override fun addSpaceClicked() {
+        mListener?.get()?.addSpaceClicked()
     }
 
     override fun getSelectedSpace(): Space? {

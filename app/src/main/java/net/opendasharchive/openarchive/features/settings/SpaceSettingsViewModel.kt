@@ -17,9 +17,7 @@ class SpaceSettingsViewModel : ViewModel() {
     private val spaceRepository: SpaceRepository = SpaceRepositoryImpl()
     private val projectRepository: ProjectRepository = ProjectRepositoryImpl()
 
-    private val _spaceList = MutableLiveData<List<Space>?>()
-    val spaceList: LiveData<List<Space>?>
-        get() = _spaceList
+    private val spaceList = MutableLiveData<List<Space>?>()
 
     private val _currentSpace = MutableLiveData<Space?>()
     val currentSpace: LiveData<Space?>
@@ -29,12 +27,6 @@ class SpaceSettingsViewModel : ViewModel() {
     val projects: LiveData<List<Project>?>
         get() = _projects
 
-    fun getAllSpace() {
-        viewModelScope.launch {
-            _spaceList.value = spaceRepository.getAll()
-        }
-    }
-
     fun getCurrentSpace() {
         viewModelScope.launch {
             _currentSpace.value = spaceRepository.getCurrent()
@@ -43,8 +35,9 @@ class SpaceSettingsViewModel : ViewModel() {
 
     fun getLatestSpace() {
         viewModelScope.launch {
-            val latestSpace = spaceList.value?.lastOrNull()
-            latestSpace?.let {
+            spaceList.value = spaceRepository.getAll()
+
+            spaceList.value?.lastOrNull()?.let {
                 _currentSpace.value = it
                 Space.current = it
             }
@@ -56,6 +49,4 @@ class SpaceSettingsViewModel : ViewModel() {
             _projects.value = projectRepository.getAllBySpaceId(spaceId)
         }
     }
-
-
 }

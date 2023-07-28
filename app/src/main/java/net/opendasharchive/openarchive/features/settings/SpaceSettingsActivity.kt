@@ -2,30 +2,24 @@ package net.opendasharchive.openarchive.features.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.MenuItem
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.abdularis.civ.AvatarImageView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSettingsBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.ProjectListAdapter
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
+import net.opendasharchive.openarchive.util.extensions.getVersionName
 
 class SpaceSettingsActivity : BaseActivity() {
 
@@ -36,69 +30,46 @@ class SpaceSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE)
+
         mBinding = ActivitySpaceSettingsBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this)[SpaceSettingsViewModel::class.java]
         setContentView(mBinding.root)
-        initLayout()
-        observeData()
-    }
 
-    private fun initLayout() {
+        viewModel = ViewModelProvider(this)[SpaceSettingsViewModel::class.java]
+
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.let {
-            it.title = ""
-            it.setDisplayHomeAsUpEnabled(true)
-        }
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mBinding.apply {
-            btnNewSpace.setOnClickListener {
-                val myIntent = Intent(this@SpaceSettingsActivity, SpaceSetupActivity::class.java)
-                startActivity(myIntent)
-            }
-
-            contentSpaceLayout.listProjects.layoutManager =
+        mBinding.contentSpaceLayout.apply {
+            listProjects.layoutManager =
                 LinearLayoutManager(this@SpaceSettingsActivity)
-            contentSpaceLayout.listProjects.setHasFixedSize(false)
+            listProjects.setHasFixedSize(false)
 
-            contentSpaceLayout.sectionSpace.setOnClickListener {
+            sectionSpace.setOnClickListener {
                 startSpaceAuthActivity()
             }
 
-            contentSpaceLayout.btGeneral.setOnClickListener {
+            btGeneral.setOnClickListener {
                 startActivity(Intent(this@SpaceSettingsActivity, GeneralSettingsActivity::class.java))
             }
 
-            contentSpaceLayout.btnPrivacy.setOnClickListener {
+            btnPrivacy.setOnClickListener {
                 openBrowser("https://open-archive.org/privacy")
             }
 
-            contentSpaceLayout.btnAcount.setOnClickListener {
+            btnAcount.setOnClickListener {
                 openBrowser("https://open-archive.org/about")
             }
+
+            txtVersion.text = getString(R.string.__version__,
+                getString(R.string.app_name),
+                packageManager.getVersionName(packageName))
         }
 
-        try {
-            val pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getPackageInfo(packageName, 0)
-            }
-            mBinding.contentSpaceLayout.txtVersion.text =
-                getString(R.string.__version__, getString(R.string.app_name), pInfo.versionName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-    }
 
-    private fun observeData() {
-        viewModel.spaceList.observe(this) {
-            loadSpaces(it)
-        }
         viewModel.currentSpace.observe(this) {
             showCurrentSpace(it)
         }
@@ -107,52 +78,21 @@ class SpaceSettingsActivity : BaseActivity() {
         }
     }
 
-    private fun loadSpaces(list: List<Space>?) {
-        mBinding.spaceview.removeAllViews()
-        var actionBarHeight = 80
-
-        // Calculate ActionBar height
-        val tv = TypedValue()
-        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight =
-                TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-        }
-        list?.forEach { space ->
-            val image: ImageView =
-                getSpaceIcon(space, (actionBarHeight.toFloat() * .7f).toInt())
-            image.setOnClickListener {
-                Space.current = space
-                showCurrentSpace(space)
-            }
-            mBinding.spaceview.addView(image)
-        }
-    }
-
-    private fun getSpaceIcon(space: Space, iconSize: Int): ImageView {
-        val image = AvatarImageView(this)
-        space.setAvatar(image)
-
-        val margin = 6
-        val lp = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        lp.setMargins(margin, margin, margin, margin)
-        lp.height = iconSize
-        lp.width = iconSize
-        image.layoutParams = lp
-        return image
-    }
-
     override fun onResume() {
         super.onResume()
-        getInitialData()
 
+        viewModel.getCurrentSpace()
     }
 
-    private fun getInitialData() {
-        viewModel.getAllSpace()
-        viewModel.getCurrentSpace()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showCurrentSpace(space: Space?) {
@@ -160,6 +100,7 @@ class SpaceSettingsActivity : BaseActivity() {
         if (mSpace == null) {
             viewModel.getLatestSpace()
         }
+
         mSpace?.let {
             mBinding.contentSpaceLayout.txtSpaceName.text = it.friendlyName
             mBinding.contentSpaceLayout.txtSpaceUser.text = it.displayname.ifBlank { it.username }
@@ -201,23 +142,13 @@ class SpaceSettingsActivity : BaseActivity() {
         try {
             val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
             startActivity(myIntent)
-        } catch (e: ActivityNotFoundException) {
+        }
+        catch (e: ActivityNotFoundException) {
             Toast.makeText(
                 this, "No application can handle this request."
                         + " Please install a webbrowser", Toast.LENGTH_LONG
             ).show()
             e.printStackTrace()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                //NavUtils.navigateUpFromSameTask(this);
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
