@@ -47,11 +47,13 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
     }
 
     fun getIndex(project: Project?): Int {
+        val default = if (projects.isNotEmpty()) 1 else 0
+
         if (project == null) {
-            return if (projects.isNotEmpty()) 1 else 0
+            return default
         }
 
-        return projects.indexOf(project) + 1
+        return (projects.indexOf(project) + 1).coerceAtLeast(default)
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
