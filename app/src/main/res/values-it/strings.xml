@@ -94,13 +94,11 @@
     <string name="setup_nearby">Nelle vicinanze</string>
     <string name="title_welcome">Benvenuto</string>
     <string name="status_uploaded">Caricato</string>
-    <string name="header_settings">Impostazioni App</string>
     <string name="header_projects">Impostazioni Progetto</string>
 
-    <string name="header_info">Informazioni</string>
     <string name="action_data_use">Utilizzo dati</string>
     <string name="action_privacy">Privacy</string>
-    <string name="action_about">Informazioni</string>
+    <string name="action_about">Informazioni %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Upload</string>
     <string name="title_uploading">Caricamento…</string>

@@ -68,10 +68,9 @@
     <string name="error_incorrect_username_or_password">Felaktigt användarnamn eller lösenord</string>
     <string name="error_field_required">Detta fält krävs</string>
     <string name="title_welcome">Välkommen</string>
-    <string name="header_info">Info</string>
     <string name="action_data_use">Dataanvändning</string>
     <string name="action_privacy">Sekretess</string>
-    <string name="action_about">Om</string>
+    <string name="action_about">Om %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uppladdningar</string>
     <string name="title_activity_batch_media_review">Förhandsgranska</string>

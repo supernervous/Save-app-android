@@ -83,13 +83,11 @@
     <string name="error_field_required">Це поле - обов\'язкове</string>
     <string name="setup_nearby">З пристроями поруч</string>
     <string name="title_welcome">Ласкаво просимо</string>
-    <string name="header_settings">Налаштування застосунку</string>
     <string name="header_projects">Налаштування проєкту</string>
 
-    <string name="header_info">Відомості</string>
     <string name="action_data_use">Використання даних</string>
     <string name="action_privacy">Приватність</string>
-    <string name="action_about">Про</string>
+    <string name="action_about">Про %s</string>
     <string name="title_uploading">Завантаження…</string>
 
     <string name="title_activity_batch_media_review">Попередній перегляд</string>

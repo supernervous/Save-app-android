@@ -216,17 +216,14 @@
     <string name="importing_media">Ortam içe aktarılıyor…</string>
 
     <string name="setup_nearby">Yakındaki</string>
-    <string name="title_activity_space_settings">Alanınız</string>
     <string name="onboarding_intro">Paylaş\nArşivle\nDoğrula\nŞifrele</string>
     <string name="title_welcome">Hoş geldiniz</string>
     <string name="status_uploaded">Yüklendi</string>
-    <string name="header_settings">Uygulama ayarları</string>
     <string name="header_projects">Proje ayarları</string>
 
-    <string name="header_info">Bilgiler</string>
     <string name="action_data_use">Veri kullanımı</string>
     <string name="action_privacy">Gizlilik</string>
-    <string name="action_about">Hakkında</string>
+    <string name="action_about">Hakkında %s</string>
     <string name="title_activity_new_project">Yeni_proje_işlemi</string>
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
@@ -333,7 +330,7 @@
     <string name="tor_connection_timeout">Orbot/Tor bağlantısı kurulamadı: ZAMAN AŞIMI</string>
     <string name="tor_connection_invalid">Orbot/Tor bağlantısı kurulamadı: GEÇERSİZ</string>
     <string name="unsecured_internet_connection">Güvenli olmayan bir internet bağlantısı algılandı</string>
-    <string name="__version__">%1$s sürüm %2$s</string>
+    <string name="version__">Sürüm %s</string>
 
 
     <!-- Clean Insights measurement -->

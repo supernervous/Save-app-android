@@ -19,7 +19,11 @@ import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.Constants.SPACE_EXTRA
+import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.getVersionName
+import net.opendasharchive.openarchive.util.extensions.scaled
+import net.opendasharchive.openarchive.util.extensions.setDrawable
+import kotlin.math.roundToInt
 
 class SpaceSettingsActivity : BaseActivity() {
 
@@ -40,34 +44,35 @@ class SpaceSettingsActivity : BaseActivity() {
         viewModel = ViewModelProvider(this)[SpaceSettingsViewModel::class.java]
 
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mBinding.contentSpaceLayout.apply {
-            listProjects.layoutManager =
-                LinearLayoutManager(this@SpaceSettingsActivity)
-            listProjects.setHasFixedSize(false)
-
-            sectionSpace.setOnClickListener {
-                startSpaceAuthActivity()
-            }
-
-            btGeneral.setOnClickListener {
-                startActivity(Intent(this@SpaceSettingsActivity, GeneralSettingsActivity::class.java))
-            }
-
-            btnPrivacy.setOnClickListener {
-                openBrowser("https://open-archive.org/privacy")
-            }
-
-            btnAcount.setOnClickListener {
-                openBrowser("https://open-archive.org/about")
-            }
-
-            txtVersion.text = getString(R.string.__version__,
-                getString(R.string.app_name),
-                packageManager.getVersionName(packageName))
+        mBinding.btGeneral.setDrawable(R.drawable.ic_account_circle, Position.Start, 0.6)
+        mBinding.btGeneral.compoundDrawablePadding =
+            resources.getDimension(R.dimen.padding_small).roundToInt()
+        mBinding.btGeneral.setOnClickListener {
+            startActivity(Intent(this, GeneralSettingsActivity::class.java))
         }
+
+        mBinding.btSpace.compoundDrawablePadding =
+            resources.getDimension(R.dimen.padding_small).roundToInt()
+        mBinding.btSpace.setOnClickListener {
+            startSpaceAuthActivity()
+        }
+
+        mBinding.rvProjects.layoutManager = LinearLayoutManager(this)
+        mBinding.rvProjects.setHasFixedSize(false)
+
+        mBinding.btAbout.text = getString(R.string.action_about, getString(R.string.app_name))
+        mBinding.btAbout.setOnClickListener {
+            openBrowser("https://open-archive.org/about")
+        }
+
+        mBinding.btPrivacy.setOnClickListener {
+            openBrowser("https://open-archive.org/privacy")
+        }
+
+        mBinding.version.text = getString(R.string.version__,
+            packageManager.getVersionName(packageName))
 
 
         viewModel.currentSpace.observe(this) {
@@ -102,53 +107,46 @@ class SpaceSettingsActivity : BaseActivity() {
         }
 
         mSpace?.let {
-            mBinding.contentSpaceLayout.txtSpaceName.text = it.friendlyName
-            mBinding.contentSpaceLayout.txtSpaceUser.text = it.displayname.ifBlank { it.username }
+            mBinding.btSpace.text = it.friendlyName
 
-            it.setAvatar(mBinding.contentSpaceLayout.spaceAvatar)
+            mBinding.btSpace.setDrawable(it.getAvatar(this)?.scaled(32, this),
+                Position.Start, tint = false)
 
-            mBinding.contentSpaceLayout.spaceAvatar.setOnClickListener { startSpaceAuthActivity() }
             viewModel.getAllProjects(it.id)
         }
     }
 
     private fun startSpaceAuthActivity() {
-        mSpace?.let {
-            val clazz = when (it.tType) {
-                Space.Type.INTERNET_ARCHIVE -> InternetArchiveActivity::class.java
-                Space.Type.DROPBOX -> DropboxActivity::class.java
-                else -> WebDavActivity::class.java
-            }
+        val space = mSpace ?: return
 
-            val intent = Intent(this@SpaceSettingsActivity, clazz)
-            intent.putExtra(SPACE_EXTRA, it.id)
-
-            startActivity(intent)
-        } ?: run {
-            finish()
+        val clazz = when (space.tType) {
+            Space.Type.INTERNET_ARCHIVE -> InternetArchiveActivity::class.java
+            Space.Type.DROPBOX -> DropboxActivity::class.java
+            else -> WebDavActivity::class.java
         }
+
+        val intent = Intent(this@SpaceSettingsActivity, clazz)
+        intent.putExtra(SPACE_EXTRA, space.id)
+
+        startActivity(intent)
     }
 
     private fun updateProjects(list: List<Project>?) {
         val adapter = if (!list.isNullOrEmpty()) {
-            ProjectListAdapter(this, list, mBinding.contentSpaceLayout.listProjects)
+            ProjectListAdapter(this, list, mBinding.rvProjects)
         } else {
-            ProjectListAdapter(this, listOf(), mBinding.contentSpaceLayout.listProjects)
+            ProjectListAdapter(this, listOf(), mBinding.rvProjects)
         }
-        mBinding.contentSpaceLayout.listProjects.adapter = adapter
+        mBinding.rvProjects.adapter = adapter
     }
 
     private fun openBrowser(link: String) {
         try {
-            val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-            startActivity(myIntent)
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
         }
         catch (e: ActivityNotFoundException) {
-            Toast.makeText(
-                this, "No application can handle this request."
-                        + " Please install a webbrowser", Toast.LENGTH_LONG
-            ).show()
-            e.printStackTrace()
+            Toast.makeText(this, getString(R.string.no_webbrowser_found_error),
+                Toast.LENGTH_LONG).show()
         }
     }
 }

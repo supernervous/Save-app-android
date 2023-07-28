@@ -98,13 +98,11 @@
     <string name="error_field_required">Это обязательное поле</string>
     <string name="setup_nearby">С устройствами поблизости</string>
     <string name="title_welcome">Добро пожаловать</string>
-    <string name="header_settings">Настройки приложения</string>
     <string name="header_projects">Настройки проекта</string>
 
-    <string name="header_info">Инфа</string>
     <string name="action_data_use">Трафик</string>
     <string name="action_privacy">Приватность</string>
-    <string name="action_about">О программе</string>
+    <string name="action_about">О программе %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Загруженная информация</string>
     <string name="title_uploading">Загрузка…</string>

@@ -133,8 +133,7 @@
         </activity>
         <activity
             android:name=".features.settings.SpaceSettingsActivity"
-            android:exported="true"
-            android:label="@string/title_activity_space_settings">
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

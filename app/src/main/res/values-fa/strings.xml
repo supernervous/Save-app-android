@@ -135,13 +135,11 @@
     <string name="setup_nearby">نزدیکی</string>
     <string name="title_welcome">خوش آمدید</string>
     <string name="status_uploaded">آپلود شد</string>
-    <string name="header_settings">تنظیمات برنامه</string>
     <string name="header_projects">تنظیمات پروژه</string>
 
-    <string name="header_info">اطلاعات</string>
     <string name="action_data_use">مصرف داده</string>
     <string name="action_privacy">حریم خصوصی</string>
-    <string name="action_about">درباره‌ تور</string>
+    <string name="action_about">%s درباره‌ تور</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">آپلودها</string>
     <string name="title_uploading">بارگذاری.......</string>

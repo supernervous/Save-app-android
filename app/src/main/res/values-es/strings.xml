@@ -146,13 +146,11 @@
     <string name="setup_nearby">Cercanías</string>
     <string name="title_welcome">Bienvenido/a</string>
     <string name="status_uploaded">Subido</string>
-    <string name="header_settings">Ajustes de la aplicación</string>
     <string name="header_projects">Configuraciones del proyecto</string>
 
-    <string name="header_info">Información</string>
     <string name="action_data_use">Uso de datos</string>
     <string name="action_privacy">Privacidad</string>
-    <string name="action_about">Acerca de</string>
+    <string name="action_about">Acerca de %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Subidas</string>
     <string name="title_uploading">Subiendo…</string>

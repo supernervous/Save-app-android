@@ -114,10 +114,8 @@
     <string name="error_field_required">该字段必填</string>
     <string name="setup_nearby">附近</string>
     <string name="title_welcome">欢迎</string>
-    <string name="header_settings">应用程序设置</string>
-    <string name="header_info">信息</string>
     <string name="action_privacy">隐私</string>
-    <string name="action_about">关于</string>
+    <string name="action_about">关于 %s</string>
     <string name="title_uploads">上传</string>
     <string name="title_activity_batch_media_review">预览</string>
     <string name="action_upload">上传</string>

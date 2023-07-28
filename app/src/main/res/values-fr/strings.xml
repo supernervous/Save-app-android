@@ -101,13 +101,11 @@
     <string name="setup_nearby">Proximité</string>
     <string name="title_welcome">Bienvenue</string>
     <string name="status_uploaded">Téléversé</string>
-    <string name="header_settings">Paramètres de l’appli</string>
     <string name="header_projects">Paramètres du projet</string>
 
-    <string name="header_info">Info</string>
     <string name="action_data_use">Utilisation des données</string>
     <string name="action_privacy">Confidentialité</string>
-    <string name="action_about">À propos</string>
+    <string name="action_about">À propos %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Téléversements</string>
     <string name="title_uploading">Téléversement…</string>

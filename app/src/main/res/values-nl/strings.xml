@@ -83,10 +83,9 @@
     <string name="setup_nearby">Dichtbij</string>
     <string name="title_welcome">Welkom</string>
     <string name="status_uploaded">Geüpload</string>
-    <string name="header_info">Info</string>
     <string name="action_data_use">Gegevensgebruik</string>
     <string name="action_privacy">Privacy</string>
-    <string name="action_about">Over</string>
+    <string name="action_about">Over %s</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Uploaden…</string>
