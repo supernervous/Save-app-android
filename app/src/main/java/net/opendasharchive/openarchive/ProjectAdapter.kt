@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
+import java.lang.Exception
 
 class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
@@ -72,5 +74,14 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
 
     fun getRegisteredMediaListFragment(position: Int): MediaListFragment? {
         return getRegisteredFragment(position) as? MediaListFragment
+    }
+
+    override fun restoreState(state: Parcelable?, loader: ClassLoader?) {
+        try {
+            super.restoreState(state, loader)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }

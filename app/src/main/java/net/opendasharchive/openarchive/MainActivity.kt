@@ -19,9 +19,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager.widget.ViewPager
 import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import com.esafirm.imagepicker.features.ImagePickerMode
@@ -47,7 +48,7 @@ import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.OAAppIntro
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
-import net.opendasharchive.openarchive.features.settings.SpaceSettingsActivity
+import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.BadgeDrawable
@@ -80,7 +81,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 
-    private var lastTab = 0
     private var mMenuUpload: MenuItem? = null
 
     private var mSpace: Space? = null
@@ -93,6 +93,11 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private lateinit var mFolderAdapter: FolderAdapter
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
+    private var settingsShowing = false
+
+    private val currentItem
+        get() = mBinding.pager.currentItem
+
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -103,8 +108,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
             when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
                 Media.Status.Uploaded.id -> {
-                    if (mBinding.pager.currentItem > 0) {
-                        mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)
+                    if (currentItem > 0) {
+                        mPagerAdapter.getRegisteredMediaListFragment(currentItem)
                             ?.refresh()
 
                         updateMenu()
@@ -113,10 +118,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 Media.Status.Uploading.id -> {
                     val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
 
-                    if (mediaId != -1L && mBinding.pager.currentItem > 0) {
+                    if (mediaId != -1L && currentItem > 0) {
                         val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
 
-                        mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)
+                        mPagerAdapter.getRegisteredMediaListFragment(currentItem)
                             ?.updateItem(mediaId, progress)
                     }
                 }
@@ -145,7 +150,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         setContentView(mBinding.root)
 
         mPickerLauncher = registerImagePicker { result: List<Image> ->
-            val bar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
+            val bar = mBinding.root.makeSnackBar(getString(R.string.importing_media))
             (bar.view as? SnackbarLayout)?.addView(ProgressBar(this))
 
             scope.executeAsyncTaskWithList(
@@ -172,7 +177,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.title = null
 
-        mSnackBar = mBinding.pager.makeSnackBar(getString(R.string.importing_media))
+        mSnackBar = mBinding.root.makeSnackBar(getString(R.string.importing_media))
         (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
@@ -181,13 +186,11 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());
         mBinding.pager.pageMargin = 0
 
-        mBinding.pager.addOnPageChangeListener(object : OnPageChangeListener {
+        mBinding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float,
                                         positionOffsetPixels: Int) { }
 
             override fun onPageSelected(position: Int) {
-                lastTab = position
-
                 if (position == 0) {
                     addFolder()
                 }
@@ -220,8 +223,21 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         mBinding.bottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
+                R.id.my_media -> {
+                    if (settingsShowing) {
+                        supportFragmentManager.popBackStack()
+
+                        mBinding.container.hide()
+                        mBinding.currentFolder.show()
+                        mBinding.pager.show()
+
+                        settingsShowing = false
+                    }
+
+                    true
+                }
                 R.id.add -> {
-                    if (mPagerAdapter.count > 1 && lastTab > 0) {
+                    if (getSelectedProject() != null) {
                         importMedia()
                     }
                     else {
@@ -231,7 +247,23 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     true
                 }
                 R.id.settings -> {
-                    showSpaceSettings()
+                    if (!settingsShowing) {
+                        settingsShowing = true
+
+                        mBinding.container.show()
+                        mBinding.currentFolder.hide()
+                        mBinding.pager.hide()
+
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+
+                            add(mBinding.container.id, SettingsFragment(),
+                                SettingsFragment::class.java.simpleName)
+
+                            addToBackStack(SettingsFragment::class.java.simpleName)
+                        }
+
+                    }
 
                     true
                 }
@@ -300,7 +332,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         when (item.itemId) {
             R.id.menu_upload_manager -> {
                 startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    it.putExtra(UploadManagerActivity.PROJECT_ID, mPagerAdapter.getProject(lastTab)?.id)
+                    it.putExtra(UploadManagerActivity.PROJECT_ID, getSelectedProject()?.id)
                 })
 
                 return true
@@ -349,7 +381,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private fun refreshProjects() {
         val projects = mSpace?.projects ?: emptyList()
 
-        val oldProject = mPagerAdapter.getProject(mBinding.pager.currentItem)
+        val oldProject = getSelectedProject()
 
         mPagerAdapter.updateData(projects)
 
@@ -362,10 +394,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private fun refreshCurrentProject() {
-        val project = mPagerAdapter.getProject(mBinding.pager.currentItem)
+        val project = getSelectedProject()
 
         if (project != null) {
-            mPagerAdapter.getRegisteredMediaListFragment(mBinding.pager.currentItem)?.refresh()
+            mPagerAdapter.getRegisteredMediaListFragment(currentItem)?.refresh()
 
             project.space?.setAvatar(mBinding.currentFolderIcon)
             mBinding.currentFolderIcon.show()
@@ -400,10 +432,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         else {
             item.isVisible = false
         }
-    }
-
-    private fun showSpaceSettings() {
-        startActivity(Intent(this, SpaceSettingsActivity::class.java))
     }
 
     private fun importSharedMedia(data: Intent?) {
@@ -462,7 +490,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             return null
         }
 
-        val project = mPagerAdapter.getProject(lastTab) ?: return null
+        val project = getSelectedProject() ?: return null
 
         // create media
         val media = Media()
@@ -591,7 +619,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     override fun getSelectedProject(): Project? {
-        return mPagerAdapter.getProject(mBinding.pager.currentItem)
+        return mPagerAdapter.getProject(currentItem)
     }
 
     override fun spaceClicked(space: Space) {
