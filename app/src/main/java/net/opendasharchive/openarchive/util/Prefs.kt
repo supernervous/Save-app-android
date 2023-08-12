@@ -147,4 +147,7 @@ object Prefs {
 
     val theme: Theme
         get() = Theme.get(prefs?.getString(THEME, null))
+
+    val prohibitScreenshots: Boolean
+        get() = false
 }

@@ -1,5 +1,7 @@
 package net.opendasharchive.openarchive.features.core
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 

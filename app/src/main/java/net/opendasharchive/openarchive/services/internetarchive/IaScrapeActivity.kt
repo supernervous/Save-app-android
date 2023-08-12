@@ -17,6 +17,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
 import net.opendasharchive.openarchive.util.AlertHelper
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
 import java.net.InetSocketAddress
@@ -34,7 +35,12 @@ class IaScrapeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        if (Prefs.prohibitScreenshots) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        }
 
         mBinding = ActivityIaScrapeBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
