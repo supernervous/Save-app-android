@@ -145,13 +145,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         ProviderInstaller.installIfNeededAsync(this, this)
 
-        if (Prefs.prohibitScreenshots) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
-
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 

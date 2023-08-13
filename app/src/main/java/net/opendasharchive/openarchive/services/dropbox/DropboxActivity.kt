@@ -39,13 +39,6 @@ class DropboxActivity: BaseActivity() {
             space = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L))
         }
 
-        if (Prefs.prohibitScreenshots) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
-
         if (space == null) supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
         mBinding = ActivityDropboxBinding.inflate(layoutInflater)

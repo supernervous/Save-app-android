@@ -25,13 +25,6 @@ class BrowseFoldersActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (Prefs.prohibitScreenshots) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        }
-
         mBinding = ActivityBrowseFoldersBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
