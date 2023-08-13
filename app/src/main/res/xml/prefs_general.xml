@@ -36,6 +36,13 @@
             app:singleLineTitle="false"
             app:summary="@string/prefs_use_tor_summary" />
 
+        <SwitchPreferenceCompat
+            app:key="prohibit_screenshots"
+            app:defaultValue="false"
+            app:title="@string/prefs_prohibit_screenshots_title"
+            app:singleLineTitle="false"
+            app:summary="@string/prefs_prohibit_screenshots_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/prefs_user_interface_title">
