@@ -39,6 +39,7 @@
 
     <!-- colors from 2023 redesign -->
 
+    <color name="transparent">#00000000</color>
     <color name="c23_nav_drawer_night">#ff101010</color>
     <color name="c23_dark_grey">#ff696666</color>
     <color name="c23_gray">#ff9f9f9f</color>
