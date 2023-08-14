@@ -67,6 +67,7 @@
     <!-- custom day colors -->
 
     <color name="colorNavigationDrawerBackground">@color/colorBackground</color>
+    <color name="colorOnboarding23GetStarted">@color/colorOnBackground</color>
 
     <!--
 

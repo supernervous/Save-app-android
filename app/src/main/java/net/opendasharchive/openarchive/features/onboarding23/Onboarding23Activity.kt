@@ -1,12 +1,12 @@
 package net.opendasharchive.openarchive.features.onboarding23
 
+import android.animation.ObjectAnimator
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.text.Spanned
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.BounceInterpolator
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -40,13 +40,24 @@ class Onboarding23Activity : BaseActivity() {
         }
 
         for (textView in arrayOf(
-            mBinding.shareText,
-            mBinding.archiveText,
-            mBinding.verifyText,
-            mBinding.encryptText
+            mBinding.titleBlock.shareText,
+            mBinding.titleBlock.archiveText,
+            mBinding.titleBlock.verifyText,
+            mBinding.titleBlock.encryptText
         )) {
             textView.text = colorizeFirstLetter(textView.text, R.color.colorPrimary)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        var oa = ObjectAnimator.ofFloat(mBinding.arrow, "translationX", 0F, 25F, 0F)
+        oa.interpolator = BounceInterpolator()
+        oa.startDelay = 3000
+        oa.duration = 2000
+        oa.repeatCount = 999999
+        oa.start()
     }
 
     private fun colorizeFirstLetter(text: CharSequence, @ColorRes color: Int): Spanned {

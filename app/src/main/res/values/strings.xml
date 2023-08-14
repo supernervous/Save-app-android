@@ -409,4 +409,6 @@
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus.
     </string>
+    <string name="secure_mobile_media_preservation">Secure Mobile Media Preservation</string>
+    <string name="get_started">Get Started</string>
 </resources>
