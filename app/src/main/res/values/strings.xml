@@ -155,6 +155,8 @@
     <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">Transfer via the Tor Network only</string>
     <string name="prefs_install_tor_summary">Please install Orbot to enable</string>
+    <string name="prefs_prohibit_screenshots_title">Block screenshots</string>
+    <string name="prefs_prohibit_screenshots_summary">Prevent screenshots and screen-recordings of this app.</string>
     <string name="prefs_upload_wifi_only_title">Upload Only on Wi-Fi</string>
     <string name="prefs_upload_wifi_only_summary">Wait for Wi-Fi to upload media</string>
     <string name="prefs_nearby_title">Nearby</string>

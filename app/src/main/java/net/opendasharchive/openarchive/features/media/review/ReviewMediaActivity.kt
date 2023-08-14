@@ -66,7 +66,6 @@ class ReviewMediaActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         mBinding = ActivityReviewMediaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         val application = requireNotNull(application)
@@ -84,12 +83,15 @@ class ReviewMediaActivity : BaseActivity() {
                         Timber.tag("WorkManager").d("Loading")
                         finish()
                     }
+
                     WorkInfo.State.SUCCEEDED -> {
                         Timber.tag("WorkManager").d("Succeed")
                     }
+
                     WorkInfo.State.FAILED -> {
                         Timber.tag("WorkManager").d("Failed")
                     }
+
                     else -> {
                         Timber.tag("WorkManager").d("workInfo is null")
                     }
@@ -164,14 +166,17 @@ class ReviewMediaActivity : BaseActivity() {
                     Media.Status.Uploaded, Media.Status.Published -> {
                         //NO-OP
                     }
+
                     Media.Status.Queued -> {
                         tvUrl.text = getString(R.string.waiting_for_upload)
                         tvUrl.show()
                     }
+
                     Media.Status.Uploading -> {
                         tvUrl.text = getString(R.string.uploading_now)
                         tvUrl.show()
                     }
+
                     else -> {}
                 }
 
@@ -293,7 +298,7 @@ class ReviewMediaActivity : BaseActivity() {
         if (currentMediaId >= 0) {
             mMedia = findById(Media::class.java, currentMediaId)
         } else {
-            Utility.toastOnUiThread(this, getString(R.string.error_no_media),false)
+            Utility.toastOnUiThread(this, getString(R.string.error_no_media), false)
             finish()
             return
         }
@@ -343,8 +348,7 @@ class ReviewMediaActivity : BaseActivity() {
             saveMedia()
             bindMedia()
             viewModel.applyMedia()
-        }
-        else {
+        } else {
             val firstStartIntent = Intent(this, SpaceSetupActivity::class.java)
             startActivity(firstStartIntent)
         }
@@ -399,11 +403,13 @@ class ReviewMediaActivity : BaseActivity() {
     }
 
     private fun showDeleteMediaDialog() {
-        AlertHelper.show(this, R.string.popup_remove_desc, R.string.popup_remove_title, buttons = listOf(
-            AlertHelper.negativeButton(),
-            AlertHelper.positiveButton() { _, _ ->
-                deleteMedia()
-            }))
+        AlertHelper.show(
+            this, R.string.popup_remove_desc, R.string.popup_remove_title, buttons = listOf(
+                AlertHelper.negativeButton(),
+                AlertHelper.positiveButton() { _, _ ->
+                    deleteMedia()
+                })
+        )
     }
 
     private fun deleteMedia() {

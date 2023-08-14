@@ -125,8 +125,6 @@ class ProofModeSettingsActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-
         mBinding = ActivitySettingsContainerBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 

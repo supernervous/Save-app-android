@@ -52,6 +52,7 @@ import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.BadgeDrawable
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -143,8 +144,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         super.onCreate(savedInstanceState)
 
         ProviderInstaller.installIfNeededAsync(this, this)
-
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)

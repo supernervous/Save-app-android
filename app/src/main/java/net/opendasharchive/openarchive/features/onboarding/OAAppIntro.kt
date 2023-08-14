@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.util.Prefs
 
 /**
  * Created by n8fr8 on 8/3/16.
@@ -17,7 +18,12 @@ class OAAppIntro : AppIntro() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        if (Prefs.prohibitScreenshots) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        }
 
         addSlide(CustomSlideBigText.newInstance(R.string.onboarding_intro, R.string.app_tag_line))
 

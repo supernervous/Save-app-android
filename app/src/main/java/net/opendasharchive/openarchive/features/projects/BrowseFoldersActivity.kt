@@ -10,6 +10,7 @@ import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.util.Date
 
@@ -23,8 +24,6 @@ class BrowseFoldersActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         mBinding = ActivityBrowseFoldersBinding.inflate(layoutInflater)
         setContentView(mBinding.root)

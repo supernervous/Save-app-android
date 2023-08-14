@@ -55,6 +55,16 @@ class GeneralSettingsActivity: BaseActivity() {
 
                 true
             }
+
+            findPreference<Preference>(Prefs.PROHIBIT_SCREENSHOTS)?.setOnPreferenceClickListener { _ ->
+                if (activity is BaseActivity) {
+                    // make sure this gets settings change gets applied instantly
+                    // (all other activities rely on the hook in BaseActivity.onResume())
+                    (activity as BaseActivity).updateScreenshotPrevention()
+                }
+
+                true
+            }
         }
     }
 
@@ -63,8 +73,6 @@ class GeneralSettingsActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         mBinding = ActivitySettingsContainerBinding.inflate(layoutInflater)
         setContentView(mBinding.root)

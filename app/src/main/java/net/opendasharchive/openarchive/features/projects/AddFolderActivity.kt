@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -22,8 +23,6 @@ class AddFolderActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         mBinding = ActivityAddFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
