@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
@@ -52,7 +51,6 @@ import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.BadgeDrawable
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.Position

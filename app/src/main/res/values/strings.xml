@@ -411,5 +411,8 @@
     </string>
     <string name="secure_mobile_media_preservation">Secure Mobile Media Preservation</string>
     <string name="get_started">Get Started</string>
-Is    <string name="proofmode_permissions_explanation">ProofMode gathers metadata from local cell towers to help verify media. Android requires permission to enable this setting. Save will only use this setting to capture data and will NOT access your phone to make/manage calls.</string>
+    <string name="proofmode_permissions_explanation">ProofMode gathers metadata from local cell towers to help verify media. Android requires permission to enable this setting. Save will only use this setting to capture data and will NOT access your phone to make/manage calls.</string>
+    <string name="archived_folders">Archived Folders</string>
+    <string name="view_archived_folders">View Archived Folders</string>
+    <string name="learn_more_about_creative_commons">Learn more about Creative Commons.</string>
 </resources>

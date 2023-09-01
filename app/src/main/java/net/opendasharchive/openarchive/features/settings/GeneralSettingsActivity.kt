@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.features.settings
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.WindowManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import info.guardianproject.netcipher.proxy.OrbotHelper

@@ -128,19 +128,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".features.settings.SpaceSettingsActivity"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="nc" />
-            </intent-filter>
-        </activity>
+            android:name=".features.settings.FoldersActivity"
+            android:label="@string/folders"
+            android:exported="false" />
 
         <activity android:name=".features.settings.GeneralSettingsActivity"
             android:label="@string/general"

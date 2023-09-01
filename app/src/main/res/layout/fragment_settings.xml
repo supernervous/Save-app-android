@@ -32,28 +32,18 @@
             tools:text="Dropbox" />
 
         <TextView
+            android:id="@+id/bt_folders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/header_projects"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_projects"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
             android:layout_marginBottom="32dp"
-            android:background="?android:attr/listDivider" />
+            android:textSize="22sp"
+            android:text="@string/folders" />
 
         <TextView
             android:id="@+id/bt_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
             android:text="@string/action_about"
             android:textColor="@color/c23_dark_grey" />

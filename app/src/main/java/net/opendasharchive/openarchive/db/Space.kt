@@ -121,7 +121,10 @@ data class Space(
         }
 
     val projects: List<Project>
-        get() = find(Project::class.java, "space_id = ?", arrayOf(id.toString()), null, "id DESC", null)
+        get() = find(Project::class.java, "space_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
+
+    val archivedProjects: List<Project>
+        get() = find(Project::class.java, "space_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
     fun hasProject(description: String): Boolean {
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
