@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Activities -->
     <string name="app_name" translatable="false">Save</string>
@@ -411,4 +411,5 @@
     </string>
     <string name="secure_mobile_media_preservation">Secure Mobile Media Preservation</string>
     <string name="get_started">Get Started</string>
+Is    <string name="proofmode_permissions_explanation">ProofMode gathers metadata from local cell towers to help verify media. Android requires permission to enable this setting. Save will only use this setting to capture data and will NOT access your phone to make/manage calls.</string>
 </resources>

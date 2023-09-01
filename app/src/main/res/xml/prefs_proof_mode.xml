@@ -21,4 +21,9 @@
         app:singleLineTitle="false"
         app:summary="@string/prefs_share_proofmode_summary" />
 
+    <Preference
+        app:selectable="false"
+        app:allowDividerAbove="true"
+        app:summary="@string/proofmode_permissions_explanation" />
+
 </PreferenceScreen>
