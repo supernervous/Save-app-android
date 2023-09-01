@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.Window
-import android.view.WindowManager
 import com.dropbox.core.android.Auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDropboxBinding
@@ -18,7 +18,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Constants
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -106,6 +105,10 @@ class DropboxActivity: BaseActivity() {
                 space.password = accessToken
                 space.save()
                 Space.current = space
+
+                CleanInsightsManager.getConsent(this@DropboxActivity) {
+                    CleanInsightsManager.measureEvent("backend", "new", Space.Type.DROPBOX.friendlyName)
+                }
 
                 MainScope().launch {
                     mBinding.notConnected.hide()

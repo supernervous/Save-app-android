@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -15,8 +14,6 @@ import net.opendasharchive.openarchive.util.Theme
 import timber.log.Timber
 
 class OpenArchiveApp : SugarApp() {
-
-    private val mCleanInsights = CleanInsightsManager()
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -38,6 +35,8 @@ class OpenArchiveApp : SugarApp() {
         if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)
+
+        CleanInsightsManager.init(this)
     }
 
     /**
@@ -63,14 +62,5 @@ class OpenArchiveApp : SugarApp() {
         }
 
         oh.init()
-    }
-
-
-    fun hasCleanInsightsConsent(): Boolean? {
-        return mCleanInsights.hasConsent()
-    }
-
-    fun showCleanInsightsConsent(activity: Activity) {
-        mCleanInsights.getConsent(activity)
     }
 }

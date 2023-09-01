@@ -2,25 +2,23 @@ package net.opendasharchive.openarchive.publish
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import android.os.Bundle
-import net.opendasharchive.openarchive.R
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.content.IntentFilter
-import net.opendasharchive.openarchive.MainActivity
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
-import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.OpenArchiveApp
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import net.opendasharchive.openarchive.CleanInsightsManager
+import net.opendasharchive.openarchive.MainActivity
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
-import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
@@ -62,8 +60,10 @@ class UploadManagerActivity : BaseActivity() {
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Timber.tag("receiver").d("Updating media")
+            Timber.d("Updating media")
+
             val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
+
             if (status == Media.Status.Uploaded.id) {
                 Handler(Looper.getMainLooper()).post {
                     val progressToolbarTitle: String = if (mFrag!!.getUploadingCounter() == 0) {
@@ -74,22 +74,24 @@ class UploadManagerActivity : BaseActivity() {
                     supportActionBar!!.title = progressToolbarTitle
                 }
                 mFrag!!.refresh()
-            } else if (status == Media.Status.Queued.id) {
+            }
+            else if (status == Media.Status.Queued.id) {
                 Handler(Looper.getMainLooper()).post {
                     supportActionBar!!.title =
                         getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
                 }
-            } else if (status == Media.Status.Uploading.id) {
+            }
+            else if (status == Media.Status.Uploading.id) {
                 val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
                 val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
                 if (mediaId != -1L) {
                     mFrag!!.updateItem(mediaId, progress)
                 }
-            } else if (status == Media.Status.Error.id) {
-                val oApp = application as OpenArchiveApp
-                val hasCleanInsightsConsent = oApp.hasCleanInsightsConsent()
-                if (hasCleanInsightsConsent != null && !hasCleanInsightsConsent) {
-                    oApp.showCleanInsightsConsent(this@UploadManagerActivity)
+            }
+            else if (status == Media.Status.Error.id) {
+                CleanInsightsManager.getConsent(this@UploadManagerActivity) {
+                    // TODO: Record metadata. See iOS implementation.
+                    CleanInsightsManager.measureEvent("upload", "upload_failed")
                 }
             }
         }

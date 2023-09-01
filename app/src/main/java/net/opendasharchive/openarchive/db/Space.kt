@@ -45,10 +45,10 @@ data class Space(
         }
     }
 
-    enum class Type(val id: Int) {
-        WEBDAV(0),
-        INTERNET_ARCHIVE(1),
-        DROPBOX(3)
+    enum class Type(val id: Int, val friendlyName: String) {
+        WEBDAV(0, "WebDAV"),
+        INTERNET_ARCHIVE(1, IaConduit.NAME),
+        DROPBOX(3, DropboxConduit.NAME)
     }
 
     companion object {

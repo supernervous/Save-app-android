@@ -7,12 +7,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
@@ -227,6 +227,10 @@ class WebDavActivity : BaseActivity() {
                 mSpace.save()
 
                 Space.current = mSpace
+
+                CleanInsightsManager.getConsent(this@WebDavActivity) {
+                    CleanInsightsManager.measureEvent("backend", "new", Space.Type.WEBDAV.friendlyName)
+                }
 
                 finishAffinity()
                 startActivity(Intent(this@WebDavActivity, MainActivity::class.java))

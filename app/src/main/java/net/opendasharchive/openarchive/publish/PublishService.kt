@@ -13,6 +13,7 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.runBlocking
+import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
@@ -161,6 +162,8 @@ class PublishService : Service(), Runnable {
 
         val conduit = Conduit.get(media, this, UploaderListener(media, this.applicationContext), null)
             ?: return false
+
+        CleanInsightsManager.measureEvent("upload", "try_upload", media.space?.tType?.friendlyName)
 
         mConduits.add(conduit)
         runBlocking {

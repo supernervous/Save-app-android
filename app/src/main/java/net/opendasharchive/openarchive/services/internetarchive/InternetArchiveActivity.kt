@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityInternetArchiveBinding
@@ -180,6 +181,10 @@ class InternetArchiveActivity : BaseActivity() {
                 mSpace.save()
 
                 Space.current = mSpace
+
+                CleanInsightsManager.getConsent(this@InternetArchiveActivity) {
+                    CleanInsightsManager.measureEvent("backend", "new", Space.Type.INTERNET_ARCHIVE.friendlyName)
+                }
 
                 finishAffinity()
                 startActivity(Intent(this@InternetArchiveActivity, MainActivity::class.java))
