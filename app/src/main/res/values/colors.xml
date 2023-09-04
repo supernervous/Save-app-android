@@ -68,6 +68,8 @@
 
     <color name="colorNavigationDrawerBackground">@color/colorBackground</color>
     <color name="colorOnboarding23GetStarted">@color/colorOnBackground</color>
+    <color name="colorSpaceSetupProgressOn">@color/black</color>
+    <color name="colorSpaceSetupProgressOff">@color/c23_gray</color>
 
     <!--
 
