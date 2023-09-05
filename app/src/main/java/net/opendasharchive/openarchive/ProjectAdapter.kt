@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 import java.lang.Exception
 
@@ -20,27 +21,33 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         private set
 
     override fun getItem(position: Int): Fragment {
-        return if (position == 0) {
-            NewFolderFragment()
+        if (position < 1) {
+            return NewFolderFragment()
         }
-        else {
-            MediaGridFragment().also { fragment ->
-                getProject(position)?.let { project ->
-                    fragment.setProjectId(project.id)
-                }
 
-                fragment.arguments = Bundle()
+        if (position > projects.size) {
+            return SettingsFragment()
+        }
+
+        return MediaGridFragment().also { fragment ->
+            getProject(position)?.let { project ->
+                fragment.setProjectId(project.id)
             }
+
+            fragment.arguments = Bundle()
         }
     }
 
     override fun getCount(): Int {
-        return projects.size + 1
+        return projects.size + 2
     }
 
     fun getProject(i: Int): Project? {
         return if (i > 0 && i <= projects.size) projects[i - 1] else null
     }
+
+    val settingsIndex: Int
+        get() = count - 1
 
     fun updateData(projects: List<Project>) {
         this.projects = projects

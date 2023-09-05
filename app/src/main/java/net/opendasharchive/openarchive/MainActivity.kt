@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -47,7 +46,6 @@ import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding23.Onboarding23Activity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
-import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.BadgeDrawable
@@ -92,10 +90,13 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private lateinit var mFolderAdapter: FolderAdapter
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
-    private var settingsShowing = false
+    private var mLastItem: Int? = null
 
-    private val currentItem
+    private var currentItem
         get() = mBinding.pager.currentItem
+        set(value) {
+            mBinding.pager.currentItem = value
+        }
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -188,12 +189,23 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                                         positionOffsetPixels: Int) { }
 
             override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    addFolder()
+                when (position) {
+                    0 -> addFolder()
+                    mPagerAdapter.settingsIndex -> {
+                        if (mLastItem == null) {
+                            mLastItem = mPagerAdapter.settingsIndex - 1
+                        }
+
+                        mBinding.bottomMenu.menu.findItem(R.id.settings).isChecked = true
+                    }
+                    else -> {
+                        mLastItem = null
+
+                        mBinding.bottomMenu.menu.findItem(R.id.my_media).isChecked = true
+                    }
                 }
-                else {
-                    refreshCurrentProject()
-                }
+
+                refreshCurrentProject()
             }
 
             override fun onPageScrollStateChanged(state: Int) { }
@@ -221,15 +233,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.bottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.my_media -> {
-                    if (settingsShowing) {
-                        supportFragmentManager.popBackStack()
-
-                        mBinding.container.hide()
-                        mBinding.currentFolder.show()
-                        mBinding.pager.show()
-
-                        settingsShowing = false
-                    }
+                    currentItem = mLastItem ?: 1
 
                     true
                 }
@@ -244,23 +248,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     true
                 }
                 R.id.settings -> {
-                    if (!settingsShowing) {
-                        settingsShowing = true
-
-                        mBinding.container.show()
-                        mBinding.currentFolder.hide()
-                        mBinding.pager.hide()
-
-                        supportFragmentManager.commit {
-                            setReorderingAllowed(true)
-
-                            add(mBinding.container.id, SettingsFragment(),
-                                SettingsFragment::class.java.simpleName)
-
-                            addToBackStack(SettingsFragment::class.java.simpleName)
-                        }
-
+                    if (currentItem != mPagerAdapter.settingsIndex) {
+                        mLastItem = currentItem
                     }
+                    currentItem = mPagerAdapter.settingsIndex
 
                     true
                 }
@@ -383,7 +374,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mPagerAdapter.updateData(projects)
 
         mBinding.pager.adapter = mPagerAdapter
-        mBinding.pager.currentItem = mPagerAdapter.getIndex(oldProject)
+        currentItem = mPagerAdapter.getIndex(oldProject)
 
         mFolderAdapter.update(projects)
 
@@ -606,7 +597,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     override fun projectClicked(project: Project) {
-        mBinding.pager.currentItem = mPagerAdapter.projects.indexOf(project) + 1
+        currentItem = mPagerAdapter.projects.indexOf(project) + 1
 
         mBinding.root.closeDrawer(mBinding.folderBar)
 
