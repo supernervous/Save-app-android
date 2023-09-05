@@ -1,5 +1,7 @@
 package net.opendasharchive.openarchive
 
+import net.opendasharchive.openarchive.databinding.FragmentWebDavBinding
+import net.opendasharchive.openarchive.services.webdav.WebDavFragment
 import net.opendasharchive.openarchive.util.Constants
 import org.junit.Assert
 import org.junit.Test
@@ -18,6 +20,6 @@ class UnitTests {
 
     @Test
     fun emptyString() {
-        Assert.assertEquals(Constants.REMOTE_PHP_ADDRESS, "/remote.php/webdav/")
+        Assert.assertEquals(WebDavFragment.REMOTE_PHP_ADDRESS, "/remote.php/webdav/")
     }
 }

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/space_setup_fragment"
             android:name="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment"
             android:layout_width="match_parent"

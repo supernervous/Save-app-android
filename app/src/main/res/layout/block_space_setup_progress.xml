@@ -24,12 +24,14 @@
             android:orientation="horizontal">
 
             <View
+                android:id="@+id/dot1"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@drawable/dot"
                 android:backgroundTint="@color/colorSpaceSetupProgressOn" />
 
             <View
+                android:id="@+id/bar1"
                 android:layout_width="80dp"
                 android:layout_height="1dp"
                 android:layout_marginLeft="8dp"
@@ -38,12 +40,14 @@
                 android:background="@color/colorSpaceSetupProgressOff" />
 
             <View
+                android:id="@+id/dot2"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@drawable/dot"
                 android:backgroundTint="@color/colorSpaceSetupProgressOff" />
 
             <View
+                android:id="@+id/bar2"
                 android:layout_width="80dp"
                 android:layout_height="1dp"
                 android:layout_marginLeft="8dp"
@@ -52,6 +56,7 @@
                 android:background="@color/colorSpaceSetupProgressOff" />
 
             <View
+                android:id="@+id/dot3"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:background="@drawable/dot"

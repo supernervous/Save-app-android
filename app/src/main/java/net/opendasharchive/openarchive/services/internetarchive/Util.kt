@@ -1,9 +1,13 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.Build
+import android.view.View
 import android.webkit.CookieManager
 import android.webkit.CookieSyncManager
 import android.webkit.WebView
+import androidx.annotation.ColorRes
 import java.security.SecureRandom
 import java.util.*
 
@@ -48,6 +52,16 @@ object Util {
         init {
             require(length >= 1) { "length < 1: $length" }
             buf = CharArray(length)
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForColorStateLists")
+    @JvmStatic
+    fun setBackgroundTint(view: View, @ColorRes color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            view.backgroundTintList = view.resources.getColorStateList(color, view.context.theme)
+        } else {
+            view.backgroundTintList = view.resources.getColorStateList(color)
         }
     }
 }
