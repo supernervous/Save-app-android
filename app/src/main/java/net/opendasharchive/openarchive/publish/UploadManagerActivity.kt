@@ -15,10 +15,10 @@ import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
@@ -29,7 +29,7 @@ class UploadManagerActivity : BaseActivity() {
 
     var mFrag: MediaListFragment? = null
     private var mMenuEdit: MenuItem? = null
-    private var projectId: Long = EMPTY_ID
+    private var projectId: Long = Project.EMPTY_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class UploadManagerActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.title = getString(R.string.title_uploads)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        projectId = intent.getLongExtra(PROJECT_ID, EMPTY_ID)
+        projectId = intent.getLongExtra(PROJECT_ID, Project.EMPTY_ID)
         mFrag =
             supportFragmentManager.findFragmentById(R.id.fragUploadManager) as MediaListFragment?
         mFrag!!.setProjectId(projectId)

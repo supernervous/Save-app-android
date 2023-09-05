@@ -20,7 +20,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -40,6 +39,7 @@ class WebDavActivity : BaseActivity() {
         private const val EXTRA_DATA_USER = "user"
         private const val EXTRA_DATA_PASSWORD = "password"
         private const val EXTRA_DATA_SERVER = "server"
+
         private const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
     }
 
@@ -53,8 +53,8 @@ class WebDavActivity : BaseActivity() {
         mBinding = ActivityWebdavBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        if (intent.hasExtra(Constants.SPACE_EXTRA)) {
-            mSpace = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L)) ?: Space(Space.Type.WEBDAV)
+        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
+            mSpace = Space.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L)) ?: Space(Space.Type.WEBDAV)
 
             setSupportActionBar(mBinding.toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)

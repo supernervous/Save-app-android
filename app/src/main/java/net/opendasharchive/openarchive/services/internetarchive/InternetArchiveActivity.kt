@@ -49,8 +49,8 @@ class InternetArchiveActivity : BaseActivity() {
         mBinding = ActivityInternetArchiveBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        if (intent.hasExtra("space")) {
-            mSpace = Space.get(intent.getLongExtra("space", -1L)) ?: Space(Space.Type.INTERNET_ARCHIVE)
+        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
+            mSpace = Space.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L)) ?: Space(Space.Type.INTERNET_ARCHIVE)
 
             setSupportActionBar(mBinding.toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)

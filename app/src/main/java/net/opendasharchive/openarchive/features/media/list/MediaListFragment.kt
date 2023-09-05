@@ -15,7 +15,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
-import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
+import net.opendasharchive.openarchive.db.Project
 
 open class MediaListFragment : Fragment() {
 
@@ -37,14 +37,14 @@ open class MediaListFragment : Fragment() {
             target: RecyclerView.ViewHolder
         ): Boolean {
             mMediaAdapter?.onItemMove(
-                viewHolder.adapterPosition,
-                target.adapterPosition
+                viewHolder.bindingAdapterPosition,
+                target.bindingAdapterPosition
             )
             return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            mMediaAdapter?.onItemDismiss(viewHolder.adapterPosition)
+            mMediaAdapter?.onItemDismiss(viewHolder.bindingAdapterPosition)
         }
     })
 
@@ -63,7 +63,7 @@ open class MediaListFragment : Fragment() {
 
     private fun observeData() {
         viewModel.mediaList.observe(viewLifecycleOwner) {
-            if (mProjectId != EMPTY_ID) {
+            if (mProjectId != Project.EMPTY_ID) {
                 it?.forEach { media ->
                     if (media.sStatus == Media.Status.Local) {
                         return@forEach

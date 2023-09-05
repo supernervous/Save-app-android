@@ -1,13 +1,15 @@
 package net.opendasharchive.openarchive.features.core
 
-import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.util.Prefs
 
 abstract class BaseActivity: AppCompatActivity() {
+
+    companion object {
+        const val EXTRA_DATA_SPACE = "space"
+    }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && event != null) {
@@ -26,7 +28,7 @@ abstract class BaseActivity: AppCompatActivity() {
         updateScreenshotPrevention()
     }
 
-    public fun updateScreenshotPrevention() {
+    fun updateScreenshotPrevention() {
         if (Prefs.prohibitScreenshots) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,

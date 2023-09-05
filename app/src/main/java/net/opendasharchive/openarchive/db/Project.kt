@@ -14,6 +14,8 @@ data class Project(
 
     companion object {
 
+        const val EMPTY_ID = -1L
+
         fun getById(projectId: Long): Project? {
             return findById(Project::class.java, projectId)
         }

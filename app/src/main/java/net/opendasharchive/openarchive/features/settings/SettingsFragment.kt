@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSettingsBinding
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.getVersionName
 import net.opendasharchive.openarchive.util.extensions.openBrowser
@@ -104,7 +104,7 @@ class SettingsFragment : Fragment() {
         }
 
         val intent = Intent(context, clazz)
-        intent.putExtra(Constants.SPACE_EXTRA, space.id)
+        intent.putExtra(BaseActivity.EXTRA_DATA_SPACE, space.id)
 
         startActivity(intent)
     }

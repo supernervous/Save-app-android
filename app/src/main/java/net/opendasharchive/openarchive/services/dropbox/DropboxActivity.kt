@@ -17,7 +17,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Constants
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -34,8 +33,8 @@ class DropboxActivity: BaseActivity() {
 
         var space: Space? = null
 
-        if (intent.hasExtra(Constants.SPACE_EXTRA)) {
-            space = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L))
+        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
+            space = Space.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
         }
 
         if (space == null) supportRequestWindowFeature(Window.FEATURE_NO_TITLE)

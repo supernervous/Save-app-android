@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.util.Constants.EMPTY_ID
+import net.opendasharchive.openarchive.db.Project
 
 class MediaListViewModel : ViewModel() {
 
@@ -13,12 +13,10 @@ class MediaListViewModel : ViewModel() {
         get() = _mediaList
 
     fun getMediaList(projectId: Long, status: List<Media.Status>) {
-        if (projectId == EMPTY_ID) {
+        if (projectId == Project.EMPTY_ID) {
             _mediaList.value = Media.getByStatus(status, Media.ORDER_PRIORITY)
         } else {
             _mediaList.value = Media.getByProject(projectId)
         }
     }
-
-
 }
