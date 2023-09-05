@@ -122,7 +122,6 @@
     <string name="hint_author">Oluşturan</string>
     <string name="hint_location">Konum ekle</string>
     <string name="hint_tags">Kişiler ekle</string>
-    <string name="hint_license">Lisansa (aşağıdaki sorulara bakın)</string>
     <string name="hint_flag">Önemli içerik olarak işaretlemek için dokunun</string>
     <string name="answer_yes">Evet</string>
     <string name="answer_no">Hayır</string>
@@ -293,7 +292,7 @@
 
     <string name="popup_remove_title">Ortamı Save üzerinden sil</string>
     <string name="popup_remove_desc">Öge yalnızSave uygulamasından silinecek. Sunucu ve fotoğraflar içinde durmaya devam edecek.</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Bu projedeki ortamlara Creative Commons kullanma izni ver</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Bu projedeki ortamlara Creative Commons kullanma izni ver</string>
 
     <string name="crash_dialog_text">Sorunları paylaşarak gelişmemize yardımcı olun</string>
     <string name="crash_dialog_title">Sorun bildirimleri</string>

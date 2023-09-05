@@ -111,7 +111,7 @@
     <string name="remove_from_app_media">Вилучити медіа</string>
     <string name="popup_flag_title">Позначте важливий контент</string>
     <string name="popup_batch_title">Редагувати кілька елементів</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Дозволити використовувати Creative Commons для всіх медіа в цьому проекті</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Дозволити використовувати Creative Commons для всіх медіа в цьому проекті</string>
 
     <string name="action_install">Встановити</string>
     <string name="action_enable">Увімкнути</string>

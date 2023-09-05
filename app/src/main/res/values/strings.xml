@@ -128,7 +128,6 @@
     <string name="hint_author">Author</string>
     <string name="hint_location">Add Location</string>
     <string name="hint_tags">Add People</string>
-    <string name="hint_license">License (see questions below)</string>
     <string name="hint_flag">Tap to flag as significant content</string>
     <string name="answer_yes">Yes</string>
     <string name="answer_no">No</string>
@@ -317,7 +316,8 @@
 
     <string name="popup_remove_title">Remove Media From Save</string>
     <string name="popup_remove_desc">This item will be removed only from the Save App. It will remain on the server and in your photo gallery.</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Allow Creative Commons use for all media in this project</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Allow Creative Commons use for all media in this folder</string>
+    <string name="allow_creative_commons_use_for_all_folders_on_this_server">Allow Creative Commons use for all folders on this server</string>
 
     <string name="crash_dialog_text">Help us improve, share your crashes</string>
     <string name="crash_dialog_title">Crash Reporting</string>

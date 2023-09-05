@@ -25,7 +25,8 @@ data class Space(
     var username: String = "",
     var displayname: String = "",
     var password: String = "",
-    var host: String = ""
+    var host: String = "",
+    var licenseUrl: String? = null
 ) : SugarRecord() {
 
     constructor(type: Type) : this() {
@@ -162,6 +163,15 @@ data class Space(
                     view.setImageDrawable(getAvatar(view.context))
                 }
             }
+        }
+    }
+
+    fun setLicense(license: String?) {
+        licenseUrl = license
+
+        for (project in projects) {
+            project.licenseUrl = licenseUrl
+            project.save()
         }
     }
 

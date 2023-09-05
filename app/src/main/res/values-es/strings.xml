@@ -92,7 +92,6 @@
     <string name="hint_author">Autor</string>
     <string name="hint_location">Añadir Ubicación</string>
     <string name="hint_tags">Añadir Personas</string>
-    <string name="hint_license">Licencia (ver preguntas a continuación)</string>
     <string name="hint_flag">Pulse para marcar como contenido importante</string>
     <string name="answer_yes">Sí</string>
     <string name="answer_no">No</string>
@@ -179,7 +178,7 @@
     <string name="popup_batch_desc">Para editar múltiples elementos, debe pulsar y mantener presionado cada uno.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Permitir el uso de Creative Commons para todos los medios en este proyecto</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Permitir el uso de Creative Commons para todos los medios en este proyecto</string>
 
     <string name="crash_dialog_title">Informes de error</string>
     <string name="action_install">Instalar</string>

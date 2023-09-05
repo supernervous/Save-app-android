@@ -7,10 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -113,10 +111,6 @@ class ReviewMediaActivity : BaseActivity() {
                 .addRequestHandler(videoRequestHandler)
                 .build()
         }
-
-        mBinding.reviewMetadata.tbCcDeriv.setOnCheckedChangeListener { _, _ -> setLicense() }
-        mBinding.reviewMetadata.tbCcSharealike.setOnCheckedChangeListener { _, _ -> setLicense() }
-        mBinding.reviewMetadata.tbCcComm.setOnCheckedChangeListener { _, _ -> setLicense() }
     }
 
     private fun updateFlagState() {
@@ -156,7 +150,6 @@ class ReviewMediaActivity : BaseActivity() {
                 }
 
                 tvAuthorLbl.setText(mMedia.author)
-                tvCcLicense.setText(mMedia.licenseUrl)
             }
 
             if (mMedia.sStatus != Media.Status.Local
@@ -180,7 +173,6 @@ class ReviewMediaActivity : BaseActivity() {
                     else -> {}
                 }
 
-                reviewMetadata.tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
                 reviewMetadata.tvTitleLbl.isEnabled = false
                 reviewMetadata.tvDescriptionLbl.isEnabled = false
 
@@ -202,8 +194,6 @@ class ReviewMediaActivity : BaseActivity() {
                     reviewMetadata.ivEditTags.hide()
                     reviewMetadata.tvTagsLbl.hint = ""
                 }
-                reviewMetadata.tvCcLicense.isEnabled = false
-                reviewMetadata.groupLicenseChooser.hide()
 
             } else {
                 reviewMetadata.rowFlag.setOnClickListener {

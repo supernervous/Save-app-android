@@ -135,7 +135,7 @@
     <string name="popup_batch_desc">Pour modifier plusieurs éléments, touchez et maintenez chacun d’eux.</string>
 
     <string name="popup_ia_title">Archive Internet</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Autoriser l’utilisation Creative Commons pour tous les médias de ce projet</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Autoriser l’utilisation Creative Commons pour tous les médias de ce projet</string>
 
     <string name="crash_dialog_title">Signaler un plantage</string>
     <string name="crashreportemail">support@guardianproject.info</string>

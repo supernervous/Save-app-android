@@ -151,7 +151,7 @@
     <string name="popup_batch_desc">Um mehrere Elemente auf einmal zu editieren, die Elemente lange drücken.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Erlaube Creative Commons für alle Medien in diesem Projekt</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Erlaube Creative Commons für alle Medien in diesem Ordner</string>
 
     <string name="crash_dialog_title">Absturz-Berichterstattung</string>
     <string name="crashreportemail">support@guardianproject.info</string>

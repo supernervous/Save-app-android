@@ -90,7 +90,6 @@
     <string name="hint_author">نویسنده</string>
     <string name="hint_location">افزودن مکان</string>
     <string name="hint_tags">افزودن افراد</string>
-    <string name="hint_license">گواهی (سوالهای زیر را ببین)</string>
     <string name="hint_flag">برای نشانه‌گذاری به عنوان محتوای مهم، روی پرچم بزنید.</string>
     <string name="answer_yes">بله</string>
     <string name="answer_no">خیر</string>
@@ -168,7 +167,7 @@
     <string name="popup_batch_desc">برای ویرایش چند انتخاب، روی هرکدام ضربه زده و نگه دارید.</string>
 
     <string name="popup_ia_title">بایگانی اینترنت</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">اجازه به استفاده کریتیو کامنز برای تمام رسانه‌های این پروژه</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">اجازه به استفاده کریتیو کامنز برای تمام رسانه‌های این پروژه</string>
 
     <string name="crash_dialog_title">گزارش خرابی</string>
     <string name="crashreportemail">support@guardianproject.info</string>

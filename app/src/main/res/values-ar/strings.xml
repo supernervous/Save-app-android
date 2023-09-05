@@ -91,7 +91,6 @@
     <string name="hint_author">المؤلف</string>
     <string name="hint_location">أضف الموقع</string>
     <string name="hint_tags">أضف أشخاص</string>
-    <string name="hint_license">الرخصة (انظر الأسئلة أدناه)</string>
     <string name="hint_flag">اضغط لإضافة علامة محتوى مميز</string>
     <string name="answer_yes">نعم</string>
     <string name="answer_no">لا</string>
@@ -168,7 +167,7 @@
     <string name="popup_batch_desc">لتعديل وحدات متعددة، اضغط لمدة على كل وحدة.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">اسمح بالمشاع الإبداعى \"Creative Commons\" لكل الوسائط فى هذا المشروع</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">اسمح بالمشاع الإبداعى \"Creative Commons\" لكل الوسائط فى هذا المشروع</string>
 
     <string name="crash_dialog_title">التبليغ عن التعطيلات </string>
     <string name="crashreportemail">support@guardianproject.info</string>

@@ -195,7 +195,7 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".features.projects.EditProjectActivity"
+            android:name=".features.settings.EditFolderActivity"
             android:label="@string/title_activity_new_project"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
@@ -214,7 +214,7 @@
 
         <meta-data
             android:name="VERSION"
-            android:value="33" />
+            android:value="34" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

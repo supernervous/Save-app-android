@@ -3,10 +3,8 @@ package net.opendasharchive.openarchive.features.media.batch
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -132,7 +130,6 @@ class BatchReviewMediaActivity : BaseActivity() {
                 }
 
                 tvAuthorLbl.setText(media.author)
-                tvCcLicense.setText(media.licenseUrl)
             }
 
             if (media.sStatus != Media.Status.Local && media.sStatus != Media.Status.New) {
@@ -152,7 +149,6 @@ class BatchReviewMediaActivity : BaseActivity() {
                 }
 
                 archiveMetadataLayout.apply {
-                    tvCcLicense.movementMethod = LinkMovementMethod.getInstance()
 //                    tvTitleLbl.isEnabled = false
 //                    tvDescriptionLbl.isEnabled = false
 

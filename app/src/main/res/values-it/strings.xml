@@ -129,7 +129,7 @@
     <string name="popup_batch_desc">Per modificare elementi multipli, tocca e tieni premuto</string>
 
     <string name="popup_ia_title">Archivio Internet</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_project">Consenti l\'uso dei Creative Commons per tutti i media di questo progetto</string>
+    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Consenti l\'uso dei Creative Commons per tutti i media di questo progetto</string>
 
     <string name="crash_dialog_title">Segnalazione crash</string>
     <string name="action_install">Installa</string>

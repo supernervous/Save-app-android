@@ -78,7 +78,6 @@
     <string name="menu_record_audio">录音</string>
     <string name="hint_title">标题</string>
     <string name="hint_author">作者</string>
-    <string name="hint_license">许可证（参见下面的问题）</string>
     <string name="answer_yes">是的</string>
     <string name="answer_no">不</string>
 
