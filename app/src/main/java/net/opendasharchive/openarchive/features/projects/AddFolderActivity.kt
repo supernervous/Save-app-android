@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import net.opendasharchive.openarchive.R
@@ -11,13 +10,16 @@ import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.tint
 
 class AddFolderActivity : BaseActivity() {
+
+    companion object {
+        const val EXTRA_PROJECT_ID = "folder_id"
+    }
 
     private lateinit var mBinding: ActivityAddFolderBinding
 
@@ -69,7 +71,7 @@ class AddFolderActivity : BaseActivity() {
 
     private val mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
-            setResult(RESULT_OK)
+            setResult(RESULT_OK, it.data)
             finish()
         }
     }

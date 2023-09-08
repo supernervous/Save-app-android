@@ -1,16 +1,15 @@
 package net.opendasharchive.openarchive.features.projects
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.util.Date
 
@@ -83,9 +82,13 @@ class BrowseFoldersActivity : BaseActivity() {
         // This should not happen. These should have been filtered on display.
         if (space.hasProject(folder.name)) return
 
-        Project(folder.name, Date(), space.id).save()
+        val project = Project(folder.name, Date(), space.id)
+        project.save()
 
-        setResult(RESULT_OK)
+        val i = Intent()
+        i.putExtra(AddFolderActivity.EXTRA_PROJECT_ID, project.id)
+
+        setResult(RESULT_OK, i)
 
         finish()
     }

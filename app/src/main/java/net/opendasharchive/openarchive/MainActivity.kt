@@ -136,7 +136,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private val mNewFolderResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == RESULT_OK) {
-            refreshProjects()
+            refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_PROJECT_ID, -1))
         }
     }
 
@@ -371,15 +371,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         refreshProjects()
     }
 
-    private fun refreshProjects() {
+    private fun refreshProjects(setProjectId: Long? = null) {
         val projects = mSpace?.projects ?: emptyList()
 
-        val oldProject = getSelectedProject()
+        val project = projects.firstOrNull { it.id == setProjectId } ?: getSelectedProject()
 
         mPagerAdapter.updateData(projects)
 
         mBinding.pager.adapter = mPagerAdapter
-        currentItem = mPagerAdapter.getIndex(oldProject)
+        currentItem = mPagerAdapter.getIndex(project)
 
         mFolderAdapter.update(projects)
 
