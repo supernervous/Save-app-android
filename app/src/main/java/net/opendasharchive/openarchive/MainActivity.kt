@@ -68,6 +68,7 @@ import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
+import java.lang.IllegalStateException
 import java.text.NumberFormat
 import java.util.Date
 
@@ -573,9 +574,20 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
         GoogleApiAvailability.getInstance().apply {
             if (isUserResolvableError(errorCode)) {
-                showErrorDialogFragment(this@MainActivity, errorCode, mErrorDialogResultLauncher) {
-                    // The user chose not to take the recovery action.
-                    showAlertIcon()
+                try {
+                    showErrorDialogFragment(
+                        this@MainActivity,
+                        errorCode,
+                        mErrorDialogResultLauncher
+                    ) {
+                        // The user chose not to take the recovery action.
+                        showAlertIcon()
+                    }
+                }
+                catch (e: IllegalStateException) {
+                    // Ignore. The user is rummaging around in some menu.
+                    // They cannot use the app, because the don't have Google stuff installed.
+                    // They probably have already seen this dialog.
                 }
             }
             else {
