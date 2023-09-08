@@ -9,6 +9,12 @@
     tools:context=".services.internetarchive.IaScrapeActivity"
     tools:ignore="MergeRootFrame">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
+
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"

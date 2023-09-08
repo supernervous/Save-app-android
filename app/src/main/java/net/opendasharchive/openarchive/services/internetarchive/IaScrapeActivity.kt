@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.WindowManager
+import android.view.Menu
+import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -17,7 +18,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util.clearWebviewAndCookies
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
 import java.net.InetSocketAddress
@@ -38,9 +38,36 @@ class IaScrapeActivity : BaseActivity() {
         mBinding = ActivityIaScrapeBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+        setSupportActionBar(mBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val doRegister = intent.getBooleanExtra("register", false)
 
         login(if (doRegister) { ARCHIVE_CREATE_ACCOUNT_URL } else { ARCHIVE_LOGIN_URL })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_refresh, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+
+                true
+            }
+
+            R.id.action_refresh -> {
+                mBinding.webView.reload()
+
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
