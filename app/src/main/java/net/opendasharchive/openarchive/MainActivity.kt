@@ -97,7 +97,11 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         get() = mBinding.pager.currentItem
         set(value) {
             mBinding.pager.currentItem = value
-        }
+
+            mBinding.bottomMenu.menu.findItem(
+                if (value == mPagerAdapter.settingsIndex) R.id.settings else  R.id.my_media
+            ).isChecked = true
+    }
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
