@@ -42,11 +42,11 @@ class DropboxActivity: BaseActivity() {
         mBinding = ActivityDropboxBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.btCancel.setOnClickListener {
+        mBinding.btBack.setOnClickListener {
             finish()
         }
 
-        mBinding.btAuthenticate.setOnClickListener {
+        mBinding.btNext.setOnClickListener {
             authenticate()
         }
 

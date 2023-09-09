@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.services.webdav
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 import net.opendasharchive.openarchive.MainActivity
@@ -31,6 +32,9 @@ class WebDavActivity : BaseActivity() {
         mBinding = ActivityWebdavBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+        setSupportActionBar(mBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         spaceId = intent.getLongExtra(Constants.SPACE_EXTRA, WebDavFragment.ARG_VAL_NEW_SPACE)
 
         if (spaceId != WebDavFragment.ARG_VAL_NEW_SPACE) {
@@ -39,22 +43,21 @@ class WebDavActivity : BaseActivity() {
             }
         }
 
-        supportFragmentManager.setFragmentResultListener(
-            WebDavFragment.RESULT_REQUEST_KEY,
-            this
-        ) { key, bundle ->
-            when(bundle.getString(WebDavFragment.RESULT_BUNDLE_KEY)) {
-                WebDavFragment.RESULT_VAL_CANCEL -> {
-                    finish()
-                }
-                WebDavFragment.RESULT_VAL_NEXT -> {
-                    finishAffinity()
-                    startActivity(Intent(this, MainActivity::class.java))
-                }
-                WebDavFragment.RESULT_VAL_DELETED -> {
-                    Space.navigate(this)
-                }
-            }
+        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_SAVED, this) { _, _ ->
+            finishAffinity()
+            startActivity(Intent(this, MainActivity::class.java))
         }
+        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_DELETED, this) { _, _ ->
+            Space.navigate(this)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // handle appbar back button tap
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

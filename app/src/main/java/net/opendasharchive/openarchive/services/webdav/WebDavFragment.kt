@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services.webdav
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -20,6 +22,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentWebDavBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
@@ -58,6 +61,8 @@ class WebDavFragment : Fragment() {
         if (ARG_VAL_NEW_SPACE != spaceId) {
             mSpace = Space.get(spaceId!!) ?: Space(Space.Type.WEBDAV)
 
+            mBinding.buttonBar.visibility = View.GONE
+
             mBinding.server.isEnabled = false
             mBinding.username.isEnabled = false
             mBinding.password.isEnabled = false
@@ -86,22 +91,15 @@ class WebDavFragment : Fragment() {
                 removeProject()
             }
 
-            mBinding.buttonBar.visibility = View.GONE
         } else {
             mSpace = Space(Space.Type.WEBDAV)
-
             mBinding.btRemove.visibility = View.GONE
+        }
 
-            mBinding.btCancel.setOnClickListener {
-                setFragmentResult(
-                    RESULT_REQUEST_KEY,
-                    bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_CANCEL)
-                )
-            }
+        mBinding.btAuthenticate.setOnClickListener { _ -> attemptLogin() }
 
-            mBinding.btAuthenticate.setOnClickListener {
-                attemptLogin()
-            }
+        mBinding.btCancel.setOnClickListener { _ ->
+            setFragmentResult(WebDavFragment.RESP_CANCEL, bundleOf())
         }
 
         mBinding.server.setOnFocusChangeListener { _, hasFocus ->
@@ -121,6 +119,11 @@ class WebDavFragment : Fragment() {
         return mBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
+    }
+
     private fun fixSpaceUrl(url: CharSequence?): Uri? {
         if (url.isNullOrBlank()) return null
 
@@ -134,8 +137,7 @@ class WebDavFragment : Fragment() {
         if (uri.authority.isNullOrBlank()) {
             builder.authority(uri.path)
             builder.path(REMOTE_PHP_ADDRESS)
-        }
-        else if (uri.path.isNullOrBlank() || uri.path == "/") {
+        } else if (uri.path.isNullOrBlank() || uri.path == "/") {
             builder.path(REMOTE_PHP_ADDRESS)
         }
 
@@ -166,12 +168,10 @@ class WebDavFragment : Fragment() {
         if (mSpace.host.isEmpty()) {
             mBinding.server.error = getString(R.string.error_field_required)
             errorView = mBinding.server
-        }
-        else if (mSpace.username.isEmpty()) {
+        } else if (mSpace.username.isEmpty()) {
             mBinding.username.error = getString(R.string.error_field_required)
             errorView = mBinding.username
-        }
-        else if (mSpace.password.isEmpty()) {
+        } else if (mSpace.password.isEmpty()) {
             mBinding.password.error = getString(R.string.error_field_required)
             errorView = mBinding.password
         }
@@ -192,24 +192,20 @@ class WebDavFragment : Fragment() {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
         mSnackbar?.show()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 testConnection()
-
                 mSpace.save()
-
                 Space.current = mSpace
 
                 CleanInsightsManager.getConsent(requireActivity()) {
                     CleanInsightsManager.measureEvent("backend", "new", Space.Type.WEBDAV.friendlyName)
                 }
 
-                setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_NEXT))
-            }
-            catch (exception: IOException) {
+                setFragmentResult(RESP_SAVED, bundleOf())
+            } catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {
                     showError(getString(R.string.error_incorrect_username_or_password), true)
                 } else {
@@ -224,12 +220,9 @@ class WebDavFragment : Fragment() {
 
         val client = SaveClient.get(requireContext(), mSpace.username, mSpace.password)
 
-        val request = Request.Builder()
-            .url(url)
-            .method("GET", null)
-            .addHeader("OCS-APIRequest", "true")
-            .addHeader("Accept", "application/json")
-            .build()
+        val request =
+            Request.Builder().url(url).method("GET", null).addHeader("OCS-APIRequest", "true")
+                .addHeader("Accept", "application/json").build()
 
         return suspendCoroutine {
             client.newCall(request).enqueue(object : Callback {
@@ -263,8 +256,7 @@ class WebDavFragment : Fragment() {
             if (onForm) {
                 mBinding.password.error = text
                 mBinding.password.requestFocus()
-            }
-            else {
+            } else {
                 mSnackbar = mBinding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
                 mSnackbar?.show()
 
@@ -273,30 +265,40 @@ class WebDavFragment : Fragment() {
         }
     }
 
-    private fun removeProject() {
-        AlertHelper.show(requireContext(), R.string.confirm_remove_space, R.string.remove_from_app, buttons = listOf(
-            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
-                mSpace.delete()
+    override fun onStop() {
+        super.onStop()
 
-                // Space.navigate(this)
-                setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_DELETED))
-            },
-            AlertHelper.negativeButton()))
+        // make sure the snack-bar is gone when this fragment isn't on display anymore
+        mSnackbar.dismiss()
+        // also hide keyboard when fragment isn't on display anymore
+        Util.hideSoftKeyboard(requireActivity())
+    }
+
+    private fun removeProject() {
+        AlertHelper.show(
+            requireContext(),
+            R.string.confirm_remove_space,
+            R.string.remove_from_app,
+            buttons = listOf(
+                AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+                    mSpace.delete()
+                    setFragmentResult(RESP_DELETED, bundleOf())
+                }, AlertHelper.negativeButton()
+            )
+        )
     }
 
     companion object {
+        // events emitted by this fragment
+        const val RESP_SAVED = "web_dav_fragment_resp_saved"
+        const val RESP_DELETED = "web_dav_fragment_resp_deleted"
+        const val RESP_CANCEL = "web_dav_fragment_resp_cancel"
 
-        const val RESULT_REQUEST_KEY = "web_dav_fragment_result"
-        const val RESULT_BUNDLE_KEY = "web_dav_result_key"
-        const val RESULT_VAL_CANCEL = "cancel"
-        const val RESULT_VAL_NEXT = "next"
-        const val RESULT_VAL_DELETED = "deleted"
-
-        const val ARG_SPACE = "mode"
+        // factory method parameters (bundle args)
+        const val ARG_SPACE = "space"
         const val ARG_VAL_NEW_SPACE = -1L
-        // didn't copy username-, password-, path-argument from old WebDavActivity because it's
-        // not used anywhere in the project.
 
+        // other internal constants
         const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
 
         @JvmStatic
@@ -307,10 +309,6 @@ class WebDavFragment : Fragment() {
         }
 
         @JvmStatic
-        fun newInstance() = WebDavFragment().apply {
-            arguments = Bundle().apply {
-                putLong(ARG_SPACE, ARG_VAL_NEW_SPACE)
-            }
-        }
+        fun newInstance() = Companion.newInstance(ARG_VAL_NEW_SPACE)
     }
 }

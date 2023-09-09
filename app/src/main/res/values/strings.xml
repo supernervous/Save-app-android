@@ -263,8 +263,12 @@
     <string name="app_tag_line">Secure Mobile Media Preservation</string>
     <string name="action_get_started"><![CDATA[Get Started >]]></string>
     <string name="action_next">Next</string>
+    <string name="action_done">Done</string>
     <string name="status_flagged">Significant Content</string>
     <string name="select_where_to_store_your_media">Select where to store your media.</string>
+    <string name="space_setup_success_message_webdav">You have successfully connected to a private server!</string>
+    <string name="space_setup_success_message_dropbox">You have successfully connected to Dropbox!</string>
+    <string name="space_setup_success_message_internet_archive">You have successfully connected to the Internet Archive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="prompt_arrow"><![CDATA[>]]></string>
     <string name="menu_edit">Edit</string>
