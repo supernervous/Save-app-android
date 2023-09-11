@@ -33,11 +33,6 @@ import okhttp3.Response
 import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
-/**
- * A simple [Fragment] subclass.
- * Use the [WebDavFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class WebDavFragment : Fragment() {
     private var spaceId: Long? = null
     private lateinit var mSpace: Space
@@ -59,8 +54,11 @@ class WebDavFragment : Fragment() {
         spaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
 
         if (ARG_VAL_NEW_SPACE != spaceId) {
+            // setup views for editing and existing space
+
             mSpace = Space.get(spaceId!!) ?: Space(Space.Type.WEBDAV)
 
+            mBinding.header.visibility = View.GONE
             mBinding.buttonBar.visibility = View.GONE
 
             mBinding.server.isEnabled = false
@@ -92,6 +90,8 @@ class WebDavFragment : Fragment() {
             }
 
         } else {
+            // setup views for creating a new space
+
             mSpace = Space(Space.Type.WEBDAV)
             mBinding.btRemove.visibility = View.GONE
         }

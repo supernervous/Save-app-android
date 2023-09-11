@@ -13,5 +13,6 @@
     <color name="colorOnboarding23GetStarted">@color/colorPrimary</color>
     <color name="colorSpaceSetupProgressOn">@color/c23_teal</color>
     <color name="colorSpaceSetupProgressOff">@color/c23_dark_grey</color>
+    <color name="colorBackgroundSpaceIcon">@color/c23_darker_grey</color>
 
 </resources>

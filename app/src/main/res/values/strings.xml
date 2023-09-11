@@ -367,7 +367,7 @@
     <string name="create">Create</string>
     <string name="add">Add</string>
     <string name="no_more_folders">No (more) folders</string>
-    <string name="private_webdav_server">Private (WebDAV) Server</string>
+    <string name="private_webdav_server">Private Server (WebDAV)</string>
     <string name="upload_to_dropbox">Upload to Dropbox</string>
     <string name="sign_in_or_create_an_account_with_dropbox">Sign in or create an account with Dropbox</string>
     <string name="authenticate">Authenticate</string>

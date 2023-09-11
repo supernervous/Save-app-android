@@ -32,12 +32,13 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:background="@drawable/circle_shape"
+                    android:backgroundTint="@color/colorBackgroundSpaceIcon"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/ic_server"
+                    android:src="@drawable/ic_private_server"
                     app:tint="@color/colorPrimary" />
 
                 <LinearLayout
