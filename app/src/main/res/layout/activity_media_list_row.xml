@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:filterTouchesWhenObscured="true"
     android:orientation="vertical"
     android:padding="3dp">
 
@@ -42,9 +42,8 @@
             android:layout_marginTop="3dp"
             android:visibility="gone"
             app:indicatorColor="@color/colorWaveformIndicator"
-            app:waveformColor="@color/colorWaveform"
+            app:waveformColor="@color/colorWaveform" />
 
-            />
     </LinearLayout>
 
     <TextView
@@ -65,7 +64,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivGroup"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="16dp"
         android:singleLine="true"
@@ -97,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorFloatIconBackground"
-            android:gravity="right"
+            android:gravity="end"
             android:orientation="horizontal"
             android:padding="10dp">
 
@@ -105,7 +103,7 @@
                 android:id="@+id/ivEditTags"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginRight="23dp"
+                android:layout_marginEnd="23dp"
                 android:background="@color/colorFloatIconBackground"
                 android:padding="2dp"
                 android:scaleType="fitCenter"
@@ -115,7 +113,7 @@
                 android:id="@+id/ivEditLocation"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginRight="23dp"
+                android:layout_marginEnd="23dp"
                 android:background="@color/colorFloatIconBackground"
                 android:padding="2dp"
                 android:scaleType="fitCenter"
@@ -127,7 +125,7 @@
                 android:id="@+id/ivEditNotes"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginRight="23dp"
+                android:layout_marginEnd="23dp"
                 android:background="@color/colorFloatIconBackground"
                 android:padding="2dp"
                 android:scaleType="fitCenter"
@@ -141,8 +139,10 @@
                 android:padding="2dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_flag_unselected" />
+
         </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>
 

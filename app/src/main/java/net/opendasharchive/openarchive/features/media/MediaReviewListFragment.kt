@@ -57,7 +57,7 @@ open class MediaReviewListFragment : MediaListFragment() {
 
             mMediaAdapter = mediaAdapter
 
-            mediaAdapter.setDoImageFade(false)
+            mediaAdapter.doImageFade = false
             mBinding.recyclerview.adapter = mediaAdapter
         }
     }

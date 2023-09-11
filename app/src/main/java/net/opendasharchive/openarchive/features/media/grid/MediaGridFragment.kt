@@ -121,7 +121,7 @@ class MediaGridFragment : MediaListFragment() {
 
             val listMediaArray = ArrayList(listMedia)
             val mediaAdapter = MediaAdapter(
-                requireContext(),
+                requireActivity(),
                 R.layout.activity_media_list_square,
                 listMediaArray,
                 mediaSection.recyclerview,

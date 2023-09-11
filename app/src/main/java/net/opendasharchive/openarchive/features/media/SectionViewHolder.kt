@@ -9,10 +9,10 @@ data class SectionViewHolder(
     var mediaGrid: Recycler? = null,
 ) {
     val sectionStatus: TextView
-        get() = mediaSection.sectionstatus
+        get() = mediaSection.sectionStatus
 
     val sectionTimestamp: TextView
-        get() = mediaSection.sectiontimestamp
+        get() = mediaSection.sectionTimestamp
 
     val action: TextView
         get() = mediaSection.actionNext

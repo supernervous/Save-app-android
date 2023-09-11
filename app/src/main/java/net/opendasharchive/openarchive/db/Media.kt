@@ -83,6 +83,10 @@ data class Media(
         fun get(mediaId: Long): Media? {
             return findById(Media::class.java, mediaId)
         }
+
+        fun getSelected(): List<Media> {
+            return find(Media::class.java, "AND selected = 1")
+        }
     }
 
     val collection: Collection?

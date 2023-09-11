@@ -94,7 +94,7 @@ open class MediaListFragment : Fragment() {
 
         mMediaAdapter =
             MediaAdapter(
-                requireContext(),
+                requireActivity(),
                 R.layout.activity_media_list_row_short,
                 listMediaArray,
                 rView,
@@ -108,13 +108,13 @@ open class MediaListFragment : Fragment() {
                 }, onUpload = {
 
                 })
-        mMediaAdapter?.setDoImageFade(false)
+        mMediaAdapter?.doImageFade = false
         rView.adapter = mMediaAdapter
         mItemTouchHelper.attachToRecyclerView(rView)
     }
 
     fun getMediaList(): List<Media>? {
-        return mMediaAdapter?.getMediaList()
+        return mMediaAdapter?.media
     }
 
     open fun setStatus(status: Media.Status) {
@@ -134,11 +134,11 @@ open class MediaListFragment : Fragment() {
     }
 
     fun stopBatchMode() {
-        mMediaAdapter?.getActionMode()?.finish()
+        mMediaAdapter?.actionMode?.finish()
     }
 
     fun setEditMode(isEditMode: Boolean) {
-        mMediaAdapter?.setEditMode(isEditMode)
+        mMediaAdapter?.isEditMode = isEditMode
     }
 
     open fun refresh() {

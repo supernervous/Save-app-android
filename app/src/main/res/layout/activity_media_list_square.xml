@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:filterTouchesWhenObscured="true"
     android:layout_width="100dp"
     android:layout_height="100dp"
     android:layout_margin="0dp"
+    android:filterTouchesWhenObscured="true"
     android:orientation="vertical"
     android:padding="6dp">
 
@@ -37,9 +37,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_thumbnail" />
 
-
         </FrameLayout>
-
 
         <com.github.derlio.waveform.SimpleWaveformView
             android:id="@+id/event_item_sound"
@@ -75,16 +73,17 @@
         tools:text="create date"
         tools:visibility="visible" />
 
-
     <ImageView
         android:id="@+id/iconVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:contentDescription="@string/is_video"
         android:src="@drawable/ic_videocam_black_24dp"
         android:visibility="gone"
         app:tint="@color/colorMediaOverlayIcon"
         tools:text="title"
         tools:visibility="visible" />
+
 </RelativeLayout>
 

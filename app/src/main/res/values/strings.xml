@@ -418,4 +418,5 @@
     <string name="refresh">Refresh</string>
     <string name="to_get_started_please_create_a_folder">To get started, please create a folder</string>
     <string name="before_adding_media_create_a_new_folder_first">Before adding media, create a new folder first.</string>
+    <string name="is_video">is video</string>
 </resources>
