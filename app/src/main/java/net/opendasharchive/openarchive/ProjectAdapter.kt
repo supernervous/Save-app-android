@@ -8,12 +8,10 @@ import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.features.media.NewFolderFragment
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
-import java.lang.Exception
+import kotlin.math.max
 
 class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
@@ -21,11 +19,7 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         private set
 
     override fun getItem(position: Int): Fragment {
-        if (position < 1) {
-            return NewFolderFragment()
-        }
-
-        if (position > projects.size) {
+        if (position == settingsIndex) {
             return SettingsFragment()
         }
 
@@ -39,11 +33,11 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
     }
 
     override fun getCount(): Int {
-        return projects.size + 2
+        return max(1, projects.size) + 1
     }
 
     fun getProject(i: Int): Project? {
-        return if (i > 0 && i <= projects.size) projects[i - 1] else null
+        return if (i > -1 && i < projects.size) projects[i] else null
     }
 
     val settingsIndex: Int
@@ -56,17 +50,15 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
     }
 
     fun getIndex(project: Project?): Int {
-        val default = if (projects.isNotEmpty()) 1 else 0
-
         if (project == null) {
-            return default
+            return 0
         }
 
-        return (projects.indexOf(project) + 1).coerceAtLeast(default)
+        return (projects.indexOf(project)).coerceAtLeast(0)
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return if (position == 0) {
+        return if (position == 0 && projects.isEmpty()) {
             val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black_24dp)
 
             val spannableString = SpannableString(" ")
@@ -79,8 +71,8 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         }
     }
 
-    fun getRegisteredMediaListFragment(position: Int): MediaListFragment? {
-        return getRegisteredFragment(position) as? MediaListFragment
+    fun getRegisteredMediaGridFragment(position: Int): MediaGridFragment? {
+        return getRegisteredFragment(position) as? MediaGridFragment
     }
 
     override fun restoreState(state: Parcelable?, loader: ClassLoader?) {

@@ -48,7 +48,9 @@ import net.opendasharchive.openarchive.features.onboarding23.Onboarding23Activit
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.BadgeDrawable
+import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -114,7 +116,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
                 Media.Status.Uploaded.id -> {
                     if (currentItem > 0) {
-                        mPagerAdapter.getRegisteredMediaListFragment(currentItem)
+                        mPagerAdapter.getRegisteredMediaGridFragment(currentItem)
                             ?.refresh()
 
                         updateMenu()
@@ -126,7 +128,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     if (mediaId != -1L && currentItem > 0) {
                         val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
 
-                        mPagerAdapter.getRegisteredMediaListFragment(currentItem)
+                        mPagerAdapter.getRegisteredMediaGridFragment(currentItem)
                             ?.updateItem(mediaId, progress)
                     }
                 }
@@ -195,7 +197,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
             override fun onPageSelected(position: Int) {
                 when (position) {
-                    0 -> addFolder()
                     mPagerAdapter.settingsIndex -> {
                         if (mLastItem == null) {
                             mLastItem = mPagerAdapter.settingsIndex - 1
@@ -247,7 +248,23 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                         importMedia()
                     }
                     else {
-                        addFolder()
+                        if (!Prefs.addFolderHintShown) {
+                            AlertHelper.show(this,
+                                R.string.before_adding_media_create_a_new_folder_first,
+                                R.string.to_get_started_please_create_a_folder,
+                                R.drawable.ic_folder,
+                                buttons = listOf(
+                                    AlertHelper.positiveButton(R.string.add_a_folder) { _, _ ->
+                                        Prefs.addFolderHintShown = true
+
+                                        addFolder()
+                                    },
+                                    AlertHelper.negativeButton(R.string.lbl_Cancel))
+                            )
+                        }
+                        else {
+                            addFolder()
+                        }
                     }
 
                     true
@@ -390,7 +407,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         val project = getSelectedProject()
 
         if (project != null) {
-            mPagerAdapter.getRegisteredMediaListFragment(currentItem)?.refresh()
+            mPagerAdapter.getRegisteredMediaGridFragment(currentItem)?.refresh()
 
             project.space?.setAvatar(mBinding.currentFolderIcon)
             mBinding.currentFolderIcon.show()

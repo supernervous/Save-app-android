@@ -23,6 +23,7 @@ object Prefs {
     private const val FLAG_HINT_SHOWN = "ft.flag"
     private const val BATCH_HINT_SHOWN = "ft.batch"
     private const val IA_HINT_SHOWN = "ft.ia"
+    private const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
     private const val NEXTCLOUD_USER_DATA = "next_cloud_user_data"
     private const val LICENSE_URL = "archive_pref_share_license_url"
     private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
@@ -96,6 +97,12 @@ object Prefs {
         get() = prefs?.getBoolean(IA_HINT_SHOWN, false) ?: false
         set(value) {
             prefs?.edit()?.putBoolean(IA_HINT_SHOWN, value)?.apply()
+        }
+
+    var addFolderHintShown: Boolean
+        get() = prefs?.getBoolean(ADD_FOLDER_HINT_SHOWN, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(ADD_FOLDER_HINT_SHOWN, value)?.apply()
         }
 
     var licenseUrl: String?

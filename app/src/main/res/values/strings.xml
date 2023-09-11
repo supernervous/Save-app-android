@@ -246,7 +246,7 @@
     <string name="button_sure">Add(%1$d)</string>
     <string name="title_activity_create_new_project">CreateNewProjectActivity</string>
     <string name="title_activity_browser_projects">BrowserProjectsActivity</string>
-    <string name="tap_to_add">Tap the button below to add media to your project.</string>
+    <string name="tap_to_add">Tap the button below to add media.</string>
     <string name="oa_title_1">Save to a Safe Place</string>
     <string name="oa_subtitle_1">Upload media from your device by connecting to a secure server, or the Internet Archive</string>
     <string name="oa_title_2">Stay Organized</string>
@@ -416,4 +416,6 @@
     <string name="view_archived_folders">View Archived Folders</string>
     <string name="learn_more_about_creative_commons">Learn more about Creative Commons.</string>
     <string name="refresh">Refresh</string>
+    <string name="to_get_started_please_create_a_folder">To get started, please create a folder</string>
+    <string name="before_adding_media_create_a_new_folder_first">Before adding media, create a new folder first.</string>
 </resources>

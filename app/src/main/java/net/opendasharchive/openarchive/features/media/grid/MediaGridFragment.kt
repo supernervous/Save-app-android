@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,6 @@ import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
@@ -25,9 +25,17 @@ import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListVi
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.cloak
-import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.filter
+import kotlin.collections.firstOrNull
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.listOf
+import kotlin.collections.set
 
 class MediaGridFragment : MediaListFragment() {
 
@@ -71,20 +79,27 @@ class MediaGridFragment : MediaListFragment() {
 
         var addedView = false
 
-        collections?.forEach { collection ->
+        for (collection in collections ?: emptyList()) {
+            if (collection.projectId != getProjectId()) continue
+
             val media = collection.media
 
-            if (media.isNotEmpty()) {
-                if (!addedView) {
-                    mBinding.mediacontainer.removeAllViews()
-                    addedView = true
+            if (media.isEmpty()) continue
+
+            if (!addedView) {
+                for (view in mBinding.mediacontainer.children) {
+                    if (view != mBinding.addMediaHint) {
+                        mBinding.mediacontainer.removeView(view)
+                    }
                 }
 
-                mBinding.mediacontainer.addView(createMediaList(collection, media))
+                addedView = true
             }
+
+            mBinding.mediacontainer.addView(createMediaList(collection, media))
         }
 
-        mBinding.addMediaHint.toggle(!addedView)
+        mBinding.addMediaHint.toggle(mBinding.mediacontainer.childCount < 2)
     }
 
     private fun performBatchUpload(listMedia: List<Media>) {
@@ -179,9 +194,10 @@ class MediaGridFragment : MediaListFragment() {
                 val view = createMediaList(collection, media)
 
                 mBinding.mediacontainer.addView(view, 0)
-                mBinding.addMediaHint.hide()
             }
         }
+
+        mBinding.addMediaHint.toggle(mBinding.mediacontainer.childCount < 2)
     }
 
     @SuppressLint("SetTextI18n")

@@ -118,7 +118,7 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Hinzufügen</string>
-    <string name="tap_to_add">Den Button unten verwenden um Medien zu Deinem Projekt hinzuzufügen.</string>
+    <string name="tap_to_add">Den Button unten verwenden um Medien hinzuzufügen.</string>
     <string name="connect_your_space">Verbinde Deinen Space</string>
     <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen.</string>
     <string name="app_tag_line">Sichere Bewahrung mobiler Medien</string>
