@@ -10,7 +10,7 @@ ext {
             satyan_sugar                  : '1.5',
             amulyakhare_textdrawable      : '1.0.1',
             appintro                      : '6.1.0',
-            cleaninsights_android_sdk     : '2.5.0',
+            cleaninsights_android_sdk     : '2.8.0',
             audio_waveform                : 'v1.0.1',
             picasso                       : '2.5.2',
             fresco                        : '2.6.0',
