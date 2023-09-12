@@ -2,14 +2,13 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.addCallback
 import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SpaceSetupFragment
 import net.opendasharchive.openarchive.features.settings.SpaceSetupSuccessFragment
-import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
+import net.opendasharchive.openarchive.services.dropbox.DropboxFragment
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
@@ -27,6 +26,7 @@ class SpaceSetupActivity : BaseActivity() {
         initSpaceSetupFragmentBindings()
         initWebDavFragmentBindings()
         initSpaceSetupSuccessFragmentBindings()
+        initDropboxFragmentBindings()
     }
 
     private fun initSpaceSetupSuccessFragmentBindings() {
@@ -53,7 +53,7 @@ class SpaceSetupActivity : BaseActivity() {
             progress1()
             supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
                 .commit()
         }
@@ -64,11 +64,14 @@ class SpaceSetupActivity : BaseActivity() {
             SpaceSetupFragment.RESULT_REQUEST_KEY, this
         ) { key, bundle ->
             when (bundle.getString(SpaceSetupFragment.RESULT_BUNDLE_KEY)) {
-                SpaceSetupFragment.RESULT_VAL_DROPBOX -> startActivity(
-                    Intent(
-                        this, DropboxActivity::class.java
-                    )
-                )
+                SpaceSetupFragment.RESULT_VAL_DROPBOX -> {
+                    progress2()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(mBinding.spaceSetupFragment.id, DropboxFragment())
+                        .commit()
+                }
 
                 SpaceSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> startActivity(
                     Intent(
@@ -85,6 +88,32 @@ class SpaceSetupActivity : BaseActivity() {
                         .commit()
                 }
             }
+        }
+    }
+
+    private fun initDropboxFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(
+            DropboxFragment.RESP_CANCEL,
+            this
+        ) { _, _ ->
+            progress1()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
+                .commit()
+        }
+
+        supportFragmentManager.setFragmentResultListener(
+            DropboxFragment.RESP_AUTHENTICATED,
+            this
+        ) { _, _ ->
+            progress3()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(mBinding.spaceSetupFragment.id, SpaceSetupSuccessFragment.newInstance(""))
+                .commit()
         }
     }
 
