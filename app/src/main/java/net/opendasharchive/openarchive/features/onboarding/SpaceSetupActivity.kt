@@ -45,7 +45,10 @@ class SpaceSetupActivity : BaseActivity() {
             supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                .replace(mBinding.spaceSetupFragment.id, SpaceSetupSuccessFragment.newInstance(""))
+                .replace(
+                    mBinding.spaceSetupFragment.id,
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_webdav))
+                )
                 .commit()
         }
 
@@ -112,7 +115,10 @@ class SpaceSetupActivity : BaseActivity() {
             supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                .replace(mBinding.spaceSetupFragment.id, SpaceSetupSuccessFragment.newInstance(""))
+                .replace(
+                    mBinding.spaceSetupFragment.id,
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_dropbox))
+                )
                 .commit()
         }
     }

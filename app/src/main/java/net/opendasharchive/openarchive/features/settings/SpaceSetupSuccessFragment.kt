@@ -11,12 +11,12 @@ import net.opendasharchive.openarchive.databinding.FragmentSpaceSetupSuccessBind
 
 class SpaceSetupSuccessFragment : Fragment() {
     private lateinit var mBinding: FragmentSpaceSetupSuccessBinding
-    private var message: String? = null
+    private var message = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            message = it.getString(ARG_MESSAGE)
+            message = it.getString(ARG_MESSAGE, "")
         }
     }
 
@@ -25,6 +25,10 @@ class SpaceSetupSuccessFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mBinding = FragmentSpaceSetupSuccessBinding.inflate(inflater)
+
+        if (message.isNotEmpty()) {
+            mBinding.successMessage.text = message
+        }
 
         mBinding.btAuthenticate.setOnClickListener { _ ->
             setFragmentResult(RESP_DONE, bundleOf())
