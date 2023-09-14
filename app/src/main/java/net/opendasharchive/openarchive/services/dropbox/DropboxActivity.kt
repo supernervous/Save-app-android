@@ -2,13 +2,11 @@ package net.opendasharchive.openarchive.services.dropbox
 
 import android.os.Bundle
 import android.view.MenuItem
-import com.dropbox.core.android.Auth
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityDropboxBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Constants
 
 class DropboxActivity: BaseActivity() {
 
@@ -21,8 +19,8 @@ class DropboxActivity: BaseActivity() {
 
         var space: Space? = null
 
-        if (intent.hasExtra(Constants.SPACE_EXTRA)) {
-            space = Space.get(intent.getLongExtra(Constants.SPACE_EXTRA, -1L))
+        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
+            space = Space.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
         }
 
         mBinding = ActivityDropboxBinding.inflate(layoutInflater)

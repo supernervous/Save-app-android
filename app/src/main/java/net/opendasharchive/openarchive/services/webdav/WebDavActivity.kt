@@ -9,7 +9,6 @@ import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.Constants
 import kotlin.properties.Delegates
 
 class WebDavActivity : BaseActivity() {
@@ -35,7 +34,7 @@ class WebDavActivity : BaseActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        spaceId = intent.getLongExtra(Constants.SPACE_EXTRA, WebDavFragment.ARG_VAL_NEW_SPACE)
+        spaceId = intent.getLongExtra(EXTRA_DATA_SPACE, WebDavFragment.ARG_VAL_NEW_SPACE)
 
         if (spaceId != WebDavFragment.ARG_VAL_NEW_SPACE) {
             supportFragmentManager.commit {
