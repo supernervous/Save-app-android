@@ -2,21 +2,16 @@ package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
+import net.opendasharchive.openarchive.features.settings.SpaceSetupFragment
+import net.opendasharchive.openarchive.features.settings.SpaceSetupSuccessFragment
+import net.opendasharchive.openarchive.services.dropbox.DropboxFragment
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
-import net.opendasharchive.openarchive.services.webdav.WebDavActivity
-import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.extensions.Position
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.setDrawable
-import net.opendasharchive.openarchive.util.extensions.tint
+import net.opendasharchive.openarchive.services.internetarchive.Util
+import net.opendasharchive.openarchive.services.webdav.WebDavFragment
 
 class SpaceSetupActivity : BaseActivity() {
 
@@ -28,52 +23,127 @@ class SpaceSetupActivity : BaseActivity() {
         mBinding = ActivitySpaceSetupBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = ""
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initSpaceSetupFragmentBindings()
+        initWebDavFragmentBindings()
+        initSpaceSetupSuccessFragmentBindings()
+        initDropboxFragmentBindings()
+    }
 
-        val color = ContextCompat.getColor(this, R.color.colorPrimary)
-        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
-        arrow?.tint(color)
+    private fun initSpaceSetupSuccessFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(
+            SpaceSetupSuccessFragment.RESP_DONE,
+            this
+        ) { _, _ ->
+            finishAffinity()
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+    }
 
-        mBinding.webdavIcon.setColorFilter(color)
-
-        mBinding.webdavText.setDrawable(arrow, Position.End, tint = false)
-        mBinding.dropboxText.setDrawable(arrow, Position.End, tint = false)
-        mBinding.internetArchiveText.setDrawable(arrow, Position.End, tint = false)
-
-        mBinding.webdav.setOnClickListener {
-            startActivity(Intent(this, WebDavActivity::class.java))
+    private fun initWebDavFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_SAVED, this) { _, _ ->
+            progress3()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(
+                    mBinding.spaceSetupFragment.id,
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_webdav))
+                )
+                .commit()
         }
 
-        if (Space.has(Space.Type.DROPBOX)) {
-            mBinding.dropbox.hide()
+        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_CANCEL, this) { _, _ ->
+            progress1()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
+                .commit()
         }
-        else {
-            mBinding.dropbox.setOnClickListener {
-                startActivity(Intent(this, DropboxActivity::class.java))
-            }
-        }
+    }
 
-        if (Space.has(Space.Type.INTERNET_ARCHIVE)) {
-            mBinding.internetArchive.hide()
-        }
-        else {
-            mBinding.internetArchive.setOnClickListener {
-                startActivity(Intent(this, InternetArchiveActivity::class.java))
+    private fun initSpaceSetupFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(
+            SpaceSetupFragment.RESULT_REQUEST_KEY, this
+        ) { key, bundle ->
+            when (bundle.getString(SpaceSetupFragment.RESULT_BUNDLE_KEY)) {
+                SpaceSetupFragment.RESULT_VAL_DROPBOX -> {
+                    progress2()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(mBinding.spaceSetupFragment.id, DropboxFragment())
+                        .commit()
+                }
+
+                SpaceSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> startActivity(
+                    Intent(
+                        this, InternetArchiveActivity::class.java
+                    )
+                )
+
+                SpaceSetupFragment.RESULT_VAL_WEBDAV -> {
+                    progress2()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(mBinding.spaceSetupFragment.id, WebDavFragment.newInstance())
+                        .commit()
+                }
             }
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-
-                return true
-            }
+    private fun initDropboxFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(
+            DropboxFragment.RESP_CANCEL,
+            this
+        ) { _, _ ->
+            progress1()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
+                .commit()
         }
 
-        return super.onOptionsItemSelected(item)
+        supportFragmentManager.setFragmentResultListener(
+            DropboxFragment.RESP_AUTHENTICATED,
+            this
+        ) { _, _ ->
+            progress3()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(
+                    mBinding.spaceSetupFragment.id,
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_dropbox))
+                )
+                .commit()
+        }
+    }
+
+    private fun progress1() {
+        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOff)
+        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOff)
+        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
+        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
+    }
+
+    private fun progress2() {
+        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
+        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
+    }
+
+    private fun progress3() {
+        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOn)
+        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOn)
     }
 }

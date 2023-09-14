@@ -1,165 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:filterTouchesWhenObscured="true"
-    android:orientation="vertical"
     tools:context=".features.onboarding.SpaceSetupActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        <include
+            android:id="@+id/progress_block"
+            layout="@layout/block_space_setup_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:filterTouchesWhenObscured="true"
-            android:gravity="top"
-            android:orientation="vertical"
-            android:padding="10dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/connect_your_space"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/space_setup_fragment"
+            android:name="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="6dp"
-                android:gravity="center_horizontal"
-                android:text="@string/set_up_where_you_want_your_media_to_be_stored"
-                android:textSize="14sp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/webdav"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_marginVertical="@dimen/activity_vertical_margin"
-                app:cardCornerRadius="@dimen/activity_horizontal_margin">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/webdav_icon"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_server"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:id="@+id/webdav_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/private_webdav_server"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/send_directly_to_a_private_server" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/dropbox"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_marginVertical="@dimen/activity_vertical_margin"
-                app:cardCornerRadius="@dimen/activity_horizontal_margin">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/dropbox"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:id="@+id/dropbox_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dropbox"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/upload_to_dropbox" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/internet_archive"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_marginVertical="@dimen/activity_vertical_margin"
-                app:cardCornerRadius="@dimen/activity_horizontal_margin">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ialogo128"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:id="@+id/internet_archive_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/internet_archive"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/upload_to_the_internet_archive" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

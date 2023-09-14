@@ -96,11 +96,11 @@ class InternetArchiveActivity : BaseActivity() {
             showFirstTimeIa()
         }
 
-        mBinding.btCancel.setOnClickListener {
+        mBinding.btBack.setOnClickListener {
             finish()
         }
 
-        mBinding.btAuthenticate.setOnClickListener {
+        mBinding.btNext.setOnClickListener {
             attemptLogin()
         }
 
