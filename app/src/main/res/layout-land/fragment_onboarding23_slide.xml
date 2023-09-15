@@ -24,29 +24,32 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="60">
+            android:layout_weight="60"
+            tools:ignore="NestedWeights">
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_black"
+                    android:textFontWeight="900"
+                    android:textStyle="bold"
                     android:paddingBottom="8dp"
                     android:text="title"
                     android:textAllCaps="true"
                     android:textSize="28sp"
                     android:layout_above="@id/summary"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    tools:targetApi="p" />
 
                 <TextView
                     android:id="@+id/summary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_regular"
                     android:layout_alignParentBottom="true"
                     android:text="@string/lorem_ipsum_short_paragraph"
                     android:paddingEnd="32dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
         </RelativeLayout>
     </LinearLayout>
 
