@@ -28,6 +28,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
+                android:padding="12dp"
                 android:background="@drawable/circle_shape"
                 android:backgroundTint="@color/colorBackgroundSpaceIcon"
                 android:importantForAccessibility="no"

@@ -128,7 +128,7 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ialogo128"
+                    android:src="@drawable/ic_internet_archive"
                     android:importantForAccessibility="no" />
 
                 <TextView

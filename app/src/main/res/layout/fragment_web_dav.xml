@@ -33,6 +33,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:padding="12dp"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:background="@drawable/circle_shape"
                     android:backgroundTint="@color/colorBackgroundSpaceIcon"

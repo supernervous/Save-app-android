@@ -14,6 +14,7 @@ import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.tint
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.*
@@ -133,13 +134,15 @@ data class Space(
     }
 
     fun getAvatar(context: Context): Drawable? {
+        val color = ContextCompat.getColor(context, R.color.colorOnBackground)
         return when (tType) {
-            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ialogo128)
+            Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server)?.tint(color)
 
-            Type.DROPBOX -> ContextCompat.getDrawable(context, R.drawable.dropbox)
+            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)?.tint(color)
 
-            else -> TextDrawable.builder().buildRound(initial,
-                ContextCompat.getColor(context, R.color.colorPrimary))
+            Type.DROPBOX -> ContextCompat.getDrawable(context, R.drawable.ic_dropbox23)?.tint(color)
+
+            else -> TextDrawable.builder().buildRound(initial, color)
         }
     }
 
