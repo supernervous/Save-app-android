@@ -28,18 +28,19 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_black"
                 android:paddingBottom="8dp"
                 android:text="title"
                 android:textAllCaps="true"
+                android:textFontWeight="900"
                 android:textSize="28sp"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText"
+                tools:targetApi="p" />
 
             <TextView
                 android:id="@+id/summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/lorem_ipsum_short_paragraph"
                 android:textSize="16sp" />
         </LinearLayout>

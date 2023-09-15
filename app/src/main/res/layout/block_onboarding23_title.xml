@@ -44,11 +44,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="870"
-            android:fontFamily="@font/montserrat_black"
             android:scaleX="1.15"
             android:scaleY="1.15"
             android:text="@string/intro_header_share"
-            app:autoSizeTextType="uniform" />
+            android:textFontWeight="900"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="p" />
 
     </LinearLayout>
 
@@ -70,11 +72,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="870"
-            android:fontFamily="@font/montserrat_black"
             android:scaleX="1.15"
             android:scaleY="1.15"
             android:text="@string/intro_header_archive"
-            app:autoSizeTextType="uniform" />
+            android:textFontWeight="900"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="p" />
     </LinearLayout>
 
     <LinearLayout
@@ -95,11 +99,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="870"
-            android:fontFamily="@font/montserrat_black"
             android:scaleX="1.15"
             android:scaleY="1.15"
             android:text="@string/intro_header_verify"
-            app:autoSizeTextType="uniform" />
+            android:textFontWeight="900"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="p" />
 
     </LinearLayout>
 
@@ -122,11 +128,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="870"
-            android:fontFamily="@font/montserrat_black"
             android:scaleX="1.15"
             android:scaleY="1.15"
             android:text="@string/intro_header_encrypt"
-            app:autoSizeTextType="uniform" />
+            android:textFontWeight="900"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="p" />
 
     </LinearLayout>
 
@@ -139,7 +147,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:fontFamily="@font/montserrat"
         android:text="@string/secure_mobile_media_preservation"
         android:textStyle="bold"
         app:autoSizeMaxTextSize="500sp"

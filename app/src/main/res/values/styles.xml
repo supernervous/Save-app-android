@@ -15,6 +15,7 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/dayMode</item>
         <item name="navigationViewStyle">@style/NavigationViewStyle</item>
         <item name="appBarLayoutStyle">@style/AppBarStyle</item>
+        <item name="android:textViewStyle">@style/OATextViewStyle</item>
     </style>
 
     <style name="AppMediaTheme" parent="AppTheme.NoActionBar">
@@ -50,6 +51,10 @@
 
     <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="OATextViewStyle">
+        <item name="fontFamily">@font/montserrat</item>
     </style>
 
 </resources>
