@@ -26,16 +26,6 @@ class SpaceSetupFragment : Fragment() {
     ): View? {
         mBinding = FragmentSpaceSetupBinding.inflate(inflater)
 
-        val color = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
-        val arrow = ContextCompat.getDrawable(requireContext(), R.drawable.ic_arrow_right)
-        arrow?.tint(color)
-
-        mBinding.webdavIcon.setColorFilter(color)
-
-        mBinding.webdavText.setDrawable(arrow, Position.End, tint = false)
-        mBinding.dropboxText.setDrawable(arrow, Position.End, tint = false)
-        mBinding.internetArchiveText.setDrawable(arrow, Position.End, tint = false)
-
         mBinding.webdav.setOnClickListener {
             setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_WEBDAV))
         }

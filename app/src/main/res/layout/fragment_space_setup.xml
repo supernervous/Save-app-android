@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,8 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/connect_your_space"
-            android:textSize="28sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
@@ -33,120 +33,225 @@
             android:text="@string/set_up_where_you_want_your_media_to_be_stored"
             android:textSize="14sp" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/webdav"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
-            app:cardCornerRadius="@dimen/activity_horizontal_margin">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@color/colorBackground"
+            app:cardCornerRadius="@dimen/activity_horizontal_margin"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/colorOnBackground"
+            app:strokeWidth="@dimen/border_width">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/webdav_icon"
+                    android:id="@+id/icon_webdav"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:padding="2dp"
                     android:src="@drawable/ic_private_server"
-                    android:importantForAccessibility="no" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/webdav_text"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/webdav_texts"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/private_webdav_server"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/icon_next_webdav"
+                    app:layout_constraintStart_toEndOf="@id/icon_webdav"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send_directly_to_a_private_server" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/private_server"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_directly_to_a_private_server"
+                        android:textSize="14sp" />
 
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-        <androidx.cardview.widget.CardView
+                <ImageView
+                    android:id="@+id/icon_next_webdav"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/onboarding23_arrow_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorSpaceSetupProgressOn" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/dropbox"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
-            app:cardCornerRadius="@dimen/activity_horizontal_margin">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@color/colorBackground"
+            app:cardCornerRadius="@dimen/activity_horizontal_margin"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/colorOnBackground"
+            app:strokeWidth="@dimen/border_width">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/icon_dropbox"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:padding="2dp"
                     android:src="@drawable/ic_dropbox23"
-                    android:importantForAccessibility="no" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/dropbox_text"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/dropbox_texts"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/dropbox"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/icon_next_dropbox"
+                    app:layout_constraintStart_toEndOf="@id/icon_dropbox"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_to_dropbox" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dropbox"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_to_dropbox"
+                        android:textSize="14sp" />
 
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-        <androidx.cardview.widget.CardView
+                <ImageView
+                    android:id="@+id/icon_next_dropbox"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/onboarding23_arrow_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorSpaceSetupProgressOn" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/internet_archive"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
-            app:cardCornerRadius="@dimen/activity_horizontal_margin">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@color/colorBackground"
+            app:cardCornerRadius="@dimen/activity_horizontal_margin"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/colorOnBackground"
+            app:strokeWidth="@dimen/border_width">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/icon_internet_archive"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:padding="2dp"
                     android:src="@drawable/ic_internet_archive"
-                    android:importantForAccessibility="no" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/internet_archive_text"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/internet_archive_texts"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/internet_archive"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/icon_next_internet_archive"
+                    app:layout_constraintStart_toEndOf="@id/icon_internet_archive"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_to_the_internet_archive" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/internet_archive"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_to_the_internet_archive"
+                        android:textSize="14sp" />
 
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icon_next_internet_archive"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/onboarding23_arrow_right"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/internet_archive_texts"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/colorSpaceSetupProgressOn" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>

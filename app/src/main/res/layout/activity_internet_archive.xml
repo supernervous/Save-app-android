@@ -42,11 +42,11 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:padding="12dp"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:background="@drawable/circle_shape"
                     android:backgroundTint="@color/colorBackgroundSpaceIcon"
                     android:importantForAccessibility="no"
+                    android:padding="12dp"
                     android:src="@drawable/ic_internet_archive"
                     app:tint="@color/colorPrimary" />
 
@@ -59,7 +59,10 @@
                         style="@style/TextAppearance.AppCompat.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/internet_archive" />
+                        android:text="@string/internet_archive"
+                        android:textFontWeight="700"
+                        android:textStyle="bold"
+                        tools:targetApi="p" />
 
                     <TextView
                         android:layout_width="wrap_content"
