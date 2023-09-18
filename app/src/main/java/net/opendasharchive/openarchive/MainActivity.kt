@@ -630,7 +630,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     override fun projectClicked(project: Project) {
-        currentItem = mPagerAdapter.projects.indexOf(project) + 1
+        currentItem = mPagerAdapter.projects.indexOf(project)
 
         mBinding.root.closeDrawer(mBinding.folderBar)
 
