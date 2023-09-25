@@ -111,6 +111,10 @@ class PreviewMediaListActivity : BaseActivity() {
             media.save()
         }
         viewModel.applyMedia()
+
+        // media files got enqueued for upload with out any errors,
+        // so direct user back to main activity
+        finish()
     }
 
     private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
