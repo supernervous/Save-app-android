@@ -59,7 +59,7 @@ class SettingsFragment : Fragment() {
 
         mBinding.btAbout.text = getString(R.string.action_about, getString(R.string.app_name))
         mBinding.btAbout.setOnClickListener {
-            context?.openBrowser("https://open-archive.org/about")
+            context?.openBrowser("https://open-archive.org/save")
         }
 
         mBinding.btPrivacy.setOnClickListener {
