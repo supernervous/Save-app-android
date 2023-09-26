@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -199,7 +200,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 when (position) {
                     mPagerAdapter.settingsIndex -> {
                         if (mLastItem == null) {
-                            mLastItem = mPagerAdapter.settingsIndex - 1
+                            mLastItem = mPagerAdapter.settingsIndex
                         }
 
                         mBinding.bottomMenu.menu.findItem(R.id.settings).isChecked = true
@@ -239,7 +240,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.bottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.my_media -> {
-                    currentItem = mLastItem ?: 1
+                    if (currentItem >= mPagerAdapter.settingsIndex) {
+                        currentItem = mLastItem ?: 1
+                    }
 
                     true
                 }
@@ -629,6 +632,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.alertIcon.hide()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun projectClicked(project: Project) {
         currentItem = mPagerAdapter.projects.indexOf(project)
 
@@ -637,6 +641,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.spacesCard.disableAnimation {
             mBinding.spacesCard.hide()
         }
+
+        // make sure that even when navigating to settings and picking a folder there
+        // the dataset will get update correctly
+        mFolderAdapter.notifyDataSetChanged()
     }
 
     override fun getSelectedProject(): Project? {
