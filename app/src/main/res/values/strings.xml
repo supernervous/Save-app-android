@@ -398,7 +398,7 @@
         map your personal or organizational media archive.
     </string>
     <string name="intro_text_verify">
-        Authenticate your media with a cryptographic verification sha256 hash, and optional
+        Authenticate your media with a cryptographic verification sha256 hash and optional
         ProofMode. Add critical metadata like notes, people, and location with each upload.
     </string>
     <string name="intro_text_encrypt"><![CDATA[
