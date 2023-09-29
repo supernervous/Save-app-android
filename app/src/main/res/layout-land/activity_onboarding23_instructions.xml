@@ -90,7 +90,7 @@
                 app:dotsCornerRadius="5dp"
                 app:dotsSize="10dp"
                 app:dotsSpacing="7dp"
-                app:dotsStrokeColor="@color/c23_dark_grey"
+                app:dotsStrokeColor="@color/c23_medium_grey"
                 app:dotsStrokeWidth="5dp" />
 
         </FrameLayout>

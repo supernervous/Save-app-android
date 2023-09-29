@@ -71,7 +71,6 @@ import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
-import java.lang.IllegalStateException
 import java.text.NumberFormat
 import java.util.Date
 
@@ -94,17 +93,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private lateinit var mFolderAdapter: FolderAdapter
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
-    private var mLastItem: Int? = null
+    private var mLastItem: Int = 0
+    private var mLastMediaItem: Int = 0
 
     private var currentItem
         get() = mBinding.pager.currentItem
         set(value) {
             mBinding.pager.currentItem = value
-
-            mBinding.bottomMenu.menu.findItem(
-                if (value == mPagerAdapter.settingsIndex) R.id.settings else  R.id.my_media
-            ).isChecked = true
-    }
+            updateBottomNavbar(value)
+        }
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -112,7 +109,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         override fun onReceive(context: Context, intent: Intent) {
             // Get extra data included in the Intent
-            Timber.d( "Updating media")
+            Timber.d("Updating media")
 
             when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
                 Media.Status.Uploaded.id -> {
@@ -123,6 +120,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                         updateMenu()
                     }
                 }
+
                 Media.Status.Uploading.id -> {
                     val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
 
@@ -137,15 +135,17 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
     }
 
-    private val mNewFolderResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_PROJECT_ID, -1))
+    private val mNewFolderResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_PROJECT_ID, -1))
+            }
         }
-    }
 
-    private val mErrorDialogResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        retryProviderInstall = true
-    }
+    private val mErrorDialogResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            retryProviderInstall = true
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,36 +193,38 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding.pager.pageMargin = 0
 
         mBinding.pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float,
-                                        positionOffsetPixels: Int) { }
+            override fun onPageScrolled(
+                position: Int, positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
-                when (position) {
-                    mPagerAdapter.settingsIndex -> {
-                        if (mLastItem == null) {
-                            mLastItem = mPagerAdapter.settingsIndex
-                        }
-
-                        mBinding.bottomMenu.menu.findItem(R.id.settings).isChecked = true
-                    }
-                    else -> {
-                        mLastItem = null
-
-                        mBinding.bottomMenu.menu.findItem(R.id.my_media).isChecked = true
-                    }
+                mLastItem = position
+                if (position < mPagerAdapter.settingsIndex) {
+                    mLastMediaItem = position
                 }
 
+                updateBottomNavbar(position)
                 refreshCurrentProject()
             }
 
-            override fun onPageScrollStateChanged(state: Int) { }
+            override fun onPageScrollStateChanged(state: Int) {}
         })
 
         mBinding.space.setOnClickListener {
             mBinding.spacesCard.toggle()
-            mBinding.space.setDrawable(if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+            mBinding.space.setDrawable(
+                if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more,
+                Position.End,
+                0.75
+            )
         }
-        mBinding.space.setDrawable(if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more, Position.End, 0.75)
+        mBinding.space.setDrawable(
+            if (mBinding.spacesCard.isVisible) R.drawable.ic_expand_less else R.drawable.ic_expand_more,
+            Position.End,
+            0.75
+        )
 
         mSpaceAdapter = SpaceAdapter(this)
         mBinding.spaces.layoutManager = LinearLayoutManager(this)
@@ -237,51 +239,24 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             addFolder()
         }
 
-        mBinding.bottomMenu.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.my_media -> {
-                    if (currentItem >= mPagerAdapter.settingsIndex) {
-                        currentItem = mLastItem ?: 1
-                    }
-
-                    true
-                }
-                R.id.add -> {
-                    if (getSelectedProject() != null) {
-                        importMedia()
-                    }
-                    else {
-                        if (!Prefs.addFolderHintShown) {
-                            AlertHelper.show(this,
-                                R.string.before_adding_media_create_a_new_folder_first,
-                                R.string.to_get_started_please_create_a_folder,
-                                R.drawable.ic_folder,
-                                buttons = listOf(
-                                    AlertHelper.positiveButton(R.string.add_a_folder) { _, _ ->
-                                        Prefs.addFolderHintShown = true
-
-                                        addFolder()
-                                    },
-                                    AlertHelper.negativeButton(R.string.lbl_Cancel))
-                            )
-                        }
-                        else {
-                            addFolder()
-                        }
-                    }
-
-                    true
-                }
-                R.id.settings -> {
-                    if (currentItem != mPagerAdapter.settingsIndex) {
-                        mLastItem = currentItem
-                    }
-                    currentItem = mPagerAdapter.settingsIndex
-
-                    true
-                }
-                else -> false
-            }
+        mBinding.myMediaButton.setOnClickListener {
+            currentItem = mLastMediaItem
+        }
+        mBinding.myMediaLabel.setOnClickListener {
+            // perform click + play ripple animation
+            mBinding.myMediaButton.isPressed = true
+            mBinding.myMediaButton.isPressed = false
+            mBinding.myMediaButton.performClick()
+        }
+        mBinding.addButton.setOnClickListener { addMediaClicked() }
+        mBinding.settingsButton.setOnClickListener {
+            currentItem = mPagerAdapter.settingsIndex
+        }
+        mBinding.settingsLabel.setOnClickListener {
+            // perform click + play ripple animation
+            mBinding.settingsButton.isPressed = true
+            mBinding.settingsButton.isPressed = false
+            mBinding.settingsButton.performClick()
         }
     }
 
@@ -300,7 +275,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
 
-        refreshSpace()
+        if (mLastItem == mPagerAdapter.settingsIndex) {
+            // display settings in when returning from deeper setting activities
+            currentItem = mLastItem
+        } else {
+            refreshSpace()
+        }
 
         if (mSpace?.host.isNullOrEmpty()) {
             startActivity(Intent(this, Onboarding23Activity::class.java))
@@ -356,8 +336,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
                 if (mBinding.root.isDrawerOpen(mBinding.folderBar)) {
                     mBinding.root.closeDrawer(mBinding.folderBar)
-                }
-                else {
+                } else {
                     mBinding.root.openDrawer(mBinding.folderBar)
                 }
             }
@@ -377,11 +356,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mSpace = currentSpace
 
         if (currentSpace != null) {
-            mBinding.space.setDrawable(currentSpace.getAvatar(this)
-                ?.scaled(32, this), Position.Start, tint = false)
+            mBinding.space.setDrawable(
+                currentSpace.getAvatar(this)
+                    ?.scaled(32, this), Position.Start, tint = false
+            )
             mBinding.space.text = currentSpace.friendlyName
-        }
-        else {
+        } else {
             mBinding.space.setDrawable(R.drawable.avatar_default, Position.Start, tint = false)
             mBinding.space.text = getString(R.string.app_name)
         }
@@ -422,8 +402,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 project.collections.map { it.media.count() }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolderCount.show()
-        }
-        else {
+        } else {
             mBinding.currentFolderIcon.cloak()
             mBinding.currentFolderName.cloak()
             mBinding.currentFolderCount.cloak()
@@ -435,14 +414,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private fun updateMenu() {
         val item = mMenuUpload ?: return
 
-        val uploadCount = Media.getByStatus(listOf(Media.Status.Uploading, Media.Status.Queued),
-            Media.ORDER_PRIORITY).size
+        val uploadCount = Media.getByStatus(
+            listOf(Media.Status.Uploading, Media.Status.Queued),
+            Media.ORDER_PRIORITY
+        ).size
 
         if (uploadCount > 0) {
             item.icon = BadgeDrawable(this).setCount("$uploadCount")
             item.isVisible = true
-        }
-        else {
+        } else {
             item.isVisible = false
         }
     }
@@ -450,7 +430,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private fun importSharedMedia(data: Intent?) {
         if (data?.action != Intent.ACTION_SEND) return
 
-        val uri = data.data ?: if ((data.clipData?.itemCount ?: 0) > 0) data.clipData?.getItemAt(0)?.uri else null
+        val uri = data.data ?: if ((data.clipData?.itemCount
+                ?: 0) > 0
+        ) data.clipData?.getItemAt(0)?.uri else null
         val path = uri?.path ?: return
 
         if (path.contains(packageName)) return
@@ -493,11 +475,11 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         try {
             val imported = Utility.writeStreamToFile(
-                contentResolver.openInputStream(uri), fileImport)
+                contentResolver.openInputStream(uri), fileImport
+            )
 
             if (!imported) return null
-        }
-        catch (e: FileNotFoundException) {
+        } catch (e: FileNotFoundException) {
             Timber.e(e)
 
             return null
@@ -526,8 +508,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         if (fileSource?.exists() == true) {
             createDate = Date(fileSource.lastModified())
             media.contentLength = fileSource.length()
-        }
-        else {
+        } else {
             media.contentLength = fileImport?.length() ?: 0
         }
 
@@ -547,7 +528,13 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun importMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (needAskForPermission(arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO))) {
+            if (needAskForPermission(
+                    arrayOf(
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_MEDIA_VIDEO
+                    )
+                )
+            ) {
                 return
             }
         }
@@ -570,7 +557,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         var needAsk = false
 
         for (permission in permissions) {
-            needAsk = ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
+            needAsk = ContextCompat.checkSelfPermission(
+                this,
+                permission
+            ) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 
             if (needAsk) break
@@ -607,14 +597,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                         // The user chose not to take the recovery action.
                         showAlertIcon()
                     }
-                }
-                catch (e: IllegalStateException) {
+                } catch (e: IllegalStateException) {
                     // Ignore. The user is rummaging around in some menu.
                     // They cannot use the app, because the don't have Google stuff installed.
                     // They probably have already seen this dialog.
                 }
-            }
-            else {
+            } else {
                 showAlertIcon()
             }
         }
@@ -622,7 +610,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun showAlertIcon() {
         mBinding.alertIcon.show()
-        TooltipCompat.setTooltipText(mBinding.alertIcon, getString(R.string.unsecured_internet_connection))
+        TooltipCompat.setTooltipText(
+            mBinding.alertIcon,
+            getString(R.string.unsecured_internet_connection)
+        )
     }
 
     /**
@@ -675,5 +666,40 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     override fun getSelectedSpace(): Space? {
         return mSpace
+    }
+
+    private fun addMediaClicked() {
+        if (getSelectedProject() != null) {
+            importMedia()
+        } else {
+            if (!Prefs.addFolderHintShown) {
+                AlertHelper.show(
+                    this,
+                    R.string.before_adding_media_create_a_new_folder_first,
+                    R.string.to_get_started_please_create_a_folder,
+                    R.drawable.ic_folder,
+                    buttons = listOf(
+                        AlertHelper.positiveButton(R.string.add_a_folder) { _, _ ->
+                            Prefs.addFolderHintShown = true
+
+                            addFolder()
+                        },
+                        AlertHelper.negativeButton(R.string.lbl_Cancel)
+                    )
+                )
+            } else {
+                addFolder()
+            }
+        }
+    }
+
+    private fun updateBottomNavbar(position: Int) {
+        if (position == mPagerAdapter.settingsIndex) {
+            mBinding.myMediaButton.setIconResource(R.drawable.ic_home)
+            mBinding.settingsButton.setIconResource(R.drawable.ic_settings_filled)
+        } else {
+            mBinding.myMediaButton.setIconResource(R.drawable.ic_home_filled)
+            mBinding.settingsButton.setIconResource(R.drawable.ic_settings)
+        }
     }
 }
