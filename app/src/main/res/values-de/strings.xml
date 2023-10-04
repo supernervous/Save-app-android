@@ -13,29 +13,13 @@
     <string name="lblSave">Speichern</string>
     <string name="default_tags">OpenArchive</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Navigationsleiste öffnen</string>
-    <string name="navigation_drawer_close">Navigationsleiste schließen</string>
-    <string name="action_example">Beispielaktion</string>
     <string name="action_settings">Einstellungen</string>
-
-    <string name="drawer_home">Pos1</string>
-    <string name="drawer_uploads">Uploads</string>
-    <string name="drawer_logout">Abmelden</string>
-    <string name="drawer_about">Infos</string>
-    <string name="drawer_settings">Einstellungen</string>
-    <string name="action_new_project">Neues Projekt</string>
-
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Import</string>
-    <string name="capture_photo">Foto</string>
-    <string name="capture_video">Video</string>
-    <string name="capture_audio">Audio</string>
-
     <!-- Server -->
     <string name="lbl_Yes">Ja</string>
     <string name="lbl_Cancel">Abbrechen</string>
@@ -46,6 +30,15 @@
     <string name="lbl_cancelled">Storniert</string>
     <string name="lbl_success">Fertig</string>
     <string name="lbl_continue">Weiter</string>
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Jedem Veränderung und Teilen erlauben?</string>
+    <string name="info_license_sharealike">Verlange das Teilen abgeleiteter Arbeit?</string>
+    <string name="info_license_comm">Erlaube kommerzielle Nutzung?</string>
 
     <string name="menu_delete">Medien entfernen</string>
 
@@ -69,18 +62,16 @@
     <string name="status_public">Öffentlich</string>
     <string name="status_uploading">Hochladevorgang</string>
     <string name="prefs_networking_title">Netzwerk</string>
+    <string name="prefs_prohibit_screenshots_title">Bildschirmfotos blockieren</string>
     <string name="prefs_nearby_title">In der Nähe</string>
 
-    <string name="prefs_user_interface_title">Darstellung</string>
-    <string name="prefs_theme_title">Stil</string>
-    <string name="prefs_theme_summary">Verändere, wie Safe aussieht.</string>
-    <string name="prefs_theme_system">Systemgesteuert</string>
+    <string name="prefs_theme_title">Aussehen</string>
     <string name="prefs_theme_light">Hell</string>
     <string name="prefs_theme_dark">Dunkel</string>
     <string name="prefs_data_title">Metadaten</string>
     <string name="prefs_use_proofmode_title">Aktiviere ProofMode</string>
     <string name="prefs_use_proofmode_summary">Erfasse zusätzliche Metadaten und beglaubige alle Medien.</string>
-    <string name="prefs_share_proofmode_title">ProofMode-Identität</string>
+
     <string name="prefs_share_proofmode_summary">Teile öffentlichen ProofMode Schlüssel</string>
 
 
@@ -98,15 +89,14 @@
     <string name="error_incorrect_username_or_password">Benutzername oder Passwort falsch</string>
     <string name="error_field_required">Dieses Feld darf nicht leer sein</string>
     <string name="setup_nearby">In der Nähe</string>
+    <string name="onboarding_intro">Teilen\nArchivieren\nVerifizieren\nVerschlüsseln</string>
     <string name="title_welcome">Willkommen</string>
     <string name="status_uploaded">Hochgeladen</string>
     <string name="header_projects">Projekteinstellungen</string>
 
     <string name="action_data_use">Datennutzung</string>
-    <string name="action_privacy">Privatsphäre</string>
+    <string name="action_privacy">Datenschutzbestimmungen</string>
     <string name="action_about">Über %s</string>
-    <string name="add_a_folder">Ordner hinzufügen</string>
-    <string name="browse_existing_folders">Benütze existierenden Ordner</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Hochladen…</string>
@@ -118,14 +108,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Hinzufügen</string>
-    <string name="tap_to_add">Den Button unten verwenden um Medien hinzuzufügen.</string>
-    <string name="connect_your_space">Verbinde Deinen Space</string>
-    <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen.</string>
     <string name="app_tag_line">Sichere Bewahrung mobiler Medien</string>
     <string name="action_next">Weiter</string>
+    <string name="action_done">Fertig</string>
     <string name="status_flagged">Besonderer Inhalt</string>
-    <string name="select_where_to_store_your_media">Richte ein, wo Deine Medien gespeichert werden sollen.</string>
-    <string name="create_a_new_folder">Neuen Ordner erstellen</string>
     <string name="menu_edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
     <string name="remove_from_app">Aus App entfernen</string>
@@ -135,14 +121,13 @@
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>
     <string name="action_acquire_keys">Schlüssel holen</string>
-    <string name="new_folder">Neuer Ordner</string>
+    <string name="new_folder">Neues Verzeichnis</string>
     <string name="open_link">Link öffnen</string>
     <string name="save_by_openarchive">von OpenArchive</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadaten</string>
     <string name="networking">Netzwerk</string>
-    <string name="user_interface">Darstellung</string>
     <string name="remove_from_app_media">Medien entfernen</string>
     <string name="popup_flag_title">Besonderen Inhalt markieren</string>
     <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>
@@ -151,27 +136,25 @@
     <string name="popup_batch_desc">Um mehrere Elemente auf einmal zu editieren, die Elemente lange drücken.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Erlaube Creative Commons für alle Medien in diesem Ordner</string>
-
     <string name="crash_dialog_title">Absturz-Berichterstattung</string>
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="action_install">Installieren</string>
     <string name="action_enable">Aktivieren</string>
     <string name="action_start">Start</string>
-    <string name="version__">Version %s</string>
-    <string name="prefs_proofmode_key_encryption_title_all">Sichere den ProofMode-Schlüssel mit Biometrie oder dem Gerätepasswort ab</string>
-    <string name="prefs_proofmode_key_encryption_title_biometrics">Sichere den ProofMode-Schlüssel mit Biometrie ab</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
     <string name="prefs_proofmode_key_encryption_summary">Wenn Du das änderst, wird ein neuer Schlüssel generiert! Wenn Du den Vorherigen exportiert und signiert hast, wirst Du das mit dem Neuen wiederholen müssen.</string>
-    <string name="biometrics_title">ProofMode-Schlüssel entsperren</string>
-    <string name="create_folder_name">Erstelle Ordnernamen</string>
-    <string name="folder_name">Ordnername</string>
+    <string name="folders">Ordner</string>
     <string name="create">Erstellen</string>
-    <string name="browse_existing">Existierende Ordner</string>
     <string name="add">Hinzufügen</string>
-    <string name="no_more_folders">Keine (weiteren) Ordner</string>
-    <string name="private_webdav_server">Privater (WebDAV) Server</string>
-    <string name="send_directly_to_a_private_server">Schicke Daten direkt auf einen privaten Server.</string>
-    <string name="upload_to_dropbox">Zu Dropbox hochladen</string>
-
-</resources>
+    <string name="upload_to_dropbox">Auf Dropbox hochladen</string>
+    <string name="authenticate">Authentifizieren</string>
+    <string name="back">Zurück</string>
+    <string name="account">Konto</string>
+    <string name="general">Allgemein</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Medien nur über WLAN hochladen</string>
+    <string name="security">Sicherheit</string>
+    <string name="next">Weiter</string>
+    <string name="secure_mobile_media_preservation">Sichere Bewahrung mobiler Medien</string>
+    <string name="get_started">Los gehts</string>
+    <string name="refresh">Aktualisieren</string>
+    <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
+    </resources>

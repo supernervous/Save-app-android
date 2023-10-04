@@ -33,19 +33,7 @@
     <string name="alert_delete_media">Ortam uygulamadan silinsin mi?</string>
     <string name="alert_lbl_delete_media">Ortamı sil</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
-    <string name="navigation_drawer_close">Gezinme çekmecesini kapat</string>
-    <string name="action_example">Örnek işlem</string>
     <string name="action_settings">Ayarlar</string>
-
-    <string name="drawer_home">Giriş</string>
-    <string name="drawer_uploads">Yüklemeler</string>
-    <string name="drawer_logout">Oturumu kapat</string>
-    <string name="drawer_about">Hakkında</string>
-    <string name="drawer_settings">Ayarlar</string>
-    <string name="drawer_accounts">Alanlar</string>
-    <string name="action_new_project">Yeni proje</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
@@ -56,10 +44,6 @@
     <!-- MainFragment -->
     <string name="import_btn">İçe aktar</string>
     <string name="capture_btn">Yakala</string>
-
-    <string name="capture_photo">Fotoğraf</string>
-    <string name="capture_video">Görüntü</string>
-    <string name="capture_audio">Ses</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Ana görsel</string>
@@ -148,13 +132,18 @@
     <string name="prefs_use_tor_title">Onion yöneltme kullanılsın</string>
     <string name="prefs_use_tor_summary">Yalnızca Tor ağı ile aktarılsın</string>
     <string name="prefs_install_tor_summary">Etkinleştirmek için Orbot kurun</string>
+    <string name="prefs_prohibit_screenshots_title">Ekran görüntüsü alınmasını engelle</string>
     <string name="prefs_upload_wifi_only_title">Yalnızca Wi-Fi ile yüklensin</string>
     <string name="prefs_upload_wifi_only_summary">Ortamı yüklemek için Wi-Fi beklensin</string>
     <string name="prefs_nearby_title">Yakındaki</string>
 
+    <string name="prefs_user_interface_title">Sunum</string>
+    <string name="prefs_theme_title">Biçim</string>
+    <string name="prefs_theme_light">Açık</string>
+    <string name="prefs_theme_dark">Koyu</string>
     <string name="prefs_data_title">Üst veriler</string>
     <string name="prefs_use_proofmode_title">ProofMode kullanılsın</string>
-    <string name="prefs_use_proofmode_summary">Ek üst verileri al ve tüm ortamları onayla</string>
+    <string name="prefs_use_proofmode_summary">Ek üst verileri alın ve tüm ortamları onaylayın.</string>
 
     <string name="prefs_share_proofmode_title">ProofMode kimliği</string>
     <string name="prefs_share_proofmode_summary">ProofMode herkese açık anahtarını paylaş</string>
@@ -205,8 +194,7 @@
     <string name="header_projects">Proje ayarları</string>
 
     <string name="action_data_use">Veri kullanımı</string>
-    <string name="action_privacy">Gizlilik</string>
-    <string name="action_about">Hakkında %s</string>
+    <string name="action_privacy">Gizlilik ilkesi</string>
     <string name="title_activity_new_project">Yeni_proje_işlemi</string>
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
@@ -225,7 +213,6 @@
     <string name="button_sure">Ekle(%1$d)</string>
     <string name="title_activity_create_new_project">Yeni_proje_oluşturma_işlemi</string>
     <string name="title_activity_browser_projects">Projelere_göz_atma_işlemi</string>
-    <string name="tap_to_add">Ortam eklemek için aşağıdaki düğmeye dokunun.</string>
     <string name="oa_title_1">Güvenli bir yere kaydedin</string>
     <string name="oa_subtitle_1">Aygıtınızdaki ortamları güvenli bir sunucuya ya da Internet Archieve üzerine yükleyin</string>
     <string name="oa_title_2">Düzenli olun</string>
@@ -234,16 +221,11 @@
     <string name="oa_subtitle_3">Her ortam için notları, konum ve kişi bilgilerini tutun</string>
     <string name="oa_title_4">Özgün olduğundan emin olun</string>
     <string name="oa_subtitle_4">\"Save\" kimlik doğrulama bilgilerinizi ek üst veriler olarak kaydeder. Bu veriler daha sonra gözetim zincirleri ve doğrulama iş akışlarına yardımcı olur.</string>
-    <string name="connect_your_space">Alanınızla bağlantı kurun</string>
-    <string name="set_up_where_you_want_your_media_to_be_stored">Ortamlarınızın saklanacağı yeri seçin</string>
-    <string name="send_directly_to_a_private_server">Doğrudan özel bir sunucuya gönderilsin</string>
-    <string name="upload_to_the_internet_archive">Internet Archive üzerine yüklensin</string>
-    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud">\"Save\" yalnızca Nextcloud gibi WebDAV uyumlu sunucularla bağlan tı kurabilir.</string>
     <string name="app_tag_line">Güvenli mobil ortam koruma</string>
     <string name="action_get_started"><![CDATA[Başlayalım >]]></string>
     <string name="action_next">Sonraki</string>
+    <string name="action_done">Tamam</string>
     <string name="status_flagged">Önemli içerik</string>
-    <string name="select_where_to_store_your_media">Ortamlarınızın saklanacağı yeri seçin.</string>
     <string name="prompt_arrow"><![CDATA[>]]></string>
     <string name="menu_edit">Düzenle</string>
     <string name="menu_done">Tamam</string>
@@ -263,20 +245,17 @@
     <string name="IA_login_error">Lütfen geçerli Internet Archive kimlik doğrulama bilgileri ile oturum açın.</string>
     <string name="access_key">Erişim anahtarı</string>
     <string name="secret_key">Gizli anahtar</string>
-    <string name="info_archiveorg_keys">Save yükleme yapabilmek için Internet Archive hesabınızın API anahtarlarını bilmelidir</string>
     <string name="action_acquire_keys">Anahtarları al</string>
-    <string name="please_do_not_include_special_characters_in_the_name">Lütfen ad içinde özel karakterler kullanmayın</string>
+    <string name="new_folder">Yeni klasör</string>
     <string name="confirm_remove_space">Bu alanı uygulamadan kaldırmak istediğinize emin misiniz?</string>
     <string name="open_link">Bağlantıyı aç</string>
     <string name="share_link">Bağlantıyı paylaş</string>
-    <string name="folder_name_already_exists">Proje adı zaten var</string>
     <string name="save_by_openarchive">OpenArchive tarafından</string>
     <string name="action_edit">Düzenle</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Üst veriler</string>
     <string name="networking">Ağ yapılandırması</string>
-    <string name="pref_nextcloud_title">NextCloud paketleri kullanılsın</string>
-    <string name="pref_nextcloud_subject">Bir NextCloud sunucusuna bağlanıyorsanız, daha sorunsuz yüklemeler yapabilirsiniz</string>
+    <string name="user_interface">Sunum</string>
 
     <string name="remove_from_app_media">Ortamı sil</string>
     <string name="confirm_remove_media">Bu ortamı silmek istediğinize emin misiniz?</string>
@@ -292,13 +271,10 @@
 
     <string name="popup_remove_title">Ortamı Save üzerinden sil</string>
     <string name="popup_remove_desc">Öge yalnızSave uygulamasından silinecek. Sunucu ve fotoğraflar içinde durmaya devam edecek.</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Bu projedeki ortamlara Creative Commons kullanma izni ver</string>
-
     <string name="crash_dialog_text">Sorunları paylaşarak gelişmemize yardımcı olun</string>
     <string name="crash_dialog_title">Sorun bildirimleri</string>
     <string name="crash_dialog_comment_prompt">Sorun çıktığında ne yapıyordunuz?</string>
 
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="onboarding_archive_over_tor">Tor üzerinden Save</string>
     <string name="onboarding_archive_over_tor_install_orbot">Gelişmiş ağ güvenliğini etkinleştirmek için Orbot: Android için Tor uygulamasını kurun.</string>
     <string name="archive_over_tor_enable_orbot">Gelişmiş ağ güvenliğini etkinleştirmek için, şimdi ya da daha sonra ayarlar bölümünden \"Orbot kullanılsın\" seçeneğini etkinleştirin.</string>
@@ -313,9 +289,6 @@
     <string name="tor_connection_timeout">Orbot/Tor bağlantısı kurulamadı: ZAMAN AŞIMI</string>
     <string name="tor_connection_invalid">Orbot/Tor bağlantısı kurulamadı: GEÇERSİZ</string>
     <string name="unsecured_internet_connection">Güvenli olmayan bir internet bağlantısı algılandı</string>
-    <string name="version__">Sürüm %s</string>
-
-
     <!-- Clean Insights measurement -->
     <string name="clean_insight_consent_prompt">Yüklemelerin neden bazen yapılamadığını anlamaya çalışıyoruz ve bazı sınırlı, anonim ölçümler yapmak istiyoruz.</string>
     <string name="ci_title">Save uygulamasını geliştirmemize yardımcı olun</string>
@@ -325,5 +298,20 @@
     <string name="dropbox_id">Dropbox kimliği:</string>
     <string name="waiting_for_upload">Yükleme bekleniyor…</string>
     <string name="uploading_now">Yükleniyor…</string>
-    <string name="add_another_account">Yeni alan ekle</string>
-</resources>
+    <string name="prefs_proofmode_key_encryption_title_passcode">ProofMode anahtarını aygıt parolası ile koruyun</string>
+    <string name="prefs_proofmode_key_encryption_summary">Bunu değiştirmek yeni bir anahtar oluşturur! Bunu daha önce dışa aktarıp imzaladıysanız, yenisiyle yeniden yapmanız gerekir.</string>
+    <string name="create">Oluştur</string>
+    <string name="add">Ekle</string>
+    <string name="private_server">Özel sunucu</string>
+    <string name="upload_to_dropbox">Dropbox üzerine yükle</string>
+    <string name="authenticate">Doğrula</string>
+    <string name="back">Geri</string>
+    <string name="account">Hesap</string>
+    <string name="general">Genel</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Ortamlar yalnızca Wi-Fi bağlantısı varken yüklensin</string>
+    <string name="security">Güvenlik</string>
+    <string name="next">Sonraki</string>
+    <string name="secure_mobile_media_preservation">Güvenli mobil ortam koruma</string>
+    <string name="get_started">Kullanmaya başlayın</string>
+    <string name="refresh">Yenile</string>
+    </resources>

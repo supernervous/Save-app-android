@@ -13,27 +13,13 @@
     <string name="lblSave">Salva</string>
     <string name="default_tags">OpenArchive</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Apri Drawer</string>
-    <string name="navigation_drawer_close">Chiudi drawer</string>
     <string name="action_settings">Impostazioni</string>
-
-    <string name="drawer_home">Home</string>
-    <string name="drawer_uploads">Upload</string>
-    <string name="drawer_logout">Log out</string>
-    <string name="drawer_about">Informazioni</string>
-    <string name="drawer_settings">Impostazioni</string>
-    <string name="action_new_project">Nuovo Progetto</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Archivio Internet</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importa</string>
-    <string name="capture_photo">Foto</string>
-    <string name="capture_video">Video</string>
-    <string name="capture_audio">Audio</string>
-
     <!-- Server -->
     <string name="lbl_Yes">Sì</string>
     <string name="lbl_Cancel">Annulla</string>
@@ -44,7 +30,6 @@
     <string name="lbl_cancelled">Cancellato</string>
     <string name="lbl_success">Fatto</string>
     <string name="lbl_continue">Continua</string>
-
     <string name="menu_delete">Rimuovi media</string>
 
     <string name="hint_title">Titolo</string>
@@ -66,8 +51,13 @@
     <string name="status_error">Errore</string>
     <string name="status_public">Pubblico</string>
     <string name="status_uploading">Caricando</string>
+    <string name="prefs_prohibit_screenshots_title">Blocca acquisizione schermate</string>
     <string name="prefs_nearby_title">Nelle vicinanze</string>
 
+    <string name="prefs_user_interface_title">Presentazione</string>
+    <string name="prefs_theme_title">Stile</string>
+    <string name="prefs_theme_light">Chiaro</string>
+    <string name="prefs_theme_dark">Scuro</string>
     <string name="prefs_data_title">Metadati</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="menu_share">Condividi</string>
@@ -88,8 +78,7 @@
     <string name="header_projects">Impostazioni Progetto</string>
 
     <string name="action_data_use">Utilizzo dati</string>
-    <string name="action_privacy">Privacy</string>
-    <string name="action_about">Informazioni %s</string>
+    <string name="action_privacy">Privacy Policy</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Upload</string>
     <string name="title_uploading">Caricamento…</string>
@@ -101,12 +90,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Aggiungi</string>
-    <string name="connect_your_space">Connetti Tuo Spazio</string>
-    <string name="upload_to_the_internet_archive">Carica su Internet Archive</string>
     <string name="app_tag_line">Preservazione Sicura Media Mobile</string>
     <string name="action_next">Successivo</string>
+    <string name="action_done">Fatto</string>
     <string name="status_flagged">Contenuto Significativo</string>
-    <string name="select_where_to_store_your_media">Imposta dove archiviare i tuoi media</string>
     <string name="menu_edit">Modifica</string>
     <string name="menu_done">Fatto</string>
     <string name="remove_from_app">Rimuovi dall\' App</string>
@@ -116,11 +103,14 @@
     <string name="access_key">Chiave d\'accesso</string>
     <string name="secret_key">Chiave Segreta</string>
     <string name="action_acquire_keys">Acquisisci Chiavi</string>
+    <string name="new_folder">Nuova cartella</string>
     <string name="open_link">Apri Link</string>
     <string name="save_by_openarchive">da OpenArchive</string>
     <string name="action_edit">Modifica</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadati</string>
+    <string name="user_interface">Presentazione</string>
+
     <string name="remove_from_app_media">Rimuovi media</string>
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>
     <string name="popup_flag_desc">Quando segnali un elemento, è instradato in una sottocartella all\'interno della cartella di progetto scelto nel server privato.</string>
@@ -129,10 +119,22 @@
     <string name="popup_batch_desc">Per modificare elementi multipli, tocca e tieni premuto</string>
 
     <string name="popup_ia_title">Archivio Internet</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Consenti l\'uso dei Creative Commons per tutti i media di questo progetto</string>
-
     <string name="crash_dialog_title">Segnalazione crash</string>
     <string name="action_install">Installa</string>
     <string name="action_enable">Abilita</string>
     <string name="action_start">Avvia</string>
+    <string name="folders">cartelle</string>
+    <string name="create">Crea</string>
+    <string name="add">Aggiungi</string>
+    <string name="upload_to_dropbox">Carica su Dropbox</string>
+    <string name="authenticate">Autenticato</string>
+    <string name="back">Indietro</string>
+    <string name="account">Account</string>
+    <string name="general">Generale</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Carica i media solo quando connesso ad una rete Wi-Fi</string>
+    <string name="security">Sicurezza</string>
+    <string name="next">Successivo</string>
+    <string name="secure_mobile_media_preservation">Preservazione Sicura Media Mobile</string>
+    <string name="get_started">Per incominciare</string>
+    <string name="refresh">Aggiorna</string>
     </resources>

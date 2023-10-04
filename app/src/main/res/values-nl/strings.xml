@@ -9,25 +9,11 @@
     <!-- General -->
     <string name="menu_item_publish">Publiceer</string>
     <string name="lblSave">Opslaan</string>
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Navigatiemenu openen</string>
-    <string name="navigation_drawer_close">Navigatiemenu sluiten</string>
-    <string name="action_example">Voorbeeld</string>
     <string name="action_settings">Instellingen</string>
-
-    <string name="drawer_home">Home</string>
-    <string name="drawer_uploads">Uploads</string>
-    <string name="drawer_logout">Uitloggen</string>
-    <string name="drawer_about">Over</string>
-    <string name="drawer_settings">Instellingen</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importeer</string>
     <string name="capture_btn">Leg vast</string>
-
-    <string name="capture_photo">Foto</string>
-    <string name="capture_video">Film/Beeld</string>
-    <string name="capture_audio">Geluid</string>
 
     <!-- Server -->
     <string name="lbl_Yes">Ja</string>
@@ -40,7 +26,6 @@
     <string name="lbl_success">Gereed</string>
     <string name="lbl_continue">Ga verder</string>
     <string name="upload_to_internet_archive">Uploaden naar het Internet Archief</string>
-
     <string name="hint_title">Titel</string>
     <string name="hint_author">Auteur</string>
     <string name="answer_yes">Ja</string>
@@ -55,8 +40,13 @@
     <string name="status_waiting">Wachten</string>
     <string name="status_error">Fout</string>
     <string name="status_public">Publiek</string>
+    <string name="prefs_prohibit_screenshots_title">Blokkeer screenshots</string>
     <string name="prefs_nearby_title">Dichtbij</string>
 
+    <string name="prefs_user_interface_title">Presentatie</string>
+    <string name="prefs_theme_title">Stijl</string>
+    <string name="prefs_theme_light">Licht</string>
+    <string name="prefs_theme_dark">Donker</string>
     <string name="prefs_data_title">Metadata</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="menu_share">Delen</string>
@@ -75,8 +65,7 @@
     <string name="title_welcome">Welkom</string>
     <string name="status_uploaded">Geüpload</string>
     <string name="action_data_use">Gegevensgebruik</string>
-    <string name="action_privacy">Privacy</string>
-    <string name="action_about">Over %s</string>
+    <string name="action_privacy">Privacybeleid</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Uploaden…</string>
@@ -89,16 +78,31 @@
 
     <string name="button_sure_default">Toevoegen</string>
     <string name="action_next">Volgende</string>
+    <string name="action_done">Gereed</string>
     <string name="menu_edit">Bewerken</string>
     <string name="menu_done">Gereed</string>
     <string name="action_remove">Verwijderen</string>
     <string name="secret_key">Geheime Sleutel</string>
+    <string name="new_folder">Nieuwe map</string>
     <string name="open_link">Open link</string>
     <string name="action_edit">Bewerken</string>
     <string name="metadata">Metadata</string>
+    <string name="user_interface">Presentatie</string>
+
     <string name="crash_dialog_title">Crashrapportage</string>
     <string name="action_install">Installeren</string>
     <string name="action_enable">Inschakelen</string>
     <string name="action_start">Start</string>
     <string name="login_activity_logging_message">Inloggen…</string>
+    <string name="folders">Mappen</string>
+    <string name="create">Maken</string>
+    <string name="add">Toevoegen</string>
+    <string name="authenticate">Authenticeren</string>
+    <string name="back">Terug</string>
+    <string name="account">Account</string>
+    <string name="general">Algemeen</string>
+    <string name="security">Beveiliging</string>
+    <string name="next">Volgende</string>
+    <string name="get_started">Beginnen</string>
+    <string name="refresh">Vernieuwen</string>
     </resources>

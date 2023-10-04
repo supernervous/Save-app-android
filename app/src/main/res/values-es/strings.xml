@@ -23,19 +23,7 @@
 
     <string name="alert_lbl_delete_media">Eliminar Multimedia</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Abrir casilla de navegación</string>
-    <string name="navigation_drawer_close">Cerrar casilla de navegación</string>
-    <string name="action_example">Acción de ejemplo</string>
     <string name="action_settings">Ajustes</string>
-
-    <string name="drawer_home">Inicio</string>
-    <string name="drawer_uploads">Subidos</string>
-    <string name="drawer_logout">Cerrar sesión</string>
-    <string name="drawer_about">Acerca de</string>
-    <string name="drawer_settings">Ajustes</string>
-    <string name="action_new_project">Nuevo Proyecto</string>
-
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
@@ -43,10 +31,6 @@
     <!-- MainFragment -->
     <string name="import_btn">Importar</string>
     <string name="capture_btn">Capturar</string>
-
-    <string name="capture_photo">Foto</string>
-    <string name="capture_video">Vídeo</string>
-    <string name="capture_audio">Audio</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Imagen principal</string>
@@ -111,8 +95,13 @@
     <string name="your_media_is_available">Tu multimedia está disponible en</string>
 
     <string name="prefs_networking_title">Conectando</string>
+    <string name="prefs_prohibit_screenshots_title">Bloquear capturas de pantalla</string>
     <string name="prefs_nearby_title">Cercanos</string>
 
+    <string name="prefs_user_interface_title">Presentación</string>
+    <string name="prefs_theme_title">Estilo</string>
+    <string name="prefs_theme_light">Claro</string>
+    <string name="prefs_theme_dark">Oscuro</string>
     <string name="prefs_data_title">Metadatos</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="prefs_bt_summary">Usar Bluetooth para compartir con cercanos</string>
@@ -137,8 +126,7 @@
     <string name="header_projects">Configuraciones del proyecto</string>
 
     <string name="action_data_use">Uso de datos</string>
-    <string name="action_privacy">Privacidad</string>
-    <string name="action_about">Acerca de %s</string>
+    <string name="action_privacy">Política de privacidad</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Subidas</string>
     <string name="title_uploading">Subiendo…</string>
@@ -150,12 +138,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Añadir</string>
-    <string name="connect_your_space">Conecte Su Espacio</string>
-    <string name="upload_to_the_internet_archive">Subir a Internet Archive</string>
     <string name="app_tag_line">Preservación segura de medios móvil</string>
     <string name="action_next">Seguir</string>
+    <string name="action_done">Listo</string>
     <string name="status_flagged">Contenido Importante</string>
-    <string name="select_where_to_store_your_media">Configura donde quieres que se guarden tus medios.</string>
     <string name="menu_edit">Editar</string>
     <string name="menu_done">Listo</string>
     <string name="remove_from_app">Eliminar de la aplicación</string>
@@ -165,11 +151,14 @@
     <string name="access_key">Clave de acceso</string>
     <string name="secret_key">Clave secreta</string>
     <string name="action_acquire_keys">Adquirir claves</string>
+    <string name="new_folder">Nuevo directorio</string>
     <string name="open_link">Abrir enlace</string>
     <string name="save_by_openarchive">por OpenArchive</string>
     <string name="action_edit">Editar</string>
     <string name="metadata">Metadatos</string>
     <string name="networking">Red</string>
+    <string name="user_interface">Presentación</string>
+
     <string name="remove_from_app_media">Eliminar Media</string>
     <string name="popup_flag_title">Marcar Contenido Importante</string>
     <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
@@ -178,11 +167,23 @@
     <string name="popup_batch_desc">Para editar múltiples elementos, debe pulsar y mantener presionado cada uno.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Permitir el uso de Creative Commons para todos los medios en este proyecto</string>
-
     <string name="crash_dialog_title">Informes de error</string>
     <string name="action_install">Instalar</string>
     <string name="action_enable">Habilitar</string>
     <string name="action_start">Inicio</string>
     <string name="login_activity_logging_message">Iniciando sesión…</string>
+    <string name="folders">Carpetas</string>
+    <string name="create">Crear</string>
+    <string name="add">Añadir</string>
+    <string name="upload_to_dropbox">Subir a Dropbox</string>
+    <string name="authenticate">Autentifíquese</string>
+    <string name="back">Volver</string>
+    <string name="account">Cuenta</string>
+    <string name="general">General</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Solo subir medios cuando estés conectado a Wi-Fi</string>
+    <string name="security">Seguridad</string>
+    <string name="next">Seguir</string>
+    <string name="secure_mobile_media_preservation">Preservación segura de medios móvil</string>
+    <string name="get_started">Comenzar</string>
+    <string name="refresh">Actualizar</string>
     </resources>

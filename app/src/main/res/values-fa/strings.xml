@@ -21,19 +21,7 @@
     <string name="default_title">عنوان من</string>
     <string name="default_tags">آرشیو باز</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">منوی اصلی را باز کن</string>
-    <string name="navigation_drawer_close">منوی اصلی را ببند</string>
-    <string name="action_example">یک مثال</string>
     <string name="action_settings">تنظیمات</string>
-
-    <string name="drawer_home">خانه</string>
-    <string name="drawer_uploads">آپلودها</string>
-    <string name="drawer_logout">خروج</string>
-    <string name="drawer_about">درباره</string>
-    <string name="drawer_settings">تنظیمات</string>
-    <string name="action_new_project">پروژه جدید</string>
-
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">بایگانی اینترنت</string>
@@ -41,10 +29,6 @@
     <!-- MainFragment -->
     <string name="import_btn">وارد کن</string>
     <string name="capture_btn">بگیر</string>
-
-    <string name="capture_photo">عکس</string>
-    <string name="capture_video">ویدیو</string>
-    <string name="capture_audio">صدا</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">عکس اصلی</string>
@@ -104,8 +88,13 @@
     <string name="status_error">خطا</string>
     <string name="status_public">عمومی</string>
     <string name="status_uploading">در حال بارگذاری</string>
+    <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
     <string name="prefs_nearby_title">نزدیکی</string>
 
+    <string name="prefs_user_interface_title">ارائه</string>
+    <string name="prefs_theme_title">سبک نمایش</string>
+    <string name="prefs_theme_light">روشن</string>
+    <string name="prefs_theme_dark">تاریک</string>
     <string name="prefs_data_title">فرا داده</string>
     <string name="prefs_bt_title">بلوتوث</string>
     <string name="menu_share">اشتراک گذاری</string>
@@ -127,7 +116,6 @@
 
     <string name="action_data_use">مصرف داده</string>
     <string name="action_privacy">حریم خصوصی</string>
-    <string name="action_about">%s درباره‌ تور</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">آپلودها</string>
     <string name="title_uploading">بارگذاری.......</string>
@@ -139,12 +127,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">افزودن</string>
-    <string name="connect_your_space">به فضای خود متصل شوید</string>
-    <string name="upload_to_the_internet_archive">در بایگانی اینترنت بارگذاری کنید</string>
     <string name="app_tag_line">حفظ ایمن رسانه‌های موبایل</string>
     <string name="action_next">بعدی</string>
+    <string name="action_done">انجام شد</string>
     <string name="status_flagged">محتوای مهم</string>
-    <string name="select_where_to_store_your_media">جایی که فایل‌های رسانه‌ای شما باید ذخیره شوند را تنظیم کنید.</string>
     <string name="menu_edit">ویرایش</string>
     <string name="menu_done">انجام شد</string>
     <string name="remove_from_app">حذف از برنامه</string>
@@ -154,11 +140,14 @@
     <string name="access_key">کلید دسترسی</string>
     <string name="secret_key">کلید خصوصی</string>
     <string name="action_acquire_keys">به دست آوردن کلیدها</string>
+    <string name="new_folder">New Folder</string>
     <string name="open_link">باز کردن پیوند</string>
     <string name="save_by_openarchive">توسط OpenArchive</string>
     <string name="action_edit">ویرایش</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">فرا داده</string>
+    <string name="user_interface">ارائه</string>
+
     <string name="remove_from_app_media">حذف فایل رسانه‌ای</string>
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
     <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
@@ -167,12 +156,23 @@
     <string name="popup_batch_desc">برای ویرایش چند انتخاب، روی هرکدام ضربه زده و نگه دارید.</string>
 
     <string name="popup_ia_title">بایگانی اینترنت</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">اجازه به استفاده کریتیو کامنز برای تمام رسانه‌های این پروژه</string>
-
     <string name="crash_dialog_title">گزارش خرابی</string>
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="action_install">نصب</string>
     <string name="action_enable">فعال کن</string>
     <string name="action_start">آغاز</string>
     <string name="login_activity_logging_message">در حال ورود…</string>
+    <string name="folders">پوشه ها</string>
+    <string name="create">ایجاد کردن</string>
+    <string name="add">افزودن</string>
+    <string name="upload_to_dropbox">بارگذاری در Dropbox</string>
+    <string name="authenticate">تصدیق کردن</string>
+    <string name="back">برگشت</string>
+    <string name="account">حساب کاربری</string>
+    <string name="general">کلی</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">فایل‌های رسانه‌ای را تنها زمانی که به Wi-Fi متصل هستید، بارگذاری کنید.</string>
+    <string name="security">امنیت</string>
+    <string name="next">بعدی</string>
+    <string name="secure_mobile_media_preservation">حفظ ایمن رسانه‌های موبایل</string>
+    <string name="get_started">شروع کنید</string>
+    <string name="refresh">تازه‌سازی</string>
     </resources>

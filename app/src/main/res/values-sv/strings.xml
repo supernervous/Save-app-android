@@ -9,22 +9,10 @@
     <!-- General -->
     <string name="menu_item_publish">Publicera</string>
     <string name="lblSave">Spara</string>
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Öppna navigeringsfältet</string>
-    <string name="navigation_drawer_close">Stäng navigeringsfältet</string>
     <string name="action_settings">Inställningar</string>
-
-    <string name="drawer_home">Home</string>
-    <string name="drawer_uploads">Uppladdningar</string>
-    <string name="drawer_about">Om</string>
-    <string name="drawer_settings">Inställningar</string>
 
     <!-- MainFragment -->
     <string name="import_btn">Importera</string>
-    <string name="capture_photo">Foto</string>
-    <string name="capture_video">Video</string>
-    <string name="capture_audio">Ljud</string>
-
     <!-- Server -->
     <string name="lbl_Yes">Ja</string>
     <string name="lbl_Cancel">Avbryt</string>
@@ -34,7 +22,6 @@
     <string name="lbl_settings">Inställningar</string>
     <string name="lbl_success">Färdig</string>
     <string name="lbl_continue">Fortsätt</string>
-
     <string name="hint_title">Titel</string>
     <string name="hint_author">Författare</string>
     <string name="answer_yes">Ja</string>
@@ -49,6 +36,10 @@
     <string name="status_waiting">Avvaktar</string>
     <string name="status_error">Fel</string>
     <string name="status_public">Publik</string>
+    <string name="prefs_user_interface_title">Presentation</string>
+    <string name="prefs_theme_title">Stil</string>
+    <string name="prefs_theme_light">Ljust</string>
+    <string name="prefs_theme_dark">Mörkt</string>
     <string name="prefs_data_title">Metadata</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="menu_share">Dela</string>
@@ -63,8 +54,7 @@
     <string name="error_field_required">Detta fält krävs</string>
     <string name="title_welcome">Välkommen</string>
     <string name="action_data_use">Dataanvändning</string>
-    <string name="action_privacy">Sekretess</string>
-    <string name="action_about">Om %s</string>
+    <string name="action_privacy">Integritetspolicy</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Uppladdningar</string>
     <string name="title_activity_batch_media_review">Förhandsgranska</string>
@@ -75,13 +65,27 @@
 
     <string name="button_sure_default">Lägg till</string>
     <string name="action_next">Nästa</string>
+    <string name="action_done">Färdig</string>
     <string name="menu_edit">Ändra</string>
     <string name="menu_done">Färdig</string>
     <string name="action_remove">Ta bort</string>
+    <string name="new_folder">Ny mapp</string>
     <string name="open_link">Öppna länk</string>
     <string name="action_edit">Ändra</string>
     <string name="metadata">Metadata</string>
+    <string name="user_interface">Presentation</string>
+
     <string name="action_install">Installera</string>
     <string name="action_enable">Aktivera</string>
     <string name="action_start">Kör</string>
+    <string name="create">Skapa</string>
+    <string name="add">Lägg till</string>
+    <string name="authenticate">Autentisera</string>
+    <string name="back">Tillbaka</string>
+    <string name="account">Konto</string>
+    <string name="general">Generell</string>
+    <string name="security">Säkerhet</string>
+    <string name="next">Nästa</string>
+    <string name="get_started">Kom igång</string>
+    <string name="refresh">Ladda om sidan</string>
     </resources>

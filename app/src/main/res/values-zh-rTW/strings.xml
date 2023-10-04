@@ -9,23 +9,10 @@
     <!-- General -->
     <string name="menu_item_publish">發布</string>
     <string name="lblSave">儲存</string>
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">開啟導航抽屜</string>
-    <string name="navigation_drawer_close">關閉導航抽屜</string>
     <string name="action_settings">設定</string>
-
-    <string name="drawer_home">Home</string>
-    <string name="drawer_uploads">上傳項目</string>
-    <string name="drawer_logout">登出</string>
-    <string name="drawer_about">關於</string>
-    <string name="drawer_settings">設定</string>
 
     <!-- MainFragment -->
     <string name="import_btn">匯入</string>
-    <string name="capture_photo">相片</string>
-    <string name="capture_video">影片</string>
-    <string name="capture_audio">聲音</string>
-
     <!-- Server -->
     <string name="lbl_Yes">是</string>
     <string name="lbl_Cancel">取消</string>
@@ -35,7 +22,6 @@
     <string name="lbl_settings">設定</string>
     <string name="lbl_success">完成</string>
     <string name="lbl_continue">繼續</string>
-
     <string name="hint_title">標題</string>
     <string name="hint_author">作者</string>
     <string name="answer_yes">是</string>
@@ -51,8 +37,13 @@
     <string name="status_error">錯誤</string>
     <string name="status_public">公共</string>
     <string name="prefs_networking_title">网络</string>
+    <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
     <string name="prefs_nearby_title">鄰近</string>
 
+    <string name="prefs_user_interface_title">呈現</string>
+    <string name="prefs_theme_title">風格</string>
+    <string name="prefs_theme_light">亮色</string>
+    <string name="prefs_theme_dark">深色</string>
     <string name="prefs_data_title">中繼資料</string>
     <string name="prefs_bt_title">藍牙</string>
     <string name="menu_share">分享</string>
@@ -71,8 +62,7 @@
     <string name="title_welcome">歡迎</string>
     <string name="status_uploaded">已经上传</string>
     <string name="action_data_use">流量數據使用</string>
-    <string name="action_privacy">隱私</string>
-    <string name="action_about">關於 %s</string>
+    <string name="action_privacy">隱私政策</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">上傳項目</string>
     <string name="title_activity_batch_media_review">預覧</string>
@@ -83,15 +73,30 @@
 
     <string name="button_sure_default">新增</string>
     <string name="action_next">下一個</string>
+    <string name="action_done">完成</string>
     <string name="menu_edit">編輯</string>
     <string name="menu_done">完成</string>
     <string name="action_remove">移除</string>
+    <string name="new_folder">新資料夾</string>
     <string name="action_edit">編輯</string>
     <string name="metadata">中繼資料</string>
     <string name="networking">网络</string>
+    <string name="user_interface">呈現</string>
+
     <string name="crash_dialog_title">崩潰報告</string>
     <string name="action_install">安裝</string>
     <string name="action_enable">啟用</string>
     <string name="action_start">開始</string>
     <string name="login_activity_logging_message">正在登录…</string>
+    <string name="create">建立</string>
+    <string name="add">新增</string>
+    <string name="upload_to_dropbox">上傳到 Dropbox</string>
+    <string name="authenticate">驗證</string>
+    <string name="back">返回</string>
+    <string name="account">帳號</string>
+    <string name="general">一般</string>
+    <string name="security">安全</string>
+    <string name="next">下一個</string>
+    <string name="get_started">開始</string>
+    <string name="refresh">更新</string>
     </resources>

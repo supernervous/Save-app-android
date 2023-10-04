@@ -13,18 +13,7 @@
     <string name="lblSave">Сохранить</string>
     <string name="default_tags">OpenArchive</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Открыть навигационный ящик</string>
-    <string name="navigation_drawer_close">Закрыть навигационный ящик</string>
-    <string name="action_example">Пример действия</string>
     <string name="action_settings">Настройки</string>
-
-    <string name="drawer_home">Home</string>
-    <string name="drawer_uploads">Загруженная информация</string>
-    <string name="drawer_logout">Выход</string>
-    <string name="drawer_about">О программе</string>
-    <string name="drawer_settings">Настройки</string>
-    <string name="action_new_project">Новый проект</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Интернет архив</string>
@@ -32,10 +21,6 @@
     <!-- MainFragment -->
     <string name="import_btn">Импортировать</string>
     <string name="capture_btn">Захват видео</string>
-
-    <string name="capture_photo">Фото</string>
-    <string name="capture_video">Видео</string>
-    <string name="capture_audio">Аудио</string>
 
     <!-- Server -->
     <string name="lbl_Yes">Да</string>
@@ -48,7 +33,6 @@
     <string name="lbl_success">Готово</string>
     <string name="lbl_continue">Продолжить</string>
     <string name="upload_to_internet_archive">Загрузить в интернет-архив</string>
-
     <string name="menu_record_audio">Записать аудио</string>
     <string name="menu_delete">Удалить медиа данные</string>
 
@@ -71,8 +55,12 @@
     <string name="status_error">Ошибка</string>
     <string name="status_public">Открытый</string>
     <string name="status_uploading">Закачка</string>
+    <string name="prefs_prohibit_screenshots_title">Не допускать скриншоты</string>
     <string name="prefs_nearby_title">С устройствами поблизости</string>
 
+    <string name="prefs_theme_title">Стиль</string>
+    <string name="prefs_theme_light">Светлая</string>
+    <string name="prefs_theme_dark">Темная</string>
     <string name="prefs_data_title">Метаданные</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="menu_share">Поделиться</string>
@@ -90,8 +78,7 @@
     <string name="header_projects">Настройки проекта</string>
 
     <string name="action_data_use">Трафик</string>
-    <string name="action_privacy">Приватность</string>
-    <string name="action_about">О программе %s</string>
+    <string name="action_privacy">Политика обеспечения конфиденциальности.</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Загруженная информация</string>
     <string name="title_uploading">Загрузка…</string>
@@ -103,12 +90,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Добавить</string>
-    <string name="connect_your_space">Подключить ваше пространство</string>
-    <string name="upload_to_the_internet_archive">Выгрузить в Интернет-архив</string>
     <string name="app_tag_line">Безопасное сохранение мобильных медиа данных</string>
     <string name="action_next">Далее</string>
+    <string name="action_done">Готово</string>
     <string name="status_flagged">Важное содержание</string>
-    <string name="select_where_to_store_your_media">Установить место хранения ваших медиа данных по умолчанию.</string>
     <string name="menu_edit">Редактировать</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Удалить из приложения</string>
@@ -118,6 +103,7 @@
     <string name="access_key">Ключ доступа</string>
     <string name="secret_key">Секретный ключ</string>
     <string name="action_acquire_keys">Получить ключи</string>
+    <string name="new_folder">Новый каталог</string>
     <string name="open_link">Открыть ссылку</string>
     <string name="save_by_openarchive">by OpenArchive</string>
     <string name="action_edit">Редактировать</string>
@@ -131,11 +117,22 @@
     <string name="popup_batch_desc">Чтобы редактировать несколько элементов, нажмите и удерживайте каждый.</string>
 
     <string name="popup_ia_title">Интернет архив</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Разрешить использование Creative Commons для всех медиа данных в этом проекте</string>
-
     <string name="crash_dialog_title">Отчет об ошибке</string>
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="action_install">Установить приложение</string>
     <string name="action_enable">Активировать</string>
     <string name="action_start">Начать</string>
+    <string name="folders">Папки</string>
+    <string name="create">Создать</string>
+    <string name="add">Добавить</string>
+    <string name="upload_to_dropbox">Загрузить в Dropbox</string>
+    <string name="authenticate">Аутентифицировать</string>
+    <string name="back">вернуться и отредактировать</string>
+    <string name="account">Учетная запись</string>
+    <string name="general">Общие</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Выгружать медиа данные только когда вы подключены к Wi-Fi</string>
+    <string name="security">Безопасность</string>
+    <string name="next">Далее</string>
+    <string name="secure_mobile_media_preservation">Безопасное сохранение мобильных медиа данных</string>
+    <string name="get_started">Начало работы</string>
+    <string name="refresh">Обновить</string>
     </resources>

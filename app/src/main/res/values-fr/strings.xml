@@ -12,19 +12,7 @@
     <string name="lblSave">Enregistrer</string>
     <string name="default_tags">OpenArchive</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
-    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
-    <string name="action_example">Exemple d’action</string>
     <string name="action_settings">Paramètres</string>
-
-    <string name="drawer_home">Accueil</string>
-    <string name="drawer_uploads">Téléversements</string>
-    <string name="drawer_logout">Déconnexion</string>
-    <string name="drawer_about">À propos</string>
-    <string name="drawer_settings">Paramètres</string>
-    <string name="action_new_project">Nouveau projet</string>
-
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Archive Internet</string>
@@ -32,10 +20,6 @@
     <!-- MainFragment -->
     <string name="import_btn">Importer</string>
     <string name="capture_btn">Capturer</string>
-
-    <string name="capture_photo">Photo</string>
-    <string name="capture_video">Vidéo</string>
-    <string name="capture_audio">Audio</string>
 
     <!-- Server -->
     <string name="lbl_Yes">Oui</string>
@@ -48,7 +32,6 @@
     <string name="lbl_success">Terminé</string>
     <string name="lbl_continue">Poursuivre</string>
     <string name="upload_to_internet_archive">Charger vers l’archive Internet</string>
-
     <string name="menu_record_audio">Enregistrer audio</string>
     <string name="menu_delete">Supprimer le contenu multimédia</string>
 
@@ -72,8 +55,12 @@
     <string name="status_public">Publique</string>
     <string name="status_uploading">Téléversement</string>
     <string name="prefs_networking_title">Mise en réseau</string>
+    <string name="prefs_prohibit_screenshots_title">Bloquer les captures d’écran</string>
     <string name="prefs_nearby_title">Proximité</string>
 
+    <string name="prefs_theme_title">Style</string>
+    <string name="prefs_theme_light">Clair</string>
+    <string name="prefs_theme_dark">Sombre</string>
     <string name="prefs_data_title">Métadonnées</string>
     <string name="prefs_bt_title">Bluetooth</string>
     <string name="menu_share">Partager</string>
@@ -94,8 +81,7 @@
     <string name="header_projects">Paramètres du projet</string>
 
     <string name="action_data_use">Utilisation des données</string>
-    <string name="action_privacy">Confidentialité</string>
-    <string name="action_about">À propos %s</string>
+    <string name="action_privacy">Politique de confidentialité</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">Téléversements</string>
     <string name="title_uploading">Téléversement…</string>
@@ -107,12 +93,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">Ajouter</string>
-    <string name="connect_your_space">Connectez votre espace</string>
-    <string name="upload_to_the_internet_archive">Téléversez vers l’Archive Internet</string>
     <string name="app_tag_line">Préservation mobile sécurisée de contenus multimédias</string>
     <string name="action_next">Suivant</string>
+    <string name="action_done">Terminé</string>
     <string name="status_flagged">Contenu important</string>
-    <string name="select_where_to_store_your_media">Choisissez l’emplacement de stockage de vos médias.</string>
     <string name="menu_edit">Modifier</string>
     <string name="menu_done">Terminé</string>
     <string name="remove_from_app">Supprimer de l’appli</string>
@@ -122,6 +106,7 @@
     <string name="access_key">Clé d’accès</string>
     <string name="secret_key">Clé secrète</string>
     <string name="action_acquire_keys">Obtenir les clés</string>
+    <string name="new_folder">Nouveau dossier</string>
     <string name="open_link">Ouvrir le lien</string>
     <string name="save_by_openarchive">par OpenArchive</string>
     <string name="action_edit">Modifier</string>
@@ -135,12 +120,23 @@
     <string name="popup_batch_desc">Pour modifier plusieurs éléments, touchez et maintenez chacun d’eux.</string>
 
     <string name="popup_ia_title">Archive Internet</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Autoriser l’utilisation Creative Commons pour tous les médias de ce projet</string>
-
     <string name="crash_dialog_title">Signaler un plantage</string>
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="action_install">Installer</string>
     <string name="action_enable">Activer</string>
     <string name="action_start">Commencer</string>
     <string name="login_activity_logging_message">Connexion…</string>
+    <string name="folders">Dossiers</string>
+    <string name="create">Créer</string>
+    <string name="add">Ajouter</string>
+    <string name="upload_to_dropbox">Téléverser vers Dropbox</string>
+    <string name="authenticate">S’authentifier</string>
+    <string name="back">Retour</string>
+    <string name="account">Compte</string>
+    <string name="general">Général</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Ne téléverser des médias que connecté au Wi-Fi</string>
+    <string name="security">Sécurité</string>
+    <string name="next">Suivant</string>
+    <string name="secure_mobile_media_preservation">Préservation sécurisée de médias sur appareil mobile</string>
+    <string name="get_started">Commençons</string>
+    <string name="refresh">Actualiser</string>
     </resources>

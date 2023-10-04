@@ -22,19 +22,7 @@
     <string name="default_title">عنواني</string>
     <string name="default_tags">OpenArchive</string>
 
-    <!-- NavigationDrawer -->
-    <string name="navigation_drawer_open">فتح درج التصفح</string>
-    <string name="navigation_drawer_close">إغلاق درج التصفح</string>
-    <string name="action_example">مثال إجراء</string>
     <string name="action_settings">الإعدادات</string>
-
-    <string name="drawer_home">الصفحة الرئيسية</string>
-    <string name="drawer_uploads">التحميلات</string>
-    <string name="drawer_logout">تسجيل الخروج</string>
-    <string name="drawer_about">معلومات</string>
-    <string name="drawer_settings">الإعدادات</string>
-    <string name="action_new_project">مشروع جديد</string>
-
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
@@ -42,10 +30,6 @@
     <!-- MainFragment -->
     <string name="import_btn">استيراد</string>
     <string name="capture_btn">التقاط</string>
-
-    <string name="capture_photo">صورة</string>
-    <string name="capture_video">فيديو</string>
-    <string name="capture_audio">صوت</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">صورة رئيسية</string>
@@ -105,8 +89,14 @@
     <string name="status_error">خطأ</string>
     <string name="status_public">عمومي</string>
     <string name="status_uploading">جارى الرفع</string>
+    <string name="prefs_networking_title">التشبيك</string>
+    <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
     <string name="prefs_nearby_title">قريب منك</string>
 
+    <string name="prefs_user_interface_title">التقديم</string>
+    <string name="prefs_theme_title">النمط</string>
+    <string name="prefs_theme_light">نهاري</string>
+    <string name="prefs_theme_dark">ليلي</string>
     <string name="prefs_data_title">البيانات الوصفية</string>
     <string name="prefs_bt_title">بلوتوث</string>
     <string name="menu_share">شارك</string>
@@ -127,8 +117,7 @@
     <string name="header_projects">إعدادات المشروع</string>
 
     <string name="action_data_use"> إستخدام البيانات</string>
-    <string name="action_privacy">الخصوصية</string>
-    <string name="action_about">%s عن التطبيق</string>
+    <string name="action_privacy">سياسة الخصوصية</string>
     <string name="action_plus">+</string>
     <string name="title_uploads">الملفات المرفوعة</string>
     <string name="title_uploading">تحميل…</string>
@@ -140,12 +129,10 @@
     <!-- Strings related to Settings -->
 
     <string name="button_sure_default">إضافة</string>
-    <string name="connect_your_space">اتصل بالمكان الخاص بك</string>
-    <string name="upload_to_the_internet_archive">ارفع إلى Internet Archive</string>
     <string name="app_tag_line">الحفظ الآمن لوسائط المحمول</string>
     <string name="action_next">التالي</string>
+    <string name="action_done">مُنجَز</string>
     <string name="status_flagged">محتوى مميز</string>
-    <string name="select_where_to_store_your_media">إعداد المكان الذى تريد تخزين الوسائط فيه</string>
     <string name="menu_edit">عدّل</string>
     <string name="menu_done">مُنجَز</string>
     <string name="remove_from_app">احذف من التطبيق</string>
@@ -155,10 +142,14 @@
     <string name="access_key">مفتاح الدخول</string>
     <string name="secret_key">المفتاح السري</string>
     <string name="action_acquire_keys">اكتسب المفاتيح</string>
+    <string name="new_folder">مجلد جديد</string>
     <string name="open_link">افتح الرابط</string>
     <string name="save_by_openarchive">من إصدار OpenArchive</string>
     <string name="action_edit">عدّل</string>
     <string name="metadata">البيانات الوصفية</string>
+    <string name="networking">التشبيك</string>
+    <string name="user_interface">التقديم</string>
+
     <string name="remove_from_app_media">احذف الوسائط</string>
     <string name="popup_flag_title">علامة محتوى مميز</string>
     <string name="popup_flag_desc">عندما تضيف العلامة على وحدة، يتم وضعها فى مجلد خاص تحت مجلد المشروع المختار على الخادوم الخاص.</string>
@@ -167,11 +158,23 @@
     <string name="popup_batch_desc">لتعديل وحدات متعددة، اضغط لمدة على كل وحدة.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">اسمح بالمشاع الإبداعى \"Creative Commons\" لكل الوسائط فى هذا المشروع</string>
-
     <string name="crash_dialog_title">التبليغ عن التعطيلات </string>
-    <string name="crashreportemail">support@guardianproject.info</string>
     <string name="action_install">تثبيت</string>
     <string name="action_enable">تمكين</string>
     <string name="action_start">ابدأ</string>
+    <string name="login_activity_logging_message">تسجيل الدخول…</string>
+    <string name="folders">المجلدات</string>
+    <string name="create">إنشاء</string>
+    <string name="add">إضافة</string>
+    <string name="upload_to_dropbox">الرّفع لـِ Dropbox</string>
+    <string name="authenticate">استوثِق</string>
+    <string name="back">إلى الخلف</string>
+    <string name="account">الحساب</string>
+    <string name="general">عام</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">ارفع الوسائط عندما تكون متصلا بالشيكة اللاسلكية فقط</string>
+    <string name="security">نعم</string>
+    <string name="next">التالي</string>
+    <string name="secure_mobile_media_preservation">الحفظ الآمن لوسائط المحمول</string>
+    <string name="get_started">بدء الاستخدام</string>
+    <string name="refresh">تحديث</string>
     </resources>
