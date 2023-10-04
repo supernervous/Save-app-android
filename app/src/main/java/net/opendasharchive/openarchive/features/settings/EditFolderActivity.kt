@@ -33,10 +33,6 @@ class EditFolderActivity : BaseActivity() {
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = mProject.description
-
-        mBinding.folderName.hint = mProject.description
-        mBinding.folderName.setText(mProject.description)
 
         mBinding.folderName.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -59,15 +55,16 @@ class EditFolderActivity : BaseActivity() {
             removeProject()
         }
 
-        updateArchiveBt()
         mBinding.btArchive.setOnClickListener {
             archiveProject()
         }
 
-        CcSelector.init(mBinding.cc, mProject.licenseUrl, mProject.space?.licenseUrl == null) {
+        CcSelector.init(mBinding.cc, null) {
             mProject.licenseUrl = it
             mProject.save()
         }
+
+        updateUi()
     }
 
     private fun removeProject() {
@@ -81,16 +78,24 @@ class EditFolderActivity : BaseActivity() {
     }
 
     private fun archiveProject() {
-        mProject.archived = !mProject.archived
+        mProject.isArchived = !mProject.isArchived
         mProject.save()
 
-        updateArchiveBt()
+        updateUi()
     }
 
-    private fun updateArchiveBt() {
-        mBinding.btArchive.setText(if (mProject.archived)
+    private fun updateUi() {
+        supportActionBar?.title = mProject.description
+
+        mBinding.folderName.isEnabled = !mProject.isArchived
+        mBinding.folderName.hint = mProject.description
+        mBinding.folderName.setText(mProject.description)
+
+        mBinding.btArchive.setText(if (mProject.isArchived)
             R.string.action_unarchive_project else
             R.string.action_archive_project)
+
+        CcSelector.set(mBinding.cc, mProject.licenseUrl, !mProject.isArchived && mProject.space?.license == null)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

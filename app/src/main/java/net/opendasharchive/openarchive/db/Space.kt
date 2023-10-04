@@ -27,7 +27,7 @@ data class Space(
     var displayname: String = "",
     var password: String = "",
     var host: String = "",
-    var licenseUrl: String? = null
+    private var licenseUrl: String? = null
 ) : SugarRecord() {
 
     constructor(type: Type) : this() {
@@ -122,6 +122,17 @@ data class Space(
             type = (value ?: Type.WEBDAV).id
         }
 
+    var license: String?
+        get() = this.licenseUrl
+        set(value) {
+            licenseUrl = value
+
+            for (project in projects) {
+                project.licenseUrl = licenseUrl
+                project.save()
+            }
+        }
+
     val projects: List<Project>
         get() = find(Project::class.java, "space_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
 
@@ -166,15 +177,6 @@ data class Space(
                     view.setImageDrawable(getAvatar(view.context))
                 }
             }
-        }
-    }
-
-    fun setLicense(license: String?) {
-        licenseUrl = license
-
-        for (project in projects) {
-            project.licenseUrl = licenseUrl
-            project.save()
         }
     }
 

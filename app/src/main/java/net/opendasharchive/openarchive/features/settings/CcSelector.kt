@@ -10,12 +10,7 @@ object CcSelector {
     private const val CC_URL = "https://%s/licenses/%s/4.0/"
 
     fun init(cc: ContentCcBinding, license: String?, enabled: Boolean = true, update: (license: String?) -> Unit) {
-        set(cc, license)
-
-        cc.swCc.isEnabled = enabled
-        cc.swNd.isEnabled = enabled
-        cc.swSa.isEnabled = enabled
-        cc.swNc.isEnabled = enabled
+        set(cc, license, enabled)
 
         cc.swCc.setOnCheckedChangeListener { _, isChecked ->
             toggle(cc, isChecked)
@@ -37,7 +32,7 @@ object CcSelector {
         }
     }
 
-    fun set(cc: ContentCcBinding, license: String?) {
+    fun set(cc: ContentCcBinding, license: String?, enabled: Boolean = true) {
         val isCc = license?.contains(CC_DOMAIN, true) ?: false
 
         cc.swCc.isChecked = isCc
@@ -49,6 +44,11 @@ object CcSelector {
         cc.swNc.isChecked = isCc && !(license?.contains("-nc", true) ?: false)
 
         cc.tvLicense.text = license
+
+        cc.swCc.isEnabled = enabled
+        cc.swNd.isEnabled = enabled
+        cc.swSa.isEnabled = enabled
+        cc.swNc.isEnabled = enabled
     }
 
     fun get(cc: ContentCcBinding): String? {

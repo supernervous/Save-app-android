@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.databinding.ActivityFoldersBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.toggle
 
 class FoldersActivity: BaseActivity(), FolderAdapterListener {
@@ -49,13 +50,18 @@ class FoldersActivity: BaseActivity(), FolderAdapterListener {
             startActivity(i)
         }
 
-        mBinding.cc.tvCc.setText(R.string.allow_creative_commons_use_for_all_folders_on_this_server)
+        if (mArchived) {
+            mBinding.cc.root.hide()
+        }
+        else {
+            mBinding.cc.tvCc.setText(R.string.allow_creative_commons_use_for_all_folders_on_this_server)
 
-        CcSelector.init(mBinding.cc, Space.current?.licenseUrl) {
-            val space = Space.current ?: return@init
+            CcSelector.init(mBinding.cc, Space.current?.license) {
+                val space = Space.current ?: return@init
 
-            space.setLicense(it)
-            space.save()
+                space.license = it
+                space.save()
+            }
         }
     }
 
