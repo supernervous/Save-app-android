@@ -9,8 +9,13 @@ object CcSelector {
     private const val CC_DOMAIN = "creativecommons.org"
     private const val CC_URL = "https://%s/licenses/%s/4.0/"
 
-    fun init(cc: ContentCcBinding, license: String?, update: (license: String?) -> Unit) {
+    fun init(cc: ContentCcBinding, license: String?, enabled: Boolean = true, update: (license: String?) -> Unit) {
         set(cc, license)
+
+        cc.swCc.isEnabled = enabled
+        cc.swNd.isEnabled = enabled
+        cc.swSa.isEnabled = enabled
+        cc.swNc.isEnabled = enabled
 
         cc.swCc.setOnCheckedChangeListener { _, isChecked ->
             toggle(cc, isChecked)

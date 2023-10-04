@@ -64,7 +64,7 @@ class EditFolderActivity : BaseActivity() {
             archiveProject()
         }
 
-        CcSelector.init(mBinding.cc, mProject.licenseUrl) {
+        CcSelector.init(mBinding.cc, mProject.licenseUrl, mProject.space?.licenseUrl == null) {
             mProject.licenseUrl = it
             mProject.save()
         }
