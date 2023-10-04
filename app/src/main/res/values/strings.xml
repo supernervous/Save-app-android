@@ -303,8 +303,6 @@
     <string name="metadata">Metadata</string>
     <string name="networking">Networking</string>
     <string name="user_interface">Presentation</string>
-    <string name="pref_nextcloud_title">Enable NextCloud Chunking</string>
-    <string name="pref_nextcloud_subject">If you are connecting to a NextCloud server, enable more resilient uploads</string>
 
     <string name="remove_from_app_media">Remove Media</string>
     <string name="confirm_remove_media">Are you sure you want to remove this Media?</string>
@@ -423,4 +421,6 @@
     <string name="to_get_started_please_create_a_folder">To get started, please create a folder</string>
     <string name="before_adding_media_create_a_new_folder_first">Before adding media, create a new folder first.</string>
     <string name="is_video">is video</string>
+    <string name="use_upload_chunking_nextcloud_only">Use Upload Chunking (Nextcloud Only)</string>
+    <string name="chunking_explanation">\"Chunking\" uploads media in pieces so you don\'t have to restart your upload if your connection is interrupted.</string>
 </resources>

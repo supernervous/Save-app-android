@@ -27,7 +27,8 @@ data class Space(
     var displayname: String = "",
     var password: String = "",
     var host: String = "",
-    private var licenseUrl: String? = null
+    private var licenseUrl: String? = null,
+    private var chunking: Boolean? = null
 ) : SugarRecord() {
 
     constructor(type: Type) : this() {
@@ -131,6 +132,13 @@ data class Space(
                 project.licenseUrl = licenseUrl
                 project.save()
             }
+        }
+
+    var useChunking: Boolean
+        // Fallback to old preferences setting.
+        get() = chunking ?: Prefs.useNextcloudChunking
+        set(value) {
+            chunking = value
         }
 
     val projects: List<Project>

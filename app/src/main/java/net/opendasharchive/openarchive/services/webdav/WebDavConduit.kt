@@ -11,7 +11,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
-import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -40,7 +39,7 @@ class WebDavConduit(
 
         val client = SaveClient.getSardine(mContext, space)
 
-        if (Prefs.useNextcloudChunking) {
+        if (space.useChunking) {
             return uploadUsingChunking(client)
         }
 

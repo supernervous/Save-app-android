@@ -214,7 +214,7 @@
 
         <meta-data
             android:name="VERSION"
-            android:value="34" />
+            android:value="35" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

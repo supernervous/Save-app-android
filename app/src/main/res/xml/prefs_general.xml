@@ -9,13 +9,6 @@
             app:title="@string/only_upload_media_when_you_are_connected_to_wi_fi"
             app:singleLineTitle="false" />
 
-        <SwitchPreferenceCompat
-            app:key="upload_nextcloud_chunks"
-            app:defaultValue="false"
-            app:title="@string/pref_nextcloud_title"
-            app:singleLineTitle="false"
-            app:summary="@string/pref_nextcloud_subject" />
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/metadata">
