@@ -42,7 +42,8 @@ class BrowseFoldersViewModel : ViewModel() {
                 mFolders.value = value.filter { !space.hasProject(it.name) }
                 progressBarFlag.value = false
             }
-            catch (e: IOException) {
+            // Dropbox might throw all sorts of non-IOExceptions.
+            catch (e: Throwable) {
                 progressBarFlag.value = false
                 mFolders.value = arrayListOf()
 
