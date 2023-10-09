@@ -24,7 +24,6 @@ object Prefs {
     private const val BATCH_HINT_SHOWN = "ft.batch"
     private const val IA_HINT_SHOWN = "ft.ia"
     private const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
-    private const val NEXTCLOUD_USER_DATA = "next_cloud_user_data"
     private const val LICENSE_URL = "archive_pref_share_license_url"
     private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
 
@@ -38,12 +37,6 @@ object Prefs {
     fun store() {
         prefs?.edit()?.commit()
     }
-
-    var nextCloudModel: String?
-        get() = prefs?.getString(NEXTCLOUD_USER_DATA, "") ?: ""
-        set(value) {
-            prefs?.edit()?.putString(NEXTCLOUD_USER_DATA, value)?.apply()
-        }
 
     val useNextcloudChunking: Boolean
         get() = prefs?.getBoolean(USE_NEXTCLOUD_CHUNKING, false) ?: false

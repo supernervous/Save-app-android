@@ -80,7 +80,10 @@ data class Media(
                 null, order, null)
         }
 
-        fun get(mediaId: Long): Media? {
+        fun get(mediaId: Long?): Media? {
+            @Suppress("NAME_SHADOWING")
+            val mediaId = mediaId ?: return null
+
             return findById(Media::class.java, mediaId)
         }
 

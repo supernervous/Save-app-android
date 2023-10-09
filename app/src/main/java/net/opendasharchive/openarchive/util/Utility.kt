@@ -3,17 +3,17 @@ package net.opendasharchive.openarchive.util
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 object Utility {
-
-    fun toastOnUiThread(fragmentActivity: FragmentActivity, message: String?, isLongToast: Boolean) {
-        fragmentActivity.runOnUiThread { Toast.makeText(fragmentActivity.applicationContext, message, if (isLongToast) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
-    }
 
     fun getMimeType(context: Context, uri: Uri?): String? {
         val cR = context.contentResolver

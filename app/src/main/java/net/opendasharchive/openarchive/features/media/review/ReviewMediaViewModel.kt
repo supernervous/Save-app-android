@@ -3,26 +3,36 @@ package net.opendasharchive.openarchive.features.media.review
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import net.opendasharchive.openarchive.features.media.MediaWorker
+import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 
 class ReviewMediaViewModel(
-    private val application: Application
+    application: Application
 ): ViewModel() {
+
+    companion object {
+        private const val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
+
+        fun getInstance(owner: ViewModelStoreOwner, application: Application): ReviewMediaViewModel {
+            return ViewModelProvider(owner, PreviewMediaListViewModel.Factory(application))[ReviewMediaViewModel::class.java]
+        }
+    }
 
     val workState: LiveData<List<WorkInfo>>
 
-    private val workManager = WorkManager.getInstance(application)
-    private val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
+    private val mWorkManager = WorkManager.getInstance(application)
 
     init {
-        workState = workManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
+        workState = mWorkManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
     }
 
     fun applyMedia() {
         val mediaWorker = OneTimeWorkRequestBuilder<MediaWorker>().addTag(TAG_MEDIA_UPLOADING).build()
-        workManager.enqueue(mediaWorker)
+        mWorkManager.enqueue(mediaWorker)
     }
 }

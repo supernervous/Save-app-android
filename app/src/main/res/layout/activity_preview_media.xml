@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,22 +7,18 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:theme="@style/AppMediaTheme"
-    tools:context="net.opendasharchive.openarchive.publish.UploadManagerActivity">
-
+    tools:context=".features.media.preview.PreviewMediaListActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <!--android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar"-->
-
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragUploadManager"
-        class="net.opendasharchive.openarchive.features.media.MediaReviewListFragment"
+        android:name="net.opendasharchive.openarchive.features.media.MediaReviewListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 
 </LinearLayout>
 

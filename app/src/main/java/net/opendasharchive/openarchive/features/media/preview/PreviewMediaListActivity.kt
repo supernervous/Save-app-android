@@ -3,15 +3,10 @@ package net.opendasharchive.openarchive.features.media.preview
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
+import androidx.fragment.app.findFragment
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.util.AlertHelper
@@ -20,43 +15,39 @@ import net.opendasharchive.openarchive.util.Prefs
 class PreviewMediaListActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityPreviewMediaBinding
-    private var mFrag: MediaListFragment? = null
-
-    private lateinit var viewModel: PreviewMediaListViewModel
+    private lateinit var mFrag: MediaListFragment
+    private lateinit var mViewModel: PreviewMediaListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mBinding = ActivityPreviewMediaBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        val context = requireNotNull(application)
-        val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        viewModel = ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
-        viewModel.observeValuesForWorkState(this)
-        initLayout()
-        showFirstTimeBatch()
-    }
-
-    private fun initLayout() {
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.apply {
-            title = resources.getString(R.string.title_activity_batch_media_review)
-            setDisplayHomeAsUpEnabled(true)
-        }
-        mFrag =
-            supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? MediaListFragment
+        supportActionBar?.title = getString(R.string.title_activity_batch_media_review)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        mViewModel = PreviewMediaListViewModel.getInstance(this, application)
+        mViewModel.observeValuesForWorkState(this)
+
+        mFrag = mBinding.fragUploadManager.findFragment()
+
+        showFirstTimeBatch()
     }
 
     override fun onResume() {
         super.onResume()
-        mFrag?.let {
-            it.refresh()
-            it.stopBatchMode()
-        }
+
+        mFrag.refresh()
+        mFrag.stopBatchMode()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+
         menuInflater.inflate(R.menu.menu_batch_review_media, menu)
+
         return true
     }
 
@@ -64,72 +55,34 @@ class PreviewMediaListActivity : BaseActivity() {
         when (item.itemId) {
             R.id.menu_upload -> {
                 batchUpload()
+
                 return true
             }
             android.R.id.home -> {
-                //NavUtils.navigateUpFromSameTask(this);
                 finish()
+
                 return true
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
     private fun batchUpload() {
-        val listMedia = mFrag?.getMediaList() ?: listOf()
-        val space = Space.current
-
-        if (space?.tType == Space.Type.WEBDAV) {
-            // TODO: WTF is this DUPLICATED special casing here?!?
-            if (space.host.contains("https://sam.nl.tab.digital")) {
-                 //currently ticket #319 only supports nextcloud. Need to figure out a solution on the webDAV layer, that works across the board.
-                 val availableSpace = getAvailableStorageSpace(listMedia)
-                 val totalUploadsContent = availableSpace.first
-                 val totalStorage = availableSpace.second
-
-                 if (totalStorage < totalUploadsContent) {
-                     Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-                 }
-                 else {
-                     performBatchUpload(listMedia)
-                 }
-            }
-             else {
-                 //for NON nextcloud providers
-                 performBatchUpload(listMedia)
-             }
+        mFrag.getMediaList()?.forEach {
+            it.sStatus = Media.Status.Queued
+            it.save()
         }
-        else {
-            //for non webDAV protocols.
-            performBatchUpload(listMedia)
-        }
-    }
 
-    private fun performBatchUpload(listMedia: List<Media>) {
-        for (media in listMedia) {
-            media.sStatus = Media.Status.Queued
-            media.save()
-        }
-        viewModel.applyMedia()
+        mViewModel.applyMedia()
 
-        // media files got enqueued for upload with out any errors,
-        // so direct user back to main activity
+        // Media files got enqueued for upload with out any errors,
+        // so direct user back to main activity.
         finish()
     }
 
-    private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
-        val nextCloudModel = Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
-        var totalUploadsContent = 0.0
-        for (media in listMedia) {
-            totalUploadsContent += media.contentLength
-        }
-
-        val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
-        return Pair(totalUploadsContent, totalStorage)
-    }
-
     private fun showFirstTimeBatch() {
-        if ((mFrag?.getMediaList() ?: listOf()).isEmpty() || Prefs.batchHintShown) return
+        if (mFrag.getMediaList()?.isEmpty() != false || Prefs.batchHintShown) return
 
         AlertHelper.show(this, R.string.popup_batch_desc, R.string.popup_batch_title)
 

@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
@@ -22,14 +20,13 @@ import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
+import kotlin.collections.emptyList
 import kotlin.collections.filter
 import kotlin.collections.firstOrNull
 import kotlin.collections.forEach
@@ -55,13 +52,11 @@ class MediaGridFragment : MediaListFragment() {
         mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MediaGridViewModel::class.java]
 
-        val context = requireNotNull(activity?.application)
-        val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        previewViewModel = ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
+        previewViewModel = PreviewMediaListViewModel.getInstance(this, requireNotNull(activity?.application))
         previewViewModel.observeValuesForWorkState(activity as AppCompatActivity)
 
         observeData()
-        viewModel.getAllCollection()
+        viewModel.setAllCollection()
         return mBinding.root
     }
 
@@ -80,34 +75,26 @@ class MediaGridFragment : MediaListFragment() {
         var addedView = false
 
         for (collection in collections ?: emptyList()) {
-            if (collection.projectId != getProjectId()) continue
+            if (collection.projectId != projectId) continue
 
             val media = collection.media
 
             if (media.isEmpty()) continue
 
             if (!addedView) {
-                for (view in mBinding.mediacontainer.children) {
+                for (view in mBinding.mediaContainer.children) {
                     if (view != mBinding.addMediaHint) {
-                        mBinding.mediacontainer.removeView(view)
+                        mBinding.mediaContainer.removeView(view)
                     }
                 }
 
                 addedView = true
             }
 
-            mBinding.mediacontainer.addView(createMediaList(collection, media))
+            mBinding.mediaContainer.addView(createMediaList(collection, media))
         }
 
-        mBinding.addMediaHint.toggle(mBinding.mediacontainer.childCount < 2)
-    }
-
-    private fun performBatchUpload(listMedia: List<Media>) {
-        for (media in listMedia) {
-            media.sStatus = Media.Status.Queued
-            media.save()
-        }
-        previewViewModel.applyMedia()
+        mBinding.addMediaHint.toggle(mBinding.mediaContainer.childCount < 2)
     }
 
     private fun createMediaList(collection: Collection, listMedia: List<Media>): View {
@@ -132,28 +119,12 @@ class MediaGridFragment : MediaListFragment() {
                 }, onDelete = {
                     refresh()
                 }, onUpload = {
-                    if (Space.current?.tType == Space.Type.WEBDAV) {
-                        // TODO: WTF is this DUPLICATED special casing here?!?
-                        if (Space.current?.host?.contains("https://sam.nl.tab.digital") == true) {
-                            val availableSpace = getAvailableStorageSpace(it)
-                            val totalUploadsContent = availableSpace.first
-                            val totalStorage = availableSpace.second
-                            if(totalStorage < totalUploadsContent) {
-                                Toast.makeText(activity, getString(R.string.upload_files_error), Toast.LENGTH_SHORT).show()
-                            }
-                            else {
-                                performBatchUpload(it)
-                            }
-                        }
-                        else {
-                            //for NON nextcloud providers
-                            performBatchUpload(it)
-                        }
+                    for (media in it) {
+                        media.sStatus = Media.Status.Queued
+                        media.save()
                     }
-                    else {
-                        //for non webDAV protocols.
-                        performBatchUpload(it)
-                    }
+
+                    previewViewModel.applyMedia()
                 })
 
             mediaSection.recyclerview.adapter = mediaAdapter
@@ -164,24 +135,13 @@ class MediaGridFragment : MediaListFragment() {
         return holder.mediaSection.root
     }
 
-    private fun getAvailableStorageSpace(listMedia: List<Media>): Pair<Double, Long> {
-        val nextCloudModel = Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
-        var totalUploadsContent = 0.0
-        for (media in listMedia) {
-            totalUploadsContent += media.contentLength
-        }
-
-        val totalStorage = nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
-        return Pair(totalUploadsContent, totalStorage)
-    }
-
     override fun updateItem(mediaId: Long, progress: Long) {
         for (adapter in mAdapters.values) adapter.updateItem(mediaId, progress)
     }
 
     override fun refresh() {
         Collection.getAll().forEach { collection ->
-            val media = if (collection.projectId == getProjectId()) collection.media else listOf()
+            val media = if (collection.projectId == projectId) collection.media else listOf()
 
             val adapter = mAdapters[collection.id]
             val holder = mSection[collection.id]
@@ -193,11 +153,11 @@ class MediaGridFragment : MediaListFragment() {
             else if (media.isNotEmpty()) {
                 val view = createMediaList(collection, media)
 
-                mBinding.mediacontainer.addView(view, 0)
+                mBinding.mediaContainer.addView(view, 0)
             }
         }
 
-        mBinding.addMediaHint.toggle(mBinding.mediacontainer.childCount < 2)
+        mBinding.addMediaHint.toggle(mBinding.mediaContainer.childCount < 2)
     }
 
     @SuppressLint("SetTextI18n")

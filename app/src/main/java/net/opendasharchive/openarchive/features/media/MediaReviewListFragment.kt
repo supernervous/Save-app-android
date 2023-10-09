@@ -11,66 +11,50 @@ import net.opendasharchive.openarchive.databinding.FragmentMediaListSimpleBindin
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import java.util.*
 
 open class MediaReviewListFragment : MediaListFragment() {
 
     private var mStatus = Media.Status.Local
-    private var _mBinding: FragmentMediaListSimpleBinding? = null
+    private lateinit var mBinding: FragmentMediaListSimpleBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _mBinding = FragmentMediaListSimpleBinding.inflate(layoutInflater, container, false)
-        return _mBinding?.root
+        mBinding = FragmentMediaListSimpleBinding.inflate(layoutInflater, container, false)
+
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initLayout()
-    }
 
-    private fun initLayout() {
-        _mBinding?.let { mBinding ->
-            mBinding.root.tag = TAG
+        mBinding.root.tag = TAG
 
-            mBinding.recyclerview.layoutManager = LinearLayoutManager(activity)
-            mBinding.recyclerview.setHasFixedSize(true)
+        mBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
+        mBinding.recyclerView.setHasFixedSize(true)
 
-            val media = ArrayList(Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY))
-            val mediaAdapter = MediaAdapter(requireActivity(),
-                R.layout.activity_media_list_row,
-                media,
-                mBinding.recyclerview,
-                object : OnStartDragListener {
-                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
-                        //NO-OP
-                    }
-                }, onDelete = {
-
-                }, onUpload = {
-
+        mediaAdapter = MediaAdapter(requireActivity(),
+            R.layout.activity_media_list_row,
+            ArrayList(),
+            mBinding.recyclerView,
+            object : OnStartDragListener {
+                override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+                    //NO-OP
                 }
-            )
+            }, onDelete = {
+            }, onUpload = {
+            }
+        )
 
-            mMediaAdapter = mediaAdapter
+        mediaAdapter?.doImageFade = false
+        mBinding.recyclerView.adapter = mediaAdapter
 
-            mediaAdapter.doImageFade = false
-            mBinding.recyclerview.adapter = mediaAdapter
-        }
-    }
-
-    override fun setStatus(status: Media.Status) {
-        mStatus = status
+        refresh()
     }
 
     override fun refresh() {
-        if (mMediaAdapter != null) {
-            val listMedia = Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY)
-            val listMediaArray = ArrayList(listMedia)
-            mMediaAdapter?.updateData(listMediaArray)
-        }
+        mediaAdapter?.updateData(ArrayList(Media.getByStatus(listOf(mStatus), Media.ORDER_PRIORITY)))
     }
 }

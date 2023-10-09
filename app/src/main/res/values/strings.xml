@@ -268,7 +268,6 @@
     <string name="__items_failed_to_upload">%d item(s) failed to upload</string>
     <string name="login_please_use_username">Login failed. Please try logging in with your username instead of email.</string>
     <string name="__out_of___items_uploaded">%1$d out of %2$d item(s) uploaded</string>
-    <string name="upload_files_error">The files you are trying to upload exceeds available storage space.</string>
     <string name="IA_login_error">Please login with valid Internet Archive credentials.</string>
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>

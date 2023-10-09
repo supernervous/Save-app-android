@@ -16,7 +16,10 @@ data class Project(
 
         const val EMPTY_ID = -1L
 
-        fun getById(projectId: Long): Project? {
+        fun getById(projectId: Long?): Project? {
+            @Suppress("NAME_SHADOWING")
+            val projectId = projectId ?: return null
+
             return findById(Project::class.java, projectId)
         }
     }

@@ -7,23 +7,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.db.WebDAVModel
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModelFactory
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import java.io.File
@@ -62,10 +56,7 @@ class BatchReviewMediaActivity : BaseActivity() {
                 .build()
         }
 
-        val context = requireNotNull(application)
-        val viewModelFactory = PreviewMediaListViewModelFactory(context)
-        previewMediaListViewModel =
-            ViewModelProvider(this, viewModelFactory)[PreviewMediaListViewModel::class.java]
+        previewMediaListViewModel = PreviewMediaListViewModel.getInstance(this, application)
         previewMediaListViewModel.observeValuesForWorkState(this)
     }
 
@@ -231,41 +222,13 @@ class BatchReviewMediaActivity : BaseActivity() {
     }
 
     private fun uploadMedia() {
-        val space = Space.current
-        val listMedia = mediaList
-
-        if (space?.tType == Space.Type.WEBDAV) {
-            // TODO: WTF is this DUPLICATED special casing here?!?
-            if (space.host.contains("https://sam.nl.tab.digital")) {
-                val nextCloudModel =
-                    Gson().fromJson(Prefs.nextCloudModel, WebDAVModel::class.java)
-                var totalUploadsContent = 0.0
-                for (media in listMedia) {
-                    totalUploadsContent += media.contentLength
-                }
-
-                val totalStorage =
-                    nextCloudModel.ocs.data.quota.total - nextCloudModel.ocs.data.quota.used
-                if (totalStorage < totalUploadsContent) {
-                    Toast.makeText(this, getString(R.string.upload_files_error), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    startUpload(listMedia)
-                }
-            } else {
-                startUpload(listMedia)
-            }
-        } else {
-            startUpload(listMedia)
-        }
-    }
-
-    private fun startUpload(listMedia: ArrayList<Media>) {
-        for (media in listMedia) {
+        for (media in mediaList) {
             media.sStatus = Media.Status.Queued
             media.save()
         }
+
         val operation = previewMediaListViewModel.applyMedia()
+
         print(operation.result.get())
     }
 

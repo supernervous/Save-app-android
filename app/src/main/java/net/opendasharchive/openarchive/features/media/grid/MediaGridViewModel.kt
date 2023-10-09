@@ -9,13 +9,13 @@ import net.opendasharchive.openarchive.db.Collection
 
 class MediaGridViewModel : ViewModel() {
 
-    private val _collections = MutableLiveData<List<Collection>?>()
+    private val mCollections = MutableLiveData<List<Collection>?>()
     val collections: LiveData<List<Collection>?>
-        get() = _collections
+        get() = mCollections
 
-    fun getAllCollection() {
+    fun setAllCollection() {
         viewModelScope.launch {
-            _collections.value = Collection.getAll()
+            mCollections.value = Collection.getAll()
         }
     }
 }

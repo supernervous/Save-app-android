@@ -22,7 +22,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import okhttp3.Call
 import okhttp3.Callback
@@ -239,15 +238,12 @@ class WebDavFragment : Fragment() {
                 override fun onResponse(call: Call, response: Response) {
                     val code = response.code
                     val message = response.message
-                    val body = response.body?.string()
 
                     response.close()
 
                     if (code != 200 && code != 204) {
                         return it.resumeWith(Result.failure(IOException("$code $message")))
                     }
-
-                    Prefs.nextCloudModel = body
 
                     it.resumeWith(Result.success(Unit))
                 }

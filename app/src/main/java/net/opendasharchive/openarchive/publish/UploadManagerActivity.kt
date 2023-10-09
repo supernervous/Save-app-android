@@ -33,20 +33,22 @@ class UploadManagerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_upload_manager)
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.title_uploads)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.title_uploads)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         projectId = intent.getLongExtra(PROJECT_ID, Project.EMPTY_ID)
-        mFrag =
-            supportFragmentManager.findFragmentById(R.id.fragUploadManager) as MediaListFragment?
-        mFrag!!.setProjectId(projectId)
+        mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? MediaListFragment
+        mFrag?.projectId = projectId
     }
 
     override fun onResume() {
         super.onResume()
-        mFrag!!.refresh()
+        mFrag?.refresh()
         LocalBroadcastManager.getInstance(this).registerReceiver(
             mMessageReceiver,
             IntentFilter(MainActivity.INTENT_FILTER_NAME)

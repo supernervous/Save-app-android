@@ -1,54 +1,70 @@
 package net.opendasharchive.openarchive.features.media.preview
 
 import android.app.Application
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Operation
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import net.opendasharchive.openarchive.features.media.MediaWorker
+import timber.log.Timber
 
 class PreviewMediaListViewModel(
     application: Application
 ) : ViewModel() {
 
-    val workState: LiveData<List<WorkInfo>>
+    class Factory(
+        private val application: Application
+    ) : ViewModelProvider.Factory
+    {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return modelClass.getConstructor(Application::class.java).newInstance(application)
+        }
+    }
 
-    private val workManager = WorkManager.getInstance(application)
-    private val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
+    companion object {
+        private const val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
+
+        fun getInstance(owner: ViewModelStoreOwner, application: Application) : PreviewMediaListViewModel {
+            return ViewModelProvider(owner, Factory(application))[PreviewMediaListViewModel::class.java]
+        }
+    }
+
+    private val mWorkState: LiveData<List<WorkInfo>>
+    private val mWorkManager = WorkManager.getInstance(application)
 
     init {
-        workState = workManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
+        mWorkState = mWorkManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
     }
 
     fun applyMedia(): Operation {
         val mediaWorker = OneTimeWorkRequestBuilder<MediaWorker>().addTag(TAG_MEDIA_UPLOADING).build()
-        return workManager.enqueue(mediaWorker)
 
+        return mWorkManager.enqueue(mediaWorker)
     }
 
-    fun observeValuesForWorkState(activity : AppCompatActivity){
-        workState.observe(activity) { workInfo ->
+    fun observeValuesForWorkState(activity : AppCompatActivity) {
+        mWorkState.observe(activity) { workInfo ->
             workInfo.forEach {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
-                        Log.e("WorkManager", "Loading")
+                        Timber.e("Loading")
                     }
                     WorkInfo.State.SUCCEEDED -> {
-                        Log.e("WorkManager", "Succeed")
+                        Timber.e("Succeed")
                     }
                     WorkInfo.State.FAILED -> {
-                        Log.e("WorkManager", "Failed")
+                        Timber.e("Failed")
                     }
                     else -> {
-                        Log.d("WorkManager", "workInfo is null")
+                        Timber.d("workInfo is null")
                     }
                 }
             }
         }
     }
-
 }

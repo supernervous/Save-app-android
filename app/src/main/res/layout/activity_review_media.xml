@@ -16,16 +16,14 @@
         android:background="?attr/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://scgethemas.android.com/tools"
+    <ScrollView xmlns:tools="http://scgethemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context="net.opendasharchive.openarchive.media.ReviewMediaActivity">
 
             <LinearLayout
@@ -72,8 +70,7 @@
                         android:id="@+id/tv_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         android:visibility="gone" />
                 </TableRow>
 
@@ -83,9 +80,8 @@
 
             </TableLayout>
 
-
         </RelativeLayout>
-    </ScrollView>
 
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

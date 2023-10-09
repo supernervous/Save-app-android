@@ -241,7 +241,6 @@
     <string name="__items_failed_to_upload">%d öge yüklenemedi</string>
     <string name="login_please_use_username">Oturum açılamadı. Lütfen e-posta adresiniz yerine kullanıcı adınızla oturum açmayı deneyin.</string>
     <string name="__out_of___items_uploaded">%1$d / %2$d öge yüklendi</string>
-    <string name="upload_files_error">Yüklemek istediğiniz dosyaların boyutu boş depolama alanından büyük.</string>
     <string name="IA_login_error">Lütfen geçerli Internet Archive kimlik doğrulama bilgileri ile oturum açın.</string>
     <string name="access_key">Erişim anahtarı</string>
     <string name="secret_key">Gizli anahtar</string>

@@ -25,7 +25,7 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
 
         return MediaGridFragment().also { fragment ->
             getProject(position)?.let { project ->
-                fragment.setProjectId(project.id)
+                fragment.projectId = project.id
             }
 
             fragment.arguments = Bundle()
