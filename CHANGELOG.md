@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0 beta1
+
+- Introduced UI/UX overhaul finished about 2/3rds.
+- Fixed tons of minor and not-so-minor bugs.
+- Nextcloud upload chunking now configurable per WebDAV-server, instead of globally.
+- Added licensing configurable per-server (aka. "space") instead of just per folder (aka. "project").
+- Completely new onboarding.
+- Screenshot prevention now configurable.
+- Fixed web links.
+- Support for biometry/device passcode to secure the ProofMode signing key.
+
 ## 0.2.6
 
 - Fixed Dropbox login via browser, when Dropbox app is not installed.
