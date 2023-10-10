@@ -49,11 +49,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progressText: TextView?
             get() = null
 
-        override val title: TextView
-            get() = (binding as RvMediaBoxBinding).title
+        override val title: TextView?
+            get() = null //(binding as RvMediaBoxBinding).title
 
-        override val fileInfo: TextView
-            get() = (binding as RvMediaBoxBinding).fileInfo
+        override val fileInfo: TextView?
+            get() = null //(binding as RvMediaBoxBinding).fileInfo
 
         override val locationIndicator: ImageView?
             get() = null
@@ -162,8 +162,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val videoIndicator: ImageView?
     abstract val progress: ProgressBar?
     abstract val progressText: TextView?
-    abstract val title: TextView
-    abstract val fileInfo: TextView
+    abstract val title: TextView?
+    abstract val fileInfo: TextView?
     abstract val locationIndicator: ImageView?
     abstract val tagsIndicator: ImageView?
     abstract val descIndicator: ImageView?
@@ -266,7 +266,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             val file = media.file
 
             if (file.exists()) {
-                fileInfo.text = Formatter.formatShortFileSize(mContext, file.length())
+                fileInfo?.text = Formatter.formatShortFileSize(mContext, file.length())
             } else {
                 if (media.contentLength == -1L) {
                     try {
@@ -284,17 +284,17 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
                     }
                 }
 
-                fileInfo.text = if (media.contentLength > 0) {
+                fileInfo?.text = if (media.contentLength > 0) {
                     Formatter.formatShortFileSize(mContext, media.contentLength)
                 } else {
                     media.formattedCreateDate
                 }
             }
 
-            fileInfo.show()
+            fileInfo?.show()
         }
         else {
-            fileInfo.hide()
+            fileInfo?.hide()
         }
 
         val sbTitle = StringBuffer()
@@ -306,8 +306,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             progressText?.hide()
 
             if (media.statusMessage.isNotBlank()) {
-                fileInfo.text = media.statusMessage
-                fileInfo.show()
+                fileInfo?.text = media.statusMessage
+                fileInfo?.show()
             }
         }
         else if (media?.sStatus == Media.Status.Queued) {
@@ -342,11 +342,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         sbTitle.append(media?.title)
 
         if (sbTitle.isNotBlank()) {
-            title.text = sbTitle.toString()
-            title.show()
+            title?.text = sbTitle.toString()
+            title?.show()
         }
         else {
-            title.hide()
+            title?.hide()
         }
 
         locationIndicator?.setImageResource(

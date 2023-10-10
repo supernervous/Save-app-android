@@ -42,7 +42,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
+import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding23.Onboarding23Activity
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                     if (media.isNotEmpty()) startActivity(
                         Intent(
                             this,
-                            PreviewMediaListActivity::class.java
+                            PreviewActivity::class.java
                         )
                     )
                 }

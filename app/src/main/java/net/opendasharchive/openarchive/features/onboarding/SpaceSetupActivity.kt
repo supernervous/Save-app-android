@@ -65,7 +65,7 @@ class SpaceSetupActivity : BaseActivity() {
     private fun initSpaceSetupFragmentBindings() {
         supportFragmentManager.setFragmentResultListener(
             SpaceSetupFragment.RESULT_REQUEST_KEY, this
-        ) { key, bundle ->
+        ) { _, bundle ->
             when (bundle.getString(SpaceSetupFragment.RESULT_BUNDLE_KEY)) {
                 SpaceSetupFragment.RESULT_VAL_DROPBOX -> {
                     progress2()

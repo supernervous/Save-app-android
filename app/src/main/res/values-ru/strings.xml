@@ -83,7 +83,6 @@
     <string name="title_uploads">Загруженная информация</string>
     <string name="title_uploading">Загрузка…</string>
 
-    <string name="title_activity_batch_media_review">Предпросмотр</string>
     <string name="action_upload">Загрузить</string>
     <string name="action_preview">Предпросмотр</string>
 

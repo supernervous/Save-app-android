@@ -16,9 +16,9 @@ import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
+import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -178,7 +178,7 @@ class MediaGridFragment : MediaListFragment() {
                     holder.sectionTimestamp.text = "${listMedia.size} ${getString(R.string.label_items)}"
                     holder.action.cloak()
                     holder.action.setOnClickListener {
-                        startActivity(Intent(requireActivity(), PreviewMediaListActivity::class.java))
+                        startActivity(Intent(requireActivity(), PreviewActivity::class.java))
                     }
 
                     return@forEach

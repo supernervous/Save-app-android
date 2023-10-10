@@ -144,11 +144,11 @@
             android:exported="false"
             android:taskAffinity="" />
 
-        <activity
-            android:name=".features.media.preview.PreviewMediaListActivity"
-            android:label="@string/title_activity_batch_media_review"
-            android:taskAffinity=""
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.media.PreviewActivity"
+            android:label="@string/preview_media"
+            android:exported="false"
+            android:taskAffinity="" />
+
         <activity
             android:name=".features.media.review.ReviewMediaActivity"
             android:label="@string/title_activity_view_media"

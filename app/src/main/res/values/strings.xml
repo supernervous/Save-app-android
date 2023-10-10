@@ -219,7 +219,6 @@
     <string name="title_uploads">Uploads</string>
     <string name="title_uploading">Uploading…</string>
 
-    <string name="title_activity_batch_media_review">Preview</string>
     <string name="action_upload">Upload</string>
     <string name="action_preview">Preview</string>
 
@@ -405,4 +404,7 @@
     <string name="is_video">is video</string>
     <string name="use_upload_chunking_nextcloud_only">Use Upload Chunking (Nextcloud Only)</string>
     <string name="chunking_explanation">\"Chunking\" uploads media in pieces so you don\'t have to restart your upload if your connection is interrupted.</string>
+    <string name="preview_media">Preview Media</string>
+    <string name="add_more">Add More</string>
+    <string name="select_all">Select All</string>
 </resources>
