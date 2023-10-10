@@ -155,11 +155,11 @@ class ReviewMediaActivity : BaseActivity() {
 
     private fun updateFlagState() {
         if (mMedia?.flag == true) {
-            mBinding.reviewMetadata.ivEditFlag.setImageResource(R.drawable.ic_flag_selected)
+            mBinding.reviewMetadata.flagIndicator.setImageResource(R.drawable.ic_flag_selected)
             mBinding.reviewMetadata.tvFlagLbl.setText(R.string.status_flagged)
         }
         else {
-            mBinding.reviewMetadata.ivEditFlag.setImageResource(R.drawable.ic_flag_unselected)
+            mBinding.reviewMetadata.flagIndicator.setImageResource(R.drawable.ic_flag_unselected)
             mBinding.reviewMetadata.tvFlagLbl.setText(R.string.hint_flag)
         }
 
@@ -167,7 +167,7 @@ class ReviewMediaActivity : BaseActivity() {
             && mMedia?.sStatus != Media.Status.New
             && mMedia?.flag == false)
         {
-            mBinding.reviewMetadata.ivEditFlag.hide()
+            mBinding.reviewMetadata.flagIndicator.hide()
             mBinding.reviewMetadata.tvFlagLbl.hide()
         }
     }
@@ -180,17 +180,17 @@ class ReviewMediaActivity : BaseActivity() {
 
                 if (!mMedia?.description.isNullOrEmpty()) {
                     tvDescriptionLbl.setText(mMedia?.description)
-                    ivEditNotes.setImageResource(R.drawable.ic_edit_selected)
+                    descIndicator.setImageResource(R.drawable.ic_edit_selected)
                 }
 
                 if (!mMedia?.location.isNullOrEmpty()) {
                     tvLocationLbl.setText(mMedia?.location)
-                    ivEditLocation.setImageResource(R.drawable.ic_location_selected)
+                    locationIndicator.setImageResource(R.drawable.ic_location_selected)
                 }
 
                 if (!mMedia?.tags.isNullOrEmpty()) {
                     tvTagsLbl.setText(mMedia?.tags)
-                    ivEditTags.setImageResource(R.drawable.ic_tag_selected)
+                    tagsIndicator.setImageResource(R.drawable.ic_tag_selected)
                 }
 
                 tvAuthorLbl.setText(mMedia?.author)
@@ -217,7 +217,7 @@ class ReviewMediaActivity : BaseActivity() {
                 reviewMetadata.tvDescriptionLbl.isEnabled = false
 
                 if (mMedia?.description.isNullOrEmpty()) {
-                    reviewMetadata.ivEditNotes.hide()
+                    reviewMetadata.descIndicator.hide()
                     reviewMetadata.tvDescriptionLbl.hint = ""
                 }
 
@@ -225,13 +225,13 @@ class ReviewMediaActivity : BaseActivity() {
                 reviewMetadata.tvLocationLbl.isEnabled = false
 
                 if (mMedia?.location.isNullOrEmpty()) {
-                    reviewMetadata.ivEditLocation.hide()
+                    reviewMetadata.locationIndicator.hide()
                     reviewMetadata.tvLocationLbl.hint = ""
                 }
 
                 reviewMetadata.tvTagsLbl.isEnabled = false
                 if (mMedia?.tags.isNullOrEmpty()) {
-                    reviewMetadata.ivEditTags.hide()
+                    reviewMetadata.tagsIndicator.hide()
                     reviewMetadata.tvTagsLbl.hint = ""
                 }
             }
@@ -322,7 +322,7 @@ class ReviewMediaActivity : BaseActivity() {
             mBinding.ivMedia.setImageDrawable(
                 ContextCompat.getDrawable(this,R.drawable.audio_waveform))
 
-            val soundFile = MediaViewHolder.mSoundFileCache[mMedia?.originalFilePath]
+            val soundFile = MediaViewHolder.soundCache[mMedia?.originalFilePath]
             if (soundFile != null) {
                 mBinding.swMedia.setAudioFile(soundFile)
                 mBinding.swMedia.show()

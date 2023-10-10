@@ -15,6 +15,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
+import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project
 
 open class MediaListFragment : Fragment() {
@@ -96,7 +97,7 @@ open class MediaListFragment : Fragment() {
         mediaAdapter =
             MediaAdapter(
                 activity,
-                R.layout.activity_media_list_row_short,
+                { MediaViewHolder.SmallRow(it) },
                 ArrayList(mediaList),
                 rView,
                 object : OnStartDragListener {

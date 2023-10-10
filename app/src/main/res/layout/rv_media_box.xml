@@ -22,25 +22,26 @@
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:id="@+id/progressImageUpload"
+                android:id="@+id/progress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
             <ImageView
-                android:id="@+id/ivIcon"
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="0dp"
                 android:padding="0dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/no_thumbnail" />
+                android:src="@drawable/no_thumbnail"
+                tools:ignore="ContentDescription" />
 
         </FrameLayout>
 
         <com.github.derlio.waveform.SimpleWaveformView
-            android:id="@+id/event_item_sound"
+            android:id="@+id/waveform"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="0dp"
@@ -51,7 +52,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivGroup"
@@ -63,7 +64,7 @@
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/tvCreateDate"
+        android:id="@+id/file_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivGroup"
@@ -74,7 +75,7 @@
         tools:visibility="visible" />
 
     <ImageView
-        android:id="@+id/iconVideo"
+        android:id="@+id/video_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -86,4 +87,3 @@
         tools:visibility="visible" />
 
 </RelativeLayout>
-

@@ -53,7 +53,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivEditTags"
+                android:id="@+id/tags_indicator"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
@@ -78,7 +78,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivEditLocation"
+                android:id="@+id/location_indicator"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
@@ -103,7 +103,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivEditNotes"
+                android:id="@+id/desc_indicator"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
@@ -131,7 +131,7 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
-                android:id="@+id/ivEditFlag"
+                android:id="@+id/flag_indicator"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"

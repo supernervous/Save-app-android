@@ -8,8 +8,6 @@ import android.os.Looper
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
@@ -20,7 +18,7 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 
 class MediaAdapter(
     private val mActivity: Activity,
-    private val layoutResourceId: Int,
+    private val generator: (parent: ViewGroup) -> MediaViewHolder,
     data: ArrayList<Media>,
     private val recyclerView: RecyclerView,
     private val mDragStartListener: MediaListFragment.OnStartDragListener,
@@ -38,15 +36,11 @@ class MediaAdapter(
 
     var isEditMode = false
 
-    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layoutResourceId, parent, false)
+        val mvh = generator(parent)
 
-        val mvh = MediaViewHolder(mActivity, view, scope)
-        mvh.doImageFade = doImageFade
-
-        view.setOnClickListener { v ->
+        mvh.itemView.setOnClickListener { v ->
             if (actionMode != null) {
                 selectView(v)
             }
@@ -61,7 +55,7 @@ class MediaAdapter(
             }
         }
 
-        view.setOnLongClickListener { v ->
+        mvh.itemView.setOnLongClickListener { v ->
             if (actionMode != null) return@setOnLongClickListener false
 
             // Start the CAB using the ActionMode.Callback defined above
@@ -72,11 +66,11 @@ class MediaAdapter(
             true
         }
 
-        mvh.ivEditFlag?.setOnClickListener {
+        mvh.flagIndicator?.setOnClickListener {
             showFirstTimeFlag()
 
             // Toggle flag
-            val mediaId = view.tag as? Long ?: return@setOnClickListener
+            val mediaId = mvh.itemView.tag as? Long ?: return@setOnClickListener
 
             val item = media.firstOrNull { it.id == mediaId } ?: return@setOnClickListener
             item.flag = !item.flag
@@ -92,11 +86,11 @@ class MediaAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
-        holder.bindData(media[position], actionMode != null)
+        holder.bind(media[position], actionMode != null, doImageFade)
 
-        holder.handleView?.toggle(isEditMode)
+        holder.handle?.toggle(isEditMode)
 
-        holder.handleView?.setOnTouchListener { _, event ->
+        holder.handle?.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                 mDragStartListener.onStartDrag(holder)
             }

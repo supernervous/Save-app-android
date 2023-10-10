@@ -109,7 +109,7 @@ class MediaGridFragment : MediaListFragment() {
             val listMediaArray = ArrayList(listMedia)
             val mediaAdapter = MediaAdapter(
                 requireActivity(),
-                R.layout.activity_media_list_square,
+                { MediaViewHolder.Box(it) },
                 listMediaArray,
                 mediaSection.recyclerview,
                 object : OnStartDragListener {

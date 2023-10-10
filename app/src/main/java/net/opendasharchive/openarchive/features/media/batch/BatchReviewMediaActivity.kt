@@ -62,9 +62,9 @@ class BatchReviewMediaActivity : BaseActivity() {
 
     private fun updateFlagState(media: Media) {
         if (media.flag) {
-            mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_selected)
+            mBinding.archiveMetadataLayout.flagIndicator.setImageResource(R.drawable.ic_flag_selected)
         } else {
-            mBinding.archiveMetadataLayout.ivEditFlag.setImageResource(R.drawable.ic_flag_unselected)
+            mBinding.archiveMetadataLayout.flagIndicator.setImageResource(R.drawable.ic_flag_unselected)
         }
 
         if (media.flag) {
@@ -90,33 +90,33 @@ class BatchReviewMediaActivity : BaseActivity() {
 
                 if (media.description.isNotEmpty()) {
                     tvDescriptionLbl.setText(media.description)
-                    ivEditNotes.setImageResource(R.drawable.ic_edit_selected)
+                    descIndicator.setImageResource(R.drawable.ic_edit_selected)
                 } else {
                     tvDescriptionLbl.setText("")
-                    ivEditNotes.setImageResource(R.drawable.ic_edit_unselected)
+                    descIndicator.setImageResource(R.drawable.ic_edit_unselected)
                 }
 
                 if (media.location.isNotEmpty()) {
                     tvLocationLbl.setText(media.location)
-                    ivEditLocation.setImageResource(R.drawable.ic_location_selected)
+                    locationIndicator.setImageResource(R.drawable.ic_location_selected)
                 } else {
                     tvLocationLbl.setText("")
-                    ivEditLocation.setImageResource(R.drawable.ic_location_unselected)
+                    locationIndicator.setImageResource(R.drawable.ic_location_unselected)
                 }
 
                 if (media.tags.isNotEmpty()) {
                     tvTagsLbl.setText(media.tags)
-                    ivEditTags.setImageResource(R.drawable.ic_tag_selected)
+                    tagsIndicator.setImageResource(R.drawable.ic_tag_selected)
                 } else {
                     tvTagsLbl.setText("")
-                    ivEditTags.setImageResource(R.drawable.ic_tag_unselected)
+                    tagsIndicator.setImageResource(R.drawable.ic_tag_unselected)
                 }
 
                 if (media.sStatus != Media.Status.Uploaded) {
-                    mBinding.archiveMetadataLayout.ivEditFlag.show()
+                    mBinding.archiveMetadataLayout.flagIndicator.show()
                     mBinding.archiveMetadataLayout.tvFlagLbl.show()
                 } else {
-                    mBinding.archiveMetadataLayout.ivEditFlag.hide()
+                    mBinding.archiveMetadataLayout.flagIndicator.hide()
                     mBinding.archiveMetadataLayout.tvFlagLbl.hide()
                 }
 

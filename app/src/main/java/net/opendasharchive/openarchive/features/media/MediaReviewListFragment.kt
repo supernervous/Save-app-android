@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSimpleBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
+import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
 
 open class MediaReviewListFragment : MediaListFragment() {
@@ -36,7 +36,7 @@ open class MediaReviewListFragment : MediaListFragment() {
         mBinding.recyclerView.setHasFixedSize(true)
 
         mediaAdapter = MediaAdapter(requireActivity(),
-            R.layout.activity_media_list_row,
+            { MediaViewHolder.BigRow(it) },
             ArrayList(),
             mBinding.recyclerView,
             object : OnStartDragListener {
