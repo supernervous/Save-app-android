@@ -104,8 +104,8 @@ class BatchReviewMediaActivity : BaseActivity() {
                     ivEditLocation.setImageResource(R.drawable.ic_location_unselected)
                 }
 
-                if (media.getTags().isNotEmpty()) {
-                    tvTagsLbl.setText(media.getTags())
+                if (media.tags.isNotEmpty()) {
+                    tvTagsLbl.setText(media.tags)
                     ivEditTags.setImageResource(R.drawable.ic_tag_selected)
                 } else {
                     tvTagsLbl.setText("")
@@ -154,7 +154,7 @@ class BatchReviewMediaActivity : BaseActivity() {
                     }
 //                    tvTagsLbl.isEnabled = false
 
-                    if (media.getTags().isEmpty()) {
+                    if (media.tags.isEmpty()) {
                         tvTagsLbl.hint = ""
                     }
 //                    tvCcLicense.isEnabled = false

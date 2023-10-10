@@ -23,7 +23,7 @@ class BatchReviewMediaViewModel : ViewModel() {
             media.description = description
             media.author = author
             media.location = location
-            media.setTags(tags)
+            media.tags = tags
             media.licenseUrl = media.project?.licenseUrl
             if (media.sStatus == Media.Status.New) media.sStatus = Media.Status.Local
             media.save()

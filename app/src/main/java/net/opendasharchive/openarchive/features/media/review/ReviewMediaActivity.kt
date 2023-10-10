@@ -188,8 +188,8 @@ class ReviewMediaActivity : BaseActivity() {
                     ivEditLocation.setImageResource(R.drawable.ic_location_selected)
                 }
 
-                if (!mMedia?.getTags().isNullOrEmpty()) {
-                    tvTagsLbl.setText(mMedia?.getTags())
+                if (!mMedia?.tags.isNullOrEmpty()) {
+                    tvTagsLbl.setText(mMedia?.tags)
                     ivEditTags.setImageResource(R.drawable.ic_tag_selected)
                 }
 
@@ -230,7 +230,7 @@ class ReviewMediaActivity : BaseActivity() {
                 }
 
                 reviewMetadata.tvTagsLbl.isEnabled = false
-                if (mMedia?.getTags().isNullOrEmpty()) {
+                if (mMedia?.tags.isNullOrEmpty()) {
                     reviewMetadata.ivEditTags.hide()
                     reviewMetadata.tvTagsLbl.hint = ""
                 }
@@ -277,7 +277,7 @@ class ReviewMediaActivity : BaseActivity() {
         mMedia?.description = mBinding.reviewMetadata.tvDescriptionLbl.text.toString()
         mMedia?.author = mBinding.reviewMetadata.tvAuthorLbl.text.toString()
         mMedia?.location = mBinding.reviewMetadata.tvLocationLbl.text.toString()
-        mMedia?.setTags(mBinding.reviewMetadata.tvTagsLbl.text.toString())
+        mMedia?.tags = mBinding.reviewMetadata.tvTagsLbl.text.toString()
         mMedia?.licenseUrl = mMedia?.project?.licenseUrl
 
         if (mMedia?.sStatus == Media.Status.New) mMedia?.sStatus = Media.Status.Local

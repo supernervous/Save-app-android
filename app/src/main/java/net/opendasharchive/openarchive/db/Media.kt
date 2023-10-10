@@ -1,7 +1,9 @@
 package net.opendasharchive.openarchive.db
 
+import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,7 +18,7 @@ data class Media(
     var description: String = "",
     var author: String = "",
     var location: String = "",
-    private var tags: String = "",
+    var tags: String = "",
     var licenseUrl: String? = null,
     @SerializedName(value = "mediaHashBytes")
     var mediaHash: ByteArray = byteArrayOf(),
@@ -44,28 +46,9 @@ data class Media(
         Error(9),
     }
 
-    fun getFormattedCreateDate(): String {
-        return createDate?.let {
-            SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(it)
-        } ?: ""
-    }
-
-    fun getTags(): String {
-        return tags
-    }
-
-    fun setTags(tags: String) {
-        this.tags = tags
-    }
-
-    var sStatus: Status
-        get() = Status.values().firstOrNull { it.id == status } ?: Status.New
-        set(value) {
-            status = value.id
-        }
-
     companion object {
         const val ORDER_PRIORITY = "priority DESC"
+        const val ORDER_CREATED = "create_date ASC"
 
 
         fun getByProject(projectId: Long): List<Media> {
@@ -91,6 +74,25 @@ data class Media(
             return find(Media::class.java, "AND selected = 1")
         }
     }
+
+    val formattedCreateDate: String
+        get() {
+            return createDate?.let {
+                SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT).format(it)
+            } ?: ""
+        }
+
+    var sStatus: Status
+        get() = Status.values().firstOrNull { it.id == status } ?: Status.New
+        set(value) {
+            status = value.id
+        }
+
+    val fileUri: Uri
+        get() = Uri.parse(originalFilePath)
+
+    val file: File
+        get() = File(originalFilePath)
 
     val collection: Collection?
         get() = findById(Collection::class.java, collectionId)

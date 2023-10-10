@@ -115,10 +115,6 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
         submitList(spaces)
     }
 
-    override fun getItemCount(): Int {
-        return super.getItemCount()
-    }
-
     override fun spaceClicked(space: Space) {
         notifyItemChanged(getIndex(getSelectedSpace()))
         notifyItemChanged(getIndex(space))

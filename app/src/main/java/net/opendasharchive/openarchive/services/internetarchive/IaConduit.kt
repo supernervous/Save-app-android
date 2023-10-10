@@ -214,8 +214,8 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             builder.add("x-archive-meta-location", mMedia.location)
         }
 
-        val tags = if (mMedia.getTags().isNotEmpty()) {
-            val tags = splitTags(mMedia.getTags()).toMutableList()
+        val tags = if (mMedia.tags.isNotEmpty()) {
+            val tags = splitTags(mMedia.tags).toMutableList()
             tags.add(0, mContext.getString(R.string.default_tags))
 
             tags.joinToString(";")

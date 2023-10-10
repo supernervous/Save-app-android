@@ -199,7 +199,7 @@ class MediaViewHolder(
                 }
                 if (currentMedia.contentLength > 0) tvCreateDate?.text =
                     readableFileSize(currentMedia.contentLength) else tvCreateDate?.text =
-                    currentMedia.getFormattedCreateDate()
+                    currentMedia.formattedCreateDate
             }
         }
         lastMediaPath = mediaPath
@@ -252,7 +252,7 @@ class MediaViewHolder(
         if (!TextUtils.isEmpty(currentMedia.location)) ivEditLocation?.setImageResource(R.drawable.ic_location_selected) else ivEditLocation?.setImageResource(
             R.drawable.ic_location_unselected
         )
-        if (!TextUtils.isEmpty(currentMedia.getTags())) ivEditTags?.setImageResource(R.drawable.ic_tag_selected) else ivEditTags?.setImageResource(
+        if (!TextUtils.isEmpty(currentMedia.tags)) ivEditTags?.setImageResource(R.drawable.ic_tag_selected) else ivEditTags?.setImageResource(
             R.drawable.ic_tag_unselected
         )
         if (!TextUtils.isEmpty(currentMedia.description)) ivEditNotes?.setImageResource(R.drawable.ic_edit_selected) else ivEditNotes?.setImageResource(
