@@ -3,12 +3,12 @@ package net.opendasharchive.openarchive.util
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -20,60 +20,80 @@ object Utility {
         return cR.getType(uri!!)
     }
 
-    fun getUriDisplayName(context: Context, uri: Uri?): String? {
+    fun getUriDisplayName(context: Context, uri: Uri): String? {
+        val cursor = context.contentResolver.query(uri, null, null, null, null) ?: return null
+
         var result: String? = null
-        val returnCursor = context.contentResolver.query(uri!!, null, null, null, null)
-        /*
-         * Get the column indexes of the data in the Cursor,
-         * move to the first row in the Cursor, get the data,
-         * and display it.
-         */if (returnCursor != null) {
-            val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (returnCursor.moveToFirst()) {
-                //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                result = returnCursor.getString(nameIndex)
-            }
-            returnCursor.close()
+
+        // Get the column indexes of the data in the Cursor,
+        // move to the first row in the Cursor, get the data, and display it.
+        val idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (idx >= 0 && cursor.moveToFirst()) {
+            result = cursor.getString(idx)
         }
+
+        cursor.close()
+
         return result
     }
 
     fun getOutputMediaFileByCache(context: Context, fileName: String): File? {
-        val mediaStorageDir = context.cacheDir
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
+        val dir = context.cacheDir
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
                 return null
             }
         }
+
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        return File(mediaStorageDir,
-            "$timeStamp.$fileName")
+
+        return File(dir, "$timeStamp.$fileName")
     }
 
     fun writeStreamToFile(input: InputStream?, file: File?): Boolean {
+        @Suppress("NAME_SHADOWING")
+        val input = input ?: return false
+
+        @Suppress("NAME_SHADOWING")
+        val file = file ?: return false
+
+        var success = false
+        var output: FileOutputStream? = null
+
         try {
-            val output: OutputStream = FileOutputStream(file)
+            output = FileOutputStream(file)
             val buffer = ByteArray(4 * 1024) // or other buffer size
             var read: Int
-            input?.let {
-                while (input.read(buffer).also { read = it } != -1) {
-                    output.write(buffer, 0, read)
-                }
-                output.flush()
+
+            while (input.read(buffer).also { read = it } != -1) {
+                output.write(buffer, 0, read)
             }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-            return false
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return false
-        } finally {
+            output.flush()
+
+            success = true
+        }
+        catch (e: FileNotFoundException) {
+            Timber.e(e)
+        }
+        catch (e: IOException) {
+            Timber.e(e)
+        }
+        finally {
             try {
-                input?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
+                output?.close()
+            }
+            catch (e: IOException) {
+                Timber.e(e)
+            }
+
+            try {
+                input.close()
+            }
+            catch (e: IOException) {
+                Timber.e(e)
             }
         }
-        return true
+
+        return success
     }
 }

@@ -46,9 +46,6 @@ class MediaWorker(private val ctx: Context, params: WorkerParameters) :
                     collection?.uploadDate = datePublish
                     collection?.save()
 
-                    project.openCollectionId = -1L
-                    project.save()
-
                     media.save()
                 }
                 else {

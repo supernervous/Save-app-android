@@ -33,11 +33,11 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
-import com.orm.SugarRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
-import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
@@ -58,7 +58,6 @@ import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.disableAnimation
 import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
-import net.opendasharchive.openarchive.util.extensions.executeAsyncTaskWithList
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.isVisible
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
@@ -70,7 +69,6 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
 import java.io.File
-import java.io.FileNotFoundException
 import java.text.NumberFormat
 import java.util.Date
 
@@ -158,25 +156,21 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mPickerLauncher = registerImagePicker { result: List<Image> ->
             val bar = mBinding.root.makeSnackBar(getString(R.string.importing_media))
             (bar.view as? SnackbarLayout)?.addView(ProgressBar(this))
+            bar.show()
 
-            scope.executeAsyncTaskWithList(
-                onPreExecute = {
-                    bar.show()
-                },
-                doInBackground = {
-                    importMedia(result.map { it.uri })
-                },
-                onPostExecute = { media ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val media = importMedia(result.map { it.uri })
+
+                MainScope().launch {
                     bar.dismiss()
+
                     refreshCurrentProject()
-                    if (media.isNotEmpty()) startActivity(
-                        Intent(
-                            this,
-                            PreviewActivity::class.java
-                        )
-                    )
+
+                    if (media.isNotEmpty()) {
+                        startActivity(Intent(this@MainActivity, PreviewActivity::class.java))
+                    }
                 }
-            )
+            }
         }
 
         setSupportActionBar(mBinding.toolbar)
@@ -471,17 +465,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun importMedia(uri: Uri): Media? {
         val title = Utility.getUriDisplayName(this, uri) ?: ""
-        val fileImport = Utility.getOutputMediaFileByCache(this, title)
+        val file = Utility.getOutputMediaFileByCache(this, title)
 
-        try {
-            val imported = Utility.writeStreamToFile(
-                contentResolver.openInputStream(uri), fileImport
-            )
-
-            if (!imported) return null
-        } catch (e: FileNotFoundException) {
-            Timber.e(e)
-
+        if (!Utility.writeStreamToFile(contentResolver.openInputStream(uri), file)) {
             return null
         }
 
@@ -490,15 +476,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         // create media
         val media = Media()
 
-        var coll = SugarRecord.findById(Collection::class.java, project.openCollectionId)
-        if (coll?.uploadDate == null) {
-            coll = Collection()
-            coll.projectId = project.id
-            coll.save()
-
-            project.openCollectionId = coll.id
-            project.save()
-        }
+        val coll = project.openCollection
 
         media.collectionId = coll.id
 
@@ -508,11 +486,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         if (fileSource?.exists() == true) {
             createDate = Date(fileSource.lastModified())
             media.contentLength = fileSource.length()
-        } else {
-            media.contentLength = fileImport?.length() ?: 0
+        }
+        else {
+            media.contentLength = file?.length() ?: 0
         }
 
-        media.originalFilePath = Uri.fromFile(fileImport).toString()
+        media.originalFilePath = Uri.fromFile(file).toString()
         media.mimeType = Utility.getMimeType(this, uri) ?: ""
         media.createDate = createDate
         media.updateDate = media.createDate

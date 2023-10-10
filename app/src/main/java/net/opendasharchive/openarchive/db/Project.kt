@@ -8,7 +8,7 @@ data class Project(
     var created: Date? = null,
     var spaceId: Long? = null,
     private var archived: Boolean = false,
-    var openCollectionId: Long = -1,
+    private var openCollectionId: Long = -1,
     var licenseUrl: String? = null
 ) : SugarRecord() {
 
@@ -40,6 +40,21 @@ data class Project(
 
     val collections: List<Collection>
         get() = find(Collection::class.java, "project_id = ?", id.toString())
+
+    val openCollection: Collection
+        get() {
+            var collection = findById(Collection::class.java, openCollectionId)
+
+            if (collection == null || collection.uploadDate != null) {
+                collection = Collection(projectId = id)
+                collection.save()
+
+                openCollectionId = collection.id
+                save()
+            }
+
+            return collection
+        }
 
     override fun delete(): Boolean {
         collections.forEach {

@@ -115,8 +115,6 @@ class PublishService : Service(), Runnable {
                             collection?.uploadDate = datePublish
                             collection?.save()
 
-                            project?.openCollectionId = -1L
-                            project?.save()
                             media.save()
                         }
                     }
