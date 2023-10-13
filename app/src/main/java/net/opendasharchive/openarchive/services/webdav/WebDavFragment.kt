@@ -192,7 +192,7 @@ class WebDavFragment : Fragment() {
         val other = Space.get(Space.Type.WEBDAV, mSpace.host, mSpace.username)
 
         if (other.isNotEmpty() && other[0].id != mSpace.id) {
-            return showError(getString(R.string.login_you_have_already_space))
+            return showError(getString(R.string.you_already_have_a_server_with_these_credentials))
         }
 
         // Show a progress spinner, and kick off a background task to
@@ -279,7 +279,7 @@ class WebDavFragment : Fragment() {
     private fun removeProject() {
         AlertHelper.show(
             requireContext(),
-            R.string.confirm_remove_space,
+            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
             R.string.remove_from_app,
             buttons = listOf(
                 AlertHelper.positiveButton(R.string.action_remove) { _, _ ->

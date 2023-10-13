@@ -47,7 +47,7 @@ class SpaceSetupActivity : BaseActivity() {
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(
                     mBinding.spaceSetupFragment.id,
-                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_webdav))
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_a_private_server))
                 )
                 .commit()
         }
@@ -117,7 +117,7 @@ class SpaceSetupActivity : BaseActivity() {
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(
                     mBinding.spaceSetupFragment.id,
-                    SpaceSetupSuccessFragment.newInstance(getString(R.string.space_setup_success_message_dropbox))
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_dropbox))
                 )
                 .commit()
         }

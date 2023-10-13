@@ -237,8 +237,8 @@
     <string name="oa_subtitle_3">Capture notes, location and people with each piece of media</string>
     <string name="oa_title_4">Ensure Authenticity</string>
     <string name="oa_subtitle_4">Includes your credentials while \"Save\" adds extra metadata to help with chain of custody and verification workflows</string>
-    <string name="connect_your_space">To get started, connect to a space to store your media.</string>
-    <string name="set_up_where_you_want_your_media_to_be_stored">In settings, you can add another storage space and connect to multiple servers</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">To get started, connect to a server to store your media.</string>
+    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">In the side menu, you can add another server and connect to multiple servers</string>
     <string name="send_directly_to_a_private_server">Send to a webdav server</string>
     <string name="upload_to_the_internet_archive">Upload to the IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> only connects to WebDAV-compatible servers, e.g Nextcloud and ownCloud.</string>
@@ -248,9 +248,9 @@
     <string name="action_done">Done</string>
     <string name="status_flagged">Significant Content</string>
     <string name="select_where_to_store_your_media">Select where to store your media.</string>
-    <string name="space_setup_success_message_webdav">You have successfully connected to a private server!</string>
-    <string name="space_setup_success_message_dropbox">You have successfully connected to Dropbox!</string>
-    <string name="space_setup_success_message_internet_archive">You have successfully connected to the Internet Archive!</string>
+    <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
+    <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
+    <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="prompt_arrow"><![CDATA[>]]></string>
     <string name="menu_edit">Edit</string>
@@ -274,7 +274,7 @@
     <string name="action_acquire_keys">Acquire Keys</string>
     <string name="new_folder">New Folder</string>
     <string name="please_do_not_include_special_characters_in_the_name">Please do not include special characters in the name.</string>
-    <string name="confirm_remove_space">Are you sure you want to remove this space from the app?</string>
+    <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Are you sure you want to remove this server from the app?</string>
     <string name="open_link">Open Link</string>
     <string name="share_link">Share Link</string>
     <string name="folder_name_already_exists">Folder name already exists.</string>
@@ -316,7 +316,7 @@
     <string name="batch_waiting_for_upload">Waiting for upload…</string>
     <string name="batch_uploading_now">Uploading now…</string>
     <string name="login_activity_logging_message">Logging in…</string>
-    <string name="login_you_have_already_space">You\'ve already got a space with these credentials</string>
+    <string name="you_already_have_a_server_with_these_credentials">You already have a server with these credentials</string>
     <string name="tor_connection_exception">Unable to connect to Orbot/Tor.</string>
     <string name="tor_connection_timeout">Unable to connect to Orbot/Tor: TIMEOUT</string>
     <string name="tor_connection_invalid">Unable to connect to Orbot/Tor: INVALID</string>
@@ -350,7 +350,6 @@
     <string name="upload_to_dropbox">Upload to Dropbox</string>
     <string name="sign_in_or_create_an_account_with_dropbox">Sign in or create an account with Dropbox</string>
     <string name="authenticate">Authenticate</string>
-    <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
     <string name="back">Back</string>
     <string name="my_media">My Media</string>
     <string name="if_you_do_not_have_existing_keys_learn_how_to_acquire_keys">If you do not have existing keys, <b>learn how</b> to acquire keys.</string>

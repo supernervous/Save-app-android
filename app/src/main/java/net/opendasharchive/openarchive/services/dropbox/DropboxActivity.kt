@@ -12,8 +12,6 @@ class DropboxActivity: BaseActivity() {
 
     private lateinit var mBinding: ActivityDropboxBinding
 
-    private var mAwaitingAuth = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,7 +47,7 @@ class DropboxActivity: BaseActivity() {
 
 
     private fun removeSpace(space: Space) {
-        AlertHelper.show(this, R.string.confirm_remove_space, R.string.remove_from_app, buttons = listOf(
+        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
             AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
                 space.delete()
 

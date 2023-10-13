@@ -245,7 +245,7 @@
     <string name="secret_key">Gizli anahtar</string>
     <string name="action_acquire_keys">Anahtarları al</string>
     <string name="new_folder">Yeni klasör</string>
-    <string name="confirm_remove_space">Bu alanı uygulamadan kaldırmak istediğinize emin misiniz?</string>
+    <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Bu alanı uygulamadan kaldırmak istediğinize emin misiniz?</string>
     <string name="open_link">Bağlantıyı aç</string>
     <string name="share_link">Bağlantıyı paylaş</string>
     <string name="save_by_openarchive">OpenArchive tarafından</string>
@@ -282,7 +282,7 @@
     <string name="batch_waiting_for_upload">Yükleme bekleniyor…</string>
     <string name="batch_uploading_now">Yükleniyor…</string>
     <string name="login_activity_logging_message">Oturum açılıyor…</string>
-    <string name="login_you_have_already_space">Bu kimlik doğrulama bilgileriyle zaten bir alanınız var</string>
+    <string name="you_already_have_a_server_with_these_credentials">Bu kimlik doğrulama bilgileriyle zaten bir alanınız var</string>
     <string name="tor_connection_exception">Orbot/Tor bağlantısı kurulamadı.</string>
     <string name="tor_connection_timeout">Orbot/Tor bağlantısı kurulamadı: ZAMAN AŞIMI</string>
     <string name="tor_connection_invalid">Orbot/Tor bağlantısı kurulamadı: GEÇERSİZ</string>

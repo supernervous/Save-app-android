@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:text="@string/connect_your_space"
+            android:text="@string/to_get_started_connect_to_a_server_to_store_your_media"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="6dp"
             android:gravity="center_horizontal"
-            android:text="@string/set_up_where_you_want_your_media_to_be_stored"
+            android:text="@string/in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers"
             android:textSize="14sp" />
 
         <com.google.android.material.card.MaterialCardView
@@ -100,7 +100,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn" />
+                    app:tint="@color/colorSpaceSetupProgressOn"
+                    android:importantForAccessibility="no" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -173,7 +174,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn" />
+                    app:tint="@color/colorSpaceSetupProgressOn"
+                    android:importantForAccessibility="no" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,7 +249,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/internet_archive_texts"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn" />
+                    app:tint="@color/colorSpaceSetupProgressOn"
+                    android:importantForAccessibility="no" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
