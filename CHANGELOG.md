@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 beta2
+- Introduce new preview scene.
+- Fixed minor wording issues.
+- Fixed superfluous creation of new collection, when there already is an open collection.
+- Updated translations.
+
 ## 0.3.0 beta1
 
 - Introduced UI/UX overhaul finished about 2/3rds.
