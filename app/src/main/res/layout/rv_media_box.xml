@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:padding="3dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ivGroup"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -42,7 +42,14 @@
             app:indicatorColor="#aa0000"
             app:waveformColor="#999999" />
 
-    </LinearLayout>
+        <View
+            android:id="@+id/selected_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            android:alpha="0.25" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/video_indicator"

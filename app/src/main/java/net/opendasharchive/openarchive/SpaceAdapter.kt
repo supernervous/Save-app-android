@@ -86,13 +86,9 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
         private const val ADD_SPACE_ID = -1
     }
 
-    private val mListener: WeakReference<SpaceAdapterListener>?
+    private val mListener = WeakReference(listener)
 
     private var mLastSelected: Space? = null
-
-    init {
-        mListener = WeakReference(listener)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(RvSimpleRowBinding.inflate(LayoutInflater.from(parent.context),
@@ -119,15 +115,15 @@ class SpaceAdapter(listener: SpaceAdapterListener?) : ListAdapter<Space, SpaceAd
         notifyItemChanged(getIndex(getSelectedSpace()))
         notifyItemChanged(getIndex(space))
 
-        mListener?.get()?.spaceClicked(space)
+        mListener.get()?.spaceClicked(space)
     }
 
     override fun addSpaceClicked() {
-        mListener?.get()?.addSpaceClicked()
+        mListener.get()?.addSpaceClicked()
     }
 
     override fun getSelectedSpace(): Space? {
-        mLastSelected = mListener?.get()?.getSelectedSpace()
+        mLastSelected = mListener.get()?.getSelectedSpace()
 
         return mLastSelected
     }

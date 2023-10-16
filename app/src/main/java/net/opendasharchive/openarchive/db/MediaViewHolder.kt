@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.db
 
 import android.text.format.Formatter
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -67,6 +68,9 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
+        override val selectedIndicator: View
+            get() = (binding as RvMediaBoxBinding).selectedIndicator
+
         override val handle: ImageView?
             get() = null
     }
@@ -106,6 +110,9 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         override val flagIndicator: ImageView
             get() = (binding as RvMediaRowBigBinding).flagIndicator
+
+        override val selectedIndicator: View?
+            get() = null
 
         override val handle: ImageView?
             get() = null
@@ -147,6 +154,9 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
+        override val selectedIndicator: View?
+            get() = null
+
         override val handle: ImageView
             get() = (binding as RvMediaRowSmallBinding).handle
     }
@@ -168,6 +178,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val tagsIndicator: ImageView?
     abstract val descIndicator: ImageView?
     abstract val flagIndicator: ImageView?
+    abstract val selectedIndicator: View?
     abstract val handle: ImageView?
 
     private val mContext = itemView.context
@@ -180,8 +191,14 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     fun bind(media: Media? = null, batchMode: Boolean = false, doImageFade: Boolean = true) {
         itemView.tag = media?.id
 
-        itemView.setBackgroundResource(if (batchMode && media?.selected == true)
-            R.color.colorPrimary else android.R.color.transparent)
+        if (batchMode && media?.selected == true) {
+            itemView.setBackgroundResource(R.color.colorPrimary)
+            selectedIndicator?.show()
+        }
+        else {
+            itemView.setBackgroundResource(R.color.transparent)
+            selectedIndicator?.hide()
+        }
 
         image.alpha = if (
             media?.sStatus == Media.Status.Published

@@ -41,25 +41,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_batch_edit"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:icon="@drawable/ic_batchedit" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_select_all"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/select_all" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_remove"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:iconGravity="end"
             app:icon="@drawable/ic_delete" />
 
     </LinearLayout>

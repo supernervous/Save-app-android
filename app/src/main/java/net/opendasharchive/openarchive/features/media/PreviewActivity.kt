@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.media
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,12 +12,15 @@ import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
+import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
 
-class PreviewActivity: BaseActivity(), View.OnClickListener {
+class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
 
     companion object {
         const val PROJECT_ID_EXTRA = "project_id"
@@ -27,10 +31,13 @@ class PreviewActivity: BaseActivity(), View.OnClickListener {
 
     private var mProject: Project? = null
 
-    private var media: List<Media>
-        get() = (mBinding.mediaGrid.adapter as PreviewAdapter).currentList
+    private val mAdapter: PreviewAdapter?
+        get() = mBinding.mediaGrid.adapter as? PreviewAdapter
+
+    private var mMedia: List<Media>
+        get() = mAdapter?.currentList ?: emptyList()
         set(value) {
-            (mBinding.mediaGrid.adapter as PreviewAdapter).submitList(value)
+            mAdapter?.submitList(value)
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +49,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener {
         mProject = Project.getById(intent.getLongExtra(PROJECT_ID_EXTRA, -1))
 
         mPickerLauncher = MediaPicker.register(this, mBinding.root, { mProject }, {
-            reload()
+            refresh()
         })
 
         setSupportActionBar(mBinding.toolbar)
@@ -50,19 +57,17 @@ class PreviewActivity: BaseActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mBinding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
-        mBinding.mediaGrid.adapter = PreviewAdapter()
+        mBinding.mediaGrid.adapter = PreviewAdapter(this)
         mBinding.mediaGrid.setHasFixedSize(true)
 
         mBinding.btAddMore.setOnClickListener(this)
-        mBinding.btAddMore.toggle(mProject != null)
-
-        mBinding.bottomBar.hide()
-
         mBinding.btBatchEdit.setOnClickListener(this)
         mBinding.btSelectAll.setOnClickListener(this)
         mBinding.btRemove.setOnClickListener(this)
 
-        reload()
+        mediaSelectionChanged()
+
+        refresh()
     }
 
     override fun onResume() {
@@ -85,7 +90,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener {
                 return true
             }
             R.id.menu_upload -> {
-                media.forEach {
+                mMedia.forEach {
                     it.sStatus = Media.Status.Queued
                     it.save()
                 }
@@ -105,19 +110,59 @@ class PreviewActivity: BaseActivity(), View.OnClickListener {
                 MediaPicker.pick(this, mPickerLauncher)
             }
             mBinding.btBatchEdit -> {
+                val i = Intent(this, BatchReviewMediaActivity::class.java)
+                i.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID,
+                    mMedia.filter { it.selected }.map { it.id }.toLongArray())
 
+                startActivity(i)
             }
             mBinding.btSelectAll -> {
+                val select = mMedia.firstOrNull { !it.selected } != null
 
+                mMedia.forEach {
+                    if (it.selected != select) {
+                        it.selected = select
+                        it.save()
+
+                        mAdapter?.notifyItemChanged(mMedia.indexOf(it))
+                    }
+                }
+
+                mediaSelectionChanged()
             }
             mBinding.btRemove -> {
+                mMedia.forEach {
+                    if (it.selected) {
+                        it.delete()
+                    }
+                }
 
+                refresh()
+                mediaSelectionChanged()
             }
         }
     }
 
-    private fun reload() {
-        media = Media.getByStatus(listOf(Media.Status.Local), Media.ORDER_CREATED)
+    override fun mediaClicked(media: Media) {
+        val i = Intent(this, ReviewMediaActivity::class.java)
+        i.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, media.id)
+
+        startActivity(i)
+    }
+
+    override fun mediaSelectionChanged() {
+        if (mMedia.firstOrNull { it.selected } != null) {
+            mBinding.btAddMore.hide()
+            mBinding.bottomBar.show()
+        }
+        else {
+            mBinding.btAddMore.toggle(mProject != null)
+            mBinding.bottomBar.hide()
+        }
+    }
+
+    private fun refresh() {
+        mMedia = Media.getByStatus(listOf(Media.Status.Local), Media.ORDER_CREATED)
     }
 
     private fun showFirstTimeBatch() {
