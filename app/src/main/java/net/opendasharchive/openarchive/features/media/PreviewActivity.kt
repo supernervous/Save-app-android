@@ -3,21 +3,35 @@ package net.opendasharchive.openarchive.features.media
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.esafirm.imagepicker.features.ImagePickerLauncher
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.util.extensions.toggle
 
-class PreviewActivity: BaseActivity() {
+class PreviewActivity: BaseActivity(), View.OnClickListener {
+
+    companion object {
+        const val PROJECT_ID_EXTRA = "project_id"
+    }
 
     private lateinit var mBinding: ActivityPreviewBinding
+    private lateinit var mPickerLauncher: ImagePickerLauncher
 
-    private val media: List<Media>
+    private var mProject: Project? = null
+
+    private var media: List<Media>
         get() = (mBinding.mediaGrid.adapter as PreviewAdapter).currentList
+        set(value) {
+            (mBinding.mediaGrid.adapter as PreviewAdapter).submitList(value)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,18 +39,30 @@ class PreviewActivity: BaseActivity() {
         mBinding = ActivityPreviewBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+        mProject = Project.getById(intent.getLongExtra(PROJECT_ID_EXTRA, -1))
+
+        mPickerLauncher = MediaPicker.register(this, mBinding.root, { mProject }, {
+            reload()
+        })
+
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = getString(R.string.preview_media)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mBinding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
-        val adapter = PreviewAdapter()
-        adapter.submitList(Media.getByStatus(listOf(Media.Status.Local), Media.ORDER_CREATED))
-        mBinding.mediaGrid.adapter = adapter
+        mBinding.mediaGrid.adapter = PreviewAdapter()
         mBinding.mediaGrid.setHasFixedSize(true)
 
-        // TODO: Implement button features.
+        mBinding.btAddMore.setOnClickListener(this)
+        mBinding.btAddMore.toggle(mProject != null)
+
         mBinding.bottomBar.hide()
+
+        mBinding.btBatchEdit.setOnClickListener(this)
+        mBinding.btSelectAll.setOnClickListener(this)
+        mBinding.btRemove.setOnClickListener(this)
+
+        reload()
     }
 
     override fun onResume() {
@@ -71,6 +97,27 @@ class PreviewActivity: BaseActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            mBinding.btAddMore -> {
+                MediaPicker.pick(this, mPickerLauncher)
+            }
+            mBinding.btBatchEdit -> {
+
+            }
+            mBinding.btSelectAll -> {
+
+            }
+            mBinding.btRemove -> {
+
+            }
+        }
+    }
+
+    private fun reload() {
+        media = Media.getByStatus(listOf(Media.Status.Local), Media.ORDER_CREATED)
     }
 
     private fun showFirstTimeBatch() {

@@ -1,47 +1,32 @@
 package net.opendasharchive.openarchive
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
-import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import com.esafirm.imagepicker.features.ImagePickerMode
-import com.esafirm.imagepicker.features.ImagePickerSavePath
-import com.esafirm.imagepicker.features.ReturnMode
-import com.esafirm.imagepicker.features.registerImagePicker
-import com.esafirm.imagepicker.model.Image
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.media.MediaPicker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
@@ -53,7 +38,6 @@ import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.BadgeDrawable
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
-import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.disableAnimation
@@ -66,11 +50,8 @@ import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
-import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
-import java.io.File
 import java.text.NumberFormat
-import java.util.Date
 
 class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     FolderAdapterListener, SpaceAdapterListener {
@@ -153,25 +134,16 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mPickerLauncher = registerImagePicker { result: List<Image> ->
-            val bar = mBinding.root.makeSnackBar(getString(R.string.importing_media))
-            (bar.view as? SnackbarLayout)?.addView(ProgressBar(this))
-            bar.show()
+        mPickerLauncher = MediaPicker.register(this, mBinding.root, { getSelectedProject() }, { media ->
+            refreshCurrentProject()
 
-            CoroutineScope(Dispatchers.IO).launch {
-                val media = importMedia(result.map { it.uri })
+            if (media.isNotEmpty()) {
+                val i = Intent(this, PreviewActivity::class.java)
+                i.putExtra(PreviewActivity.PROJECT_ID_EXTRA, getSelectedProject()?.id)
 
-                MainScope().launch {
-                    bar.dismiss()
-
-                    refreshCurrentProject()
-
-                    if (media.isNotEmpty()) {
-                        startActivity(Intent(this@MainActivity, PreviewActivity::class.java))
-                    }
-                }
+                startActivity(i)
             }
-        }
+        })
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -339,7 +311,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         return super.onOptionsItemSelected(item)
     }
 
-    fun addFolder() {
+    private fun addFolder() {
         mNewFolderResultLauncher.launch(Intent(this, AddFolderActivity::class.java))
 
         mBinding.root.closeDrawer(mBinding.folderBar)
@@ -436,7 +408,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 mSnackBar?.show()
             },
             doInBackground = {
-                importMedia(uri)
+                MediaPicker.import(this, getSelectedProject(), uri)
             },
             onPostExecute = { media ->
                 if (media != null) {
@@ -452,104 +424,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         )
     }
 
-    private fun importMedia(importUri: List<Uri>): ArrayList<Media> {
-        val result = ArrayList<Media>()
-
-        for (uri in importUri) {
-            val media = importMedia(uri)
-            if (media != null) result.add(media)
-        }
-
-        return result
-    }
-
-    private fun importMedia(uri: Uri): Media? {
-        val title = Utility.getUriDisplayName(this, uri) ?: ""
-        val file = Utility.getOutputMediaFileByCache(this, title)
-
-        if (!Utility.writeStreamToFile(contentResolver.openInputStream(uri), file)) {
-            return null
-        }
-
-        val project = getSelectedProject() ?: return null
-
-        // create media
-        val media = Media()
-
-        val coll = project.openCollection
-
-        media.collectionId = coll.id
-
-        val fileSource = uri.path?.let { File(it) }
-        var createDate = Date()
-
-        if (fileSource?.exists() == true) {
-            createDate = Date(fileSource.lastModified())
-            media.contentLength = fileSource.length()
-        }
-        else {
-            media.contentLength = file?.length() ?: 0
-        }
-
-        media.originalFilePath = Uri.fromFile(file).toString()
-        media.mimeType = Utility.getMimeType(this, uri) ?: ""
-        media.createDate = createDate
-        media.updateDate = media.createDate
-        media.sStatus = Media.Status.Local
-        media.mediaHashString =
-            HashUtils.getSHA256FromFileContent(contentResolver.openInputStream(uri))
-        media.projectId = project.id
-        media.title = title
-        media.save()
-
-        return media
-    }
-
-    private fun importMedia() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (needAskForPermission(
-                    arrayOf(
-                        Manifest.permission.READ_MEDIA_IMAGES,
-                        Manifest.permission.READ_MEDIA_VIDEO
-                    )
-                )
-            ) {
-                return
-            }
-        }
-
-        val config = ImagePickerConfig {
-            mode = ImagePickerMode.MULTIPLE
-            isShowCamera = false
-            returnMode = ReturnMode.NONE
-            isFolderMode = true
-            isIncludeVideo = true
-            arrowColor = Color.WHITE
-            limit = 99
-            savePath = ImagePickerSavePath(Environment.getExternalStorageDirectory().path, false)
-        }
-
-        mPickerLauncher.launch(config)
-    }
-
-    private fun needAskForPermission(permissions: Array<String>): Boolean {
-        var needAsk = false
-
-        for (permission in permissions) {
-            needAsk = ContextCompat.checkSelfPermission(
-                this,
-                permission
-            ) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
-
-            if (needAsk) break
-        }
-
-        if (!needAsk) return false
-
-        ActivityCompat.requestPermissions(this, permissions, 2)
-
-        return true
+    private fun pickMedia() {
+        MediaPicker.pick(this, mPickerLauncher)
     }
 
     override fun onRequestPermissionsResult(
@@ -560,7 +436,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            2 -> importMedia()
+            2 -> pickMedia()
         }
     }
 
@@ -649,7 +525,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun addMediaClicked() {
         if (getSelectedProject() != null) {
-            importMedia()
+            pickMedia()
         } else {
             if (!Prefs.addFolderHintShown) {
                 AlertHelper.show(
