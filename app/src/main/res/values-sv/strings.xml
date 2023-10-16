@@ -87,4 +87,5 @@
     <string name="next">Nästa</string>
     <string name="get_started">Kom igång</string>
     <string name="refresh">Ladda om sidan</string>
-    </resources>
+    <string name="select_all">Markera allt</string>
+</resources>

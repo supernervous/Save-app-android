@@ -134,4 +134,5 @@
     <string name="secure_mobile_media_preservation">Безопасное сохранение мобильных медиа данных</string>
     <string name="get_started">Начало работы</string>
     <string name="refresh">Обновить</string>
-    </resources>
+    <string name="select_all">Выбрать все</string>
+</resources>

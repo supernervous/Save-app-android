@@ -104,4 +104,5 @@
     <string name="next">Volgende</string>
     <string name="get_started">Beginnen</string>
     <string name="refresh">Vernieuwen</string>
-    </resources>
+    <string name="select_all">Alles selecteren</string>
+</resources>

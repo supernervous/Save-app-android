@@ -156,4 +156,5 @@
     <string name="get_started">Los gehts</string>
     <string name="refresh">Aktualisieren</string>
     <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
-    </resources>
+    <string name="select_all">Alles auswählen</string>
+</resources>

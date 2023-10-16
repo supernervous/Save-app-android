@@ -174,4 +174,5 @@
     <string name="secure_mobile_media_preservation">حفظ ایمن رسانه‌های موبایل</string>
     <string name="get_started">شروع کنید</string>
     <string name="refresh">تازه‌سازی</string>
-    </resources>
+    <string name="select_all">انتخاب همه</string>
+</resources>

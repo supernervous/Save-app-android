@@ -114,4 +114,5 @@
     <string name="next">Вперед</string>
     <string name="get_started">Почати</string>
     <string name="refresh">Оновити</string>
-    </resources>
+    <string name="select_all">Вибрати всі</string>
+</resources>

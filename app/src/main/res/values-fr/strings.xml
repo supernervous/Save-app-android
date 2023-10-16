@@ -138,4 +138,5 @@
     <string name="secure_mobile_media_preservation">Préservation sécurisée de médias sur appareil mobile</string>
     <string name="get_started">Commençons</string>
     <string name="refresh">Actualiser</string>
-    </resources>
+    <string name="select_all">Tout sélectionner</string>
+</resources>
