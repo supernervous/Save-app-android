@@ -114,9 +114,6 @@
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>
     <string name="popup_flag_desc">Quando segnali un elemento, è instradato in una sottocartella all\'interno della cartella di progetto scelto nel server privato.</string>
 
-    <string name="popup_batch_title">Modifica Elementi Multipli</string>
-    <string name="popup_batch_desc">Per modificare elementi multipli, tocca e tieni premuto</string>
-
     <string name="popup_ia_title">Archivio Internet</string>
     <string name="crash_dialog_title">Segnalazione crash</string>
     <string name="action_install">Installa</string>

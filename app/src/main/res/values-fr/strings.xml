@@ -115,9 +115,6 @@
     <string name="remove_from_app_media">Supprimer le média</string>
     <string name="popup_flag_desc">Quand vous marquez un élément, il est acheminé vers un sous-dossier dans le dossier désigné du projet sur le serveur privé.</string>
 
-    <string name="popup_batch_title">Modifier plusieurs éléments</string>
-    <string name="popup_batch_desc">Pour modifier plusieurs éléments, touchez et maintenez chacun d’eux.</string>
-
     <string name="popup_ia_title">Archive Internet</string>
     <string name="crash_dialog_title">Signaler un plantage</string>
     <string name="action_install">Installer</string>

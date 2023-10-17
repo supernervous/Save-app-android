@@ -112,9 +112,6 @@
     <string name="popup_flag_title">Отметить важное содержание</string>
     <string name="popup_flag_desc">Когда вы отмечаете элемент, он направляется в подпапку  выбранного проекта на частном сервере.</string>
 
-    <string name="popup_batch_title">Редактировать несколько объектов</string>
-    <string name="popup_batch_desc">Чтобы редактировать несколько элементов, нажмите и удерживайте каждый.</string>
-
     <string name="popup_ia_title">Интернет архив</string>
     <string name="crash_dialog_title">Отчет об ошибке</string>
     <string name="action_install">Установить приложение</string>

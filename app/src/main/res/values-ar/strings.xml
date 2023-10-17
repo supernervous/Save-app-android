@@ -153,9 +153,6 @@
     <string name="popup_flag_title">علامة محتوى مميز</string>
     <string name="popup_flag_desc">عندما تضيف العلامة على وحدة، يتم وضعها فى مجلد خاص تحت مجلد المشروع المختار على الخادوم الخاص.</string>
 
-    <string name="popup_batch_title">تعديل وحدات متعددة</string>
-    <string name="popup_batch_desc">لتعديل وحدات متعددة، اضغط لمدة على كل وحدة.</string>
-
     <string name="popup_ia_title">Internet Archive</string>
     <string name="crash_dialog_title">التبليغ عن التعطيلات </string>
     <string name="action_install">تثبيت</string>

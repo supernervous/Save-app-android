@@ -90,12 +90,40 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
                 return true
             }
             R.id.menu_upload -> {
-                mMedia.forEach {
-                    it.sStatus = Media.Status.Queued
-                    it.save()
+                val queue = {
+                    mMedia.forEach {
+                        it.sStatus = Media.Status.Queued
+                        it.save()
+                    }
+
+                    finish()
                 }
 
-                finish()
+                if (Prefs.dontShowUploadHint) {
+                    queue()
+                }
+                else {
+                    var dontShowAgain = false
+
+                    val builder = AlertHelper.build(this,
+                        title = R.string.once_uploaded_you_will_not_be_able_to_edit_media,
+                        icon = R.drawable.baseline_cloud_upload_black_48,
+                        buttons = listOf(
+                            AlertHelper.positiveButton(R.string.got_it) { _, _ ->
+                                Prefs.dontShowUploadHint = dontShowAgain
+                                queue()
+                            },
+                            AlertHelper.negativeButton()))
+
+                    builder.setMultiChoiceItems(
+                        arrayOf(getString(R.string.do_not_show_me_this_again)),
+                        booleanArrayOf(false))
+                    { _, _, isChecked ->
+                        dontShowAgain = isChecked
+                    }
+
+                    builder.show()
+                }
 
                 return true
             }
@@ -168,7 +196,8 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     private fun showFirstTimeBatch() {
         if (Prefs.batchHintShown) return
 
-        AlertHelper.show(this, R.string.popup_batch_desc, R.string.popup_batch_title)
+        AlertHelper.show(this, R.string.press_and_hold_to_select_and_edit_multiple_media,
+            R.string.edit_multiple, R.drawable.ic_batchedit)
 
         Prefs.batchHintShown = true
     }

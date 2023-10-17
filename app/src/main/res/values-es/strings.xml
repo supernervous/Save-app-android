@@ -162,9 +162,6 @@
     <string name="popup_flag_title">Marcar Contenido Importante</string>
     <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
 
-    <string name="popup_batch_title">Editar múltiples elementos</string>
-    <string name="popup_batch_desc">Para editar múltiples elementos, debe pulsar y mantener presionado cada uno.</string>
-
     <string name="popup_ia_title">Internet Archive</string>
     <string name="crash_dialog_title">Informes de error</string>
     <string name="action_install">Instalar</string>

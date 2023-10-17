@@ -131,9 +131,6 @@
     <string name="popup_flag_title">Besonderen Inhalt markieren</string>
     <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>
 
-    <string name="popup_batch_title">Mehrere Elemente editieren</string>
-    <string name="popup_batch_desc">Um mehrere Elemente auf einmal zu editieren, die Elemente lange drücken.</string>
-
     <string name="popup_ia_title">Internet Archive</string>
     <string name="crash_dialog_title">Absturz-Berichterstattung</string>
     <string name="action_install">Installieren</string>

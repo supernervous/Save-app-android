@@ -151,9 +151,6 @@
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
     <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
 
-    <string name="popup_batch_title">ویرایش چند انتخاب</string>
-    <string name="popup_batch_desc">برای ویرایش چند انتخاب، روی هرکدام ضربه زده و نگه دارید.</string>
-
     <string name="popup_ia_title">بایگانی اینترنت</string>
     <string name="crash_dialog_title">گزارش خرابی</string>
     <string name="action_install">نصب</string>

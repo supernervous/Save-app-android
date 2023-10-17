@@ -28,7 +28,7 @@ class AlertHelper {
 
         fun build(context: Context, message: Int? = null, title: Int? = R.string.status_error,
                   icon: Int? = null, buttons: List<Button>? = listOf(Button())
-        ) : AlertDialog {
+        ) : AlertDialog.Builder {
             val builder = AlertDialog.Builder(ContextThemeWrapper(context, R.style.AlertDialogTheme))
 
             if (message != null) builder.setMessage(message)
@@ -49,7 +49,7 @@ class AlertHelper {
 
             builder.setCancelable(cancellable)
 
-            return builder.create()
+            return builder
         }
 
         fun positiveButton(title: Int = R.string.lbl_ok,

@@ -277,9 +277,6 @@
     <string name="popup_flag_title">Önemli içerik olarak işaretle</string>
     <string name="popup_flag_desc">Bir ögeyi işaretlediğinizde, özel sunucu üzerinde seçilmiş proje klasöründeki bir alt klasöre yönlendirilir.</string>
 
-    <string name="popup_batch_title">Birkaç ögeyi düzenle</string>
-    <string name="popup_batch_desc">Birkaç ögeyi düzenlemek için her birine dokunup tutun.</string>
-
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">Save ortamlarını Internet Archive üzerine göndermek ve kaydetmek için bir Internet Archive hesabı ile oturum açmalı ya da yeni bir hesap edinmelisiniz. </string>
 
