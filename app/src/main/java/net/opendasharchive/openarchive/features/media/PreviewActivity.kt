@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.media
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -23,7 +24,14 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
 
     companion object {
-        const val PROJECT_ID_EXTRA = "project_id"
+        private const val PROJECT_ID_EXTRA = "project_id"
+
+        fun start(context: Context, projectId: Long) {
+            val i = Intent(context, PreviewActivity::class.java)
+            i.putExtra(PROJECT_ID_EXTRA, projectId)
+
+            context.startActivity(i)
+        }
     }
 
     private lateinit var mBinding: ActivityPreviewBinding

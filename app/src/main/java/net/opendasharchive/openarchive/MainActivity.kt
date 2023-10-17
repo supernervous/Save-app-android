@@ -28,7 +28,6 @@ import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.MediaPicker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding23.Onboarding23Activity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
@@ -61,6 +60,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private var mMenuUpload: MenuItem? = null
+    private var mMenuDelete: MenuItem? = null
 
     private var mSpace: Space? = null
     private var mSnackBar: Snackbar? = null
@@ -75,12 +75,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private var mLastItem: Int = 0
     private var mLastMediaItem: Int = 0
 
-    private var currentItem
+    private var mCurrentItem
         get() = mBinding.pager.currentItem
         set(value) {
             mBinding.pager.currentItem = value
             updateBottomNavbar(value)
         }
+
+    private val mCurrentFragment
+        get() = mPagerAdapter.getRegisteredMediaGridFragment(mCurrentItem)
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -92,9 +95,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
             when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
                 Media.Status.Uploaded.id -> {
-                    if (currentItem > 0) {
-                        mPagerAdapter.getRegisteredMediaGridFragment(currentItem)
-                            ?.refresh()
+                    if (mCurrentItem > 0) {
+                        mCurrentFragment?.refresh()
 
                         updateMenu()
                     }
@@ -103,11 +105,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 Media.Status.Uploading.id -> {
                     val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
 
-                    if (mediaId != -1L && currentItem > 0) {
+                    if (mediaId != -1L && mCurrentItem > 0) {
                         val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
 
-                        mPagerAdapter.getRegisteredMediaGridFragment(currentItem)
-                            ?.updateItem(mediaId, progress)
+                        mCurrentFragment?.updateItem(mediaId, progress)
                     }
                 }
             }
@@ -138,10 +139,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             refreshCurrentProject()
 
             if (media.isNotEmpty()) {
-                val i = Intent(this, PreviewActivity::class.java)
-                i.putExtra(PreviewActivity.PROJECT_ID_EXTRA, getSelectedProject()?.id)
-
-                startActivity(i)
+                preview()
             }
         })
 
@@ -206,7 +204,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
 
         mBinding.myMediaButton.setOnClickListener {
-            currentItem = mLastMediaItem
+            mCurrentItem = mLastMediaItem
         }
         mBinding.myMediaLabel.setOnClickListener {
             // perform click + play ripple animation
@@ -216,7 +214,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
         mBinding.addButton.setOnClickListener { addMediaClicked() }
         mBinding.settingsButton.setOnClickListener {
-            currentItem = mPagerAdapter.settingsIndex
+            mCurrentItem = mPagerAdapter.settingsIndex
         }
         mBinding.settingsLabel.setOnClickListener {
             // perform click + play ripple animation
@@ -243,7 +241,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
         if (mLastItem == mPagerAdapter.settingsIndex) {
             // display settings in when returning from deeper setting activities
-            currentItem = mLastItem
+            mCurrentItem = mLastItem
         } else {
             refreshSpace()
         }
@@ -281,6 +279,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         mMenuUpload = menu.findItem(R.id.menu_upload_manager)
+        mMenuDelete = menu.findItem(R.id.menu_delete)
 
         updateMenu()
 
@@ -297,6 +296,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 return true
             }
 
+            R.id.menu_delete -> {
+                AlertHelper.show(this, R.string.confirm_remove_media, null, buttons = listOf(
+                    AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+                        mCurrentFragment?.deleteSelected()
+                    },
+                    AlertHelper.negativeButton()))
+
+            }
+
             R.id.menu_folders -> {
                 // https://stackoverflow.com/questions/21796209/how-to-create-a-custom-navigation-drawer-in-android
 
@@ -309,6 +317,10 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    fun toggleDelete(show: Boolean) {
+        mMenuDelete?.isVisible = show
     }
 
     private fun addFolder() {
@@ -345,7 +357,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mPagerAdapter.updateData(projects)
 
         mBinding.pager.adapter = mPagerAdapter
-        currentItem = mPagerAdapter.getIndex(project)
+        mCurrentItem = mPagerAdapter.getIndex(project)
 
         mFolderAdapter.update(projects)
 
@@ -356,7 +368,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         val project = getSelectedProject()
 
         if (project != null) {
-            mPagerAdapter.getRegisteredMediaGridFragment(currentItem)?.refresh()
+            mCurrentFragment?.refresh()
 
             project.space?.setAvatar(mBinding.currentFolderIcon)
             mBinding.currentFolderIcon.show()
@@ -412,10 +424,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             },
             onPostExecute = { media ->
                 if (media != null) {
-                    val reviewMediaIntent =
-                        Intent(this, ReviewMediaActivity::class.java)
-                    reviewMediaIntent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, media.id)
-                    startActivity(reviewMediaIntent)
+                    preview()
                 }
 
                 mSnackBar?.dismiss()
@@ -426,6 +435,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun pickMedia() {
         MediaPicker.pick(this, mPickerLauncher)
+    }
+
+    private fun preview() {
+        val projectId = getSelectedProject()?.id ?: return
+
+        PreviewActivity.start(this, projectId)
     }
 
     override fun onRequestPermissionsResult(
@@ -480,7 +495,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     @SuppressLint("NotifyDataSetChanged")
     override fun projectClicked(project: Project) {
-        currentItem = mPagerAdapter.projects.indexOf(project)
+        mCurrentItem = mPagerAdapter.projects.indexOf(project)
 
         mBinding.root.closeDrawer(mBinding.folderBar)
 
@@ -494,7 +509,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     override fun getSelectedProject(): Project? {
-        return mPagerAdapter.getProject(currentItem)
+        return mPagerAdapter.getProject(mCurrentItem)
     }
 
     override fun spaceClicked(space: Space) {

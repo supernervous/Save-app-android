@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.media.grid
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
@@ -116,15 +116,10 @@ class MediaGridFragment : MediaListFragment() {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
 
                     }
-                }, onDelete = {
-                    refresh()
-                }, onUpload = {
-                    for (media in it) {
-                        media.sStatus = Media.Status.Queued
-                        media.save()
-                    }
+                }, checkSelecting = {
+                    (activity as? MainActivity)?.toggleDelete(mAdapters.values.firstOrNull { it.selecting } != null)
 
-                    previewViewModel.applyMedia()
+                    // TODO: Update section header.
                 })
 
             mediaSection.recyclerview.adapter = mediaAdapter
@@ -160,6 +155,12 @@ class MediaGridFragment : MediaListFragment() {
         mBinding.addMediaHint.toggle(mBinding.mediaContainer.childCount < 2)
     }
 
+    fun deleteSelected() {
+        mAdapters.values.forEach { adapter ->
+            adapter.deleteSelected()
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setSectionHeaders(
         collection: Collection,
@@ -178,7 +179,10 @@ class MediaGridFragment : MediaListFragment() {
                     holder.sectionTimestamp.text = "${listMedia.size} ${getString(R.string.label_items)}"
                     holder.action.cloak()
                     holder.action.setOnClickListener {
-                        startActivity(Intent(requireActivity(), PreviewActivity::class.java))
+                        val activity = activity ?: return@setOnClickListener
+                        val projectId = collection.projectId ?: return@setOnClickListener
+
+                        PreviewActivity.start(activity, projectId)
                     }
 
                     return@forEach

@@ -104,9 +104,7 @@ open class MediaListFragment : Fragment() {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
                         if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
                     }
-                }, onDelete = {
-                }, onUpload = {
-                })
+                }, {})
 
         mediaAdapter?.doImageFade = false
         rView.adapter = mediaAdapter
@@ -114,16 +112,8 @@ open class MediaListFragment : Fragment() {
         mItemTouchHelper.attachToRecyclerView(rView)
     }
 
-    fun getMediaList(): ArrayList<Media>? {
-        return mediaAdapter?.media
-    }
-
     open fun updateItem(mediaId: Long, progress: Long) {
         mediaAdapter?.updateItem(mediaId, progress)
-    }
-
-    fun stopBatchMode() {
-        mediaAdapter?.actionMode?.finish()
     }
 
     fun setEditMode(isEditMode: Boolean) {

@@ -2,16 +2,11 @@ package net.opendasharchive.openarchive.db
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
+import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -22,45 +17,35 @@ class MediaAdapter(
     data: ArrayList<Media>,
     private val recyclerView: RecyclerView,
     private val mDragStartListener: MediaListFragment.OnStartDragListener,
-    private val onDelete: () -> Unit,
-    private val onUpload: (selectedMedia: List<Media>) -> Unit
+    private val checkSelecting: () -> Unit
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
     var media: ArrayList<Media> = data
-        private set
-
-    var actionMode: ActionMode? = null
         private set
 
     var doImageFade = true
 
     var isEditMode = false
 
+    var selecting = false
+        private set
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val mvh = generator(parent)
 
         mvh.itemView.setOnClickListener { v ->
-            if (actionMode != null) {
+            if (selecting) {
                 selectView(v)
             }
             else {
-                val itemPosition = recyclerView.getChildLayoutPosition(v)
+                val pos = recyclerView.getChildLayoutPosition(v)
 
-                val intent = Intent(mActivity, ReviewMediaActivity::class.java)
-                intent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, media[itemPosition].id)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                mActivity.startActivity(intent)
+                PreviewActivity.start(mActivity, media[pos].projectId)
             }
         }
 
         mvh.itemView.setOnLongClickListener { v ->
-            if (actionMode != null) return@setOnLongClickListener false
-
-            // Start the CAB using the ActionMode.Callback defined above
-            actionMode = mActivity.startActionMode(mActionModeCallback)
-            (mActivity as? AppCompatActivity)?.supportActionBar?.hide()
             selectView(v)
 
             true
@@ -86,7 +71,7 @@ class MediaAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
-        holder.bind(media[position], actionMode != null, doImageFade)
+        holder.bind(media[position], selecting, doImageFade)
 
         holder.handle?.toggle(isEditMode)
 
@@ -136,6 +121,9 @@ class MediaAdapter(
         m.save()
 
         notifyItemChanged(media.indexOf(m))
+
+        selecting = media.firstOrNull { it.selected } != null
+        checkSelecting()
     }
 
     fun onItemMove(oldPos: Int, newPos: Int) {
@@ -165,90 +153,19 @@ class MediaAdapter(
     }
 
 
-    private val mActionModeCallback = object : ActionMode.Callback {
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.menu_upload -> {
-                    val selected = Media.getSelected()
+    fun deleteSelected() {
+        for (item in media.filter { it.selected }) {
+            val idx = media.indexOf(item)
+            media.remove(item)
 
-                    if(selected.isNotEmpty()){
-                        onUpload(selected)
-                    }
+            notifyItemRemoved(idx)
 
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        mode?.finish()
-                    },100)
-
-                    true
-                }
-                R.id.menu_edit -> {
-                    val selected = Media.getSelected()
-
-                    if (selected.isNotEmpty()) {
-                        val ids = selected.map { it.id }.toLongArray()
-
-                        val intent = Intent(mActivity, BatchReviewMediaActivity::class.java)
-                        intent.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, ids)
-                        mActivity.startActivity(intent)
-                    }
-
-                    true
-                }
-                R.id.menu_delete -> {
-                    removeSelectedMedia(mode)
-
-                    true
-                }
-                else -> false
-            }
+            item.delete()
         }
 
-        fun removeSelectedMedia(mode: ActionMode?) {
-            AlertHelper.show(mActivity, R.string.confirm_remove_media, null, buttons = listOf(
-                AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
-                    for (item in media.filter { it.selected }) {
-                        media.remove(item)
+        selecting = false
 
-                        notifyItemRemoved(media.indexOf(item))
-
-                        item.delete()
-                    }
-
-                    mode?.finish()
-
-                    onDelete()
-                },
-                AlertHelper.negativeButton()))
-        }
-
-        // Called when the action mode is created; startActionMode() was called
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            // Inflate a menu resource providing context menu items
-            mode?.menuInflater?.inflate(R.menu.menu_batch_edit_media, menu)
-
-            return true
-        }
-
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false // Return false if nothing is done
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            actionMode = null
-
-            for (item in media) {
-                if (item.selected) {
-                    item.selected = false
-                    item.save()
-
-                    notifyItemChanged(media.indexOf(item))
-                }
-            }
-
-            (mActivity as? AppCompatActivity)?.supportActionBar?.show()
-        }
+        checkSelecting()
     }
 
     private fun reorder() {
