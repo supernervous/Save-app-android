@@ -132,24 +132,7 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                if (Prefs.backHintShown) {
-                    finish()
-                }
-                else {
-                    AlertHelper.show(
-                        this,
-                        R.string.back_button_will_not_save_changes_press_done_to_save_your_edits,
-                        R.string.your_changes_wont_be_saved,
-                        buttons = listOf(
-                            AlertHelper.positiveButton(R.string.got_it) { _, _ ->
-                                Prefs.backHintShown = true
-
-                                finish()
-                            },
-                            AlertHelper.negativeButton()
-                        )
-                    )
-                }
+                finish()
 
                 return true
             }
@@ -181,6 +164,27 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
                 updateFlagState()
             }
+        }
+    }
+
+    override fun finish() {
+        if (Prefs.backHintShown) {
+            super.finish()
+        }
+        else {
+            AlertHelper.show(
+                this,
+                R.string.back_button_will_not_save_changes_press_done_to_save_your_edits,
+                R.string.your_changes_wont_be_saved,
+                buttons = listOf(
+                    AlertHelper.positiveButton(R.string.got_it) { _, _ ->
+                        Prefs.backHintShown = true
+
+                        super.finish()
+                    },
+                    AlertHelper.negativeButton()
+                )
+            )
         }
     }
 
