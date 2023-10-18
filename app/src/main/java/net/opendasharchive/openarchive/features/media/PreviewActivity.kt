@@ -139,6 +139,17 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
         return super.onOptionsItemSelected(item)
     }
 
+    override fun finish() {
+        mMedia.forEach {
+            if (it.selected) {
+                it.selected = false
+                it.save()
+            }
+        }
+
+        super.finish()
+    }
+
     override fun onClick(view: View?) {
         when (view) {
             mBinding.btAddMore -> {
