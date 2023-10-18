@@ -33,7 +33,7 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    flavorDimensions "free"
+    flavorDimensions += "free"
     buildTypes {
         debug {
             buildConfigField "String", "dropbox_key", getDropboxKey()
@@ -54,6 +54,7 @@ android {
     }
     productFlavors {
         releaseflavor {
+            dimension "free"
             applicationId 'net.opendasharchive.openarchive.release'
         }
     }
@@ -121,11 +122,11 @@ dependencies {
     //header recyclerview
     implementation libraries.sectioned_recyclerview_adapter
 
-    implementation group: 'androidx.preference', name: 'preference-ktx', version: '1.2.0'
+    implementation group: 'androidx.preference', name: 'preference-ktx', version: '1.2.1'
 
     implementation libraries.appcompat
     implementation libraries.constraint_layout
-    implementation "com.google.android.material:material:1.9.0"
+    implementation "com.google.android.material:material:1.10.0"
 
     implementation "com.tbuonomo:dotsindicator:5.0"
 
@@ -146,8 +147,8 @@ dependencies {
     annotationProcessor libraries.glideAnnotate
 
     implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
 
     implementation libraries.guava
     implementation libraries.sheetsInfo

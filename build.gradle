@@ -50,7 +50,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.1.2'
         classpath "com.neenbedankt.gradle.plugins:android-apt:$versions.neenbedankt_gradle_plugin"
         classpath "com.testdroid:gradle:$versions.testdroid_gradle"
         classpath "gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:$versions.browserstack_gradle_plugin"
@@ -59,7 +59,7 @@ buildscript {
 }
 
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         force "com.android.support:support-v4:$versions.support_v4"
     }
@@ -103,6 +103,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
