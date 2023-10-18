@@ -17,6 +17,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.util.extensions.hide
 
 open class MediaListFragment : Fragment() {
 
@@ -108,6 +109,10 @@ open class MediaListFragment : Fragment() {
 
         mediaAdapter?.doImageFade = false
         rView.adapter = mediaAdapter
+
+        // Always hide the hint here, this is only used in UploadManager, and that is only shown
+        // when there's at least one item.
+        mBinding.addMediaHint.hide()
 
         mItemTouchHelper.attachToRecyclerView(rView)
     }
