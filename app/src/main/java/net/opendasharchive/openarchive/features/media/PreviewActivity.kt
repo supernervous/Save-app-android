@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import net.opendasharchive.openarchive.R
@@ -34,6 +35,12 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
 
     private lateinit var mBinding: ActivityPreviewBinding
     private lateinit var mPickerLauncher: ImagePickerLauncher
+
+    private val mLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            refresh()
+        }
+    }
 
     private var mProject: Project? = null
 
@@ -148,13 +155,10 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
                 val selected = mMedia.filter { it.selected }
 
                 if (selected.size == 1) {
-                    ReviewActivity.start(this, mMedia.map { it.id }.toLongArray(),
-                        mMedia.indexOf(selected.first()))
+                    mLauncher.launch(ReviewActivity.getIntent(this, mMedia, selected.first()))
                 }
                 else if (selected.size > 1) {
-                    ReviewActivity.start(this,
-                        mMedia.filter { it.selected }.map { it.id }.toLongArray(),
-                        batchMode = true)
+                    mLauncher.launch(ReviewActivity.getIntent(this, mMedia.filter { it.selected }, batchMode = true))
                 }
             }
             mBinding.btSelectAll -> {
@@ -184,7 +188,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     }
 
     override fun mediaClicked(media: Media) {
-        ReviewActivity.start(this, mMedia.map { it.id }.toLongArray(), mMedia.indexOf(media))
+        mLauncher.launch(ReviewActivity.getIntent(this, mMedia, media))
     }
 
     override fun mediaSelectionChanged() {

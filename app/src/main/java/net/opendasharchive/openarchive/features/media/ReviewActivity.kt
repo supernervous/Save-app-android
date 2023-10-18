@@ -35,13 +35,17 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
         private const val EXTRA_SELECTED_IDX = "selected_idx"
         private const val EXTRA_BATCH_MODE = "batch_mode"
 
-        fun start(context: Context, mediaIds: LongArray, selectedIdx: Int? = null, batchMode: Boolean = false) {
+        fun getIntent(context: Context, media: List<Media>, selected: Media? = null, batchMode: Boolean = false): Intent {
             val i = Intent(context, ReviewActivity::class.java)
-            i.putExtra(EXTRA_CURRENT_MEDIA_ID, mediaIds)
-            i.putExtra(EXTRA_SELECTED_IDX, selectedIdx)
+            i.putExtra(EXTRA_CURRENT_MEDIA_ID, media.map { it.id }.toLongArray())
+
+            if (selected != null) {
+                i.putExtra(EXTRA_SELECTED_IDX, media.indexOf(selected))
+            }
+
             i.putExtra(EXTRA_BATCH_MODE, batchMode)
 
-            context.startActivity(i)
+            return i
         }
     }
 
@@ -171,7 +175,9 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             R.id.menu_done -> {
                 save()
 
-                finish()
+                setResult(RESULT_OK)
+
+                super.finish()
 
                 return true
             }
