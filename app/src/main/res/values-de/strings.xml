@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Anmelden</string>
     <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_view_media">Editieren</string>
     <string name="title_activity_batch_view_media">Massenbearbeitung</string>
     <string name="title_activity_archive_metadata">Metadaten</string>
     <string name="title_media_list">Uploads</string>

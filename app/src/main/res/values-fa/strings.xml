@@ -5,7 +5,6 @@
     <string name="title_activity_login">ورود</string>
     <string name="title_activity_settings">تنظیمات</string>
     <string name="title_activity_first_start">اولین آغاز</string>
-    <string name="title_activity_view_media">افزودن اطلاعات</string>
     <string name="title_activity_batch_view_media">ویرایش گروهی</string>
     <string name="title_activity_archive_metadata">متادیتا</string>
     <string name="title_media_list">آپلود</string>

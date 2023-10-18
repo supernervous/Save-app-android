@@ -5,7 +5,6 @@
     <string name="title_activity_login">تسجيل الدخول</string>
     <string name="title_activity_settings">الإعدادات</string>
     <string name="title_activity_first_start">بدء أول</string>
-    <string name="title_activity_view_media">أضف معلومات</string>
     <string name="title_activity_batch_view_media">تعديل بالجملة</string>
     <string name="title_activity_archive_metadata">البيانات الوصفية</string>
     <string name="title_media_list">التحميلات

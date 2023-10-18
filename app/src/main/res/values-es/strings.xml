@@ -5,7 +5,6 @@
     <string name="title_activity_login">Iniciar sesión</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_first_start">Primer inicio</string>
-    <string name="title_activity_view_media">Añadir Información</string>
     <string name="title_activity_batch_view_media">Edición por lotes</string>
     <string name="title_activity_archive_metadata">Metadatos</string>
     <string name="title_media_list">Subir</string>

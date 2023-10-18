@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Connexion</string>
     <string name="title_activity_settings">Paramètres</string>
-    <string name="title_activity_view_media">Ajouter des infos</string>
     <string name="title_activity_archive_metadata">Métadonnées</string>
     <string name="title_media_list">Téléversements</string>
 

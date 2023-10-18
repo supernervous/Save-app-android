@@ -14,7 +14,6 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
-import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -147,7 +146,8 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
             }
             mBinding.btBatchEdit -> {
                 val i = Intent(this, BatchReviewMediaActivity::class.java)
-                i.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID,
+                i.putExtra(
+                    ReviewActivity.EXTRA_CURRENT_MEDIA_ID,
                     mMedia.filter { it.selected }.map { it.id }.toLongArray())
 
                 startActivity(i)
@@ -180,10 +180,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     }
 
     override fun mediaClicked(media: Media) {
-        val i = Intent(this, ReviewMediaActivity::class.java)
-        i.putExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID, media.id)
-
-        startActivity(i)
+        ReviewActivity.start(this, mMedia.map { it.id }.toLongArray(), mMedia.indexOf(media))
     }
 
     override fun mediaSelectionChanged() {

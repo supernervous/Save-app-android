@@ -150,10 +150,8 @@
             android:taskAffinity="" />
 
         <activity
-            android:name=".features.media.review.ReviewMediaActivity"
-            android:label="@string/title_activity_view_media"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
+            android:name=".features.media.ReviewActivity"
+            android:label="@string/edit_media_info"
             android:windowSoftInputMode="stateHidden" />
 
         <activity

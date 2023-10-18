@@ -7,7 +7,6 @@
     <string name="title_activity_login">Oturum açın</string>
     <string name="title_activity_settings">Ayarlar</string>
     <string name="title_activity_first_start">Önce başla</string>
-    <string name="title_activity_view_media">Bilgiler ekle</string>
     <string name="title_activity_batch_view_media">Toplu düzenleme</string>
     <string name="title_activity_archive_metadata">Üst veriler</string>
     <string name="title_media_list">Yüklemeler</string>
@@ -280,8 +279,6 @@
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">Save ortamlarını Internet Archive üzerine göndermek ve kaydetmek için bir Internet Archive hesabı ile oturum açmalı ya da yeni bir hesap edinmelisiniz. </string>
 
-    <string name="popup_remove_title">Ortamı Save üzerinden sil</string>
-    <string name="popup_remove_desc">Öge yalnızSave uygulamasından silinecek. Sunucu ve fotoğraflar içinde durmaya devam edecek.</string>
     <string name="allow_creative_commons_use_for_all_media_in_this_folder">Bu klasördeki ortamlara Creative Commons ile kullanma izni ver</string>
     <string name="allow_creative_commons_use_for_all_folders_on_this_server">Bu sunucudaki tüm klasörlere Creative Commons ile kullanma izni ver</string>
 

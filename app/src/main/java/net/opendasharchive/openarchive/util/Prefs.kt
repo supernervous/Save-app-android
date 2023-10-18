@@ -22,7 +22,8 @@ object Prefs {
     private const val CURRENT_SPACE_ID = "current_space"
     private const val FLAG_HINT_SHOWN = "ft.flag"
     private const val BATCH_HINT_SHOWN = "ft.batch"
-    private const val DONT_SHOW_UPLOAD_HINT = "ft.upload_hint"
+    private const val DONT_SHOW_UPLOAD_HINT = "ft.upload"
+    private const val BACK_HINT_SHOWN = "ft.back"
     private const val IA_HINT_SHOWN = "ft.ia"
     private const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
     private const val LICENSE_URL = "archive_pref_share_license_url"
@@ -91,6 +92,12 @@ object Prefs {
         get() = prefs?.getBoolean(DONT_SHOW_UPLOAD_HINT, false) ?: false
         set(value) {
             prefs?.edit()?.putBoolean(DONT_SHOW_UPLOAD_HINT, value)?.apply()
+        }
+
+    var backHintShown: Boolean
+        get() = prefs?.getBoolean(BACK_HINT_SHOWN, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(BACK_HINT_SHOWN, value)?.apply()
         }
 
     var iaHintShown: Boolean

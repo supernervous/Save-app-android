@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Авторизоваться</string>
     <string name="title_activity_settings">Настройки</string>
-    <string name="title_activity_view_media">Добавить инфо</string>
     <string name="title_activity_batch_view_media">Редактировать группу объектов</string>
     <string name="title_activity_archive_metadata">Метаданные</string>
     <string name="title_media_list">Загруженная информация</string>

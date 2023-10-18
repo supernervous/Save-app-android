@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Увійти</string>
     <string name="title_activity_settings">Налаштування</string>
-    <string name="title_activity_view_media">Додати дані</string>
     <string name="title_activity_batch_view_media">Редагувати пакет</string>
     <string name="title_activity_archive_metadata">Метадані</string>
     <!-- General -->

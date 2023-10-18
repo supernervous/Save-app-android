@@ -16,7 +16,7 @@ import net.opendasharchive.openarchive.databinding.ActivityBatchReviewMediaBindi
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
-import net.opendasharchive.openarchive.features.media.review.ReviewMediaActivity
+import net.opendasharchive.openarchive.features.media.ReviewActivity
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
@@ -30,8 +30,6 @@ class BatchReviewMediaActivity : BaseActivity() {
 
     private var mediaList: ArrayList<Media> = arrayListOf()
     private var mPicasso: Picasso? = null
-    private var menuPublish: MenuItem? = null
-    private var menuDelete: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,37 +203,36 @@ class BatchReviewMediaActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_review_media, menu)
-        menuPublish = menu.findItem(R.id.menu_upload)
-        menuDelete = menu.findItem(R.id.menu_delete)
-        menuPublish?.isVisible = true
-        menuDelete?.isVisible = false
-        return true
+        menuInflater.inflate(R.menu.menu_review, menu)
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
-            R.id.menu_upload -> uploadMedia()
+            android.R.id.home -> {
+                finish()
+
+                return true
+            }
+            R.id.menu_done -> {
+                val operation = previewMediaListViewModel.applyMedia()
+
+                print(operation.result.get())
+
+                finish()
+
+                return true
+            }
         }
+
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun uploadMedia() {
-        for (media in mediaList) {
-            media.sStatus = Media.Status.Queued
-            media.save()
-        }
-
-        val operation = previewMediaListViewModel.applyMedia()
-
-        print(operation.result.get())
     }
 
     private fun init() {
         mediaList.clear()
 
-        intent.getLongArrayExtra(ReviewMediaActivity.EXTRA_CURRENT_MEDIA_ID)?.forEach {
+        intent.getLongArrayExtra(ReviewActivity.EXTRA_CURRENT_MEDIA_ID)?.forEach {
             val media = Media.get(it) ?: return@forEach
             mediaList.add(media)
         }

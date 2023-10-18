@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Accedi</string>
     <string name="title_activity_settings">Impostazioni</string>
-    <string name="title_activity_view_media">Aggiungi info</string>
     <string name="title_activity_batch_view_media">Modifica Batch</string>
     <string name="title_activity_archive_metadata">Metadati</string>
     <string name="title_media_list">Upload</string>

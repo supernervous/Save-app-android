@@ -9,7 +9,6 @@
     <string name="title_activity_login">Log in</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_first_start">First Start</string>
-    <string name="title_activity_view_media">Add Info</string>
     <string name="title_activity_batch_view_media">Batch Edit</string>
     <string name="title_activity_archive_metadata">Metadata</string>
     <string name="title_media_list">Uploads</string>
@@ -294,8 +293,6 @@
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">You will need to log into or create an Internet Archive account in order to send and preserve Save media at the Internet Archive</string>
 
-    <string name="popup_remove_title">Remove Media From Save</string>
-    <string name="popup_remove_desc">This item will be removed only from the Save App. It will remain on the server and in your photo gallery.</string>
     <string name="allow_creative_commons_use_for_all_media_in_this_folder">Allow Creative Commons use for all media in this folder</string>
     <string name="allow_creative_commons_use_for_all_folders_on_this_server">Allow Creative Commons use for all folders on this server</string>
 
@@ -408,4 +405,11 @@
     <string name="edit_multiple">Edit Multiple</string>
     <string name="press_and_hold_to_select_and_edit_multiple_media">Press and hold to select and edit multiple media.</string>
     <string name="once_uploaded_you_will_not_be_able_to_edit_media">Once uploaded, you will not be able to edit media</string>
+    <string name="edit_media_info">Edit Media Info</string>
+    <string name="counter">%1$d/%2$d</string>
+    <string name="your_changes_wont_be_saved">Your changes won\'t be saved</string>
+    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">"Back" button will not save changes, Press "Done" to save your edits.</string>
+    <string name="name_this_image_optional">Name this image (optional)</string>
+    <string name="add_a_location_optional">Add a location (optional)</string>
+    <string name="add_notes_optional">Add notes (optional)</string>
 </resources>
