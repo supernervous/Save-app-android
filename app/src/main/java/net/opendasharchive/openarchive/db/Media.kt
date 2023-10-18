@@ -48,7 +48,7 @@ data class Media(
 
     companion object {
         const val ORDER_PRIORITY = "priority DESC"
-        const val ORDER_CREATED = "create_date ASC"
+        const val ORDER_CREATED = "create_date DESC"
 
 
         fun getByProject(projectId: Long): List<Media> {
