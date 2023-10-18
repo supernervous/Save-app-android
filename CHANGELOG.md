@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 beta3
+- New review and batch review scene.
+- Moved all review from main scene one level deeper into preview scene.
+- Fixed issue in upload manager scene.
+
 ## 0.3.0 beta2
 - Introduce new preview scene.
 - Fixed minor wording issues.
