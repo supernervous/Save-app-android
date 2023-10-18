@@ -8,7 +8,9 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.github.derlio.waveform.SimpleWaveformView
 import com.squareup.picasso.Picasso
 import com.stfalcon.frescoimageviewer.ImageViewer
 import net.opendasharchive.openarchive.R
@@ -22,20 +24,22 @@ import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
-import java.io.File
+import java.text.NumberFormat
 import kotlin.math.max
 import kotlin.math.min
 
 class ReviewActivity : BaseActivity(), View.OnClickListener {
 
     companion object {
-        const val EXTRA_CURRENT_MEDIA_ID = "archive_extra_current_media_id"
-        const val EXTRA_SELECTED_IDX = "selected_idx"
+        private const val EXTRA_CURRENT_MEDIA_ID = "archive_extra_current_media_id"
+        private const val EXTRA_SELECTED_IDX = "selected_idx"
+        private const val EXTRA_BATCH_MODE = "batch_mode"
 
-        fun start(context: Context, mediaIds: LongArray, selectedIdx: Int) {
+        fun start(context: Context, mediaIds: LongArray, selectedIdx: Int? = null, batchMode: Boolean = false) {
             val i = Intent(context, ReviewActivity::class.java)
             i.putExtra(EXTRA_CURRENT_MEDIA_ID, mediaIds)
             i.putExtra(EXTRA_SELECTED_IDX, selectedIdx)
+            i.putExtra(EXTRA_BATCH_MODE, batchMode)
 
             context.startActivity(i)
         }
@@ -46,6 +50,8 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
     private var mStore = emptyList<Media>()
 
     private var mIndex = 0
+
+    private var mBatchMode = false
 
     private val mMedia
         get() = mStore.getOrNull(mIndex)
@@ -65,7 +71,10 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
         mIndex = savedInstanceState?.getInt(EXTRA_SELECTED_IDX) ?: intent.getIntExtra(EXTRA_SELECTED_IDX, 0)
 
+        mBatchMode = intent.getBooleanExtra(EXTRA_BATCH_MODE, false)
+
         mBinding.btFlag.setOnClickListener(this)
+
         mBinding.waveform.setOnClickListener(this)
         mBinding.image.setOnClickListener(this)
 
@@ -85,11 +94,16 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
 
             override fun afterTextChanged(s: Editable?) {
-                mMedia?.title = if (s.isNullOrBlank()) {
-                    File(mMedia?.originalFilePath ?: "").name
+                var value = s?.toString()
+                if (value.isNullOrBlank()) value = null
+
+                if (mBatchMode) {
+                    mStore.forEach {
+                        it.title = value ?: it.file.name
+                    }
                 }
                 else {
-                    s.toString()
+                    mMedia?.title = value ?: mMedia?.file?.name ?: ""
                 }
             }
         })
@@ -100,7 +114,16 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
 
             override fun afterTextChanged(s: Editable?) {
-                mMedia?.description = s?.toString() ?: ""
+                val value = s?.toString() ?: ""
+
+                if (mBatchMode) {
+                    mStore.forEach {
+                        it.description = value
+                    }
+                }
+                else {
+                    mMedia?.description = value
+                }
             }
         })
 
@@ -110,7 +133,16 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
 
             override fun afterTextChanged(s: Editable?) {
-                mMedia?.location = s?.toString() ?: ""
+                val value = s?.toString() ?: ""
+
+                if (mBatchMode) {
+                    mStore.forEach {
+                        it.location = value
+                    }
+                }
+                else {
+                    mMedia?.location = value
+                }
             }
         })
 
@@ -160,7 +192,14 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             mBinding.btFlag -> {
                 showFirstTimeFlag()
 
-                mMedia?.flag = !(mMedia?.flag ?: false)
+                val isFlagged = mMedia?.flag ?: false
+
+                if (mBatchMode) {
+                    mStore.forEach { it.flag = !isFlagged }
+                }
+                else {
+                    mMedia?.flag = !isFlagged
+                }
 
                 updateFlagState()
             }
@@ -189,49 +228,53 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun refresh() {
-        mBinding.counter.text = getString(R.string.counter, mIndex + 1, mStore.size)
+        if (mBatchMode) {
+            mBinding.batchContainer.show()
+            mBinding.singleContainer.hide()
 
-        mBinding.image.show()
-        mBinding.waveform.hide()
+            mBinding.counter.text = NumberFormat.getIntegerInstance().format(mStore.size)
 
-        if (mMedia?.mimeType?.startsWith("image") == true) {
-            Glide.with(this)
-                .load(mMedia?.fileUri)
-                .into(mBinding.image)
-        }
-        else if (mMedia?.mimeType?.startsWith("video") == true) {
-            Picasso.Builder(this)
-                .addRequestHandler(VideoRequestHandler(this))
-                .build()
-                .load(VideoRequestHandler.SCHEME_VIDEO + ":" + mMedia?.originalFilePath)
-                ?.fit()
-                ?.centerCrop()
-                ?.into(mBinding.image)
-        }
-        else if (mMedia?.mimeType?.startsWith("audio") == true) {
-            mBinding.image.setImageResource(R.drawable.audio_waveform)
+            for (i in 0..2) {
+                val media = mStore.getOrNull(i)
 
-            val soundFile = MediaViewHolder.soundCache[mMedia?.originalFilePath]
-            if (soundFile != null) {
-                mBinding.waveform.setAudioFile(soundFile)
-                mBinding.waveform.show()
-                mBinding.image.hide()
+                val iv = when (i) {
+                    0 -> mBinding.batchImg3
+                    1 -> mBinding.batchImg2
+                    else -> mBinding.batchImg1
+                }
+
+                if (media == null) {
+                    iv.hide()
+                }
+                else {
+                    load(media, iv)
+                }
             }
         }
         else {
-            mBinding.image.setImageResource(R.drawable.no_thumbnail)
+            mBinding.batchContainer.hide()
+            mBinding.singleContainer.show()
+
+            mBinding.counter.text = getString(R.string.counter, mIndex + 1, mStore.size)
+
+            load(mMedia, mBinding.image, mBinding.waveform)
         }
 
         updateFlagState()
 
-        mBinding.btPageBack.toggle(mIndex > 0)
-        mBinding.btPageFrwd.toggle(mIndex < mStore.size - 1)
+        mBinding.btPageBack.toggle( !mBatchMode && mIndex > 0)
+        mBinding.btPageFrwd.toggle(!mBatchMode && mIndex < mStore.size - 1)
 
-        mBinding.title.setText(mMedia?.title)
-
-        mBinding.description.setText(mMedia?.description)
-
-        mBinding.location.setText(mMedia?.location)
+        if (mBatchMode) {
+            mBinding.title.text = null
+            mBinding.description.text = null
+            mBinding.location.text = null
+        }
+        else {
+            mBinding.title.setText(mMedia?.title)
+            mBinding.description.setText(mMedia?.description)
+            mBinding.location.setText(mMedia?.location)
+        }
     }
 
     private fun updateFlagState() {
@@ -255,11 +298,46 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
     private fun save() {
         for (media in mStore) {
-            media.licenseUrl = media.project?.licenseUrl
+            media.licenseUrl = media.project?.licenseUrl ?: media.space?.license
 
             if (media.sStatus == Media.Status.New) media.sStatus = Media.Status.Local
 
             media.save()
+        }
+    }
+
+    private fun load(media: Media?, imageView: ImageView, waveform: SimpleWaveformView? = null) {
+        imageView.show()
+        waveform?.hide()
+
+        if (media?.mimeType?.startsWith("image") == true) {
+            Glide.with(this)
+                .load(media.fileUri)
+                .into(imageView)
+        }
+        else if (media?.mimeType?.startsWith("video") == true) {
+            Picasso.Builder(this)
+                .addRequestHandler(VideoRequestHandler(this))
+                .build()
+                .load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
+                ?.fit()
+                ?.centerCrop()
+                ?.into(imageView)
+        }
+        else if (media?.mimeType?.startsWith("audio") == true) {
+            imageView.setImageResource(R.drawable.audio_waveform)
+
+            if (waveform != null) {
+                val soundFile = MediaViewHolder.soundCache[media.originalFilePath]
+                if (soundFile != null) {
+                    waveform.setAudioFile(soundFile)
+                    waveform.show()
+                    imageView.hide()
+                }
+            }
+        }
+        else {
+            imageView.setImageResource(R.drawable.no_thumbnail)
         }
     }
 }

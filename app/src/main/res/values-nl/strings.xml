@@ -26,8 +26,6 @@
     <string name="lbl_success">Gereed</string>
     <string name="lbl_continue">Ga verder</string>
     <string name="upload_to_internet_archive">Uploaden naar het Internet Archief</string>
-    <string name="hint_title">Titel</string>
-    <string name="hint_author">Auteur</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_no">Nee</string>
 

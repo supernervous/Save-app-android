@@ -152,15 +152,9 @@
         <activity
             android:name=".features.media.ReviewActivity"
             android:label="@string/edit_media_info"
-            android:windowSoftInputMode="stateHidden" />
-
-        <activity
-            android:name=".features.media.batch.BatchReviewMediaActivity"
-            android:label="@string/title_activity_batch_view_media"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:taskAffinity=""
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false"
+            android:taskAffinity="" />
 
         <activity
             android:name=".features.onboarding.SpaceSetupActivity"

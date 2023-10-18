@@ -69,7 +69,6 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
 
     private fun toggleSelection(media: Media) {
         media.selected = !media.selected
-        media.save()
 
         notifyItemChanged(currentList.indexOf(media))
 

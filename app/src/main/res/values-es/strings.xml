@@ -5,7 +5,6 @@
     <string name="title_activity_login">Iniciar sesión</string>
     <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_first_start">Primer inicio</string>
-    <string name="title_activity_batch_view_media">Edición por lotes</string>
     <string name="title_activity_archive_metadata">Metadatos</string>
     <string name="title_media_list">Subir</string>
 
@@ -70,11 +69,6 @@
     <string name="menu_record_audio">Grabar audio</string>
     <string name="menu_delete">Eliminar Media</string>
 
-    <string name="hint_title">Título</string>
-    <string name="hint_description">Añadir Notas</string>
-    <string name="hint_author">Autor</string>
-    <string name="hint_location">Añadir Ubicación</string>
-    <string name="hint_tags">Añadir Personas</string>
     <string name="hint_flag">Pulse para marcar como contenido importante</string>
     <string name="answer_yes">Sí</string>
     <string name="answer_no">No</string>

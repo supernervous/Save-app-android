@@ -34,11 +34,6 @@
     <string name="menu_record_audio">Enregistrer audio</string>
     <string name="menu_delete">Supprimer le contenu multimédia</string>
 
-    <string name="hint_title">Titre</string>
-    <string name="hint_description">Ajouter des notes</string>
-    <string name="hint_author">Auteur</string>
-    <string name="hint_location">Ajouter une position géographique</string>
-    <string name="hint_tags">Ajouter des personnes</string>
     <string name="hint_flag">Touchez pour marquer comme contenu important</string>
     <string name="answer_yes">Oui</string>
     <string name="answer_no">Non</string>

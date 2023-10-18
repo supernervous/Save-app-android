@@ -7,7 +7,6 @@
     <string name="title_activity_login">Oturum açın</string>
     <string name="title_activity_settings">Ayarlar</string>
     <string name="title_activity_first_start">Önce başla</string>
-    <string name="title_activity_batch_view_media">Toplu düzenleme</string>
     <string name="title_activity_archive_metadata">Üst veriler</string>
     <string name="title_media_list">Yüklemeler</string>
 
@@ -100,11 +99,6 @@
     <string name="menu_nearby_rec">Yakındaki alıcı</string>
     <string name="menu_delete">Ortamı sil</string>
 
-    <string name="hint_title">Başlık</string>
-    <string name="hint_description">Not ekle</string>
-    <string name="hint_author">Oluşturan</string>
-    <string name="hint_location">Konum ekle</string>
-    <string name="hint_tags">Kişiler ekle</string>
     <string name="hint_flag">Önemli içerik olarak işaretlemek için dokunun</string>
     <string name="answer_yes">Evet</string>
     <string name="answer_no">Hayır</string>

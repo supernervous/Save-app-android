@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Авторизоваться</string>
     <string name="title_activity_settings">Настройки</string>
-    <string name="title_activity_batch_view_media">Редактировать группу объектов</string>
     <string name="title_activity_archive_metadata">Метаданные</string>
     <string name="title_media_list">Загруженная информация</string>
 
@@ -35,11 +34,6 @@
     <string name="menu_record_audio">Записать аудио</string>
     <string name="menu_delete">Удалить медиа данные</string>
 
-    <string name="hint_title">Заголовок</string>
-    <string name="hint_description">Добавить примечания</string>
-    <string name="hint_author">Автор</string>
-    <string name="hint_location">Добавить геолокацию</string>
-    <string name="hint_tags">Добавить людей</string>
     <string name="hint_flag">Нажмите, чтобы отметить как важное содержание</string>
     <string name="answer_yes">Да</string>
     <string name="answer_no">Нет</string>

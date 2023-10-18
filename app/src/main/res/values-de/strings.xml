@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Anmelden</string>
     <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_batch_view_media">Massenbearbeitung</string>
     <string name="title_activity_archive_metadata">Metadaten</string>
     <string name="title_media_list">Uploads</string>
 
@@ -41,11 +40,6 @@
 
     <string name="menu_delete">Medien entfernen</string>
 
-    <string name="hint_title">Titel</string>
-    <string name="hint_description">Notizen hinzufügen</string>
-    <string name="hint_author">Verfasser</string>
-    <string name="hint_location">Ort hinzufügen</string>
-    <string name="hint_tags">Menschen hinzufügen</string>
     <string name="hint_flag">Tippen um als besonderen Inhalt zu markieren</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_no">Nein</string>

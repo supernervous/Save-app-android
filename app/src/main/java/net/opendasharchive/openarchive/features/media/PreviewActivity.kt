@@ -13,7 +13,6 @@ import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.batch.BatchReviewMediaActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -100,6 +99,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
                 val queue = {
                     mMedia.forEach {
                         it.sStatus = Media.Status.Queued
+                        it.selected = false
                         it.save()
                     }
 
@@ -139,29 +139,23 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
         return super.onOptionsItemSelected(item)
     }
 
-    override fun finish() {
-        mMedia.forEach {
-            if (it.selected) {
-                it.selected = false
-                it.save()
-            }
-        }
-
-        super.finish()
-    }
-
     override fun onClick(view: View?) {
         when (view) {
             mBinding.btAddMore -> {
                 MediaPicker.pick(this, mPickerLauncher)
             }
             mBinding.btBatchEdit -> {
-                val i = Intent(this, BatchReviewMediaActivity::class.java)
-                i.putExtra(
-                    ReviewActivity.EXTRA_CURRENT_MEDIA_ID,
-                    mMedia.filter { it.selected }.map { it.id }.toLongArray())
+                val selected = mMedia.filter { it.selected }
 
-                startActivity(i)
+                if (selected.size == 1) {
+                    ReviewActivity.start(this, mMedia.map { it.id }.toLongArray(),
+                        mMedia.indexOf(selected.first()))
+                }
+                else if (selected.size > 1) {
+                    ReviewActivity.start(this,
+                        mMedia.filter { it.selected }.map { it.id }.toLongArray(),
+                        batchMode = true)
+                }
             }
             mBinding.btSelectAll -> {
                 val select = mMedia.firstOrNull { !it.selected } != null
@@ -169,7 +163,6 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
                 mMedia.forEach {
                     if (it.selected != select) {
                         it.selected = select
-                        it.save()
 
                         mAdapter?.notifyItemChanged(mMedia.indexOf(it))
                     }

@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Увійти</string>
     <string name="title_activity_settings">Налаштування</string>
-    <string name="title_activity_batch_view_media">Редагувати пакет</string>
     <string name="title_activity_archive_metadata">Метадані</string>
     <!-- General -->
     <string name="menu_item_publish">Опублікувати</string>
@@ -25,11 +24,6 @@
     <string name="lbl_continue">Продовжити</string>
     <string name="menu_delete">Вилучити медіа</string>
 
-    <string name="hint_title">Заголовок</string>
-    <string name="hint_description">Додати нотатки</string>
-    <string name="hint_author">Автор</string>
-    <string name="hint_location">Додати місцеперебування</string>
-    <string name="hint_tags">Додати людей</string>
     <string name="hint_flag">Торкніться, щоб позначити як важливий вміст</string>
     <string name="answer_yes">Так</string>
     <string name="answer_no">Ні</string>

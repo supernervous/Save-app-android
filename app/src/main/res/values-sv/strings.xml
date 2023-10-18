@@ -22,8 +22,6 @@
     <string name="lbl_settings">Inställningar</string>
     <string name="lbl_success">Färdig</string>
     <string name="lbl_continue">Fortsätt</string>
-    <string name="hint_title">Titel</string>
-    <string name="hint_author">Författare</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_no">Nej</string>
 

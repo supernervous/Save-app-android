@@ -22,8 +22,6 @@
     <string name="lbl_settings">設定</string>
     <string name="lbl_success">完成</string>
     <string name="lbl_continue">繼續</string>
-    <string name="hint_title">標題</string>
-    <string name="hint_author">作者</string>
     <string name="answer_yes">是</string>
     <string name="answer_no">否</string>
 

@@ -3,7 +3,6 @@
 
     <string name="title_activity_login">Accedi</string>
     <string name="title_activity_settings">Impostazioni</string>
-    <string name="title_activity_batch_view_media">Modifica Batch</string>
     <string name="title_activity_archive_metadata">Metadati</string>
     <string name="title_media_list">Upload</string>
 
@@ -31,11 +30,6 @@
     <string name="lbl_continue">Continua</string>
     <string name="menu_delete">Rimuovi media</string>
 
-    <string name="hint_title">Titolo</string>
-    <string name="hint_description">Aggiungi Note</string>
-    <string name="hint_author">Autore</string>
-    <string name="hint_location">Aggiungi Luogo</string>
-    <string name="hint_tags">Aggiungi Persone</string>
     <string name="hint_flag">Tocca per segnalare un contenuto significativo</string>
     <string name="answer_yes">Sì</string>
     <string name="answer_no">No</string>
