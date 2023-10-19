@@ -62,7 +62,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private var mMenuUpload: MenuItem? = null
     private var mMenuDelete: MenuItem? = null
 
-    private var mSpace: Space? = null
     private var mSnackBar: Snackbar? = null
     private var retryProviderInstall: Boolean = false
 
@@ -239,14 +238,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
 
+        refreshSpace()
+
         if (mLastItem == mPagerAdapter.settingsIndex) {
-            // display settings in when returning from deeper setting activities
+            // Display settings when returning from deeper setting activities.
             mCurrentItem = mLastItem
-        } else {
-            refreshSpace()
         }
 
-        if (mSpace?.host.isNullOrEmpty()) {
+        if (Space.current?.host.isNullOrEmpty()) {
             startActivity(Intent(this, Onboarding23Activity::class.java))
         }
 
@@ -331,7 +330,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     private fun refreshSpace() {
         val currentSpace = Space.current
-        mSpace = currentSpace
 
         if (currentSpace != null) {
             mBinding.space.setDrawable(
@@ -350,7 +348,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private fun refreshProjects(setProjectId: Long? = null) {
-        val projects = mSpace?.projects ?: emptyList()
+        val projects = Space.current?.projects ?: emptyList()
 
         val project = projects.firstOrNull { it.id == setProjectId } ?: getSelectedProject()
 
@@ -535,7 +533,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     override fun getSelectedSpace(): Space? {
-        return mSpace
+        return Space.current
     }
 
     private fun addMediaClicked() {

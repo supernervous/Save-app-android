@@ -82,7 +82,7 @@ data class Space(
         }
 
         var current: Space?
-            get() = get(Prefs.currentSpaceId) ?: this.getAll().asSequence().firstOrNull()
+            get() = get(Prefs.currentSpaceId) ?: first(Space::class.java)
             set(value) {
                 Prefs.currentSpaceId = value?.id ?: -1
             }
