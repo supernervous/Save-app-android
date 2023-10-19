@@ -7,7 +7,7 @@
     android:paddingStart="64dp"
     android:paddingEnd="128dp"
     android:weightSum="130"
-    tools:context=".features.onboarding23.Onboarding23SlideFragment">
+    tools:context=".features.onboarding.Onboarding23SlideFragment">
 
     <View
         android:layout_width="match_parent"

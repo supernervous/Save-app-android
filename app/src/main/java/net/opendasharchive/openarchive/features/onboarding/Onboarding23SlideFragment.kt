@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.onboarding23
+package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Context
 import android.os.Bundle
@@ -29,7 +29,7 @@ class Onboarding23SlideFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val mBinding = FragmentOnboarding23SlideBinding.inflate(inflater)
         mBinding.title.text = title
         mBinding.summary.text = HtmlCompat.fromHtml("${this.summary}", HtmlCompat.FROM_HTML_MODE_COMPACT)

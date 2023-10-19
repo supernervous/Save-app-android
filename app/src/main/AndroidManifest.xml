@@ -162,17 +162,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".features.onboarding.OAAppIntro"
-            android:label="App Intro"
-            android:screenOrientation="portrait"
-            android:taskAffinity="" />
-
-        <activity
-            android:name=".features.onboarding23.Onboarding23Activity"
+            android:name=".features.onboarding.Onboarding23Activity"
             android:noHistory="true" />
 
         <activity
-            android:name=".features.onboarding23.Onboarding23InstructionsActivity"
+            android:name=".features.onboarding.Onboarding23InstructionsActivity"
             android:noHistory="true" />
 
         <activity

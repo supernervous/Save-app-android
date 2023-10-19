@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="24dp"
-            android:text="Skip"
+            android:text="@string/skip"
             android:textColor="@color/colorBackground" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

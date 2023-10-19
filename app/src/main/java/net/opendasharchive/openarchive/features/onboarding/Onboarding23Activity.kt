@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.onboarding23
+package net.opendasharchive.openarchive.features.onboarding
 
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -52,7 +52,7 @@ class Onboarding23Activity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        var oa = ObjectAnimator.ofFloat(mBinding.arrow, "translationX", 0F, 25F, 0F)
+        val oa = ObjectAnimator.ofFloat(mBinding.arrow, "translationX", 0F, 25F, 0F)
         oa.interpolator = BounceInterpolator()
         oa.startDelay = 3000
         oa.duration = 2000

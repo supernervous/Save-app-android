@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.onboarding23
+package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Context
 import androidx.fragment.app.Fragment
@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.onboarding23.Onboarding23SlideFragment.Companion.newInstance
+import net.opendasharchive.openarchive.features.onboarding.Onboarding23SlideFragment.Companion.newInstance
 
 class Onboarding23FragmentStateAdapter(
     fragmentManager: FragmentManager,

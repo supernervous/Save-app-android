@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.onboarding23
+package net.opendasharchive.openarchive.features.onboarding
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +12,6 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityOnboarding23InstructionsBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 
 class Onboarding23InstructionsActivity : BaseActivity() {
 
