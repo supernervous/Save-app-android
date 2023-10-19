@@ -1,25 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="title_activity_main">Capturar multimedia</string>
     <string name="title_activity_login">Iniciar sesión</string>
-    <string name="title_activity_settings">Ajustes</string>
     <string name="title_activity_first_start">Primer inicio</string>
-    <string name="title_activity_archive_metadata">Metadatos</string>
     <string name="title_media_list">Subir</string>
 
     <!-- General -->
-    <string name="menu_item_publish">Publicar</string>
-    <string name="menu_item_nearby">Compartir Nearby</string>
 
-    <string name="lblEditMetadata">Editar multimedia</string>
-    <string name="lblSave">Guardar</string>
-    <string name="loading_title">Subir multimedia</string>
     <!-- Default Values -->
-    <string name="default_title">Mi título</string>
     <string name="default_tags">OpenArchive</string>
-
-    <string name="alert_lbl_delete_media">Eliminar Multimedia</string>
 
     <string name="action_settings">Ajustes</string>
 
@@ -27,31 +16,13 @@
     <string name="internet_archive">Internet Archive</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">Importar</string>
-    <string name="capture_btn">Capturar</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Imagen principal</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">Si</string>
     <string name="lbl_Cancel">Cancelar</string>
-    <string name="lbl_off">Apagado</string>
-    <string name="lbl_on">Encendido</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_settings">Ajustes</string>
-    <string name="lbl_cancelled">Cancelado</string>
-    <string name="lbl_success">Listo</string>
-    <string name="lbl_continue">Continuar</string>
-    <string name="upload_to_internet_archive">Subir a Internet Archive</string>
-    <string name="lbl_share_prefs">Compartiendo preferencias</string>
-    <string name="lbl_update_value">Actualizar valor</string>
-    <string name="lbl_enter_value">Pulsa para ingresar un valor.</string>
-
-    <string name="share_using">Compartir enlace del archivo a través de</string>
-    <string name="share_text">compartir a través de OpenArchive en</string>
-    <string name="share_torrent_text">disponible a través de BitTorrent y OpenArchive:</string>
-    <string name="share_media_text">publicado a través de OpenArchive en</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -63,74 +34,42 @@
     <string name="info_license_sharealike">¿Solicitarles que compartan del mismo modo que tú?</string>
     <string name="info_license_comm">¿Permitir uso comercial?</string>
 
-    <string name="menu_import_media">Importar medios</string>
-    <string name="menu_take_photo">Sacar una foto</string>
-    <string name="menu_take_video">Grabar un vídeo</string>
-    <string name="menu_record_audio">Grabar audio</string>
     <string name="menu_delete">Eliminar Media</string>
 
     <string name="hint_flag">Pulse para marcar como contenido importante</string>
     <string name="answer_yes">Sí</string>
     <string name="answer_no">No</string>
 
-    <string name="nearby_public">Público</string>
-    <string name="nearby_private">Privado</string>
     <string name="action_cancel">Cancelar</string>
 
-    <string name="action_open">Abrir</string>
-
-    <string name="channel_name">Publicaciones en OpenArchive</string>
-    <string name="channel_description">Muestra el estatus y progreso de las publicaciones en servidores remotos</string>
     <string name="status_waiting">Esperando</string>
     <string name="status_error">Error</string>
-    <string name="status_public">Público</string>
     <string name="status_uploading">Subiendo</string>
-    <string name="your_media_is_available">Tu multimedia está disponible en</string>
 
-    <string name="prefs_networking_title">Conectando</string>
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de pantalla</string>
-    <string name="prefs_nearby_title">Cercanos</string>
 
     <string name="prefs_user_interface_title">Presentación</string>
     <string name="prefs_theme_title">Estilo</string>
     <string name="prefs_theme_light">Claro</string>
     <string name="prefs_theme_dark">Oscuro</string>
-    <string name="prefs_data_title">Metadatos</string>
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="prefs_bt_summary">Usar Bluetooth para compartir con cercanos</string>
 
-    <string name="menu_share">Compartir</string>
-
-    <string name="action_received">Recibido</string>
-    <string name="action_duplicate">Duplicado recibido</string>
-    <string name="status_connecting">Conectando…</string>
-    <string name="status_connected">Conectado!</string>
-    <string name="tap_to_connect">Tocar para conectarse</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Nombre de usuario</string>
     <string name="prompt_password">Contraseña</string>
-    <string name="action_sign_in">Iniciar sesión</string>
     <string name="action_sign_in_short">Iniciar sesión</string>
     <string name="error_incorrect_username_or_password">Nombre de usuario o contraseña incorrectos.</string>
     <string name="error_field_required">Este campo es obligatorio</string>
-    <string name="setup_nearby">Cercanías</string>
     <string name="title_welcome">Bienvenido/a</string>
     <string name="status_uploaded">Subido</string>
-    <string name="header_projects">Configuraciones del proyecto</string>
 
-    <string name="action_data_use">Uso de datos</string>
     <string name="action_privacy">Política de privacidad</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">Subidas</string>
     <string name="title_uploading">Subiendo…</string>
 
     <string name="action_upload">Subir</string>
-    <string name="action_preview">Vista previa</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Añadir</string>
-    <string name="app_tag_line">Preservación segura de medios móvil</string>
     <string name="action_next">Seguir</string>
     <string name="action_done">Listo</string>
     <string name="status_flagged">Contenido Importante</string>
@@ -144,22 +83,13 @@
     <string name="secret_key">Clave secreta</string>
     <string name="action_acquire_keys">Adquirir claves</string>
     <string name="new_folder">Nuevo directorio</string>
-    <string name="open_link">Abrir enlace</string>
-    <string name="save_by_openarchive">por OpenArchive</string>
-    <string name="action_edit">Editar</string>
     <string name="metadata">Metadatos</string>
-    <string name="networking">Red</string>
-    <string name="user_interface">Presentación</string>
 
-    <string name="remove_from_app_media">Eliminar Media</string>
     <string name="popup_flag_title">Marcar Contenido Importante</string>
     <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="crash_dialog_title">Informes de error</string>
     <string name="action_install">Instalar</string>
-    <string name="action_enable">Habilitar</string>
-    <string name="action_start">Inicio</string>
     <string name="login_activity_logging_message">Iniciando sesión…</string>
     <string name="folders">Carpetas</string>
     <string name="create">Crear</string>

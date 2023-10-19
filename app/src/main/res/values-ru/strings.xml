@@ -2,13 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="title_activity_login">Авторизоваться</string>
-    <string name="title_activity_settings">Настройки</string>
-    <string name="title_activity_archive_metadata">Метаданные</string>
     <string name="title_media_list">Загруженная информация</string>
 
     <!-- General -->
-    <string name="menu_item_publish">Опубликовать</string>
-    <string name="lblSave">Сохранить</string>
     <string name="default_tags">OpenArchive</string>
 
     <string name="action_settings">Настройки</string>
@@ -17,72 +13,42 @@
     <string name="internet_archive">Интернет архив</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">Импортировать</string>
-    <string name="capture_btn">Захват видео</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">Да</string>
     <string name="lbl_Cancel">Отмена</string>
-    <string name="lbl_off">Выключить</string>
-    <string name="lbl_on">Включить</string>
     <string name="lbl_ok">ОК</string>
-    <string name="lbl_settings">Настройки</string>
-    <string name="lbl_cancelled">Отменена</string>
-    <string name="lbl_success">Готово</string>
-    <string name="lbl_continue">Продолжить</string>
-    <string name="upload_to_internet_archive">Загрузить в интернет-архив</string>
-    <string name="menu_record_audio">Записать аудио</string>
     <string name="menu_delete">Удалить медиа данные</string>
 
     <string name="hint_flag">Нажмите, чтобы отметить как важное содержание</string>
     <string name="answer_yes">Да</string>
     <string name="answer_no">Нет</string>
 
-    <string name="nearby_public">Открытый</string>
-    <string name="nearby_private">Закрытый</string>
     <string name="action_cancel">Отмена</string>
-
-    <string name="action_open">Открыть</string>
 
     <string name="status_waiting">Ожидание</string>
     <string name="status_error">Ошибка</string>
-    <string name="status_public">Открытый</string>
     <string name="status_uploading">Закачка</string>
     <string name="prefs_prohibit_screenshots_title">Не допускать скриншоты</string>
-    <string name="prefs_nearby_title">С устройствами поблизости</string>
 
     <string name="prefs_theme_title">Стиль</string>
     <string name="prefs_theme_light">Светлая</string>
     <string name="prefs_theme_dark">Темная</string>
-    <string name="prefs_data_title">Метаданные</string>
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="menu_share">Поделиться</string>
 
-    <string name="action_received">Получено</string>
-    <string name="status_connecting">Соединение…</string>
-    <string name="status_connected">Подключено!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Имя пользователя</string>
     <string name="prompt_password">Пароль</string>
     <string name="error_incorrect_username_or_password">Неверное имя пользователя или пароль</string>
     <string name="error_field_required">Это обязательное поле</string>
-    <string name="setup_nearby">С устройствами поблизости</string>
     <string name="title_welcome">Добро пожаловать</string>
-    <string name="header_projects">Настройки проекта</string>
 
-    <string name="action_data_use">Трафик</string>
     <string name="action_privacy">Политика обеспечения конфиденциальности.</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">Загруженная информация</string>
     <string name="title_uploading">Загрузка…</string>
 
     <string name="action_upload">Загрузить</string>
-    <string name="action_preview">Предпросмотр</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Добавить</string>
-    <string name="app_tag_line">Безопасное сохранение мобильных медиа данных</string>
     <string name="action_next">Далее</string>
     <string name="action_done">Готово</string>
     <string name="status_flagged">Важное содержание</string>
@@ -96,20 +62,13 @@
     <string name="secret_key">Секретный ключ</string>
     <string name="action_acquire_keys">Получить ключи</string>
     <string name="new_folder">Новый каталог</string>
-    <string name="open_link">Открыть ссылку</string>
-    <string name="save_by_openarchive">by OpenArchive</string>
-    <string name="action_edit">Редактировать</string>
     <string name="dropbox">Внесите свои данные, чтобы стать частью решения.</string>
     <string name="metadata">Метаданные</string>
-    <string name="remove_from_app_media">Удалить медиа данные</string>
     <string name="popup_flag_title">Отметить важное содержание</string>
     <string name="popup_flag_desc">Когда вы отмечаете элемент, он направляется в подпапку  выбранного проекта на частном сервере.</string>
 
     <string name="popup_ia_title">Интернет архив</string>
-    <string name="crash_dialog_title">Отчет об ошибке</string>
     <string name="action_install">Установить приложение</string>
-    <string name="action_enable">Активировать</string>
-    <string name="action_start">Начать</string>
     <string name="folders">Папки</string>
     <string name="create">Создать</string>
     <string name="add">Добавить</string>

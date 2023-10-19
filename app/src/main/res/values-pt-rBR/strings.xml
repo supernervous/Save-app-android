@@ -1,52 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="title_activity_main">Capturar Média </string>
     <string name="title_activity_login">Entrar</string>
-    <string name="title_activity_settings">Configurações</string>
     <string name="title_activity_first_start">Iniciar pela primeira vez</string>
-    <string name="title_activity_archive_metadata">Metadados </string>
     <string name="title_media_list">Transferências </string>
 
     <!-- General -->
-    <string name="menu_item_publish">Publicar </string>
-    <string name="menu_item_nearby">Partilhar Vizinhança</string>
 
-    <string name="lblEditMetadata">Editar Média </string>
-    <string name="lblSave">Salvar </string>
-    <string name="loading_title">Transferir Média </string>
     <!-- Default Values -->
-    <string name="default_title">Designação</string>
     <string name="default_tags">OpenArchive </string>
 
     <string name="action_settings">Configurações </string>
 
     <!-- MainFragment -->
-    <string name="import_btn">Importar</string>
-    <string name="capture_btn">Capturar </string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Imagem Principal</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">Sim</string>
     <string name="lbl_Cancel">Cancelar </string>
-    <string name="lbl_off">Desligado</string>
-    <string name="lbl_on">Ligado</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_settings">Configurações</string>
-    <string name="lbl_cancelled">Cancelado </string>
-    <string name="lbl_success">Pronto</string>
-    <string name="lbl_continue">Continuar</string>
-    <string name="upload_to_internet_archive">Transferir para o Internet Archive</string>
-    <string name="lbl_share_prefs">Partilhar Preferências </string>
-    <string name="lbl_update_value">Atualizar Valor</string>
-    <string name="lbl_enter_value">Clique para inserir um valor. </string>
-
-    <string name="share_using">Partilhar link do ficheiro via </string>
-    <string name="share_text">partilhar via OpenArchive em </string>
-    <string name="share_torrent_text">disponível via BitTorrent e OpenArchive: </string>
-    <string name="share_media_text">publicar via OpenArchive em</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -58,74 +31,45 @@
     <string name="info_license_sharealike">Obrigatório partilhar conforme apresentado?</string>
     <string name="info_license_comm">Permitir o uso comercial?</string>
 
-    <string name="menu_import_media">Importar mídia</string>
-    <string name="menu_take_photo">Tirar foto
-</string>
-    <string name="menu_take_video">Fazer vídeo</string>
-    <string name="menu_record_audio">Gravar Áudio</string>
     <string name="answer_yes">Sim</string>
     <string name="answer_no">Não</string>
 
-    <string name="nearby_public">Público</string>
-    <string name="nearby_private">Privado</string>
     <string name="action_cancel">Cancelar</string>
-
-    <string name="action_open">Aberto</string>
 
     <string name="status_waiting">Aguardando</string>
     <string name="status_error">Erro</string>
-    <string name="status_public">Pública</string>
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de tela</string>
-    <string name="prefs_nearby_title">Perto</string>
 
     <string name="prefs_user_interface_title">Apresentação</string>
     <string name="prefs_theme_title">Estilo</string>
     <string name="prefs_theme_light">Claro</string>
     <string name="prefs_theme_dark">Escuro</string>
-    <string name="prefs_data_title">Metadados</string>
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="menu_share">Compartilhar</string>
 
-    <string name="action_received">Recebido</string>
-    <string name="status_connecting">Conectando…</string>
-    <string name="status_connected">Conectado!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Nome de usuário</string>
     <string name="prompt_password">Palavra-passe</string>
-    <string name="action_sign_in">Registar</string>
     <string name="action_sign_in_short">Registar</string>
     <string name="error_incorrect_username_or_password">Usuário ou senha incorretos</string>
     <string name="error_field_required">Este campo é obrigatório</string>
-    <string name="setup_nearby">Perto</string>
     <string name="title_welcome">Boas-vindas</string>
     <string name="status_uploaded">Uploaded</string>
-    <string name="action_data_use">Uso de dados</string>
     <string name="action_privacy">Política De Privacidade</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">Envios</string>
     <string name="title_uploading">Enviando…</string>
 
     <string name="action_upload">Carregar</string>
-    <string name="action_preview">Mostrar previsão</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Adicionar</string>
     <string name="action_next">Próximo</string>
     <string name="action_done">Pronto</string>
     <string name="menu_edit">Editar</string>
     <string name="menu_done">Pronto</string>
     <string name="action_remove">Remover</string>
     <string name="new_folder">Nova Pasta</string>
-    <string name="open_link">Abrir Link</string>
-    <string name="action_edit">Editar</string>
     <string name="metadata">Metadados</string>
-    <string name="user_interface">Apresentação</string>
 
-    <string name="crash_dialog_title">Relatar falhas</string>
     <string name="action_install">Instalar</string>
-    <string name="action_enable">Habilitar</string>
-    <string name="action_start">Início</string>
     <string name="folders">Pastas</string>
     <string name="create">Criar</string>
     <string name="add">Adicionar</string>

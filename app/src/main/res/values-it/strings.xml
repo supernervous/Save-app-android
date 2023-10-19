@@ -2,13 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="title_activity_login">Accedi</string>
-    <string name="title_activity_settings">Impostazioni</string>
-    <string name="title_activity_archive_metadata">Metadati</string>
     <string name="title_media_list">Upload</string>
 
     <!-- General -->
-    <string name="menu_item_publish">Pubblica</string>
-    <string name="lblSave">Salva</string>
     <string name="default_tags">OpenArchive</string>
 
     <string name="action_settings">Impostazioni</string>
@@ -17,72 +13,44 @@
     <string name="internet_archive">Archivio Internet</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">Importa</string>
     <!-- Server -->
-    <string name="lbl_Yes">Sì</string>
     <string name="lbl_Cancel">Annulla</string>
-    <string name="lbl_off">Off</string>
-    <string name="lbl_on">On</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_settings">Impostazioni</string>
-    <string name="lbl_cancelled">Cancellato</string>
-    <string name="lbl_success">Fatto</string>
-    <string name="lbl_continue">Continua</string>
     <string name="menu_delete">Rimuovi media</string>
 
     <string name="hint_flag">Tocca per segnalare un contenuto significativo</string>
     <string name="answer_yes">Sì</string>
     <string name="answer_no">No</string>
 
-    <string name="nearby_public">Pubblico</string>
-    <string name="nearby_private">Navigazione anonima</string>
     <string name="action_cancel">Annulla</string>
-
-    <string name="action_open">Apri</string>
 
     <string name="status_waiting">In attesa</string>
     <string name="status_error">Errore</string>
-    <string name="status_public">Pubblico</string>
     <string name="status_uploading">Caricando</string>
     <string name="prefs_prohibit_screenshots_title">Blocca acquisizione schermate</string>
-    <string name="prefs_nearby_title">Nelle vicinanze</string>
 
     <string name="prefs_user_interface_title">Presentazione</string>
     <string name="prefs_theme_title">Stile</string>
     <string name="prefs_theme_light">Chiaro</string>
     <string name="prefs_theme_dark">Scuro</string>
-    <string name="prefs_data_title">Metadati</string>
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="menu_share">Condividi</string>
 
-    <string name="action_received">Ricevuti</string>
-    <string name="status_connecting">Connessione in corso…</string>
-    <string name="status_connected">Connesso!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Accedi</string>
     <string name="action_sign_in_short">Accedi</string>
     <string name="error_incorrect_username_or_password">Nome utente o password errati</string>
     <string name="error_field_required">Questo campo è necessario</string>
-    <string name="setup_nearby">Nelle vicinanze</string>
     <string name="title_welcome">Benvenuto</string>
     <string name="status_uploaded">Caricato</string>
-    <string name="header_projects">Impostazioni Progetto</string>
 
-    <string name="action_data_use">Utilizzo dati</string>
     <string name="action_privacy">Privacy Policy</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">Upload</string>
     <string name="title_uploading">Caricamento…</string>
 
     <string name="action_upload">Carica</string>
-    <string name="action_preview">Anteprima</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Aggiungi</string>
-    <string name="app_tag_line">Preservazione Sicura Media Mobile</string>
     <string name="action_next">Successivo</string>
     <string name="action_done">Fatto</string>
     <string name="status_flagged">Contenuto Significativo</string>
@@ -96,22 +64,14 @@
     <string name="secret_key">Chiave Segreta</string>
     <string name="action_acquire_keys">Acquisisci Chiavi</string>
     <string name="new_folder">Nuova cartella</string>
-    <string name="open_link">Apri Link</string>
-    <string name="save_by_openarchive">da OpenArchive</string>
-    <string name="action_edit">Modifica</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadati</string>
-    <string name="user_interface">Presentazione</string>
 
-    <string name="remove_from_app_media">Rimuovi media</string>
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>
     <string name="popup_flag_desc">Quando segnali un elemento, è instradato in una sottocartella all\'interno della cartella di progetto scelto nel server privato.</string>
 
     <string name="popup_ia_title">Archivio Internet</string>
-    <string name="crash_dialog_title">Segnalazione crash</string>
     <string name="action_install">Installa</string>
-    <string name="action_enable">Abilita</string>
-    <string name="action_start">Avvia</string>
     <string name="folders">cartelle</string>
     <string name="create">Crea</string>
     <string name="add">Aggiungi</string>

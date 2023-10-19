@@ -3,33 +3,16 @@
 
     <string name="app_subtext">Ortamlarınızı arşivleyin\n<a href="#">bilgi alın</a></string>
 
-    <string name="title_activity_main">Ortam yakala</string>
     <string name="title_activity_login">Oturum açın</string>
-    <string name="title_activity_settings">Ayarlar</string>
     <string name="title_activity_first_start">Önce başla</string>
-    <string name="title_activity_archive_metadata">Üst veriler</string>
     <string name="title_media_list">Yüklemeler</string>
 
     <!-- General -->
-    <string name="menu_item_publish">Yayınla</string>
-    <string name="menu_item_nearby">Yakındakilerle paylaş</string>
-
-    <string name="lblEditMetadata">Ortamı düzenle</string>
-    <string name="lblSave">Kaydet</string>
-    <string name="loading_title">Ortam yüklemek</string>
-    <string name="loading_message">Lütfen ortamınız yüklenirken bekleyin…</string>
 
     <!-- Default Values -->
-    <string name="default_title">Başlığım</string>
     <string name="default_tags">OpenArchive</string>
 
     <!-- Alert Values -->
-    <string name="alert_lbl_logout">Oturum kapatılsın mı?</string>
-    <string name="alert_logout">Oturumu kapatmak tüm ayarlarınızı siler ancak yüklemeleriniz korunur.</string>
-
-    <string name="alert_media_deleted">Ortam silindi</string>
-    <string name="alert_delete_media">Ortam uygulamadan silinsin mi?</string>
-    <string name="alert_lbl_delete_media">Ortamı sil</string>
 
     <string name="action_settings">Ayarlar</string>
 
@@ -37,46 +20,19 @@
     <string name="internet_archive">Internet Archive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
-    <string name="sign_up_btn">Bir hesabınız yok mu?\n<a href="https://archive.org/account/login.createaccount.php">Ücretsiz hesap açın.</a></string>
 
     <!-- MainFragment -->
-    <string name="import_btn">İçe aktar</string>
-    <string name="capture_btn">Yakala</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">Ana görsel</string>
 
     <!-- Errors -->
-    <string name="error_file_not_found">Bu dosya bulunamadı</string>
-    <string name="error_invalid_media_type">Dosya türü anlaşılamadı</string>
-    <string name="error_no_media">Herhangi bir ortam bulunamadı</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">Evet</string>
     <string name="lbl_Cancel">İptal</string>
-    <string name="lbl_off">Kapalı</string>
-    <string name="lbl_on">Açık</string>
     <string name="lbl_ok">Tamam</string>
-    <string name="lbl_settings">Ayarlar</string>
-    <string name="lbl_cancelled">İptal edildi</string>
-    <string name="lbl_success">Tamam</string>
-    <string name="lbl_continue">İlerle</string>
     <string name="archive_title">E-posta onayı</string>
     <string name="archive_message">Lütfen e-posta adresinizi doğrulayın ve Internet Archive hesabınızı bağlamaya geri dönün.</string>
-    <string name="upload_to_internet_archive">Internet Archive üzerine yükle</string>
-    <string name="upload_securely_via_tor">Tor ile yükle</string>
-    <string name="lbl_share_prefs">Paylaşım ayarları</string>
-    <string name="problem_authticating">Internet Archive oturumu açılamadı</string>
-    <string name="uploading_to_internet_archive">Internet Archive üzerine yükleniyor…</string>
-    <string name="lbl_update_value">Değeri güncelle</string>
-    <string name="lbl_enter_value">Değer yazmak için dokunun.</string>
-
-    <string name="upload_success">Ortamınız kaydedildi!</string>
-
-    <string name="share_using">Arşiv bağlantısını şununla paylaş</string>
-    <string name="share_text">OpenArchive ile şurada paylaşıldı</string>
-    <string name="share_torrent_text">BitTorrent ve OpenArchive üzerinden erişilebilir:</string>
-    <string name="share_media_text">OpenArchive ile şurada yayınlandı</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -88,48 +44,24 @@
     <string name="info_license_sharealike">Onlardan da senin gibi paylaşmasını iste</string>
     <string name="info_license_comm">Ticari olarak kullanılabilsin</string>
 
-    <string name="orbot_detected">Orbot algılandı. Tor ağını kullanarak bağlanmak daha güvenlidir…</string>
-
-    <string name="media_hint">Arşivinize eklenecek ortamı seçmek ya da oluşturmak için  \'+\' üzerine tıklayın</string>
-
-    <string name="menu_import_media">Ortamı içe aktar</string>
-    <string name="menu_take_photo">Fotoğraf çek</string>
-    <string name="menu_take_video">Görüntü kaydet</string>
-    <string name="menu_record_audio">Ses kaydet</string>
-    <string name="menu_nearby_rec">Yakındaki alıcı</string>
     <string name="menu_delete">Ortamı sil</string>
 
     <string name="hint_flag">Önemli içerik olarak işaretlemek için dokunun</string>
     <string name="answer_yes">Evet</string>
     <string name="answer_no">Hayır</string>
 
-    <string name="nearby_public">Herkese açık</string>
-    <string name="nearby_private">Özel</string>
-    <string name="nearby_paired_only">Yalnızca eşleşmiş aygıtlar</string>
-
     <string name="action_cancel">İptal</string>
 
-    <string name="action_open">Açık</string>
-
-    <string name="channel_name">OpenArchive yüklemeleri</string>
-    <string name="channel_description">Uzak sunuculara yükleme durumu ve ilerlemesini görüntüler</string>
     <string name="status_waiting">Bekleniyor</string>
     <string name="status_error">Hata</string>
-    <string name="status_public">Herkese açık</string>
     <string name="status_uploading">Yükleniyor</string>
     <string name="header_uploading">YÜKLENİYOR</string>
 
-    <string name="your_media_is_available">Ortamınıza şuradan erişilebilir</string>
-
-    <string name="prefs_networking_title">Ağ yapılandırması</string>
     <string name="prefs_use_tor_title">Onion yöneltme kullanılsın</string>
     <string name="prefs_use_tor_summary">Yalnızca Tor ağı ile aktarılsın</string>
     <string name="prefs_install_tor_summary">Sağlamak için Orbot kurun</string>
     <string name="prefs_prohibit_screenshots_title">Ekran görüntüsü alınmasını engelle</string>
     <string name="prefs_prohibit_screenshots_summary">Bu uygulamadan ekran görüntüsü ve ekran kaydı alınmasını engelleyin.</string>
-    <string name="prefs_upload_wifi_only_title">Yalnızca Wi-Fi ile yüklensin</string>
-    <string name="prefs_upload_wifi_only_summary">Ortamı yüklemek için Wi-Fi beklensin</string>
-    <string name="prefs_nearby_title">Yakındaki</string>
 
     <string name="prefs_user_interface_title">Sunum</string>
     <string name="prefs_theme_title">Biçim</string>
@@ -137,7 +69,6 @@
     <string name="prefs_theme_system">Sistem tarafından denetleniyor</string>
     <string name="prefs_theme_light">Açık</string>
     <string name="prefs_theme_dark">Koyu</string>
-    <string name="prefs_data_title">Üst veriler</string>
     <string name="prefs_use_proofmode_title">ProofMode kullanılsın</string>
     <string name="prefs_use_proofmode_summary">Ek üst verileri alın ve tüm ortamları onaylayın.</string>
 
@@ -145,51 +76,20 @@
     <string name="prefs_share_proofmode_summary">ProofMode herkese açık anahtarını paylaş</string>
 
 
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="prefs_bt_summary">Yakındakilerle paylaşmak için Bluetooth kullanılsın</string>
-
-    <string name="prefs_wifi_title">Wi-Fi eşler arası</string>
-    <string name="prefs_wifi_summary">Yakındakilerle paylaşmak için Wi-Fi eşler arası kullanılsın</string>
-
-    <string name="prefs_lan_title">Wi-Fi erişim noktası</string>
-    <string name="prefs_lan_summary">Yakındakilerle paylaşmak için Wi-Fi erişim noktası aç</string>
-
-    <string name="menu_share">Paylaş</string>
-
     <!-- Strings for nearby sharing -->
-    <string name="bt_not_supported">Bluetooth desteklenmiyor</string>
-    <string name="bt_not_enabled">Bluetooth kapalı</string>
-    <string name="bt_enabled">Bluetooth açık</string>
 
-    <string name="action_received">Alındı</string>
-    <string name="status_receiving">Alınıyor…</string>
-    <string name="action_duplicate">Çift alındı</string>
-    <string name="status_connecting">Bağlantı kuruluyor…</string>
-    <string name="status_connected">Bağlantı kuruldu!</string>
-    <string name="looking_for_nearby_devices">Yakındaki aygıtlar aranıyor…</string>
-    <string name="tap_to_connect">Bağlantı kurmak için dokunun</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Kullanıcı adı</string>
     <string name="prompt_password">Parola</string>
-    <string name="action_sign_in">Oturum aç</string>
     <string name="action_sign_in_short">Oturum aç</string>
-    <string name="error_invalid_email">Bu e-posta adresi geçersiz</string>
-    <string name="error_invalid_password">Parola çok kısa</string>
     <string name="error_incorrect_username_or_password">Kullanıcı adı ya da parola hatalı</string>
     <string name="error_field_required">Bu alanın doldurulması zorunludur</string>
-    <string name="permission_rationale">\"E-posta tamamlaması için kişinin izni 
-        gereklidir.\"
-    </string>
 
     <string name="importing_media">Ortam içe aktarılıyor…</string>
 
-    <string name="setup_nearby">Yakındaki</string>
-    <string name="onboarding_intro">Paylaş\nArşivle\nDoğrula\nŞifrele</string>
     <string name="title_welcome">Hoş geldiniz</string>
     <string name="status_uploaded">Yüklendi</string>
-    <string name="header_projects">Proje ayarları</string>
 
-    <string name="action_data_use">Veri kullanımı</string>
     <string name="action_privacy">Gizlilik ilkesi</string>
     <string name="action_about">%s hakkında</string>
     <string name="title_activity_new_project">Yeni_proje_işlemi</string>
@@ -198,45 +98,28 @@
     <string name="browse_existing">Var olanlara göz at</string>
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
-    <string name="action_plus">+</string>
-    <string name="create_a_new_project">Yeni bir proje oluştur</string>
     <string name="title_uploads">Yüklemeler</string>
     <string name="title_uploading">Yükleniyor…</string>
 
     <string name="action_upload">Yükle</string>
-    <string name="action_preview">Ön izleme</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Ekle</string>
-    <string name="button_sure">Ekle(%1$d)</string>
     <string name="title_activity_create_new_project">Yeni_proje_oluşturma_işlemi</string>
     <string name="title_activity_browser_projects">Projelere_göz_atma_işlemi</string>
     <string name="tap_to_add">Ortam eklemek için aşağıdaki düğmeye dokunun</string>
-    <string name="oa_title_1">Güvenli bir yere kaydedin</string>
-    <string name="oa_subtitle_1">Aygıtınızdaki ortamları güvenli bir sunucuya ya da Internet Archieve üzerine yükleyin</string>
-    <string name="oa_title_2">Düzenli olun</string>
-    <string name="oa_subtitle_2">Ortamlarınızı projeler içinde tutun</string>
-    <string name="oa_title_3">Olayları kaydedin</string>
-    <string name="oa_subtitle_3">Her ortam için notları, konum ve kişi bilgilerini tutun</string>
-    <string name="oa_title_4">Özgün olduğundan emin olun</string>
-    <string name="oa_subtitle_4">\"Save\" kimlik doğrulama bilgilerinizi ek üst veriler olarak kaydeder. Bu veriler daha sonra gözetim zincirleri ve doğrulama iş akışlarına yardımcı olur.</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Başlamak için, ortamınızı saklayacağınız bir sunucuya bağlanın.</string>
     <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">Yan menüden başka bir sunucu ekleyebilir ve birkaç sunucuya bağlanabilirsiniz</string>
     <string name="send_directly_to_a_private_server">Bir WebDAV sunucusuna gönder</string>
     <string name="upload_to_the_internet_archive">Internet Archive üzerine yükle</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> yalnızca Nextcloud ve ownCloud gibi WebDAV uyumlu sunucularla bağlantı kurabilir.</string>
-    <string name="app_tag_line">Güvenli mobil ortam koruma</string>
-    <string name="action_get_started"><![CDATA[Başlayalım >]]></string>
     <string name="action_next">Sonraki</string>
     <string name="action_done">Tamam</string>
     <string name="status_flagged">Önemli içerik</string>
     <string name="select_where_to_store_your_media">Ortamınızı saklamak istediğiniz yeri seçin.</string>
     <string name="you_have_successfully_connected_to_a_private_server">Özel bir sunucu ile bağlantı kurdunuz!</string>
     <string name="you_have_successfully_connected_to_dropbox">Dropbox ile bağlantı kurdunuz!</string>
-    <string name="you_have_successfully_connected_to_the_internet_archive">İnternet Archive ile bağlantı kurdunuz!</string>
     <string name="create_a_new_folder">Yeni klasör oluştur</string>
-    <string name="prompt_arrow"><![CDATA[>]]></string>
     <string name="menu_edit">Düzenle</string>
     <string name="menu_done">Tamam</string>
     <string name="remove_from_app">Uygulamadan kaldır</string>
@@ -244,12 +127,10 @@
     <string name="action_remove">Kaldır</string>
     <string name="action_archive_project">Projeyi arşive kaldır</string>
     <string name="action_unarchive_project">Projeyi arşivden çıkar</string>
-    <string name="status_archived">arşive kaldırıldı</string>
     <string name="status_ready_to_upload">YÜKLENMEYE HAZIR</string>
     <string name="label_items">öge</string>
     <string name="__items_uploaded">%d öge yüklendi</string>
     <string name="__items_failed_to_upload">%d öge yüklenemedi</string>
-    <string name="login_please_use_username">Oturum açılamadı. Lütfen e-posta adresiniz yerine kullanıcı adınızla oturum açmayı deneyin.</string>
     <string name="__out_of___items_uploaded">%1$d / %2$d öge yüklendi</string>
     <string name="IA_login_error">Lütfen geçerli Internet Archive kimlik doğrulama bilgileri ile oturum açın.</string>
     <string name="access_key">Erişim anahtarı</string>
@@ -259,17 +140,10 @@
     <string name="new_folder">Yeni klasör</string>
     <string name="please_do_not_include_special_characters_in_the_name">Lütfen ad içinde özel karakterler kullanmayın.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Bu sunucuyu uygulamadan kaldırmak istediğinize emin misiniz?</string>
-    <string name="open_link">Bağlantıyı aç</string>
-    <string name="share_link">Bağlantıyı paylaş</string>
     <string name="folder_name_already_exists">Klasör adı zaten var.</string>
-    <string name="save_by_openarchive">OpenArchive tarafından</string>
-    <string name="action_edit">Düzenle</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Üst veriler</string>
-    <string name="networking">Ağ yapılandırması</string>
-    <string name="user_interface">Sunum</string>
 
-    <string name="remove_from_app_media">Ortamı sil</string>
     <string name="confirm_remove_media">Bu ortamı silmek istediğinize emin misiniz?</string>
 
     <string name="popup_flag_title">Önemli içerik olarak işaretle</string>
@@ -278,18 +152,7 @@
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">Save ortamlarını Internet Archive üzerine göndermek ve kaydetmek için bir Internet Archive hesabı ile oturum açmalı ya da yeni bir hesap edinmelisiniz. </string>
 
-    <string name="crash_dialog_text">Sorunları paylaşarak gelişmemize yardımcı olun</string>
-    <string name="crash_dialog_title">Sorun bildirimleri</string>
-    <string name="crash_dialog_comment_prompt">Sorun çıktığında ne yapıyordunuz?</string>
-
-    <string name="onboarding_archive_over_tor">Tor üzerinden Save</string>
-    <string name="onboarding_archive_over_tor_install_orbot">Gelişmiş ağ güvenliği sağlamak için Orbot: Android için Tor uygulamasını kurun.</string>
-    <string name="archive_over_tor_enable_orbot">Gelişmiş ağ güvenliği sağamak için, şimdi ya da daha sonra ayarlar bölümünden \"Orbot kullanılsın\" seçeneğini açın.</string>
     <string name="action_install">Kur</string>
-    <string name="action_enable">Aç</string>
-    <string name="action_start">Başlat</string>
-    <string name="batch_waiting_for_upload">Yükleme bekleniyor…</string>
-    <string name="batch_uploading_now">Yükleniyor…</string>
     <string name="login_activity_logging_message">Oturum açılıyor…</string>
     <string name="you_already_have_a_server_with_these_credentials">Bu kimlik doğrulama bilgileriyle zaten bir sunucunuz var</string>
     <string name="tor_connection_exception">Orbot/Tor bağlantısı kurulamadı.</string>
@@ -306,8 +169,6 @@
     <string name="ci_confirm">Elbette</string>
     <string name="server_name_optional">Sunucu adı (isteğe bağlı)</string>
     <string name="dropbox_id">Dropbox kimliği:</string>
-    <string name="waiting_for_upload">Yükleme bekleniyor…</string>
-    <string name="uploading_now">Yükleniyor…</string>
     <string name="add_another_account">Başka bir hesap ekle</string>
     <string name="prefs_proofmode_key_encryption_title_all">ProofMode anahtarını Biyometri veya aygıt parolası ile koruyun</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">ProofMode anahtarını biyometri ile koruyun</string>

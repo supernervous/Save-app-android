@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="title_activity_main">التقاط الوسائل</string>
     <string name="title_activity_login">تسجيل الدخول</string>
-    <string name="title_activity_settings">الإعدادات</string>
     <string name="title_activity_first_start">بدء أول</string>
-    <string name="title_activity_archive_metadata">البيانات الوصفية</string>
     <string name="title_media_list">التحميلات
 </string>
 
     <!-- General -->
-    <string name="menu_item_publish">انشر</string>
-    <string name="menu_item_nearby">مشاركة مجاورة</string>
 
-    <string name="lblEditMetadata">تعديل الوسائط</string>
-    <string name="lblSave">حفظ</string>
-    <string name="loading_title">تحميل الوسائط جاري</string>
     <!-- Default Values -->
-    <string name="default_title">عنواني</string>
     <string name="default_tags">OpenArchive</string>
 
     <string name="action_settings">الإعدادات</string>
@@ -26,31 +17,13 @@
     <string name="internet_archive">Internet Archive</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">استيراد</string>
-    <string name="capture_btn">التقاط</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">صورة رئيسية</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">نعم</string>
     <string name="lbl_Cancel">إلغاء</string>
-    <string name="lbl_off">إيقاف التشغيل</string>
-    <string name="lbl_on">تشغيل</string>
     <string name="lbl_ok">موافق</string>
-    <string name="lbl_settings">الإعدادات</string>
-    <string name="lbl_cancelled">مُلغى</string>
-    <string name="lbl_success">مُنجَز</string>
-    <string name="lbl_continue">واصل</string>
-    <string name="upload_to_internet_archive">التحميل لأرشيف الأنترنيت</string>
-    <string name="lbl_share_prefs">مشاركة التفضيلات</string>
-    <string name="lbl_update_value">تحديث القيمة</string>
-    <string name="lbl_enter_value">انقر لإدخال قيمة.</string>
-
-    <string name="share_using">مشاركة رابط الأرشيف عبر</string>
-    <string name="share_text">تمت المشاركة عبر OpenArchive في</string>
-    <string name="share_torrent_text">متاح عبر BitTorrent و OpenArchive :</string>
-    <string name="share_media_text">نُشِرَ عبر OpenArchive في</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -62,66 +35,41 @@
     <string name="info_license_sharealike">اطلب منهم المشاركة مثل مشاركتك ؟</string>
     <string name="info_license_comm">السماح بالاستخدام التجاري ؟</string>
 
-    <string name="menu_import_media">استيراد الوسائط</string>
-    <string name="menu_take_photo">التقاط صورة</string>
-    <string name="menu_take_video">التقاط فيديو</string>
-    <string name="menu_record_audio">تسجيل صوت</string>
     <string name="menu_delete">احذف الوسائط</string>
 
     <string name="hint_flag">اضغط لإضافة علامة محتوى مميز</string>
     <string name="answer_yes">نعم</string>
     <string name="answer_no">لا</string>
 
-    <string name="nearby_public">عام</string>
-    <string name="nearby_private">خاص</string>
     <string name="action_cancel">إلغاء</string>
-
-    <string name="action_open">مفتوح</string>
 
     <string name="status_waiting">‮في الانتظار</string>
     <string name="status_error">خطأ</string>
-    <string name="status_public">عمومي</string>
     <string name="status_uploading">جارى الرفع</string>
-    <string name="prefs_networking_title">التشبيك</string>
     <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
-    <string name="prefs_nearby_title">قريب منك</string>
 
     <string name="prefs_user_interface_title">التقديم</string>
     <string name="prefs_theme_title">النمط</string>
     <string name="prefs_theme_light">نهاري</string>
     <string name="prefs_theme_dark">ليلي</string>
-    <string name="prefs_data_title">البيانات الوصفية</string>
-    <string name="prefs_bt_title">بلوتوث</string>
-    <string name="menu_share">شارك</string>
 
-    <string name="action_received">المُستلَمة</string>
-    <string name="status_connecting">جاري الاتصال …</string>
-    <string name="status_connected">مُتّصل!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">اسم المستخدم</string>
     <string name="prompt_password">‮كلمة السّر</string>
-    <string name="action_sign_in">الولوج</string>
     <string name="action_sign_in_short">الولوج</string>
     <string name="error_incorrect_username_or_password">اسم المستخدم أو كلمة السر غير صحيحة</string>
     <string name="error_field_required">هذا الحقل إلزامي</string>
-    <string name="setup_nearby">قريب منك</string>
     <string name="title_welcome">مرحباً</string>
     <string name="status_uploaded">رفع</string>
-    <string name="header_projects">إعدادات المشروع</string>
 
-    <string name="action_data_use"> إستخدام البيانات</string>
     <string name="action_privacy">سياسة الخصوصية</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">الملفات المرفوعة</string>
     <string name="title_uploading">تحميل…</string>
 
     <string name="action_upload">رفع</string>
-    <string name="action_preview">معاينة</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">إضافة</string>
-    <string name="app_tag_line">الحفظ الآمن لوسائط المحمول</string>
     <string name="action_next">التالي</string>
     <string name="action_done">مُنجَز</string>
     <string name="status_flagged">محتوى مميز</string>
@@ -135,22 +83,13 @@
     <string name="secret_key">المفتاح السري</string>
     <string name="action_acquire_keys">اكتسب المفاتيح</string>
     <string name="new_folder">مجلد جديد</string>
-    <string name="open_link">افتح الرابط</string>
-    <string name="save_by_openarchive">من إصدار OpenArchive</string>
-    <string name="action_edit">عدّل</string>
     <string name="metadata">البيانات الوصفية</string>
-    <string name="networking">التشبيك</string>
-    <string name="user_interface">التقديم</string>
 
-    <string name="remove_from_app_media">احذف الوسائط</string>
     <string name="popup_flag_title">علامة محتوى مميز</string>
     <string name="popup_flag_desc">عندما تضيف العلامة على وحدة، يتم وضعها فى مجلد خاص تحت مجلد المشروع المختار على الخادوم الخاص.</string>
 
     <string name="popup_ia_title">Internet Archive</string>
-    <string name="crash_dialog_title">التبليغ عن التعطيلات </string>
     <string name="action_install">تثبيت</string>
-    <string name="action_enable">تمكين</string>
-    <string name="action_start">ابدأ</string>
     <string name="login_activity_logging_message">تسجيل الدخول…</string>
     <string name="folders">المجلدات</string>
     <string name="create">إنشاء</string>

@@ -2,88 +2,52 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="title_activity_login">登入</string>
-    <string name="title_activity_settings">設定</string>
-    <string name="title_activity_archive_metadata">中繼資料</string>
     <string name="title_media_list">上傳項目</string>
 
     <!-- General -->
-    <string name="menu_item_publish">發布</string>
-    <string name="lblSave">儲存</string>
     <string name="action_settings">設定</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">匯入</string>
     <!-- Server -->
-    <string name="lbl_Yes">是</string>
     <string name="lbl_Cancel">取消</string>
-    <string name="lbl_off">關閉</string>
-    <string name="lbl_on">開啓</string>
     <string name="lbl_ok">正常</string>
-    <string name="lbl_settings">設定</string>
-    <string name="lbl_success">完成</string>
-    <string name="lbl_continue">繼續</string>
     <string name="answer_yes">是</string>
     <string name="answer_no">否</string>
 
-    <string name="nearby_public">公共</string>
-    <string name="nearby_private">私密</string>
     <string name="action_cancel">取消</string>
-
-    <string name="action_open">開啟</string>
 
     <string name="status_waiting">正在等待</string>
     <string name="status_error">錯誤</string>
-    <string name="status_public">公共</string>
-    <string name="prefs_networking_title">网络</string>
     <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
-    <string name="prefs_nearby_title">鄰近</string>
 
     <string name="prefs_user_interface_title">呈現</string>
     <string name="prefs_theme_title">風格</string>
     <string name="prefs_theme_light">亮色</string>
     <string name="prefs_theme_dark">深色</string>
-    <string name="prefs_data_title">中繼資料</string>
-    <string name="prefs_bt_title">藍牙</string>
-    <string name="menu_share">分享</string>
 
-    <string name="action_received">已接收</string>
-    <string name="status_connecting">連線中…</string>
-    <string name="status_connected">已連線!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">用戶名</string>
     <string name="prompt_password">密碼</string>
-    <string name="action_sign_in">登入</string>
     <string name="action_sign_in_short">登入</string>
     <string name="error_incorrect_username_or_password">不正確的用戶帳號和密碼</string>
     <string name="error_field_required">這是必填欄位</string>
-    <string name="setup_nearby">鄰近</string>
     <string name="title_welcome">歡迎</string>
     <string name="status_uploaded">已经上传</string>
-    <string name="action_data_use">流量數據使用</string>
     <string name="action_privacy">隱私政策</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">上傳項目</string>
     <string name="action_upload">上傳</string>
-    <string name="action_preview">預覧</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">新增</string>
     <string name="action_next">下一個</string>
     <string name="action_done">完成</string>
     <string name="menu_edit">編輯</string>
     <string name="menu_done">完成</string>
     <string name="action_remove">移除</string>
     <string name="new_folder">新資料夾</string>
-    <string name="action_edit">編輯</string>
     <string name="metadata">中繼資料</string>
-    <string name="networking">网络</string>
-    <string name="user_interface">呈現</string>
 
-    <string name="crash_dialog_title">崩潰報告</string>
     <string name="action_install">安裝</string>
-    <string name="action_enable">啟用</string>
-    <string name="action_start">開始</string>
     <string name="login_activity_logging_message">正在登录…</string>
     <string name="create">建立</string>
     <string name="add">新增</string>

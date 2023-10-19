@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="title_activity_main">رسانه بگیر</string>
     <string name="title_activity_login">ورود</string>
-    <string name="title_activity_settings">تنظیمات</string>
     <string name="title_activity_first_start">اولین آغاز</string>
-    <string name="title_activity_archive_metadata">متادیتا</string>
     <string name="title_media_list">آپلود</string>
 
     <!-- General -->
-    <string name="menu_item_publish">نشر</string>
-    <string name="menu_item_nearby">با کسانی که در نزدیکی هستند به اشتراک بذار</string>
 
-    <string name="lblEditMetadata">تدوین رسانه</string>
-    <string name="lblSave">ذخیره</string>
-    <string name="loading_title">رسانه آپلود میشود</string>
     <!-- Default Values -->
-    <string name="default_title">عنوان من</string>
     <string name="default_tags">آرشیو باز</string>
 
     <string name="action_settings">تنظیمات</string>
@@ -25,31 +16,13 @@
     <string name="internet_archive">بایگانی اینترنت</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">وارد کن</string>
-    <string name="capture_btn">بگیر</string>
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">عکس اصلی</string>
 
     <!-- Server -->
-    <string name="lbl_Yes">بله</string>
     <string name="lbl_Cancel">لغو</string>
-    <string name="lbl_off">خاموش</string>
-    <string name="lbl_on">روشن</string>
     <string name="lbl_ok">قابل قبول</string>
-    <string name="lbl_settings">تنظیمات</string>
-    <string name="lbl_cancelled">لغو شد</string>
-    <string name="lbl_success">انجام شد</string>
-    <string name="lbl_continue">ادامه</string>
-    <string name="upload_to_internet_archive">به آرشیو اینترنت آپلود کن</string>
-    <string name="lbl_share_prefs"> مشخصات به اشتراک گذاری</string>
-    <string name="lbl_update_value">ارزش آپلود</string>
-    <string name="lbl_enter_value">برای ورود ارزش کلیک کنید</string>
-
-    <string name="share_using">لینک آرشیو را از این طریق به اشتراک بذار</string>
-    <string name="share_text">توسط آرشیو باز و از این طریق به اشتراک گذاشته شد:</string>
-    <string name="share_torrent_text">توسط بیت تورنت و آرشیو باز قابل دسترسی است:</string>
-    <string name="share_media_text">توسط آرشیو باز منتشر شد:</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -61,65 +34,41 @@
     <string name="info_license_sharealike">بخواه که مانند خودت به اشتراک بگذارند؟</string>
     <string name="info_license_comm">اجازه استفاده تجاری بده؟</string>
 
-    <string name="menu_import_media">رسانه وارد کن</string>
-    <string name="menu_take_photo">عکس بگیر</string>
-    <string name="menu_take_video">ویدیو بگیر</string>
-    <string name="menu_record_audio">صدا ضبط کن</string>
     <string name="menu_delete">حذف فایل رسانه‌ای</string>
 
     <string name="hint_flag">برای نشانه‌گذاری به عنوان محتوای مهم، روی پرچم بزنید.</string>
     <string name="answer_yes">بله</string>
     <string name="answer_no">خیر</string>
 
-    <string name="nearby_public">عمومی</string>
-    <string name="nearby_private">خصوصی</string>
     <string name="action_cancel">لغو</string>
-
-    <string name="action_open">بازکن</string>
 
     <string name="status_waiting">در حال انتظار</string>
     <string name="status_error">خطا</string>
-    <string name="status_public">عمومی</string>
     <string name="status_uploading">در حال بارگذاری</string>
     <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
-    <string name="prefs_nearby_title">نزدیکی</string>
 
     <string name="prefs_user_interface_title">ارائه</string>
     <string name="prefs_theme_title">سبک نمایش</string>
     <string name="prefs_theme_light">روشن</string>
     <string name="prefs_theme_dark">تاریک</string>
-    <string name="prefs_data_title">فرا داده</string>
-    <string name="prefs_bt_title">بلوتوث</string>
-    <string name="menu_share">اشتراک گذاری</string>
 
-    <string name="action_received">دریاف شد</string>
-    <string name="status_connecting">در حال اتصال…</string>
-    <string name="status_connected">متصل شد!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">نام کاربری</string>
     <string name="prompt_password">گذرواژه</string>
-    <string name="action_sign_in">ورود</string>
     <string name="action_sign_in_short">ورود</string>
     <string name="error_incorrect_username_or_password">نام کاربری یا گذرواژه‌ نادرست است</string>
     <string name="error_field_required">این فیلد ضروری می باشد</string>
-    <string name="setup_nearby">نزدیکی</string>
     <string name="title_welcome">خوش آمدید</string>
     <string name="status_uploaded">آپلود شد</string>
-    <string name="header_projects">تنظیمات پروژه</string>
 
-    <string name="action_data_use">مصرف داده</string>
     <string name="action_privacy">حریم خصوصی</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">آپلودها</string>
     <string name="title_uploading">بارگذاری.......</string>
 
     <string name="action_upload">آپلود</string>
-    <string name="action_preview">مرور </string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">افزودن</string>
-    <string name="app_tag_line">حفظ ایمن رسانه‌های موبایل</string>
     <string name="action_next">بعدی</string>
     <string name="action_done">انجام شد</string>
     <string name="status_flagged">محتوای مهم</string>
@@ -133,22 +82,14 @@
     <string name="secret_key">کلید خصوصی</string>
     <string name="action_acquire_keys">به دست آوردن کلیدها</string>
     <string name="new_folder">New Folder</string>
-    <string name="open_link">باز کردن پیوند</string>
-    <string name="save_by_openarchive">توسط OpenArchive</string>
-    <string name="action_edit">ویرایش</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">فرا داده</string>
-    <string name="user_interface">ارائه</string>
 
-    <string name="remove_from_app_media">حذف فایل رسانه‌ای</string>
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
     <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
 
     <string name="popup_ia_title">بایگانی اینترنت</string>
-    <string name="crash_dialog_title">گزارش خرابی</string>
     <string name="action_install">نصب</string>
-    <string name="action_enable">فعال کن</string>
-    <string name="action_start">آغاز</string>
     <string name="login_activity_logging_message">در حال ورود…</string>
     <string name="folders">پوشه ها</string>
     <string name="create">ایجاد کردن</string>

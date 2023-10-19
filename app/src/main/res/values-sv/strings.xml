@@ -2,79 +2,48 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="title_activity_login">Logga in</string>
-    <string name="title_activity_settings">Inställningar</string>
-    <string name="title_activity_archive_metadata">Metadata</string>
     <string name="title_media_list">Uppladdningar</string>
 
     <!-- General -->
-    <string name="menu_item_publish">Publicera</string>
-    <string name="lblSave">Spara</string>
     <string name="action_settings">Inställningar</string>
 
     <!-- MainFragment -->
-    <string name="import_btn">Importera</string>
     <!-- Server -->
-    <string name="lbl_Yes">Ja</string>
     <string name="lbl_Cancel">Avbryt</string>
-    <string name="lbl_off">Av</string>
-    <string name="lbl_on">På</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_settings">Inställningar</string>
-    <string name="lbl_success">Färdig</string>
-    <string name="lbl_continue">Fortsätt</string>
     <string name="answer_yes">Ja</string>
     <string name="answer_no">Nej</string>
 
-    <string name="nearby_public">Publik</string>
-    <string name="nearby_private">Privat</string>
     <string name="action_cancel">Avbryt</string>
-
-    <string name="action_open">Öppen</string>
 
     <string name="status_waiting">Avvaktar</string>
     <string name="status_error">Fel</string>
-    <string name="status_public">Publik</string>
     <string name="prefs_user_interface_title">Presentation</string>
     <string name="prefs_theme_title">Stil</string>
     <string name="prefs_theme_light">Ljust</string>
     <string name="prefs_theme_dark">Mörkt</string>
-    <string name="prefs_data_title">Metadata</string>
-    <string name="prefs_bt_title">Bluetooth</string>
-    <string name="menu_share">Dela</string>
 
-    <string name="action_received">Mottagen</string>
-    <string name="status_connecting">Ansluter…</string>
-    <string name="status_connected">Ansluten!</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Användarnamn</string>
     <string name="prompt_password">Lösenord</string>
     <string name="error_incorrect_username_or_password">Felaktigt användarnamn eller lösenord</string>
     <string name="error_field_required">Detta fält krävs</string>
     <string name="title_welcome">Välkommen</string>
-    <string name="action_data_use">Dataanvändning</string>
     <string name="action_privacy">Integritetspolicy</string>
-    <string name="action_plus">+</string>
     <string name="title_uploads">Uppladdningar</string>
     <string name="action_upload">Ladda upp</string>
-    <string name="action_preview">Förhandsgranska</string>
 
     <!-- Strings related to Settings -->
 
-    <string name="button_sure_default">Lägg till</string>
     <string name="action_next">Nästa</string>
     <string name="action_done">Färdig</string>
     <string name="menu_edit">Ändra</string>
     <string name="menu_done">Färdig</string>
     <string name="action_remove">Ta bort</string>
     <string name="new_folder">Ny mapp</string>
-    <string name="open_link">Öppna länk</string>
-    <string name="action_edit">Ändra</string>
     <string name="metadata">Metadata</string>
-    <string name="user_interface">Presentation</string>
 
     <string name="action_install">Installera</string>
-    <string name="action_enable">Aktivera</string>
-    <string name="action_start">Kör</string>
     <string name="create">Skapa</string>
     <string name="add">Lägg till</string>
     <string name="authenticate">Autentisera</string>
