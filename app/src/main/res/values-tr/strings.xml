@@ -124,14 +124,16 @@
     <string name="prefs_networking_title">Ağ yapılandırması</string>
     <string name="prefs_use_tor_title">Onion yöneltme kullanılsın</string>
     <string name="prefs_use_tor_summary">Yalnızca Tor ağı ile aktarılsın</string>
-    <string name="prefs_install_tor_summary">Etkinleştirmek için Orbot kurun</string>
+    <string name="prefs_install_tor_summary">Sağlamak için Orbot kurun</string>
     <string name="prefs_prohibit_screenshots_title">Ekran görüntüsü alınmasını engelle</string>
+    <string name="prefs_prohibit_screenshots_summary">Bu uygulamadan ekran görüntüsü ve ekran kaydı alınmasını engelleyin.</string>
     <string name="prefs_upload_wifi_only_title">Yalnızca Wi-Fi ile yüklensin</string>
     <string name="prefs_upload_wifi_only_summary">Ortamı yüklemek için Wi-Fi beklensin</string>
     <string name="prefs_nearby_title">Yakındaki</string>
 
     <string name="prefs_user_interface_title">Sunum</string>
     <string name="prefs_theme_title">Biçim</string>
+    <string name="prefs_theme_summary">Save temasını koyu ya da açık yapın</string>
     <string name="prefs_theme_system">Sistem tarafından denetleniyor</string>
     <string name="prefs_theme_light">Açık</string>
     <string name="prefs_theme_dark">Koyu</string>
@@ -219,6 +221,8 @@
     <string name="oa_subtitle_3">Her ortam için notları, konum ve kişi bilgilerini tutun</string>
     <string name="oa_title_4">Özgün olduğundan emin olun</string>
     <string name="oa_subtitle_4">\"Save\" kimlik doğrulama bilgilerinizi ek üst veriler olarak kaydeder. Bu veriler daha sonra gözetim zincirleri ve doğrulama iş akışlarına yardımcı olur.</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Başlamak için, ortamınızı saklayacağınız bir sunucuya bağlanın.</string>
+    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">Yan menüden başka bir sunucu ekleyebilir ve birkaç sunucuya bağlanabilirsiniz</string>
     <string name="send_directly_to_a_private_server">Bir WebDAV sunucusuna gönder</string>
     <string name="upload_to_the_internet_archive">Internet Archive üzerine yükle</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> yalnızca Nextcloud ve ownCloud gibi WebDAV uyumlu sunucularla bağlantı kurabilir.</string>
@@ -254,6 +258,7 @@
     <string name="action_acquire_keys">Anahtarları al</string>
     <string name="new_folder">Yeni klasör</string>
     <string name="please_do_not_include_special_characters_in_the_name">Lütfen ad içinde özel karakterler kullanmayın.</string>
+    <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Bu sunucuyu uygulamadan kaldırmak istediğinize emin misiniz?</string>
     <string name="open_link">Bağlantıyı aç</string>
     <string name="share_link">Bağlantıyı paylaş</string>
     <string name="folder_name_already_exists">Klasör adı zaten var.</string>
@@ -281,14 +286,15 @@
     <string name="crash_dialog_comment_prompt">Sorun çıktığında ne yapıyordunuz?</string>
 
     <string name="onboarding_archive_over_tor">Tor üzerinden Save</string>
-    <string name="onboarding_archive_over_tor_install_orbot">Gelişmiş ağ güvenliğini etkinleştirmek için Orbot: Android için Tor uygulamasını kurun.</string>
-    <string name="archive_over_tor_enable_orbot">Gelişmiş ağ güvenliğini etkinleştirmek için, şimdi ya da daha sonra ayarlar bölümünden \"Orbot kullanılsın\" seçeneğini etkinleştirin.</string>
+    <string name="onboarding_archive_over_tor_install_orbot">Gelişmiş ağ güvenliği sağlamak için Orbot: Android için Tor uygulamasını kurun.</string>
+    <string name="archive_over_tor_enable_orbot">Gelişmiş ağ güvenliği sağamak için, şimdi ya da daha sonra ayarlar bölümünden \"Orbot kullanılsın\" seçeneğini açın.</string>
     <string name="action_install">Kur</string>
-    <string name="action_enable">Etkinleştir</string>
+    <string name="action_enable">Aç</string>
     <string name="action_start">Başlat</string>
     <string name="batch_waiting_for_upload">Yükleme bekleniyor…</string>
     <string name="batch_uploading_now">Yükleniyor…</string>
     <string name="login_activity_logging_message">Oturum açılıyor…</string>
+    <string name="you_already_have_a_server_with_these_credentials">Bu kimlik doğrulama bilgileriyle zaten bir sunucunuz var</string>
     <string name="tor_connection_exception">Orbot/Tor bağlantısı kurulamadı.</string>
     <string name="tor_connection_timeout">Orbot/Tor bağlantısı kurulamadı: ZAMAN AŞIMI</string>
     <string name="tor_connection_invalid">Orbot/Tor bağlantısı kurulamadı: GEÇERSİZ</string>
@@ -332,6 +338,26 @@
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">Ortamlar yalnızca Wi-Fi bağlantısı varken yüklensin</string>
     <string name="security">Güvenlik</string>
     <string name="proofmode">ProofMode</string>
+    <string name="no_webbrowser_found_error">Bu isteği yerine getirecek bir uygulama yok. Lütfen bir tarayıcı kurun.</string>
+
+    <string name="intro_text_share">
+        Doğrulanmış ortamı seçtiğiniz sunucuya yükleyin. Gelecekte kullanması niyetinizi göstermesi için
+        bir Creative Commons lisansı ekleyin.
+    </string>
+    <string name="intro_text_archive">
+        Ortamınızın uzun süre güvende ve düzenli olmasını sağlayın ve uygulama içinde
+        proje klasörleri oluşturarak kişisel veya kurumsal ortam arşivinizin haritasını çıkarın.
+    </string>
+    <string name="intro_text_verify">
+        Ortamınızın kimliğini şifreli doğrulama sha256 karması ve isteğe bağlı ProofMode ile doğrulayın.
+        Her yüklemeye notlar, kişiler ve konum gibi önemli olabilecek üst veriler ekleyin.
+    </string>
+    <string name="intro_text_encrypt"><![CDATA[
+        TLS (Aktarım Katmanı Güvenliği) üzerinden otomatik olarak yükleme yapın
+        ve Tor ağı üzerinden aktarılan ortamınızı korumak için Orbot kullanın.
+        <br />
+        Gelişmiş ağ güvenliği sağlamak için <b>Orbot kurun</b>.]]>
+    </string>
     <string name="next">Sonraki</string>
     <string name="lorem_ipsum_short_paragraph">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -340,6 +366,7 @@
     </string>
     <string name="secure_mobile_media_preservation">Güvenli mobil ortam koruma</string>
     <string name="get_started">Kullanmaya başlayın</string>
+    <string name="proofmode_permissions_explanation">ProofMode, ortamın doğrulanmasına yardımcı olmak için yerel baz istasyonlarından üst verileri toplar. Bu ayarın açılabilmesi için Android izninin verilmesi gereklidir. Save, bu ayarı yalnızca veri yakalamak için kullanır ve arama yapmak/yönetmek için telefonunuza ERİŞMEZ.</string>
     <string name="archived_folders">Arşivlenmiş klasörler</string>
     <string name="view_archived_folders">Arşivlenmiş klasörleri görüntüle</string>
     <string name="learn_more_about_creative_commons">Creative Commons hakkında ayrıntılı bilgi alın.</string>
@@ -347,5 +374,21 @@
     <string name="to_get_started_please_create_a_folder">Başlamak için bir klasör oluşturun</string>
     <string name="before_adding_media_create_a_new_folder_first">Ortam eklemeden önce yeni bir klasör oluşturun.</string>
     <string name="is_video">görüntü mü</string>
+    <string name="use_upload_chunking_nextcloud_only">Yükleme paketleri kullanılsın (yalnızca Nextcloud)</string>
+    <string name="chunking_explanation">\"Paketleme\", ortamı parçalar halinde yükler. Böylece bağlantınız kesilirse yüklemeyi en baştan  değil kaldığınız yerden sürdürebilirsiniz.</string>
+    <string name="preview_media">Ortam ön izlemesi</string>
+    <string name="add_more">Başka ekle</string>
     <string name="select_all">Tümünü seç</string>
+    <string name="got_it">Anladım</string>
+    <string name="do_not_show_me_this_again">Bunu bir daha gösterme</string>
+    <string name="edit_multiple">Birkaç ögeyi düzenle</string>
+    <string name="press_and_hold_to_select_and_edit_multiple_media">Birkaç ortamı seçmek ve düzenlemek için basılı tutun</string>
+    <string name="once_uploaded_you_will_not_be_able_to_edit_media">Yüklendikten sonra ortamı düzenleyemeyeceksiniz</string>
+    <string name="edit_media_info">Ortam bilgilerini düzenle</string>
+    <string name="counter">%1$d/%2$d</string>
+    <string name="your_changes_wont_be_saved">Değişiklikleriniz kaydedilmeyecek</string>
+    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">\"Geri\" düğmesi değişiklikleri kaydetmeyecek. Düzenlemelerinizi kaydetmek için \"Tamam\" üzerine basın.</string>
+    <string name="name_this_image_optional">Bu görseli adlandırın (isteğe bağlı)</string>
+    <string name="add_a_location_optional">Bir konum ekle (isteğe bağlı)</string>
+    <string name="add_notes_optional">Notlar ekle (isteğe bağlı)</string>
 </resources>
