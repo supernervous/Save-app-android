@@ -31,7 +31,8 @@
             android:id="@+id/tv_cc"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:text="@string/allow_creative_commons_use_for_all_media_in_this_folder"
+            android:layout_centerVertical="true"
+            android:text="@string/set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>
@@ -54,6 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/info_license_deriv"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:ignore="RelativeOverlap" />
@@ -78,6 +80,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/info_license_sharealike"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:ignore="RelativeOverlap" />
@@ -101,6 +104,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@string/info_license_comm"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:ignore="RelativeOverlap" />

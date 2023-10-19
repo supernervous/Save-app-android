@@ -287,8 +287,8 @@
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">You will need to log into or create an Internet Archive account in order to send and preserve Save media at the Internet Archive</string>
 
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Allow Creative Commons use for all media in this folder</string>
-    <string name="allow_creative_commons_use_for_all_folders_on_this_server">Allow Creative Commons use for all folders on this server</string>
+    <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Set the same Creative Commons license for ALL folders on this server.</string>
+    <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Set unique Creative Commons licenses for EACH INDIVIDUAL folder on this server.</string>
 
     <string name="crash_dialog_text">Help us improve, share your crashes</string>
     <string name="crash_dialog_title">Crash Reporting</string>

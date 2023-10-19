@@ -54,7 +54,7 @@ class FoldersActivity: BaseActivity(), FolderAdapterListener {
             mBinding.cc.root.hide()
         }
         else {
-            mBinding.cc.tvCc.setText(R.string.allow_creative_commons_use_for_all_folders_on_this_server)
+            mBinding.cc.tvCc.setText(R.string.set_the_same_creative_commons_license_for_all_folders_on_this_server)
 
             CcSelector.init(mBinding.cc, Space.current?.license) {
                 val space = Space.current ?: return@init

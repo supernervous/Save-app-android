@@ -278,9 +278,6 @@
     <string name="popup_ia_title">Internet Archive</string>
     <string name="popup_ia_desc">Save ortamlarını Internet Archive üzerine göndermek ve kaydetmek için bir Internet Archive hesabı ile oturum açmalı ya da yeni bir hesap edinmelisiniz. </string>
 
-    <string name="allow_creative_commons_use_for_all_media_in_this_folder">Bu klasördeki ortamlara Creative Commons ile kullanma izni ver</string>
-    <string name="allow_creative_commons_use_for_all_folders_on_this_server">Bu sunucudaki tüm klasörlere Creative Commons ile kullanma izni ver</string>
-
     <string name="crash_dialog_text">Sorunları paylaşarak gelişmemize yardımcı olun</string>
     <string name="crash_dialog_title">Sorun bildirimleri</string>
     <string name="crash_dialog_comment_prompt">Sorun çıktığında ne yapıyordunuz?</string>

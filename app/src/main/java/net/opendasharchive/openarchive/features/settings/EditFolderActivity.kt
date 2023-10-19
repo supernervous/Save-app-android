@@ -95,7 +95,13 @@ class EditFolderActivity : BaseActivity() {
             R.string.action_unarchive_project else
             R.string.action_archive_project)
 
-        CcSelector.set(mBinding.cc, mProject.licenseUrl, !mProject.isArchived && mProject.space?.license == null)
+        val global = mProject.space?.license != null
+
+        if (global) {
+            mBinding.cc.tvCc.setText(R.string.set_the_same_creative_commons_license_for_all_folders_on_this_server)
+        }
+
+        CcSelector.set(mBinding.cc, mProject.licenseUrl, !mProject.isArchived && !global)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
