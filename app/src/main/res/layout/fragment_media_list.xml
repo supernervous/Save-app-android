@@ -55,5 +55,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/bottom_nav_padding" />
+
     </LinearLayout>
 </ScrollView>

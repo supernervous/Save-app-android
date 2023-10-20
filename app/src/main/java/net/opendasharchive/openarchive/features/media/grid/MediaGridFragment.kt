@@ -135,7 +135,7 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     override fun refresh() {
-        Collection.getAll().forEach { collection ->
+        Collection.getAll().forEachIndexed { index, collection ->
             val media = if (collection.projectId == projectId) collection.media else listOf()
 
             val adapter = mAdapters[collection.id]
@@ -149,6 +149,12 @@ class MediaGridFragment : MediaListFragment() {
                 val view = createMediaList(collection, media)
 
                 mBinding.mediaContainer.addView(view, 0)
+            }
+
+            if (index == mSection.size - 1) {
+                holder?.bottomNavSpacing?.visibility = View.VISIBLE
+            } else {
+                holder?.bottomNavSpacing?.visibility = View.GONE
             }
         }
 

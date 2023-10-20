@@ -65,6 +65,10 @@
             android:textSize="12sp"
             tools:text="Version 0.0.0" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/bottom_nav_padding" />
+
     </LinearLayout>
 
 </ScrollView>

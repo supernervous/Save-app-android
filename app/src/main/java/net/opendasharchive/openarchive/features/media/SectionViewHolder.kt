@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.media
 
+import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
@@ -16,4 +17,7 @@ data class SectionViewHolder(
 
     val action: TextView
         get() = mediaSection.actionNext
+
+    val bottomNavSpacing: View
+        get() = mediaSection.bottomNavSpacing
 }
