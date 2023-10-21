@@ -2,11 +2,13 @@ package net.opendasharchive.openarchive.db
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -41,7 +43,14 @@ class MediaAdapter(
             else {
                 val pos = recyclerView.getChildLayoutPosition(v)
 
-                PreviewActivity.start(mActivity, media[pos].projectId)
+                when (media[pos].sStatus) {
+                    Media.Status.Uploading, Media.Status.Queued -> {
+                        mActivity.startActivity(Intent(mActivity, UploadManagerActivity::class.java).also {
+                            it.putExtra(UploadManagerActivity.PROJECT_ID, media[pos].projectId)
+                        })
+                    }
+                    else -> PreviewActivity.start(mActivity, media[pos].projectId)
+                }
             }
         }
 
