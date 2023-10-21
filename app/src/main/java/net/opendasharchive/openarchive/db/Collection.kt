@@ -15,6 +15,11 @@ data class Collection(
             return find(Collection::class.java, null, arrayOf(),
                 null, "id DESC", null)
         }
+
+        fun getByProject(projectId: Long): List<Collection> {
+            return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
+                null, "id DESC", null)
+        }
     }
 
     val media: List<Media>

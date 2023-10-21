@@ -135,7 +135,7 @@ class MediaGridFragment : MediaListFragment() {
     }
 
     override fun refresh() {
-        Collection.getAll().forEachIndexed { index, collection ->
+        Collection.getByProject(projectId).forEachIndexed { index, collection ->
             val media = if (collection.projectId == projectId) collection.media else listOf()
 
             val adapter = mAdapters[collection.id]
