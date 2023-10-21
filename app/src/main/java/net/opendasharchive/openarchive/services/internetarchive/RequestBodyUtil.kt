@@ -9,6 +9,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import okhttp3.MediaType
 import okio.Source
+import timber.log.Timber
 import java.io.*
 
 /**
@@ -25,6 +26,7 @@ object RequestBodyUtil {
                 return try {
                     inputStream.available().toLong()
                 } catch (e: IOException) {
+                    Timber.i("BodyRequestUtil couldn't get contentLength, returning 0 instead", e)
                     0
                 }
             }
@@ -60,7 +62,7 @@ object RequestBodyUtil {
                     ) else cr.openInputStream(uri)
                     mListener = listener
                 } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
+                    Timber.e("BodyRequest init failed", e)
                 }
             }
 
@@ -106,7 +108,7 @@ object RequestBodyUtil {
                 try {
                     inputStream = FileInputStream(fileSource)
                 } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
+                    Timber.e("RequestBody init failed", e)
                 }
             }
 

@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
+import timber.log.Timber
 import kotlin.math.max
 
 class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
@@ -80,7 +81,7 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
             super.restoreState(state, loader)
         }
         catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e("restoreState failed", e)
         }
     }
 }
