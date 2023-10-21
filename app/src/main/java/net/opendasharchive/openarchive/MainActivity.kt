@@ -31,10 +31,8 @@ import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
-import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.BadgeDrawable
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -59,7 +57,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
     }
 
-    private var mMenuUpload: MenuItem? = null
     private var mMenuDelete: MenuItem? = null
 
     private var mSnackBar: Snackbar? = null
@@ -96,8 +93,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 Media.Status.Uploaded.id -> {
                     if (mCurrentItem > 0) {
                         mCurrentFragment?.refresh()
-
-                        updateMenu()
                     }
                 }
 
@@ -277,24 +272,13 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        mMenuUpload = menu.findItem(R.id.menu_upload_manager)
         mMenuDelete = menu.findItem(R.id.menu_delete)
-
-        updateMenu()
 
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_upload_manager -> {
-                startActivity(Intent(this, UploadManagerActivity::class.java).also {
-                    it.putExtra(UploadManagerActivity.PROJECT_ID, getSelectedProject()?.id)
-                })
-
-                return true
-            }
-
             R.id.menu_delete -> {
                 AlertHelper.show(this, R.string.confirm_remove_media, null, buttons = listOf(
                     AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
@@ -382,24 +366,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             mBinding.currentFolderIcon.cloak()
             mBinding.currentFolderName.cloak()
             mBinding.currentFolderCount.cloak()
-        }
-
-        updateMenu()
-    }
-
-    private fun updateMenu() {
-        val item = mMenuUpload ?: return
-
-        val uploadCount = Media.getByStatus(
-            listOf(Media.Status.Uploading, Media.Status.Queued),
-            Media.ORDER_PRIORITY
-        ).size
-
-        if (uploadCount > 0) {
-            item.icon = BadgeDrawable(this).setCount("$uploadCount")
-            item.isVisible = true
-        } else {
-            item.isVisible = false
         }
     }
 
