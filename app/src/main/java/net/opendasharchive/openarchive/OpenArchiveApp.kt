@@ -37,6 +37,11 @@ class OpenArchiveApp : SugarApp() {
         Theme.set(Prefs.theme)
 
         CleanInsightsManager.init(this)
+
+        // enable timber logging library for debug builds
+        if(BuildConfig.DEBUG){
+            Timber.plant(Timber.DebugTree())
+        }
     }
 
     /**
