@@ -214,7 +214,7 @@
         TLS (Aktarım Katmanı Güvenliği) üzerinden otomatik olarak yükleme yapın
         ve Tor ağı üzerinden aktarılan ortamınızı korumak için Orbot kullanın.
         <br />
-        Gelişmiş ağ güvenliği sağlamak için <b>Orbot kurun</b>.]]>
+        Gelişmiş ağ güvenliği sağlamak için <a href="#">Orbot kurun</a>.]]>
     </string>
     <string name="next">Sonraki</string>
     <string name="lorem_ipsum_short_paragraph">

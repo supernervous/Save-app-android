@@ -1,6 +1,9 @@
 package net.opendasharchive.openarchive.util.extensions
 
 import android.graphics.drawable.Drawable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.URLSpan
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 
@@ -38,4 +41,13 @@ fun TextView.setDrawable(drawable: Drawable?, position: Position, scale: Double 
     list[position.ordinal] = drawable
 
     setCompoundDrawablesRelativeWithIntrinsicBounds(list)
+}
+
+fun TextView.styleAsLink() {
+        setText(SpannableString(text).apply {
+            setSpan(URLSpan(""), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, TextView.BufferType.SPANNABLE)
+
+        isClickable = true
+        isFocusable = true
 }

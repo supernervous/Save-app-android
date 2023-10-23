@@ -34,7 +34,8 @@ class Onboarding23FragmentStateAdapter(
             )
 
             3 -> return newInstance(
-                context, R.string.intro_header_encrypt, R.string.intro_text_encrypt
+                context, R.string.intro_header_encrypt, R.string.intro_text_encrypt,
+                "org.torproject.android"
             )
         }
         throw IndexOutOfBoundsException()

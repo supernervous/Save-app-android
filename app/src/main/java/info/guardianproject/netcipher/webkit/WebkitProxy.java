@@ -25,9 +25,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Proxy;
-import android.net.Uri;
 import android.os.Parcelable;
 import android.util.ArrayMap;
+
+import net.opendasharchive.openarchive.util.Utility;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -247,11 +248,8 @@ public class WebkitProxy {
         downloadDialog.setTitle(stringTitle);
         downloadDialog.setMessage(stringMessage);
 
-        downloadDialog.setPositiveButton(stringButtonYes, (dialogInterface, i) -> {
-            Uri uri = Uri.parse("market://search?q=pname:org.torproject.android");
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            activity.startActivity(intent);
-        });
+        downloadDialog.setPositiveButton(stringButtonYes, (dialogInterface, i) ->
+                Utility.INSTANCE.openStore(activity, "org.torproject.android"));
 
         downloadDialog.setNegativeButton(stringButtonNo, (dialogInterface, i) -> {});
 

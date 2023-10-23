@@ -227,7 +227,7 @@
         Automatically upload over TLS (Transport Layer Security) and use Orbot to protect your
         media in transit over the Tor network.<br />
         <br />
-        <b>Install Orbot</b> to enable advanced network security.]]>
+        <a href="#">Install Orbot</a> to enable advanced network security.]]>
     </string>
     <string name="next">Next</string>
     <string name="lorem_ipsum_short_paragraph">
@@ -258,7 +258,7 @@
     <string name="edit_media_info">Edit Media Info</string>
     <string name="counter">%1$d/%2$d</string>
     <string name="your_changes_wont_be_saved">Your changes won\'t be saved</string>
-    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">"Back" button will not save changes, Press "Done" to save your edits.</string>
+    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">\"Back\" button will not save changes, Press \"Done\" to save your edits.</string>
     <string name="name_this_image_optional">Name this image (optional)</string>
     <string name="add_a_location_optional">Add a location (optional)</string>
     <string name="add_notes_optional">Add notes (optional)</string>

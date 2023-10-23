@@ -18,6 +18,7 @@ import net.opendasharchive.openarchive.util.extensions.getVersionName
 import net.opendasharchive.openarchive.util.extensions.openBrowser
 import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.setDrawable
+import net.opendasharchive.openarchive.util.extensions.styleAsLink
 import kotlin.math.roundToInt
 
 class SettingsFragment : Fragment() {
@@ -58,10 +59,12 @@ class SettingsFragment : Fragment() {
         }
 
         mBinding.btAbout.text = getString(R.string.action_about, getString(R.string.app_name))
+        mBinding.btAbout.styleAsLink()
         mBinding.btAbout.setOnClickListener {
             context?.openBrowser("https://open-archive.org/save")
         }
 
+        mBinding.btPrivacy.styleAsLink()
         mBinding.btPrivacy.setOnClickListener {
             context?.openBrowser("https://open-archive.org/privacy")
         }

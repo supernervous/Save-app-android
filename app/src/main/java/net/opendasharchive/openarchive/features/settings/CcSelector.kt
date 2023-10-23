@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.features.settings
 
 import net.opendasharchive.openarchive.databinding.ContentCcBinding
 import net.opendasharchive.openarchive.util.extensions.openBrowser
+import net.opendasharchive.openarchive.util.extensions.styleAsLink
 import net.opendasharchive.openarchive.util.extensions.toggle
 
 object CcSelector {
@@ -27,6 +28,11 @@ object CcSelector {
         cc.swSa.setOnCheckedChangeListener { _, _ -> update(get(cc)) }
         cc.swNc.setOnCheckedChangeListener { _, _ -> update(get(cc)) }
 
+        cc.tvLicense.setOnClickListener {
+            it?.context?.openBrowser(cc.tvLicense.text.toString())
+        }
+
+        cc.btLearnMore.styleAsLink()
         cc.btLearnMore.setOnClickListener {
             it?.context?.openBrowser("https://creativecommons.org/about/cclicenses/")
         }
@@ -44,6 +50,7 @@ object CcSelector {
         cc.swNc.isChecked = isCc && !(license?.contains("-nc", true) ?: false)
 
         cc.tvLicense.text = license
+        cc.tvLicense.styleAsLink()
 
         cc.swCc.isEnabled = enabled
         cc.swNd.isEnabled = enabled
@@ -82,6 +89,7 @@ object CcSelector {
         }
 
         cc.tvLicense.text = license
+        cc.tvLicense.styleAsLink()
 
         return license
     }

@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.util
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import timber.log.Timber
@@ -95,5 +96,22 @@ object Utility {
         }
 
         return success
+    }
+
+    fun openStore(context: Context, appId: String) {
+        var i = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${appId}"))
+
+        val capableApps = context.packageManager.queryIntentActivities(i, 0)
+
+        // If there are no app stores installed, send to the web.
+        if (capableApps.size < 1) {
+            i = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${appId}"))
+        }
+
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        context.startActivity(i)
     }
 }
