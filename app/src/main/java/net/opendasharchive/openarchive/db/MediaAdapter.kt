@@ -44,12 +44,17 @@ class MediaAdapter(
                 val pos = recyclerView.getChildLayoutPosition(v)
 
                 when (media[pos].sStatus) {
-                    Media.Status.New, Media.Status.Local -> {
+                    Media.Status.Local -> {
+                        PreviewActivity.start(mActivity, media[pos].projectId)
+                    }
+
+                    Media.Status.Queued, Media.Status.Uploading -> {
                         mActivity.startActivity(Intent(mActivity, UploadManagerActivity::class.java).also {
                             it.putExtra(UploadManagerActivity.PROJECT_ID, media[pos].projectId)
                         })
                     }
-                    else -> PreviewActivity.start(mActivity, media[pos].projectId)
+
+                    else -> {}
                 }
             }
         }
