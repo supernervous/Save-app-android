@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -34,7 +35,8 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     }
 
     private lateinit var mBinding: ActivityPreviewBinding
-    private lateinit var mPickerLauncher: ImagePickerLauncher
+    private lateinit var mMediaPickerLauncher: ImagePickerLauncher
+    private lateinit var mFilesPickerLauncher: ActivityResultLauncher<Intent>
 
     private val mLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         refresh()
@@ -63,9 +65,11 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
 
         mProject = Project.getById(intent.getLongExtra(PROJECT_ID_EXTRA, -1))
 
-        mPickerLauncher = MediaPicker.register(this, mBinding.root, { mProject }, {
+        val launchers = Picker.register(this, mBinding.root, { mProject }, {
             refresh()
         })
+        mMediaPickerLauncher = launchers.first
+        mFilesPickerLauncher = launchers.second
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = getString(R.string.preview_media)
@@ -79,6 +83,35 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
         mBinding.btBatchEdit.setOnClickListener(this)
         mBinding.btSelectAll.setOnClickListener(this)
         mBinding.btRemove.setOnClickListener(this)
+
+        if (Picker.canPickFiles(this)) {
+            mBinding.btAddMore.setOnLongClickListener {
+                mBinding.addMenu.container.show(animate = true)
+
+                true
+            }
+
+            mBinding.addMenu.container.setOnClickListener {
+                it.hide(animate = true)
+            }
+
+            mBinding.addMenu.menu.setNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.action_upload_media -> {
+                        onClick(mBinding.btAddMore)
+                    }
+
+                    R.id.action_upload_files -> {
+                        Picker.pickFiles(mFilesPickerLauncher)
+                    }
+                }
+
+                mBinding.addMenu.container.hide(animate = true)
+
+                true
+            }
+        }
+
 
         refresh()
     }
@@ -149,7 +182,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     override fun onClick(view: View?) {
         when (view) {
             mBinding.btAddMore -> {
-                MediaPicker.pick(this, mPickerLauncher)
+                Picker.pickMedia(this, mMediaPickerLauncher)
             }
             mBinding.btBatchEdit -> {
                 val selected = mMedia.filter { it.selected }

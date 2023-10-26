@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.media
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -11,6 +12,9 @@ import android.os.Environment
 import android.view.View
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.esafirm.imagepicker.features.ImagePickerConfig
@@ -33,10 +37,10 @@ import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.util.Date
 
-object MediaPicker {
+object Picker {
 
-    fun register(activity: ComponentActivity, root: View, project: () -> Project?, completed: (List<Media>) -> Unit): ImagePickerLauncher {
-        return activity.registerImagePicker { result ->
+    fun register(activity: ComponentActivity, root: View, project: () -> Project?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
+        val mpl = activity.registerImagePicker { result ->
             val bar = root.makeSnackBar(activity.getString(R.string.importing_media))
             (bar.view as? Snackbar.SnackbarLayout)?.addView(ProgressBar(activity))
             bar.show()
@@ -51,9 +55,31 @@ object MediaPicker {
                 }
             }
         }
+
+        val fpl = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != AppCompatActivity.RESULT_OK) return@registerForActivityResult
+
+            val uri = result.data?.data ?: return@registerForActivityResult
+
+            val bar = root.makeSnackBar(activity.getString(R.string.importing_media))
+            (bar.view as? Snackbar.SnackbarLayout)?.addView(ProgressBar(activity))
+            bar.show()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val files = import(activity, project(), listOf(uri))
+
+                MainScope().launch {
+                    bar.dismiss()
+
+                    completed(files)
+                }
+            }
+        }
+
+        return Pair(mpl, fpl)
     }
 
-    fun pick(activity: Activity, launcher: ImagePickerLauncher) {
+    fun pickMedia(activity: Activity, launcher: ImagePickerLauncher) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (needAskForPermission(activity, arrayOf(
                     Manifest.permission.READ_MEDIA_IMAGES,
@@ -75,6 +101,19 @@ object MediaPicker {
         }
 
         launcher.launch(config)
+    }
+
+    fun canPickFiles(context: Context): Boolean {
+        return mFilePickerIntent.resolveActivity(context.packageManager) != null
+    }
+
+    fun pickFiles(launcher: ActivityResultLauncher<Intent>) {
+        launcher.launch(mFilePickerIntent)
+    }
+
+    private val mFilePickerIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "application/*"
     }
 
     private fun needAskForPermission(activity: Activity, permissions: Array<String>): Boolean {

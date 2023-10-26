@@ -69,4 +69,8 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/add_menu"
+        layout="@layout/content_picker_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

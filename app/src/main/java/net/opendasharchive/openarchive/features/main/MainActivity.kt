@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -32,7 +33,7 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.MediaPicker
+import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
@@ -72,7 +73,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private lateinit var mPagerAdapter: ProjectAdapter
     private lateinit var mSpaceAdapter: SpaceAdapter
     private lateinit var mFolderAdapter: FolderAdapter
-    private lateinit var mPickerLauncher: ImagePickerLauncher
+    private lateinit var mMediaPickerLauncher: ImagePickerLauncher
+    private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
 
     private var mLastItem: Int = 0
     private var mLastMediaItem: Int = 0
@@ -135,13 +137,15 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mPickerLauncher = MediaPicker.register(this, mBinding.root, { getSelectedProject() }, { media ->
+        val launchers = Picker.register(this, mBinding.root, { getSelectedProject() }, { media ->
             refreshCurrentProject()
 
             if (media.isNotEmpty()) {
                 preview()
             }
         })
+        mMediaPickerLauncher = launchers.first
+        mFilePickerLauncher = launchers.second
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -212,7 +216,9 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             mBinding.myMediaButton.isPressed = false
             mBinding.myMediaButton.performClick()
         }
-        mBinding.addButton.setOnClickListener { addMediaClicked() }
+
+        mBinding.addButton.setOnClickListener { addClicked() }
+
         mBinding.settingsButton.setOnClickListener {
             mCurrentItem = mPagerAdapter.settingsIndex
         }
@@ -221,6 +227,34 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             mBinding.settingsButton.isPressed = true
             mBinding.settingsButton.isPressed = false
             mBinding.settingsButton.performClick()
+        }
+
+        if (Picker.canPickFiles(this)) {
+            mBinding.addButton.setOnLongClickListener {
+                mBinding.addMenu.container.show(animate = true)
+
+                true
+            }
+
+            mBinding.addMenu.container.setOnClickListener {
+                it.hide(animate = true)
+            }
+
+            mBinding.addMenu.menu.setNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.action_upload_media -> {
+                        addClicked()
+                    }
+
+                    R.id.action_upload_files -> {
+                        addClicked(typeFiles = true)
+                    }
+                }
+
+                mBinding.addMenu.container.hide(animate = true)
+
+                true
+            }
         }
     }
 
@@ -390,7 +424,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
                 mSnackBar?.show()
             },
             doInBackground = {
-                MediaPicker.import(this, getSelectedProject(), uri)
+                Picker.import(this, getSelectedProject(), uri)
             },
             onPostExecute = { media ->
                 if (media != null) {
@@ -404,7 +438,7 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     }
 
     private fun pickMedia() {
-        MediaPicker.pick(this, mPickerLauncher)
+        Picker.pickMedia(this, mMediaPickerLauncher)
     }
 
     private fun preview() {
@@ -508,9 +542,14 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         return Space.current
     }
 
-    private fun addMediaClicked() {
+    private fun addClicked(typeFiles: Boolean = false) {
         if (getSelectedProject() != null) {
-            pickMedia()
+            if (typeFiles && Picker.canPickFiles(this)) {
+                Picker.pickFiles(mFilePickerLauncher)
+            }
+            else {
+                pickMedia()
+            }
         } else {
             if (!Prefs.addFolderHintShown) {
                 AlertHelper.show(
