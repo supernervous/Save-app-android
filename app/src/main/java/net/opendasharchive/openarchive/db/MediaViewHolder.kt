@@ -341,7 +341,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
             this.progress?.progress = progress
             this.progress?.show()
-            progressText?.text = NumberFormat.getPercentInstance().format(progress)
+            progressText?.text = "$progress%"
             progressText?.show()
         }
         else if (media?.sStatus == Media.Status.Uploaded) {
