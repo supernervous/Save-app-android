@@ -54,7 +54,9 @@ class MediaAdapter(
                         })
                     }
 
-                    else -> {}
+                    else -> {
+                        selectView(v)
+                    }
                 }
             }
         }
