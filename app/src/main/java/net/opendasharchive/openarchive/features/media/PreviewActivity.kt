@@ -37,9 +37,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     private lateinit var mPickerLauncher: ImagePickerLauncher
 
     private val mLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            refresh()
-        }
+        refresh()
     }
 
     private var mProject: Project? = null
@@ -50,7 +48,11 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     private var mMedia: List<Media>
         get() = mAdapter?.currentList ?: emptyList()
         set(value) {
-            mAdapter?.submitList(value)
+            mAdapter?.submitList(value) {
+                runOnUiThread {
+                    mediaSelectionChanged()
+                }
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +79,6 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
         mBinding.btBatchEdit.setOnClickListener(this)
         mBinding.btSelectAll.setOnClickListener(this)
         mBinding.btRemove.setOnClickListener(this)
-
-        mediaSelectionChanged()
 
         refresh()
     }
@@ -182,7 +182,6 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
                 }
 
                 refresh()
-                mediaSelectionChanged()
             }
         }
     }

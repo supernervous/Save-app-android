@@ -257,8 +257,6 @@
     <string name="once_uploaded_you_will_not_be_able_to_edit_media">Once uploaded, you will not be able to edit media</string>
     <string name="edit_media_info">Edit Media Info</string>
     <string name="counter">%1$d/%2$d</string>
-    <string name="your_changes_wont_be_saved">Your changes won\'t be saved</string>
-    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">\"Back\" button will not save changes, Press \"Done\" to save your edits.</string>
     <string name="add_a_location_optional">Add a location (optional)</string>
     <string name="add_notes_optional">Add notes (optional)</string>
     <string name="skip">Skip</string>

@@ -108,6 +108,8 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
                 else {
                     mMedia?.description = value
                 }
+
+                save()
             }
         })
 
@@ -127,6 +129,8 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
                 else {
                     mMedia?.location = value
                 }
+
+                save()
             }
         })
 
@@ -147,17 +151,11 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
+            // "Done" button is only there for user convenience.
+            // No difference to back, actually. We store everything
+            // right away.
+            android.R.id.home, R.id.menu_done -> {
                 finish()
-
-                return true
-            }
-            R.id.menu_done -> {
-                save()
-
-                setResult(RESULT_OK)
-
-                super.finish()
 
                 return true
             }
@@ -178,38 +176,19 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             mBinding.btFlag -> {
                 showFirstTimeFlag()
 
-                val isFlagged = mMedia?.flag ?: false
+                val isFlagged = !this.isFlagged
 
                 if (mBatchMode) {
-                    mStore.forEach { it.flag = !isFlagged }
+                    mStore.forEach { it.flag = isFlagged }
                 }
                 else {
-                    mMedia?.flag = !isFlagged
+                    mMedia?.flag = isFlagged
                 }
+
+                save()
 
                 updateFlagState()
             }
-        }
-    }
-
-    override fun finish() {
-        if (Prefs.backHintShown) {
-            super.finish()
-        }
-        else {
-            AlertHelper.show(
-                this,
-                R.string.back_button_will_not_save_changes_press_done_to_save_your_edits,
-                R.string.your_changes_wont_be_saved,
-                buttons = listOf(
-                    AlertHelper.positiveButton(R.string.got_it) { _, _ ->
-                        Prefs.backHintShown = true
-
-                        super.finish()
-                    },
-                    AlertHelper.negativeButton()
-                )
-            )
         }
     }
 
@@ -252,8 +231,26 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
         mBinding.btPageFrwd.toggle(!mBatchMode && mIndex < mStore.size - 1)
 
         if (mBatchMode) {
-            mBinding.description.text = null
-            mBinding.location.text = null
+            var description = mMedia?.description
+            var location = mMedia?.location
+
+            // If all descriptions/locations are the same, prefill the TextView
+            // with that.
+            for (media in mStore) {
+                if (media.description != description) {
+                    description = null
+                }
+                if (media.location != location) {
+                    location = null
+                }
+
+                if ((description == null) && (location == null)) {
+                    break
+                }
+            }
+
+            mBinding.description.setText(description)
+            mBinding.location.setText(location)
         }
         else {
             mBinding.description.setText(mMedia?.description)
@@ -262,7 +259,7 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun updateFlagState() {
-        if (mMedia?.flag == true) {
+        if (isFlagged) {
             mBinding.btFlag.setIconResource(R.drawable.ic_flag_selected)
             mBinding.btFlag.contentDescription = getText(R.string.status_flagged)
         }
@@ -271,6 +268,20 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             mBinding.btFlag.contentDescription = getText(R.string.hint_flag)
         }
     }
+
+    private val isFlagged: Boolean
+        get() {
+            var flagged = mMedia?.flag ?: false
+
+            if (mBatchMode && flagged) {
+                // Only show flagged, if all are flagged.
+                if (mStore.firstOrNull { !it.flag } != null) {
+                    flagged = false
+                }
+            }
+
+            return flagged
+        }
 
     private fun showFirstTimeFlag() {
         if (Prefs.flagHintShown) return

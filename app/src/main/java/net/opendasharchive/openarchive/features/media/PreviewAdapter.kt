@@ -24,7 +24,29 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
             }
 
             override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
-                return oldItem.title == newItem.title
+                return oldItem.originalFilePath == newItem.originalFilePath
+                        && oldItem.mimeType == newItem.mimeType
+                        && oldItem.createDate == newItem.createDate
+                        && oldItem.updateDate == newItem.updateDate
+                        && oldItem.uploadDate == newItem.uploadDate
+                        && oldItem.serverUrl == newItem.serverUrl
+                        && oldItem.title == newItem.title
+                        && oldItem.description == newItem.description
+                        && oldItem.author == newItem.author
+                        && oldItem.location == newItem.location
+                        && oldItem.tags == newItem.tags
+                        && oldItem.licenseUrl == newItem.licenseUrl
+                        && oldItem.mediaHash.contentEquals(newItem.mediaHash)
+                        && oldItem.mediaHashString == newItem.mediaHashString
+                        && oldItem.status == newItem.status
+                        && oldItem.statusMessage == newItem.statusMessage
+                        && oldItem.projectId == newItem.projectId
+                        && oldItem.collectionId == newItem.collectionId
+                        && oldItem.contentLength == newItem.contentLength
+                        && oldItem.progress == newItem.progress
+                        && oldItem.flag == newItem.flag
+                        && oldItem.priority == newItem.priority
+                        && oldItem.selected == newItem.selected
             }
         }
     }

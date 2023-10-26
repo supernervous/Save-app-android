@@ -244,8 +244,6 @@
     <string name="once_uploaded_you_will_not_be_able_to_edit_media">Yüklendikten sonra ortamı düzenleyemeyeceksiniz</string>
     <string name="edit_media_info">Ortam bilgilerini düzenle</string>
     <string name="counter">%1$d/%2$d</string>
-    <string name="your_changes_wont_be_saved">Değişiklikleriniz kaydedilmeyecek</string>
-    <string name="back_button_will_not_save_changes_press_done_to_save_your_edits">\"Geri\" düğmesi değişiklikleri kaydetmeyecek. Düzenlemelerinizi kaydetmek için \"Tamam\" üzerine basın.</string>
     <string name="add_a_location_optional">Bir konum ekle (isteğe bağlı)</string>
     <string name="add_notes_optional">Notlar ekle (isteğe bağlı)</string>
 </resources>
