@@ -57,7 +57,6 @@
     <string name="status_waiting">Waiting</string>
     <string name="status_error">Error</string>
     <string name="status_uploading">Uploading</string>
-    <string name="header_uploading">UPLOADING</string>
 
     <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">Transfer via the Tor Network only</string>
@@ -133,11 +132,6 @@
     <string name="action_remove">Remove</string>
     <string name="action_archive_project">Archive Project</string>
     <string name="action_unarchive_project">Unarchive Project</string>
-    <string name="status_ready_to_upload">READY TO UPLOAD</string>
-    <string name="label_items">item(s)</string>
-    <string name="__items_uploaded">%d item(s) uploaded</string>
-    <string name="__items_failed_to_upload">%d item(s) failed to upload</string>
-    <string name="__out_of___items_uploaded">%1$d out of %2$d item(s) uploaded</string>
     <string name="IA_login_error">Please login with valid Internet Archive credentials.</string>
     <string name="access_key">Access Key</string>
     <string name="secret_key">Secret Key</string>

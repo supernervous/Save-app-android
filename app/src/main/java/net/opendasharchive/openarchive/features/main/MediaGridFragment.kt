@@ -10,17 +10,14 @@ import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
-import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
+import net.opendasharchive.openarchive.databinding.ViewSectionBinding
 import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
-import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.publish.MediaListFragment
-import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
+import java.text.NumberFormat
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.List
@@ -41,6 +38,13 @@ class MediaGridFragment : MediaListFragment() {
     private lateinit var mBinding: FragmentMediaListBinding
     private lateinit var viewModel: MediaGridViewModel
     private lateinit var previewViewModel: MediaGridListViewModel
+
+    private val mNf
+        get() = NumberFormat.getIntegerInstance()
+
+    private val mDf
+        get() = DateFormat.getDateTimeInstance()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,37 +100,34 @@ class MediaGridFragment : MediaListFragment() {
         mBinding.addMediaHint.toggle(mBinding.mediaContainer.childCount < 2)
     }
 
-    private fun createMediaList(collection: Collection, listMedia: List<Media>): View {
-        val holder = SectionViewHolder(FragmentMediaListSectionBinding.inflate(layoutInflater))
+    private fun createMediaList(collection: Collection, media: List<Media>): View {
+        val holder = SectionViewHolder(ViewSectionBinding.inflate(layoutInflater))
 
-        holder.apply {
-            mediaSection.recyclerview.setHasFixedSize(true)
-            mediaSection.recyclerview.layoutManager = GridLayoutManager(activity, numberOfColumns)
+        holder.recyclerView.setHasFixedSize(true)
+        holder.recyclerView.layoutManager = GridLayoutManager(activity, numberOfColumns)
 
-            setSectionHeaders(collection, listMedia, this)
+        setSectionHeaders(collection, media, holder)
 
-            val listMediaArray = ArrayList(listMedia)
-            val mediaAdapter = MediaAdapter(
-                requireActivity(),
-                { MediaViewHolder.Box(it) },
-                listMediaArray,
-                mediaSection.recyclerview,
-                object : OnStartDragListener {
-                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+        val mediaAdapter = MediaAdapter(
+            requireActivity(),
+            { MediaViewHolder.Box(it) },
+            ArrayList(media),
+            holder.recyclerView,
+            object : OnStartDragListener {
+                override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
 
-                    }
-                }, checkSelecting = {
-                    (activity as? MainActivity)?.toggleDelete(mAdapters.values.firstOrNull { it.selecting } != null)
+                }
+            }, checkSelecting = {
+                (activity as? MainActivity)?.toggleDelete(mAdapters.values.firstOrNull { it.selecting } != null)
 
-                    // TODO: Update section header.
-                })
+                // TODO: Update section header.
+            })
 
-            mediaSection.recyclerview.adapter = mediaAdapter
-            mAdapters[collection.id] = mediaAdapter
-            mSection[collection.id] = this
-        }
+        holder.recyclerView.adapter = mediaAdapter
+        mAdapters[collection.id] = mediaAdapter
+        mSection[collection.id] = holder
 
-        return holder.mediaSection.root
+        return holder.root
     }
 
     override fun updateItem(mediaId: Long, progress: Long) {
@@ -150,11 +151,7 @@ class MediaGridFragment : MediaListFragment() {
                 mBinding.mediaContainer.addView(view, 0)
             }
 
-            if (index == mSection.size - 1) {
-                holder?.bottomNavSpacing?.visibility = View.VISIBLE
-            } else {
-                holder?.bottomNavSpacing?.visibility = View.GONE
-            }
+            holder?.bottomSpacing?.toggle(index == mSection.size - 1)
         }
 
         mBinding.addMediaHint.toggle(mBinding.mediaContainer.childCount < 2)
@@ -169,80 +166,33 @@ class MediaGridFragment : MediaListFragment() {
     @SuppressLint("SetTextI18n")
     private fun setSectionHeaders(
         collection: Collection,
-        listMedia: List<Media>?,
+        media: List<Media>,
         holder: SectionViewHolder
     ) {
-        holder.sectionStatus.text = ""
-        holder.sectionTimestamp.text = ""
+        if (media.firstOrNull { it.sStatus == Media.Status.Queued
+                    || it.sStatus == Media.Status.Uploading
+                    || it.sStatus == Media.Status.Error } != null)
+        {
+            val uploaded = mNf.format(media.filter {
+                it.sStatus == Media.Status.Uploaded
+                        || it.sStatus == Media.Status.DeleteRemote
+                        || it.sStatus == Media.Status.Published }.size)
 
-        val df = DateFormat.getDateTimeInstance()
+            val total = mNf.format(media.size)
 
-        listMedia?.forEach { media ->
-            when (media.sStatus) {
-                Media.Status.Local -> {
-                    holder.sectionStatus.text = getString(R.string.status_ready_to_upload)
-                    holder.sectionTimestamp.text = "${listMedia.size} ${getString(R.string.label_items)}"
-                    holder.action.cloak()
-                    holder.action.setOnClickListener {
-                        val activity = activity ?: return@setOnClickListener
-                        val projectId = collection.projectId ?: return@setOnClickListener
+            holder.count.text = "${uploaded}/${total}"
+        }
+        else {
+            holder.count.text = mNf.format(media.size)
+        }
 
-                        PreviewActivity.start(activity, projectId)
-                    }
+        val uploadDate = collection.uploadDate
 
-                    return@forEach
-                }
-                Media.Status.Queued, Media.Status.Uploading -> {
-                    holder.sectionStatus.text = getString(R.string.header_uploading)
-
-                    val count = listMedia.filter { it.sStatus == Media.Status.Uploaded }.size
-
-                    holder.sectionTimestamp.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
-                    holder.action.cloak()
-
-                    return@forEach
-                }
-                Media.Status.Uploaded -> {
-                    val count = listMedia.filter { it.sStatus == Media.Status.Uploaded }.size
-
-                    if (count == listMedia.size) {
-                        holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
-                        holder.action.cloak()
-                    }
-                    else {
-                        holder.sectionStatus.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
-                        holder.action.cloak()
-                    }
-
-                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
-                }
-                Media.Status.Error -> {
-                    val count = listMedia.filter { it.sStatus == Media.Status.Error }.size
-
-                    if (count == listMedia.size) {
-                        holder.sectionStatus.text = getString(R.string.__items_failed_to_upload, listMedia.size)
-                    }
-                    else {
-                        holder.sectionStatus.text = getString(R.string.__out_of___items_uploaded, count, listMedia.size)
-                    }
-
-                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
-
-                    holder.action.cloak()
-                }
-                else -> {
-                    holder.sectionStatus.text = getString(R.string.__items_uploaded, listMedia.size)
-
-                    collection.uploadDate?.let { holder.sectionTimestamp.text = df.format(it) }
-                        ?: run {
-                            listMedia.firstOrNull()?.uploadDate?.let {
-                                holder.sectionTimestamp.text = df.format(it)
-                            }
-                        }
-
-                    holder.action.cloak()
-                }
-            }
+        if (uploadDate != null) {
+            holder.timestamp.text = mDf.format(uploadDate)
+        }
+        else {
+            holder.timestamp.text = ""
         }
     }
 }

@@ -55,7 +55,6 @@
     <string name="status_waiting">Bekleniyor</string>
     <string name="status_error">Hata</string>
     <string name="status_uploading">Yükleniyor</string>
-    <string name="header_uploading">YÜKLENİYOR</string>
 
     <string name="prefs_use_tor_title">Onion yöneltme kullanılsın</string>
     <string name="prefs_use_tor_summary">Yalnızca Tor ağı ile aktarılsın</string>
@@ -127,11 +126,6 @@
     <string name="action_remove">Kaldır</string>
     <string name="action_archive_project">Projeyi arşive kaldır</string>
     <string name="action_unarchive_project">Projeyi arşivden çıkar</string>
-    <string name="status_ready_to_upload">YÜKLENMEYE HAZIR</string>
-    <string name="label_items">öge</string>
-    <string name="__items_uploaded">%d öge yüklendi</string>
-    <string name="__items_failed_to_upload">%d öge yüklenemedi</string>
-    <string name="__out_of___items_uploaded">%1$d / %2$d öge yüklendi</string>
     <string name="IA_login_error">Lütfen geçerli Internet Archive kimlik doğrulama bilgileri ile oturum açın.</string>
     <string name="access_key">Erişim anahtarı</string>
     <string name="secret_key">Gizli anahtar</string>
