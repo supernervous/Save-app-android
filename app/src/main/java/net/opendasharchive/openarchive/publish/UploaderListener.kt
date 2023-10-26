@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Message
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import net.opendasharchive.openarchive.MainActivity
+import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.ConduitListener

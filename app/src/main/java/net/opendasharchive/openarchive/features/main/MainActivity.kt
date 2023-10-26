@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive
+package net.opendasharchive.openarchive.features.main
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -21,6 +21,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import net.opendasharchive.openarchive.FolderAdapter
+import net.opendasharchive.openarchive.FolderAdapterListener
+import net.opendasharchive.openarchive.OpenArchiveApp
+import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.SpaceAdapter
+import net.opendasharchive.openarchive.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project

@@ -7,7 +7,7 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.publish.MediaListFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs

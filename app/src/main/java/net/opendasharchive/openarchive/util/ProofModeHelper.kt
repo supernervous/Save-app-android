@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.security.keystore.UserNotAuthenticatedException
 import androidx.fragment.app.FragmentActivity
-import net.opendasharchive.openarchive.MainActivity
+import net.opendasharchive.openarchive.features.main.MainActivity
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import org.witness.proofmode.service.MediaWatcher
 import timber.log.Timber

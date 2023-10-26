@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media.grid
+package net.opendasharchive.openarchive.features.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
 import net.opendasharchive.openarchive.databinding.FragmentMediaListSectionBinding
@@ -18,7 +17,7 @@ import net.opendasharchive.openarchive.db.*
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
-import net.opendasharchive.openarchive.features.media.list.MediaListFragment
+import net.opendasharchive.openarchive.publish.MediaListFragment
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
@@ -51,7 +50,8 @@ class MediaGridFragment : MediaListFragment() {
         mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MediaGridViewModel::class.java]
 
-        previewViewModel = MediaGridListViewModel.getInstance(this, requireNotNull(activity?.application))
+        previewViewModel =
+            MediaGridListViewModel.getInstance(this, requireNotNull(activity?.application))
         previewViewModel.observeValuesForWorkState(activity as AppCompatActivity)
 
         observeData()

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media.grid
+package net.opendasharchive.openarchive.features.main
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity

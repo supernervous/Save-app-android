@@ -4,25 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.commit
-import com.google.android.material.snackbar.Snackbar
-import net.opendasharchive.openarchive.MainActivity
 import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.main.MainActivity
 import kotlin.properties.Delegates
 
 class WebDavActivity : BaseActivity() {
 
-    companion object {
-        private const val EXTRA_DATA_USER = "user"
-        private const val EXTRA_DATA_PASSWORD = "password"
-        private const val EXTRA_DATA_SERVER = "server"
-        private const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
-    }
-
     private lateinit var mBinding: ActivityWebdavBinding
-    private var mSnackbar: Snackbar? = null
-    private lateinit var mSpace: Space
     private var spaceId by Delegates.notNull<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

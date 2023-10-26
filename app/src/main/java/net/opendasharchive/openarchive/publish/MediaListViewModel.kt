@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media.list
+package net.opendasharchive.openarchive.publish
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive
+package net.opendasharchive.openarchive.features.main
 
 import android.content.Context
 import android.os.Bundle
@@ -7,8 +7,8 @@ import android.text.SpannableString
 import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.features.media.grid.MediaGridFragment
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 import timber.log.Timber

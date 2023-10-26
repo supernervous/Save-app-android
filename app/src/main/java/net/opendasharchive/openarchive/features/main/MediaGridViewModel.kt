@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media.grid
+package net.opendasharchive.openarchive.features.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
