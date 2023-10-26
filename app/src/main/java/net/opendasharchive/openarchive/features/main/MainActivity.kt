@@ -16,8 +16,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import kotlinx.coroutines.CoroutineScope
@@ -57,8 +55,7 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 import java.text.NumberFormat
 
-class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
-    FolderAdapterListener, SpaceAdapterListener {
+class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener {
 
     companion object {
         const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
@@ -67,7 +64,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
     private var mMenuDelete: MenuItem? = null
 
     private var mSnackBar: Snackbar? = null
-    private var retryProviderInstall: Boolean = false
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mPagerAdapter: ProjectAdapter
@@ -124,15 +120,8 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
             }
         }
 
-    private val mErrorDialogResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            retryProviderInstall = true
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ProviderInstaller.installIfNeededAsync(this, this)
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
@@ -285,17 +274,6 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
 
         importSharedMedia(intent)
-    }
-
-    override fun onPostResume() {
-        super.onPostResume()
-
-        if (retryProviderInstall) {
-            // It's safe to retry installation.
-            ProviderInstaller.installIfNeededAsync(this, this)
-        }
-
-        retryProviderInstall = false
     }
 
     override fun onPause() {
@@ -459,42 +437,12 @@ class MainActivity : BaseActivity(), ProviderInstaller.ProviderInstallListener,
         }
     }
 
-    override fun onProviderInstallFailed(errorCode: Int, recoveryIntent: Intent?) {
-        GoogleApiAvailability.getInstance().apply {
-            if (isUserResolvableError(errorCode)) {
-                try {
-                    showErrorDialogFragment(
-                        this@MainActivity,
-                        errorCode,
-                        mErrorDialogResultLauncher
-                    ) {
-                        // The user chose not to take the recovery action.
-                        showAlertIcon()
-                    }
-                } catch (e: IllegalStateException) {
-                    // Ignore. The user is rummaging around in some menu.
-                    // They cannot use the app, because the don't have Google stuff installed.
-                    // They probably have already seen this dialog.
-                }
-            } else {
-                showAlertIcon()
-            }
-        }
-    }
-
     private fun showAlertIcon() {
         mBinding.alertIcon.show()
         TooltipCompat.setTooltipText(
             mBinding.alertIcon,
             getString(R.string.unsecured_internet_connection)
         )
-    }
-
-    /**
-     * This is triggered if the security provider is up-to-date.
-     */
-    override fun onProviderInstalled() {
-        mBinding.alertIcon.hide()
     }
 
     @SuppressLint("NotifyDataSetChanged")
