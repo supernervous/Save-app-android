@@ -92,26 +92,6 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
             refresh()
         }
 
-        mBinding.title.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-
-            override fun afterTextChanged(s: Editable?) {
-                var value = s?.toString()
-                if (value.isNullOrBlank()) value = null
-
-                if (mBatchMode) {
-                    mStore.forEach {
-                        it.title = value ?: it.file.name
-                    }
-                }
-                else {
-                    mMedia?.title = value ?: mMedia?.file?.name ?: ""
-                }
-            }
-        })
-
         mBinding.description.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
@@ -272,12 +252,10 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
         mBinding.btPageFrwd.toggle(!mBatchMode && mIndex < mStore.size - 1)
 
         if (mBatchMode) {
-            mBinding.title.text = null
             mBinding.description.text = null
             mBinding.location.text = null
         }
         else {
-            mBinding.title.setText(mMedia?.title)
             mBinding.description.setText(mMedia?.description)
             mBinding.location.setText(mMedia?.location)
         }

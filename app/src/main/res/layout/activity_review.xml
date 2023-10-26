@@ -181,39 +181,17 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/location_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@id/location_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_edit_unselected">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name_this_image_optional"
-                android:inputType="textAutoComplete"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/location_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@id/description_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_location_unselected">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -235,7 +213,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:startIconDrawable="@drawable/ic_tag_unselected">
+            app:startIconDrawable="@drawable/ic_edit_unselected">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/description"
