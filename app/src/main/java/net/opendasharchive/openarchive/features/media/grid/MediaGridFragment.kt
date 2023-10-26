@@ -19,7 +19,6 @@ import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.media.SectionViewHolder
 import net.opendasharchive.openarchive.features.media.list.MediaListFragment
-import net.opendasharchive.openarchive.features.media.preview.PreviewMediaListViewModel
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.DateFormat
@@ -42,7 +41,7 @@ class MediaGridFragment : MediaListFragment() {
 
     private lateinit var mBinding: FragmentMediaListBinding
     private lateinit var viewModel: MediaGridViewModel
-    private lateinit var previewViewModel: PreviewMediaListViewModel
+    private lateinit var previewViewModel: MediaGridListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +51,7 @@ class MediaGridFragment : MediaListFragment() {
         mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[MediaGridViewModel::class.java]
 
-        previewViewModel = PreviewMediaListViewModel.getInstance(this, requireNotNull(activity?.application))
+        previewViewModel = MediaGridListViewModel.getInstance(this, requireNotNull(activity?.application))
         previewViewModel.observeValuesForWorkState(activity as AppCompatActivity)
 
         observeData()

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.media.preview
+package net.opendasharchive.openarchive.features.media.grid
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
@@ -6,14 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Operation
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import net.opendasharchive.openarchive.features.media.MediaWorker
 import timber.log.Timber
 
-class PreviewMediaListViewModel(
+class MediaGridListViewModel(
     application: Application
 ) : ViewModel() {
 
@@ -29,8 +26,8 @@ class PreviewMediaListViewModel(
     companion object {
         private const val TAG_MEDIA_UPLOADING = "TAG_MEDIA_UPLOADING"
 
-        fun getInstance(owner: ViewModelStoreOwner, application: Application) : PreviewMediaListViewModel {
-            return ViewModelProvider(owner, Factory(application))[PreviewMediaListViewModel::class.java]
+        fun getInstance(owner: ViewModelStoreOwner, application: Application) : MediaGridListViewModel {
+            return ViewModelProvider(owner, Factory(application))[MediaGridListViewModel::class.java]
         }
     }
 
@@ -39,12 +36,6 @@ class PreviewMediaListViewModel(
 
     init {
         mWorkState = mWorkManager.getWorkInfosByTagLiveData(TAG_MEDIA_UPLOADING)
-    }
-
-    fun applyMedia(): Operation {
-        val mediaWorker = OneTimeWorkRequestBuilder<MediaWorker>().addTag(TAG_MEDIA_UPLOADING).build()
-
-        return mWorkManager.enqueue(mediaWorker)
     }
 
     fun observeValuesForWorkState(activity : AppCompatActivity) {
