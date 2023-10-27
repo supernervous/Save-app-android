@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 beta4
+- Translation and wording updates.
+- Fixed lots of UI bugs.
+- Added long-tap on + (add) button showing menu to import documents. (Only with supported devices!)
+- Removed Google Play Service dependency.
+
 ## 0.3.0 beta3
 - New review and batch review scene.
 - Moved all review from main scene one level deeper into preview scene.
