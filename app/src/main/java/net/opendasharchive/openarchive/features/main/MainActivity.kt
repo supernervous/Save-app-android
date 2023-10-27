@@ -95,7 +95,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
             when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
                 Media.Status.Uploaded.id -> {
-                    if (mCurrentItem > 0) {
+                    if (mCurrentItem < mPagerAdapter.settingsIndex) {
                         mCurrentFragment?.refresh()
                     }
                 }
@@ -103,7 +103,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
                 Media.Status.Uploading.id -> {
                     val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
 
-                    if (mediaId != -1L && mCurrentItem > 0) {
+                    if (mediaId != -1L && mCurrentItem < mPagerAdapter.settingsIndex) {
                         val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
 
                         mCurrentFragment?.updateItem(mediaId, progress)
