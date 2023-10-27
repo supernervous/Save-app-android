@@ -9,11 +9,11 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -26,6 +26,7 @@ class UploadManagerActivity : BaseActivity() {
         const val PROJECT_ID = "PROJECT_ID"
     }
 
+    private lateinit var mBinding: ActivityUploadManagerBinding
     var mFrag: MediaListFragment? = null
     private var mMenuEdit: MenuItem? = null
     private var projectId: Long = Project.EMPTY_ID
@@ -33,10 +34,10 @@ class UploadManagerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_upload_manager)
+        mBinding = ActivityUploadManagerBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = getString(R.string.title_uploads)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
