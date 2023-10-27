@@ -11,14 +11,16 @@ data class Collection(
 
     companion object {
 
-        fun getAll(): List<Collection> {
-            return find(Collection::class.java, null, arrayOf(),
-                null, "id DESC", null)
-        }
-
         fun getByProject(projectId: Long): List<Collection> {
             return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
                 null, "id DESC", null)
+        }
+
+        fun get(collectionId: Long?): Collection? {
+            @Suppress("NAME_SHADOWING")
+            val collectionId = collectionId ?: return null
+
+            return findById(Collection::class.java, collectionId)
         }
     }
 

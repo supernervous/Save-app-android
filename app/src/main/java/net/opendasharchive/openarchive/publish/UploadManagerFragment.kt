@@ -12,21 +12,20 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.FragmentMediaListBinding
+import net.opendasharchive.openarchive.databinding.FragmentUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.util.extensions.hide
 
-open class MediaListFragment : Fragment() {
+open class UploadManagerFragment : Fragment() {
 
     open var mediaAdapter: MediaAdapter? = null
     open var projectId: Long = -1
 
     private var mStatuses = listOf(Media.Status.Uploading, Media.Status.Queued, Media.Status.Error)
 
-    private lateinit var mBinding: FragmentMediaListBinding
+    private lateinit var mBinding: FragmentUploadManagerBinding
     private lateinit var viewModel: MediaListViewModel
 
     private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -56,7 +55,7 @@ open class MediaListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = FragmentMediaListBinding.inflate(inflater, container, false)
+        mBinding = FragmentUploadManagerBinding.inflate(inflater, container, false)
         mBinding.root.tag = TAG
 
         viewModel = ViewModelProvider(this)[MediaListViewModel::class.java]
@@ -101,18 +100,14 @@ open class MediaListFragment : Fragment() {
                 { MediaViewHolder.SmallRow(it) },
                 ArrayList(mediaList),
                 rView,
-                object : OnStartDragListener {
+                object : MediaAdapter.OnStartDragListener {
                     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
                         if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
                     }
-                }, {})
+                })
 
         mediaAdapter?.doImageFade = false
         rView.adapter = mediaAdapter
-
-        // Always hide the hint here, this is only used in UploadManager, and that is only shown
-        // when there's at least one item.
-        mBinding.addMediaHint.hide()
 
         mItemTouchHelper.attachToRecyclerView(rView)
     }
@@ -145,15 +140,6 @@ open class MediaListFragment : Fragment() {
                 mStatuses.contains(it.sStatus)
             }
         }
-    }
-
-    interface OnStartDragListener {
-        /**
-         * Called when a view is requesting a start of a drag.
-         *
-         * @param viewHolder The holder of the view to drag.
-         */
-        fun onStartDrag(viewHolder: RecyclerView.ViewHolder?)
     }
 
     companion object {

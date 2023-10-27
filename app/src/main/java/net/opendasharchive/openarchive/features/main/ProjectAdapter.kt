@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.main
 
 import android.content.Context
-import android.os.Bundle
 import android.os.Parcelable
 import android.text.SpannableString
 import android.text.style.ImageSpan
@@ -24,13 +23,9 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
             return SettingsFragment()
         }
 
-        return MediaGridFragment().also { fragment ->
-            getProject(position)?.let { project ->
-                fragment.projectId = project.id
-            }
+        val project = getProject(position) ?: return SettingsFragment()
 
-            fragment.arguments = Bundle()
-        }
+        return MainMediaFragment.newInstance(project.id)
     }
 
     override fun getCount(): Int {
@@ -72,8 +67,8 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
         }
     }
 
-    fun getRegisteredMediaGridFragment(position: Int): MediaGridFragment? {
-        return getRegisteredFragment(position) as? MediaGridFragment
+    fun getRegisteredMediaFragment(position: Int): MainMediaFragment? {
+        return getRegisteredFragment(position) as? MainMediaFragment
     }
 
     override fun restoreState(state: Parcelable?, loader: ClassLoader?) {

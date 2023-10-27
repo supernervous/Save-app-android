@@ -23,7 +23,7 @@ class UploadManagerActivity : BaseActivity() {
     }
 
     private lateinit var mBinding: ActivityUploadManagerBinding
-    var mFrag: MediaListFragment? = null
+    var mFrag: UploadManagerFragment? = null
     private var mMenuEdit: MenuItem? = null
     private var projectId: Long = Project.EMPTY_ID
 
@@ -38,7 +38,7 @@ class UploadManagerActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         projectId = intent.getLongExtra(PROJECT_ID, Project.EMPTY_ID)
-        mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? MediaListFragment
+        mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? UploadManagerFragment
         mFrag?.projectId = projectId
     }
 

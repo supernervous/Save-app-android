@@ -11,7 +11,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragUploadManager"
-        android:name="net.opendasharchive.openarchive.publish.MediaListFragment"
+        android:name="net.opendasharchive.openarchive.publish.UploadManagerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

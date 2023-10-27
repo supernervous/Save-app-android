@@ -76,7 +76,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         }
 
     private val mCurrentFragment
-        get() = mPagerAdapter.getRegisteredMediaGridFragment(mCurrentItem)
+        get() = mPagerAdapter.getRegisteredMediaFragment(mCurrentItem)
 
     private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
@@ -300,8 +300,10 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         return super.onOptionsItemSelected(item)
     }
 
-    fun toggleDelete(show: Boolean) {
-        mMenuDelete?.isVisible = show
+    fun updateAfterDelete(done: Boolean) {
+        mMenuDelete?.isVisible = !done
+
+        if (done) refreshCurrentFolderCount()
     }
 
     private fun addFolder() {
@@ -355,14 +357,24 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
             mBinding.currentFolderName.text = project.description
             mBinding.currentFolderName.show()
+        } else {
+            mBinding.currentFolderIcon.cloak()
+            mBinding.currentFolderName.cloak()
+        }
 
+        refreshCurrentFolderCount()
+    }
+
+    private fun refreshCurrentFolderCount() {
+        val project = getSelectedProject()
+
+        if (project != null) {
             mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
                 project.collections.map { it.media.count() }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolderCount.show()
-        } else {
-            mBinding.currentFolderIcon.cloak()
-            mBinding.currentFolderName.cloak()
+        }
+        else {
             mBinding.currentFolderCount.cloak()
         }
     }

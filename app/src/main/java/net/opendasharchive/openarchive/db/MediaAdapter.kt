@@ -7,22 +7,22 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.publish.MediaListFragment
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
+import java.lang.ref.WeakReference
 
 class MediaAdapter(
-    private val mActivity: Activity,
+    activity: Activity,
     private val generator: (parent: ViewGroup) -> MediaViewHolder,
-    data: ArrayList<Media>,
+    data: List<Media>,
     private val recyclerView: RecyclerView,
-    private val mDragStartListener: MediaListFragment.OnStartDragListener,
-    private val checkSelecting: () -> Unit
+    private val dragStartListener: OnStartDragListener? = null,
+    private val checkSelecting: (() -> Unit)? = null
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
-    var media: ArrayList<Media> = data
+    var media: ArrayList<Media> = ArrayList(data)
         private set
 
     var doImageFade = true
@@ -31,6 +31,8 @@ class MediaAdapter(
 
     var selecting = false
         private set
+
+    private var mActivity = WeakReference(activity)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
@@ -45,13 +47,18 @@ class MediaAdapter(
 
                 when (media[pos].sStatus) {
                     Media.Status.Local -> {
-                        PreviewActivity.start(mActivity, media[pos].projectId)
+                        mActivity.get()?.let {
+                            PreviewActivity.start(it, media[pos].projectId)
+                        }
                     }
 
                     Media.Status.Queued, Media.Status.Uploading -> {
-                        mActivity.startActivity(Intent(mActivity, UploadManagerActivity::class.java).also {
-                            it.putExtra(UploadManagerActivity.PROJECT_ID, media[pos].projectId)
-                        })
+                        mActivity.get()?.let {
+                            it.startActivity(
+                                Intent(it, UploadManagerActivity::class.java).apply {
+                                    putExtra(UploadManagerActivity.PROJECT_ID, media[pos].projectId)
+                                })
+                        }
                     }
 
                     else -> {
@@ -93,7 +100,7 @@ class MediaAdapter(
 
         holder.handle?.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                mDragStartListener.onStartDrag(holder)
+                dragStartListener?.onStartDrag(holder)
             }
 
             false
@@ -127,8 +134,8 @@ class MediaAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(media: ArrayList<Media>) {
-        this.media = media
+    fun updateData(media: List<Media>) {
+        this.media = ArrayList(media)
 
         reorder()
 
@@ -137,8 +144,9 @@ class MediaAdapter(
 
     private fun showFirstTimeFlag() {
         if (Prefs.flagHintShown) return
+        val activity = mActivity.get() ?: return
 
-        AlertHelper.show(mActivity, R.string.popup_flag_desc, R.string.popup_flag_title)
+        AlertHelper.show(activity, R.string.popup_flag_desc, R.string.popup_flag_title)
 
         Prefs.flagHintShown = true
     }
@@ -153,7 +161,7 @@ class MediaAdapter(
         notifyItemChanged(media.indexOf(m))
 
         selecting = media.firstOrNull { it.selected } != null
-        checkSelecting()
+        checkSelecting?.invoke()
     }
 
     fun onItemMove(oldPos: Int, newPos: Int) {
@@ -183,7 +191,9 @@ class MediaAdapter(
     }
 
 
-    fun deleteSelected() {
+    fun deleteSelected(): Boolean {
+        var hasDeleted = false
+
         for (item in media.filter { it.selected }) {
             val idx = media.indexOf(item)
             media.remove(item)
@@ -191,11 +201,15 @@ class MediaAdapter(
             notifyItemRemoved(idx)
 
             item.delete()
+
+            hasDeleted = true
         }
 
         selecting = false
 
-        checkSelecting()
+        checkSelecting?.invoke()
+
+        return hasDeleted
     }
 
     private fun reorder() {
@@ -205,5 +219,15 @@ class MediaAdapter(
             item.priority = priority--
             item.save()
         }
+    }
+
+
+    interface OnStartDragListener {
+        /**
+         * Called when a view is requesting a start of a drag.
+         *
+         * @param viewHolder The holder of the view to drag.
+         */
+        fun onStartDrag(viewHolder: RecyclerView.ViewHolder?)
     }
 }

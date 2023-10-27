@@ -7,7 +7,7 @@
     android:filterTouchesWhenObscured="true">
 
     <LinearLayout
-        android:id="@+id/mediaContainer"
+        android:id="@+id/media_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -54,10 +54,6 @@
                 tools:targetApi="p" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/bottom_nav_padding" />
 
     </LinearLayout>
 </ScrollView>
