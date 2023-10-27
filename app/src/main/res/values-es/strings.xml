@@ -64,6 +64,7 @@
 
     <string name="action_privacy">Política de privacidad</string>
     <string name="uploads">Subidas</string>
+    <string name="uploading">Subiendo…</string>
 
     <string name="action_upload">Subir</string>
 

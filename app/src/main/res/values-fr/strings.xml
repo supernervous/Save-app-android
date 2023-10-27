@@ -45,6 +45,7 @@
 
     <string name="action_privacy">Politique de confidentialité</string>
     <string name="uploads">Téléversements</string>
+    <string name="uploading">Téléversement…</string>
 
     <string name="action_upload">Téléversement</string>
 

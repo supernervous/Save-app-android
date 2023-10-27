@@ -98,6 +98,7 @@
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
     <string name="uploads">Yüklemeler</string>
+    <string name="uploading">Yükleniyor…</string>
 
     <string name="action_upload">Yükle</string>
 

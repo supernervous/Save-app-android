@@ -45,6 +45,7 @@
 
     <string name="action_privacy">Privacy Policy</string>
     <string name="uploads">Upload</string>
+    <string name="uploading">Caricamento…</string>
 
     <string name="action_upload">Carica</string>
 

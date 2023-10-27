@@ -36,6 +36,7 @@
     <string name="status_uploaded">Geüpload</string>
     <string name="action_privacy">Privacybeleid</string>
     <string name="uploads">Uploads</string>
+    <string name="uploading">Uploaden…</string>
 
     <string name="action_upload">Uploaden</string>
 

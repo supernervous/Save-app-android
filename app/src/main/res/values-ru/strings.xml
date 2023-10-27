@@ -43,6 +43,7 @@
 
     <string name="action_privacy">Политика обеспечения конфиденциальности.</string>
     <string name="uploads">Загруженная информация</string>
+    <string name="uploading">Загрузка…</string>
 
     <string name="action_upload">Загрузить</string>
 

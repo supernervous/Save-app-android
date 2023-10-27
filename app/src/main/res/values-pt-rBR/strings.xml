@@ -55,6 +55,7 @@
     <string name="status_uploaded">Uploaded</string>
     <string name="action_privacy">Política De Privacidade</string>
     <string name="uploads">Envios</string>
+    <string name="uploading">Enviando…</string>
 
     <string name="action_upload">Carregar</string>
 

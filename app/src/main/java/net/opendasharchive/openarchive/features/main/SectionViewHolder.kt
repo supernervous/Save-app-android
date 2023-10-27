@@ -44,22 +44,19 @@ data class SectionViewHolder(
                     || it.sStatus == Media.Status.Uploading
                     || it.sStatus == Media.Status.Error } != null)
         {
+            timestamp.setText(R.string.uploading)
+
             val uploaded = media.filter { it.sStatus == Media.Status.Uploaded }.size
 
             count.text = count.context.getString(R.string.counter, uploaded, media.size)
+
+            return
         }
-        else {
-            count.text = mNf.format(media.size)
-        }
+
+        count.text = mNf.format(media.size)
 
         val uploadDate = collection.uploadDate
 
-        if (uploadDate != null) {
-            timestamp.text = mDf.format(uploadDate)
-        }
-        else {
-            timestamp.text = ""
-        }
+        timestamp.text = if (uploadDate != null) mDf.format(uploadDate) else ""
     }
-
 }
