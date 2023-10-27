@@ -14,7 +14,7 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 import java.lang.ref.WeakReference
 
 class MediaAdapter(
-    activity: Activity,
+    activity: Activity?,
     private val generator: (parent: ViewGroup) -> MediaViewHolder,
     data: List<Media>,
     private val recyclerView: RecyclerView,
@@ -38,6 +38,9 @@ class MediaAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val mvh = generator(parent)
 
+        // Selection not wanted.
+        if (checkSelecting == null) return mvh
+
         mvh.itemView.setOnClickListener { v ->
             if (selecting) {
                 selectView(v)
@@ -55,9 +58,7 @@ class MediaAdapter(
                     Media.Status.Queued, Media.Status.Uploading -> {
                         mActivity.get()?.let {
                             it.startActivity(
-                                Intent(it, UploadManagerActivity::class.java).apply {
-                                    putExtra(UploadManagerActivity.PROJECT_ID, media[pos].projectId)
-                                })
+                                Intent(it, UploadManagerActivity::class.java))
                         }
                     }
 

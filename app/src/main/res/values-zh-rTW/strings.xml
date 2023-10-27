@@ -16,7 +16,6 @@
 
     <string name="action_cancel">取消</string>
 
-    <string name="status_waiting">正在等待</string>
     <string name="status_error">錯誤</string>
     <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
 
@@ -32,7 +31,6 @@
     <string name="error_incorrect_username_or_password">不正確的用戶帳號和密碼</string>
     <string name="error_field_required">這是必填欄位</string>
     <string name="title_welcome">歡迎</string>
-    <string name="status_uploaded">已经上传</string>
     <string name="action_privacy">隱私政策</string>
     <string name="uploads">上傳項目</string>
     <string name="action_upload">上傳</string>

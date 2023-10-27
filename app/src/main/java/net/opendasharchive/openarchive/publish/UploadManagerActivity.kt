@@ -12,20 +12,14 @@ import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
 
-    companion object {
-        const val PROJECT_ID = "PROJECT_ID"
-    }
-
     private lateinit var mBinding: ActivityUploadManagerBinding
     var mFrag: UploadManagerFragment? = null
     private var mMenuEdit: MenuItem? = null
-    private var projectId: Long = Project.EMPTY_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +31,7 @@ class UploadManagerActivity : BaseActivity() {
         supportActionBar?.title = getString(R.string.uploads)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        projectId = intent.getLongExtra(PROJECT_ID, Project.EMPTY_ID)
         mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? UploadManagerFragment
-        mFrag?.projectId = projectId
     }
 
     override fun onResume() {

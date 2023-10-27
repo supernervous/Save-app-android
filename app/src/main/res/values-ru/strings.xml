@@ -25,9 +25,7 @@
 
     <string name="action_cancel">Отмена</string>
 
-    <string name="status_waiting">Ожидание</string>
     <string name="status_error">Ошибка</string>
-    <string name="status_uploading">Закачка</string>
     <string name="prefs_prohibit_screenshots_title">Не допускать скриншоты</string>
 
     <string name="prefs_theme_title">Стиль</string>

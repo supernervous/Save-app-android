@@ -19,9 +19,7 @@
 
     <string name="action_cancel">Скасувати</string>
 
-    <string name="status_waiting">Очікування</string>
     <string name="status_error">Помилка</string>
-    <string name="status_uploading">Завантаження</string>
     <string name="prefs_prohibit_screenshots_title">Блокувати скріншоти</string>
 
     <string name="prefs_theme_title">Стиль</string>

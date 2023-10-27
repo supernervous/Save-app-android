@@ -36,7 +36,6 @@
 
     <string name="action_cancel">Cancelar</string>
 
-    <string name="status_waiting">Aguardando</string>
     <string name="status_error">Erro</string>
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de tela</string>
 
@@ -52,7 +51,6 @@
     <string name="error_incorrect_username_or_password">Usuário ou senha incorretos</string>
     <string name="error_field_required">Este campo é obrigatório</string>
     <string name="title_welcome">Boas-vindas</string>
-    <string name="status_uploaded">Uploaded</string>
     <string name="action_privacy">Política De Privacidade</string>
     <string name="uploads">Envios</string>
     <string name="uploading">Enviando…</string>

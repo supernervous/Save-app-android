@@ -16,7 +16,6 @@
 
     <string name="action_cancel">Avbryt</string>
 
-    <string name="status_waiting">Avvaktar</string>
     <string name="status_error">Fel</string>
     <string name="prefs_user_interface_title">Presentation</string>
     <string name="prefs_theme_title">Stil</string>

@@ -17,7 +17,6 @@
 
     <string name="action_cancel">Annuleren</string>
 
-    <string name="status_waiting">Wachten</string>
     <string name="status_error">Fout</string>
     <string name="prefs_prohibit_screenshots_title">Blokkeer screenshots</string>
 
@@ -33,7 +32,6 @@
     <string name="error_incorrect_username_or_password">Gebruikersnaam of wachtwoord verkeerd</string>
     <string name="error_field_required">Dit veld is verplicht</string>
     <string name="title_welcome">Welkom</string>
-    <string name="status_uploaded">Geüpload</string>
     <string name="action_privacy">Privacybeleid</string>
     <string name="uploads">Uploads</string>
     <string name="uploading">Uploaden…</string>

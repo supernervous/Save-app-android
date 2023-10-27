@@ -53,14 +53,9 @@ data class Media(
         const val ORDER_CREATED = "create_date DESC"
 
 
-        fun getByProject(projectId: Long): List<Media> {
-            return find(Media::class.java, "project_id = ?", arrayOf(projectId.toString()),
-                null, "status, id DESC", null)
-        }
-
         fun getByStatus(statuses: List<Status>, order: String? = null): List<Media> {
             return find(Media::class.java,
-                statuses.map { "status = ?" }.joinToString(" OR "),
+                statuses.joinToString(" OR ") { "status = ?" },
                 statuses.map { it.id.toString() }.toTypedArray(),
                 null, order, null)
         }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,39 +15,19 @@ import net.opendasharchive.openarchive.databinding.FragmentUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.db.Project
 
 open class UploadManagerFragment : Fragment() {
 
-    open var mediaAdapter: MediaAdapter? = null
-    open var projectId: Long = -1
+    companion object {
+        private val STATUSES = listOf(Media.Status.Uploading, Media.Status.Queued, Media.Status.Error)
+    }
 
-    private var mStatuses = listOf(Media.Status.Uploading, Media.Status.Queued, Media.Status.Error)
+    open var mediaAdapter: MediaAdapter? = null
 
     private lateinit var mBinding: FragmentUploadManagerBinding
-    private lateinit var viewModel: MediaListViewModel
 
-    private val mItemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.END or ItemTouchHelper.START
-    ) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            mediaAdapter?.onItemMove(
-                viewHolder.bindingAdapterPosition,
-                target.bindingAdapterPosition
-            )
 
-            return true
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            mediaAdapter?.onItemDismiss(viewHolder.bindingAdapterPosition)
-        }
-    })
+    private lateinit var mItemTouchHelper: ItemTouchHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,11 +35,55 @@ open class UploadManagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mBinding = FragmentUploadManagerBinding.inflate(inflater, container, false)
-        mBinding.root.tag = TAG
 
-        viewModel = ViewModelProvider(this)[MediaListViewModel::class.java]
-        observeData()
-        viewModel.setMedia(projectId, mStatuses)
+        mBinding.uploadList.layoutManager = LinearLayoutManager(activity)
+
+        val decorator = DividerItemDecoration(mBinding.uploadList.context, DividerItemDecoration.VERTICAL)
+        val divider = ContextCompat.getDrawable(mBinding.uploadList.context, R.drawable.divider)
+        if (divider != null) decorator.setDrawable(divider)
+
+        mBinding.uploadList.addItemDecoration(decorator)
+        mBinding.uploadList.setHasFixedSize(true)
+
+        mediaAdapter =
+            MediaAdapter(
+                activity,
+                { MediaViewHolder.SmallRow(it) },
+                Media.getByStatus(STATUSES, Media.ORDER_PRIORITY),
+                mBinding.uploadList,
+                object : MediaAdapter.OnStartDragListener {
+                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+                        if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
+                    }
+                })
+
+        mediaAdapter?.doImageFade = false
+        mBinding.uploadList.adapter = mediaAdapter
+
+        mItemTouchHelper = ItemTouchHelper(object : SwipeToDeleteCallback(context) {
+            override fun isEditingAllowed(): Boolean {
+                return mediaAdapter?.isEditMode ?: false
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                mediaAdapter?.onItemMove(
+                    viewHolder.bindingAdapterPosition,
+                    target.bindingAdapterPosition
+                )
+
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                mediaAdapter?.onItemDismiss(viewHolder.bindingAdapterPosition)
+            }
+        })
+
+        mItemTouchHelper.attachToRecyclerView(mBinding.uploadList)
 
         return mBinding.root
     }
@@ -69,47 +92,6 @@ open class UploadManagerFragment : Fragment() {
         super.onResume()
 
         refresh()
-    }
-
-    private fun observeData() {
-        viewModel.media.observe(viewLifecycleOwner) {
-            if (projectId != Project.EMPTY_ID) {
-                initLayout(it ?: listOf())
-            }
-        }
-    }
-
-    private fun initLayout(mediaList: List<Media>) {
-        val activity = activity ?: return
-
-        val rView = RecyclerView(activity)
-        rView.layoutManager = LinearLayoutManager(activity)
-
-        val decorator = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        val divider = ContextCompat.getDrawable(activity, R.drawable.divider)
-        if (divider != null) decorator.setDrawable(divider)
-
-        rView.addItemDecoration(decorator)
-        rView.setHasFixedSize(true)
-
-        mBinding.mediaContainer.addView(rView)
-
-        mediaAdapter =
-            MediaAdapter(
-                activity,
-                { MediaViewHolder.SmallRow(it) },
-                ArrayList(mediaList),
-                rView,
-                object : MediaAdapter.OnStartDragListener {
-                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
-                        if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
-                    }
-                })
-
-        mediaAdapter?.doImageFade = false
-        rView.adapter = mediaAdapter
-
-        mItemTouchHelper.attachToRecyclerView(rView)
     }
 
     open fun updateItem(mediaId: Long) {
@@ -125,24 +107,10 @@ open class UploadManagerFragment : Fragment() {
     }
 
     open fun refresh() {
-        mediaAdapter?.updateData(ArrayList(loadMedia()))
+        mediaAdapter?.updateData(Media.getByStatus(STATUSES, Media.ORDER_PRIORITY))
     }
 
     open fun getUploadingCounter(): Int {
-        return loadMedia().size
-    }
-
-    private fun loadMedia(): List<Media> {
-        return if (projectId == Project.EMPTY_ID) {
-            Media.getByStatus(mStatuses, Media.ORDER_PRIORITY)
-        } else {
-            Media.getByProject(projectId).filter {
-                mStatuses.contains(it.sStatus)
-            }
-        }
-    }
-
-    companion object {
-        const val TAG = "RecyclerViewFragment"
+        return mediaAdapter?.media?.size ?: 0
     }
 }

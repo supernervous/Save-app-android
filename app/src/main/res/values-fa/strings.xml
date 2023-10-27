@@ -42,9 +42,7 @@
 
     <string name="action_cancel">لغو</string>
 
-    <string name="status_waiting">در حال انتظار</string>
     <string name="status_error">خطا</string>
-    <string name="status_uploading">در حال بارگذاری</string>
     <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
 
     <string name="prefs_user_interface_title">ارائه</string>
@@ -59,7 +57,6 @@
     <string name="error_incorrect_username_or_password">نام کاربری یا گذرواژه‌ نادرست است</string>
     <string name="error_field_required">این فیلد ضروری می باشد</string>
     <string name="title_welcome">خوش آمدید</string>
-    <string name="status_uploaded">آپلود شد</string>
 
     <string name="action_privacy">حریم خصوصی</string>
     <string name="uploads">آپلودها</string>

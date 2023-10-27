@@ -43,9 +43,7 @@
 
     <string name="action_cancel">إلغاء</string>
 
-    <string name="status_waiting">‮في الانتظار</string>
     <string name="status_error">خطأ</string>
-    <string name="status_uploading">جارى الرفع</string>
     <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
 
     <string name="prefs_user_interface_title">التقديم</string>
@@ -60,7 +58,6 @@
     <string name="error_incorrect_username_or_password">اسم المستخدم أو كلمة السر غير صحيحة</string>
     <string name="error_field_required">هذا الحقل إلزامي</string>
     <string name="title_welcome">مرحباً</string>
-    <string name="status_uploaded">رفع</string>
 
     <string name="action_privacy">سياسة الخصوصية</string>
     <string name="uploads">الملفات المرفوعة</string>

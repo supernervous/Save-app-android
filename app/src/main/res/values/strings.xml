@@ -54,9 +54,7 @@
 
     <string name="action_cancel">Cancel</string>
 
-    <string name="status_waiting">Waiting</string>
     <string name="status_error">Error</string>
-    <string name="status_uploading">Uploading</string>
 
     <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">Transfer via the Tor Network only</string>
@@ -93,7 +91,6 @@
     <string name="importing_media">Importing media…</string>
 
     <string name="title_welcome">Welcome</string>
-    <string name="status_uploaded">Uploaded</string>
 
     <string name="action_privacy">Privacy Policy</string>
     <string name="action_about">About %s</string>

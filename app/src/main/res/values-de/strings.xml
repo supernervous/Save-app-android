@@ -34,9 +34,7 @@
 
     <string name="action_cancel">Abbrechen</string>
 
-    <string name="status_waiting">Warte</string>
     <string name="status_error">Fehler</string>
-    <string name="status_uploading">Hochladevorgang</string>
     <string name="prefs_prohibit_screenshots_title">Bildschirmfotos blockieren</string>
 
     <string name="prefs_theme_title">Aussehen</string>
@@ -55,7 +53,6 @@
     <string name="error_incorrect_username_or_password">Benutzername oder Passwort falsch</string>
     <string name="error_field_required">Dieses Feld darf nicht leer sein</string>
     <string name="title_welcome">Willkommen</string>
-    <string name="status_uploaded">Hochgeladen</string>
 
     <string name="action_privacy">Datenschutzbestimmungen</string>
     <string name="action_about">Über %s</string>

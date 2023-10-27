@@ -25,9 +25,7 @@
 
     <string name="action_cancel">Annuler</string>
 
-    <string name="status_waiting">En attente</string>
     <string name="status_error">Erreur</string>
-    <string name="status_uploading">Téléversement</string>
     <string name="prefs_prohibit_screenshots_title">Bloquer les captures d’écran</string>
 
     <string name="prefs_theme_title">Style</string>
@@ -41,7 +39,6 @@
     <string name="error_incorrect_username_or_password">Le nom d’utilisateur ou le mot de passe est erroné</string>
     <string name="error_field_required">Ce champ est obligatoire</string>
     <string name="title_welcome">Bienvenue</string>
-    <string name="status_uploaded">Téléversé</string>
 
     <string name="action_privacy">Politique de confidentialité</string>
     <string name="uploads">Téléversements</string>

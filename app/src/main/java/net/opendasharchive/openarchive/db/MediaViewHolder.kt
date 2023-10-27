@@ -324,15 +324,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             }
         }
         else if (media?.sStatus == Media.Status.Queued) {
-            sbTitle.append(mContext.getString(R.string.status_waiting))
-
             progress?.show()
             progressText?.text = NumberFormat.getPercentInstance().format(0)
             progressText?.show()
         }
         else if (media?.sStatus == Media.Status.Uploading) {
-            sbTitle.append(mContext.getString(R.string.status_uploading))
-
             val progress = if (media.contentLength > 0) (media.progress.toFloat() / media.contentLength.toFloat() * 100f).roundToInt() else 0
 
             this.progress?.progress = progress
@@ -341,8 +337,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             progressText?.show()
         }
         else if (media?.sStatus == Media.Status.Uploaded) {
-            sbTitle.append(mContext.getString(R.string.status_uploaded))
-
             progress?.hide()
             progressText?.hide()
         }
