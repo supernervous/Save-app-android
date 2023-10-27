@@ -117,8 +117,12 @@ open class MediaListFragment : Fragment() {
         mItemTouchHelper.attachToRecyclerView(rView)
     }
 
-    open fun updateItem(mediaId: Long, progress: Long) {
-        mediaAdapter?.updateItem(mediaId, progress)
+    open fun updateItem(mediaId: Long) {
+        mediaAdapter?.updateItem(mediaId)
+    }
+
+    open fun removeItem(mediaId: Long) {
+        mediaAdapter?.removeItem(mediaId)
     }
 
     fun setEditMode(isEditMode: Boolean) {
@@ -134,14 +138,12 @@ open class MediaListFragment : Fragment() {
     }
 
     private fun loadMedia(): List<Media> {
-        val media = if (projectId == Project.EMPTY_ID) {
+        return if (projectId == Project.EMPTY_ID) {
             Media.getByStatus(mStatuses, Media.ORDER_PRIORITY)
         } else {
-            Media.getByProject(projectId)
-        }
-
-        return media.filter {
-            it.sStatus == Media.Status.Uploading || it.sStatus == Media.Status.Queued
+            Media.getByProject(projectId).filter {
+                mStatuses.contains(it.sStatus)
+            }
         }
     }
 

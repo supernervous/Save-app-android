@@ -34,7 +34,7 @@
     <string name="title_welcome">歡迎</string>
     <string name="status_uploaded">已经上传</string>
     <string name="action_privacy">隱私政策</string>
-    <string name="title_uploads">上傳項目</string>
+    <string name="uploads">上傳項目</string>
     <string name="action_upload">上傳</string>
 
     <!-- Strings related to Settings -->

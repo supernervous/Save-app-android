@@ -44,8 +44,7 @@
     <string name="status_uploaded">Caricato</string>
 
     <string name="action_privacy">Privacy Policy</string>
-    <string name="title_uploads">Upload</string>
-    <string name="title_uploading">Caricamento…</string>
+    <string name="uploads">Upload</string>
 
     <string name="action_upload">Carica</string>
 

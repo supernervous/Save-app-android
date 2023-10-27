@@ -30,7 +30,7 @@
     <string name="error_field_required">Detta fält krävs</string>
     <string name="title_welcome">Välkommen</string>
     <string name="action_privacy">Integritetspolicy</string>
-    <string name="title_uploads">Uppladdningar</string>
+    <string name="uploads">Uppladdningar</string>
     <string name="action_upload">Ladda upp</string>
 
     <!-- Strings related to Settings -->

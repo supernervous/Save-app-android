@@ -63,8 +63,7 @@
     <string name="status_uploaded">رفع</string>
 
     <string name="action_privacy">سياسة الخصوصية</string>
-    <string name="title_uploads">الملفات المرفوعة</string>
-    <string name="title_uploading">تحميل…</string>
+    <string name="uploads">الملفات المرفوعة</string>
 
     <string name="action_upload">رفع</string>
 

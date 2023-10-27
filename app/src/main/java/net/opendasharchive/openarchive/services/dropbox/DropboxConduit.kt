@@ -8,20 +8,13 @@ import com.dropbox.core.v2.files.FileMetadata
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 
-class DropboxConduit(
-    media: Media,
-    context: Context,
-    listener: ConduitListener? = null,
-    jobId: String?
-) : Conduit(media, context, listener, jobId) {
+class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
     companion object {
         const val NAME = "Dropbox"
@@ -56,17 +49,17 @@ class DropboxConduit(
                         val finalMediaPath = result.pathDisplay
                         mMedia.serverUrl = finalMediaPath
                         mMedia.save()
-                        jobSucceeded(finalMediaPath)
+                        jobSucceeded()
                         uploadMetadata(client, projectName, folderName, fileName)
                     }
                 }
 
-                override fun onError(e: Exception?) {
-                    jobFailed(e, -1, e?.message)
+                override fun onError(e: Exception) {
+                    jobFailed(e)
                 }
 
                 override fun onProgress(progress: Long) {
-                    jobProgress(progress, "")
+                    jobProgress(progress)
                 }
             })
 
@@ -75,9 +68,7 @@ class DropboxConduit(
             return true
         }
         catch (e: Exception) {
-            Timber.d(e)
-
-            jobFailed(e, -1, "Failed primary media upload")
+            jobFailed(e)
 
             return false
         }
@@ -104,7 +95,7 @@ class DropboxConduit(
 
             var task = UploadFileTask(mContext, client, object : UploadFileTask.Callback {
                     override fun onUploadComplete(result: FileMetadata?) {}
-                    override fun onError(e: Exception?) {}
+                    override fun onError(e: Exception) {}
                     override fun onProgress(progress: Long) {}
                 })
 
@@ -116,7 +107,7 @@ class DropboxConduit(
                 task = UploadFileTask(mContext, client,
                     object : UploadFileTask.Callback {
                         override fun onUploadComplete(result: FileMetadata?) {}
-                        override fun onError(e: Exception?) {}
+                        override fun onError(e: Exception) {}
                         override fun onProgress(progress: Long) {}
                     })
 
@@ -124,7 +115,7 @@ class DropboxConduit(
             }
         }
         catch (e: IOException) {
-            jobFailed(e, -1, metadataFileName)
+            jobFailed(e)
         }
     }
 }

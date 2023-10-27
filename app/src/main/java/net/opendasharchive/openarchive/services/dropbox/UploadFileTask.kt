@@ -83,16 +83,16 @@ class UploadFileTask(
                 }
                 catch (e: DbxException) {
                     mException = e
-                    mCallback.onError(mException)
+                    mCallback.onError(e)
                 }
                 catch (e: IOException) {
                     mException = e
-                    mCallback.onError(mException)
+                    mCallback.onError(e)
                 }
             }
             catch (e: Exception) {
                 mException = e
-                mCallback.onError(mException)
+                mCallback.onError(e)
             }
         }
     }
@@ -224,7 +224,7 @@ class UploadFileTask(
 
     interface Callback {
         fun onUploadComplete(result: FileMetadata?)
-        fun onError(e: Exception?)
+        fun onError(e: Exception)
         fun onProgress(progress: Long)
     }
 }

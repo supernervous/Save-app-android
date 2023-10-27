@@ -3,21 +3,17 @@ package net.opendasharchive.openarchive.publish
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import net.opendasharchive.openarchive.CleanInsightsManager
-import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.services.Conduit
 import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
@@ -38,7 +34,7 @@ class UploadManagerActivity : BaseActivity() {
         setContentView(mBinding.root)
 
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = getString(R.string.title_uploads)
+        supportActionBar?.title = getString(R.string.uploads)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         projectId = intent.getLongExtra(PROJECT_ID, Project.EMPTY_ID)
@@ -49,51 +45,47 @@ class UploadManagerActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         mFrag?.refresh()
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            mMessageReceiver,
-            IntentFilter(MainActivity.INTENT_FILTER_NAME)
-        )
+
+        BroadcastManager.register(this, mMessageReceiver)
     }
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
+
+        BroadcastManager.unregister(this, mMessageReceiver)
     }
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.d("Updating media")
 
-            val status = intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)
+            val mediaId = BroadcastManager.getMediaId(intent)
 
-            if (status == Media.Status.Uploaded.id) {
-                Handler(Looper.getMainLooper()).post {
-                    val progressToolbarTitle: String = if (mFrag!!.getUploadingCounter() == 0) {
-                        getString(R.string.title_uploads)
-                    } else {
-                        getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
+            if (mediaId > -1) {
+                val media = Media.get(mediaId)
+
+                if (media?.sStatus == Media.Status.Uploaded) {
+                    mFrag?.removeItem(mediaId)
+                }
+                else {
+                    mFrag?.updateItem(mediaId)
+                }
+
+                if (media?.sStatus == Media.Status.Error) {
+                    CleanInsightsManager.getConsent(this@UploadManagerActivity) {
+                        // TODO: Record metadata. See iOS implementation.
+                        CleanInsightsManager.measureEvent("upload", "upload_failed")
                     }
-                    supportActionBar!!.title = progressToolbarTitle
-                }
-                mFrag!!.refresh()
-            }
-            else if (status == Media.Status.Queued.id) {
-                Handler(Looper.getMainLooper()).post {
-                    supportActionBar!!.title =
-                        getString(R.string.title_uploading) + " (" + mFrag!!.getUploadingCounter() + " left)"
                 }
             }
-            else if (status == Media.Status.Uploading.id) {
-                val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
-                val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
-                if (mediaId != -1L) {
-                    mFrag!!.updateItem(mediaId, progress)
-                }
-            }
-            else if (status == Media.Status.Error.id) {
-                CleanInsightsManager.getConsent(this@UploadManagerActivity) {
-                    // TODO: Record metadata. See iOS implementation.
-                    CleanInsightsManager.measureEvent("upload", "upload_failed")
+
+            Handler(Looper.getMainLooper()).post {
+                val count = mFrag?.getUploadingCounter() ?: 0
+
+                supportActionBar?.title = if (count < 1) {
+                    getString(R.string.uploads)
+                } else {
+                    getString(R.string.uploading_left, count)
                 }
             }
         }

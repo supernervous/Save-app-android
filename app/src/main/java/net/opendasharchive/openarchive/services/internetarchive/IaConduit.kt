@@ -7,7 +7,6 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -15,7 +14,7 @@ import okio.BufferedSink
 import java.io.File
 import java.io.IOException
 
-class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobId: String?) : Conduit(media, context, listener, jobId) {
+class IaConduit(media: Media, context: Context) : Conduit(media, context) {
 
     private var mContinueUpload = true
 
@@ -66,7 +65,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             return true
         }
         catch (e: Exception) {
-            jobFailed(e, 500, e.localizedMessage)
+            jobFailed(e)
         }
 
         return false
@@ -101,8 +100,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
         val requestBody = getRequestBodyMetaData(
             uploadFile,
             Uri.fromFile(uploadFile).toString(),
-            "texts".toMediaTypeOrNull(),
-            basePath
+            "texts".toMediaTypeOrNull()
         )
 
         put("$ARCHIVE_API_ENDPOINT/$basePath/${uploadFile.name}",
@@ -120,7 +118,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
                 var lastBytes: Long = 0
                 override fun transferred(bytes: Long) {
                     if (bytes > lastBytes) {
-                        jobProgress(bytes, null)
+                        jobProgress(bytes)
                         lastBytes = bytes
                     }
                 }
@@ -132,13 +130,13 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
                 override fun transferComplete() {
                     val finalPath = ARCHIVE_DETAILS_ENDPOINT + basePath
                     media.serverUrl = finalPath
-                    jobSucceeded(finalPath)
+                    jobSucceeded()
                 }
             })
     }
 
     /// request body for meta data
-    private fun getRequestBodyMetaData(media: File, mediaUri: String, mediaType: MediaType?, basePath: String): RequestBody {
+    private fun getRequestBodyMetaData(media: File, mediaUri: String, mediaType: MediaType?): RequestBody {
         return RequestBodyUtil.create(
             mContext.contentResolver,
             Uri.parse(mediaUri),
@@ -149,7 +147,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
 
                 override fun transferred(bytes: Long) {
                     if (bytes > lastBytes) {
-                        jobProgress(bytes, null)
+                        jobProgress(bytes)
                         lastBytes = bytes
                     }
                 }
@@ -159,8 +157,7 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
                 }
 
                 override fun transferComplete() {
-                    val finalPath = ARCHIVE_DETAILS_ENDPOINT + basePath
-                    jobSucceeded(finalPath)
+                    jobSucceeded()
                 }
             })
     }
@@ -260,15 +257,15 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
             .newCall(request)
             .enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    jobFailed(e, 500, e.localizedMessage)
+                    jobFailed(e)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        jobSucceeded(response.request.toString())
+                        jobSucceeded()
                     }
                     else {
-                        jobFailed(null, response.code, response.message)
+                        jobFailed(Exception("${response.code} ${response.message}"))
                     }
                 }
             })

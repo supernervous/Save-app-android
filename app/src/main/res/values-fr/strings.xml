@@ -44,8 +44,7 @@
     <string name="status_uploaded">Téléversé</string>
 
     <string name="action_privacy">Politique de confidentialité</string>
-    <string name="title_uploads">Téléversements</string>
-    <string name="title_uploading">Téléversement…</string>
+    <string name="uploads">Téléversements</string>
 
     <string name="action_upload">Téléversement</string>
 

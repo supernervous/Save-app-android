@@ -97,8 +97,7 @@
     <string name="browse_existing">Var olanlara göz at</string>
     <string name="title_activity_upload_manager">Yükleme yöneticisi</string>
 
-    <string name="title_uploads">Yüklemeler</string>
-    <string name="title_uploading">Yükleniyor…</string>
+    <string name="uploads">Yüklemeler</string>
 
     <string name="action_upload">Yükle</string>
 

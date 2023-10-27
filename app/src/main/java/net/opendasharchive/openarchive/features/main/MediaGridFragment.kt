@@ -113,8 +113,10 @@ class MediaGridFragment : MediaListFragment() {
         return holder.root
     }
 
-    override fun updateItem(mediaId: Long, progress: Long) {
-        for (adapter in mAdapters.values) adapter.updateItem(mediaId, progress)
+    override fun updateItem(mediaId: Long) {
+        for (adapter in mAdapters.values) {
+            if (adapter.updateItem(mediaId)) break
+        }
     }
 
     override fun refresh() {

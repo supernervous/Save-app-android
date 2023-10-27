@@ -63,8 +63,7 @@
     <string name="status_uploaded">Subido</string>
 
     <string name="action_privacy">Política de privacidad</string>
-    <string name="title_uploads">Subidas</string>
-    <string name="title_uploading">Subiendo…</string>
+    <string name="uploads">Subidas</string>
 
     <string name="action_upload">Subir</string>
 

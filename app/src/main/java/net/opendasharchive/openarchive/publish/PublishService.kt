@@ -149,9 +149,9 @@ class PublishService : Service(), Runnable {
         media.serverUrl = serverUrl
         media.sStatus = Media.Status.Uploading
         media.save()
-        UploaderListener.notifyMediaUpdated(media, this)
+        BroadcastManager.advertiseChange(this, media.id)
 
-        val conduit = Conduit.get(media, this, UploaderListener(media, this.applicationContext), null)
+        val conduit = Conduit.get(media, this)
             ?: return false
 
         CleanInsightsManager.measureEvent("upload", "try_upload", media.space?.tType?.friendlyName)

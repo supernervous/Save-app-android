@@ -35,8 +35,7 @@
     <string name="title_welcome">Welkom</string>
     <string name="status_uploaded">Geüpload</string>
     <string name="action_privacy">Privacybeleid</string>
-    <string name="title_uploads">Uploads</string>
-    <string name="title_uploading">Uploaden…</string>
+    <string name="uploads">Uploads</string>
 
     <string name="action_upload">Uploaden</string>
 

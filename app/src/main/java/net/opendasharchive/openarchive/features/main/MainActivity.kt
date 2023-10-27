@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,7 +11,6 @@ import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -27,16 +25,15 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
+import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
-import net.opendasharchive.openarchive.services.Conduit
+import net.opendasharchive.openarchive.publish.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
@@ -56,10 +53,6 @@ import timber.log.Timber
 import java.text.NumberFormat
 
 class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener {
-
-    companion object {
-        const val INTENT_FILTER_NAME = "MEDIA_UPDATED"
-    }
 
     private var mMenuDelete: MenuItem? = null
 
@@ -93,22 +86,10 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             // Get extra data included in the Intent
             Timber.d("Updating media")
 
-            when (intent.getIntExtra(Conduit.MESSAGE_KEY_STATUS, -1)) {
-                Media.Status.Uploaded.id -> {
-                    if (mCurrentItem < mPagerAdapter.settingsIndex) {
-                        mCurrentFragment?.refresh()
-                    }
-                }
+            val mediaId = BroadcastManager.getMediaId(intent)
 
-                Media.Status.Uploading.id -> {
-                    val mediaId = intent.getLongExtra(Conduit.MESSAGE_KEY_MEDIA_ID, -1)
-
-                    if (mediaId != -1L && mCurrentItem < mPagerAdapter.settingsIndex) {
-                        val progress = intent.getLongExtra(Conduit.MESSAGE_KEY_PROGRESS, -1)
-
-                        mCurrentFragment?.updateItem(mediaId, progress)
-                    }
-                }
+            if (mediaId != -1L && mCurrentItem < mPagerAdapter.settingsIndex) {
+                mCurrentFragment?.updateItem(mediaId)
             }
         }
     }
@@ -259,8 +240,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     override fun onResume() {
         super.onResume()
 
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mMessageReceiver, IntentFilter(INTENT_FILTER_NAME))
+        BroadcastManager.register(this, mMessageReceiver)
 
         refreshSpace()
 
@@ -279,7 +259,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     override fun onPause() {
         super.onPause()
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver)
+        BroadcastManager.unregister(this, mMessageReceiver)
     }
 
     override fun onNewIntent(intent: Intent?) {

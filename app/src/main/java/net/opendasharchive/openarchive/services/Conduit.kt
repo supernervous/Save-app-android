@@ -2,12 +2,11 @@ package net.opendasharchive.openarchive.services
 
 import android.content.Context
 import android.net.Uri
-import android.os.Bundle
-import android.os.Message
 import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.publish.BroadcastManager
 import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
@@ -21,9 +20,7 @@ import java.io.IOException
 
 abstract class Conduit(
     protected val mMedia: Media,
-    protected val mContext: Context,
-    private val mListener: ConduitListener?, // this is whatever the app wants it to be, we'll pass it back with our callbacks
-    private val mJobId: String?
+    protected val mContext: Context
 ) {
 
     /**
@@ -75,70 +72,43 @@ abstract class Conduit(
      * build an embed tag, etc. for some sites this might be a URL
      *
      */
-    fun jobSucceeded(result: String?) {
-        val data = Bundle()
-        data.putInt(MESSAGE_KEY_TYPE, MESSAGE_TYPE_SUCCESS)
-        data.putString(MESSAGE_KEY_JOB_ID, mJobId)
-        data.putString(MESSAGE_KEY_RESULT, result)
+    fun jobSucceeded() {
+        mMedia.progress = 100
+        mMedia.sStatus = Media.Status.Uploaded
+        mMedia.save()
 
-        val msg = Message()
-        msg.data = data
-
-        mListener?.success(msg)
+        BroadcastManager.advertiseChange(mContext, mMedia.id)
     }
 
-    fun jobFailed(exception: Exception?, errorCode: Int, errorMessage: String?) {
-        val data = Bundle()
-        data.putInt(MESSAGE_KEY_TYPE, MESSAGE_TYPE_FAILURE)
-        data.putString(MESSAGE_KEY_JOB_ID, mJobId)
-        data.putInt(MESSAGE_KEY_CODE, errorCode)
-        data.putString(MESSAGE_KEY_MESSAGE, errorMessage)
-        data.putSerializable("exception", exception)
+    fun jobFailed(exception: Throwable) {
+        mMedia.statusMessage = exception.localizedMessage ?: exception.message ?: exception.toString()
+        mMedia.sStatus = Media.Status.Error
+        mMedia.save()
 
-        val msg = Message()
-        msg.data = data
+        Timber.d(exception)
 
-        mListener?.failure(msg)
+        BroadcastManager.advertiseChange(mContext, mMedia.id)
     }
 
-    fun jobProgress(contentLengthUploaded: Long, message: String?) {
-        val data = Bundle()
-        data.putInt(MESSAGE_KEY_TYPE, MESSAGE_TYPE_PROGRESS)
-        data.putString(MESSAGE_KEY_JOB_ID, mJobId)
-        data.putLong(MESSAGE_KEY_PROGRESS, contentLengthUploaded)
-        data.putString(MESSAGE_KEY_MESSAGE, message)
+    fun jobProgress(uploadedBytes: Long) {
+        mMedia.progress = uploadedBytes
+        mMedia.save()
 
-        val msg = Message()
-        msg.data = data
-
-        mListener?.progress(msg)
+        BroadcastManager.advertiseChange(mContext, mMedia.id)
     }
 
     companion object {
-        const val MESSAGE_TYPE_SUCCESS = 23423430
-        const val MESSAGE_TYPE_FAILURE = 23423431
-        const val MESSAGE_TYPE_PROGRESS = 23423432
-        const val MESSAGE_KEY_TYPE = "message_type"
-        const val MESSAGE_KEY_JOB_ID = "job_id"
-        const val MESSAGE_KEY_CODE = "code"
-        const val MESSAGE_KEY_MESSAGE = "message"
-        const val MESSAGE_KEY_RESULT = "result"
-        const val MESSAGE_KEY_PROGRESS = "progress"
-        const val MESSAGE_KEY_STATUS = "status"
-        const val MESSAGE_KEY_MEDIA_ID = "mediaId"
-
         const val FOLDER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'GMT'ZZZZZ"
 
 
         @JvmStatic
-        fun get(media: Media, context: Context, listener: ConduitListener?, jobId: String?
-        ): Conduit? {
+        fun get(media: Media, context: Context): Conduit? {
             return when (media.project?.space?.tType) {
-                Space.Type.INTERNET_ARCHIVE -> IaConduit(media, context, listener, jobId)
+                Space.Type.INTERNET_ARCHIVE -> IaConduit(media, context)
 
-                Space.Type.WEBDAV -> WebDavConduit(media, context, listener, jobId)
+                Space.Type.WEBDAV -> WebDavConduit(media, context)
 
-                Space.Type.DROPBOX -> DropboxConduit(media, context, listener, jobId)
+                Space.Type.DROPBOX -> DropboxConduit(media, context)
 
                 else -> null
             }

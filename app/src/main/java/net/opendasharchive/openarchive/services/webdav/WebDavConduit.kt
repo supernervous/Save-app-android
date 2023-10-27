@@ -9,7 +9,6 @@ import com.thegrizzlylabs.sardineandroid.SardineListener
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
-import net.opendasharchive.openarchive.services.ConduitListener
 import net.opendasharchive.openarchive.services.SaveClient
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -21,10 +20,8 @@ import java.util.*
 
 class WebDavConduit(
     media: Media,
-    context: Context,
-    listener: ConduitListener?,
-    jobId: String?
-) : Conduit(media, context, listener, jobId) {
+    context: Context
+) : Conduit(media, context) {
 
     private var mChunkStartIdx: Int = 0
 
@@ -88,7 +85,7 @@ class WebDavConduit(
 
                         override fun transferred(bytes: Long) {
                             if (bytes > lastBytes) {
-                                jobProgress(bytes, null)
+                                jobProgress(bytes)
                                 lastBytes = bytes
                             }
                         }
@@ -99,12 +96,12 @@ class WebDavConduit(
                     })
 
                 mMedia.serverUrl = finalMediaPath
-                jobSucceeded(finalMediaPath)
+                jobSucceeded()
                 uploadMetadata(client, projectFolderPath, fileName)
             }
             else {
                 mMedia.serverUrl = finalMediaPath
-                jobSucceeded(finalMediaPath)
+                jobSucceeded()
             }
 
             return true
@@ -112,7 +109,7 @@ class WebDavConduit(
         catch (e: IOException) {
             Timber.w("Failed primary media upload of \"%s\": %s", finalMediaPath, e.message)
 
-            jobFailed(e, -1, finalMediaPath)
+            jobFailed(e)
 
             return false
         }
@@ -194,7 +191,7 @@ class WebDavConduit(
                         mMedia.mimeType,
                         object : SardineListener {
                             override fun transferred(bytes: Long) {
-                                jobProgress(mChunkStartIdx.toLong() + bytes, null)
+                                jobProgress(mChunkStartIdx.toLong() + bytes)
                             }
 
                             override fun continueUpload(): Boolean {
@@ -203,7 +200,7 @@ class WebDavConduit(
                         })
                 }
 
-                jobProgress(totalBytes.toLong(), null)
+                jobProgress(totalBytes.toLong())
                 mChunkStartIdx = totalBytes + 1
             }
 
@@ -238,7 +235,7 @@ class WebDavConduit(
             client.move("$tmpMediaPath/.file", finalMediaPath)
             mMedia.serverUrl = finalMediaPath
 
-            jobSucceeded(finalMediaPath)
+            jobSucceeded()
 
             uploadMetadata(client, projectFolderPath, fileName)
 
@@ -247,7 +244,7 @@ class WebDavConduit(
         catch (e: IOException) {
             client.delete(tmpMediaPath)
 
-            jobFailed(e, -1, tmpMediaPath)
+            jobFailed(e)
 
             false
         }
@@ -273,7 +270,7 @@ class WebDavConduit(
             return true
         }
         catch (e: IOException) {
-            jobFailed(e, -1, urlMeta)
+            jobFailed(e)
         }
 
         return false

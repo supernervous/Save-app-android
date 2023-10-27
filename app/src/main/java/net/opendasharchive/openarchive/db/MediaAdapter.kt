@@ -100,14 +100,28 @@ class MediaAdapter(
         }
     }
 
-    fun updateItem(mediaId: Long, progress: Long): Boolean {
-        val item = media.firstOrNull { it.id == mediaId } ?: return false
+    fun updateItem(mediaId: Long): Boolean {
+        val idx = media.indexOfFirst { it.id == mediaId }
+        if (idx < 0) return false
 
-        item.sStatus = Media.Status.Uploading
-        item.progress = progress
-        item.save()
+        val item = Media.get(mediaId) ?: return false
 
-        notifyItemChanged(media.indexOf(item))
+        media[idx] = item
+
+        notifyItemChanged(idx)
+
+        return true
+    }
+
+    fun removeItem(mediaId: Long): Boolean {
+        val idx = media.indexOfFirst { it.id == mediaId }
+        if (idx < 0) return false
+
+        media.removeAt(idx)
+
+        reorder()
+
+        notifyItemRemoved(idx)
 
         return true
     }
