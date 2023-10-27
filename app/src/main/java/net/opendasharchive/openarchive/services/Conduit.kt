@@ -33,8 +33,6 @@ abstract class Conduit(
     @Throws(IOException::class)
     abstract suspend fun upload(): Boolean
 
-    abstract suspend fun delete(bucketName: String?): Boolean
-
     open fun cancel() {}
 
 

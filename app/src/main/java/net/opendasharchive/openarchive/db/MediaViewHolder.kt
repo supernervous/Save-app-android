@@ -200,11 +200,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             selectedIndicator?.hide()
         }
 
-        image.alpha = if (
-            media?.sStatus == Media.Status.Published
-            || media?.sStatus == Media.Status.Uploaded
-            || !doImageFade)
-            1f else 0.5f
+        image.alpha = if (media?.sStatus == Media.Status.Uploaded || !doImageFade) 1f else 0.5f
 
         if (media?.mimeType?.startsWith("image") == true) {
             val progress = CircularProgressDrawable(mContext)
@@ -341,7 +337,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
             this.progress?.progress = progress
             this.progress?.show()
-            progressText?.text = "$progress%"
+            progressText?.text = NumberFormat.getPercentInstance().format(progress.toFloat() / 100f)
             progressText?.show()
         }
         else if (media?.sStatus == Media.Status.Uploaded) {

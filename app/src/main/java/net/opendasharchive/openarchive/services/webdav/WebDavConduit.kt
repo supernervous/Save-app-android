@@ -118,20 +118,6 @@ class WebDavConduit(
         }
     }
 
-    override suspend fun delete(bucketName: String?): Boolean {
-        val space = mMedia.space ?: return false
-
-        return try {
-            SaveClient.getSardine(mContext,space).delete(bucketName)
-
-            true
-        } catch (e: IOException) {
-            Timber.e(e)
-
-            false
-        }
-    }
-
     override fun cancel() {
         mContinueUpload = false
     }

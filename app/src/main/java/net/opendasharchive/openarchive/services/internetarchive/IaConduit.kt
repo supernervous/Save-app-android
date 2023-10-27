@@ -76,20 +76,6 @@ class IaConduit(media: Media, context: Context, listener: ConduitListener?, jobI
         mContinueUpload = false
     }
 
-    override suspend fun delete(bucketName: String?): Boolean {
-        val builder = Request.Builder()
-            .delete()
-            .url(mMedia.serverUrl)
-            .addHeader("Accept", "*/*")
-            .addHeader("x-archive-cascade-delete", "1")
-            .addHeader("x-archive-keep-old-version", "0")
-            .addHeader("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
-
-        execute(builder.build())
-
-        return true
-    }
-
     @Throws(IOException::class)
     private suspend fun uploadMetaData(content: String, basePath: String, fileName: String) {
         val requestBody = object : RequestBody() {

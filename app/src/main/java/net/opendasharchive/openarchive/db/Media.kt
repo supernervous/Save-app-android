@@ -39,9 +39,11 @@ data class Media(
         New(0),
         Local(1),
         Queued(2),
+        @Deprecated("Actually unused.", ReplaceWith("Uploaded"))
         Published(3),
         Uploading(4),
         Uploaded(5),
+        @Deprecated("Save does not do deletion.")
         DeleteRemote(7),
         Error(9),
     }

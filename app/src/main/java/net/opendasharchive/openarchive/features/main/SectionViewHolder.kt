@@ -44,10 +44,7 @@ data class SectionViewHolder(
                     || it.sStatus == Media.Status.Uploading
                     || it.sStatus == Media.Status.Error } != null)
         {
-            val uploaded = media.filter {
-                it.sStatus == Media.Status.Uploaded
-                        || it.sStatus == Media.Status.DeleteRemote
-                        || it.sStatus == Media.Status.Published }.size
+            val uploaded = media.filter { it.sStatus == Media.Status.Uploaded }.size
 
             count.text = count.context.getString(R.string.counter, uploaded, media.size)
         }

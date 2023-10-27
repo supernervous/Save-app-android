@@ -83,11 +83,6 @@ class DropboxConduit(
         }
     }
 
-
-    override suspend fun delete(bucketName: String?): Boolean {
-        return true
-    }
-
     override fun cancel() {
         mContinueUpload = false
         mTask?.cancel()

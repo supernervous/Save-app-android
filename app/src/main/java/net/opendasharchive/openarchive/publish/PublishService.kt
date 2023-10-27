@@ -129,13 +129,6 @@ class PublishService : Service(), Runnable {
                     if (!mKeepUploading) return false // Time to end this.
                 }
             }
-
-            results = Media.getByStatus(listOf(Media.Status.DeleteRemote))
-
-            //iterate through them, and upload one by one
-            for (mediaDelete in results) {
-                deleteMedia()
-            }
         }
 
         mRunning = false
@@ -170,10 +163,6 @@ class PublishService : Service(), Runnable {
         mConduits.remove(conduit)
 
         return true
-    }
-
-    private fun deleteMedia() {
-
     }
 
     private fun isNetworkAvailable(requireWifi: Boolean): Boolean {
