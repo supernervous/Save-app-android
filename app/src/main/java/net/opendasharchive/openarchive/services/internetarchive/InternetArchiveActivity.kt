@@ -369,7 +369,8 @@ class InternetArchiveActivity : BaseActivity() {
     private fun showFirstTimeIa() {
         if (Prefs.iaHintShown) return
 
-        AlertHelper.show(this, R.string.popup_ia_desc, R.string.popup_ia_title)
+        var f = IaLearnHowFragment()
+        f.show(supportFragmentManager, f.tag)
 
         Prefs.iaHintShown = true
     }
