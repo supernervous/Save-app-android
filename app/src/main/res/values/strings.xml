@@ -147,9 +147,6 @@
     <string name="popup_flag_title">Flag Significant Content</string>
     <string name="popup_flag_desc">When you flag an item, it is routed into a subfolder within the chosen project folder on the private server.</string>
 
-    <string name="popup_ia_title">Internet Archive</string>
-    <string name="popup_ia_desc">You will need to log into or create an Internet Archive account in order to send and preserve Save media at the Internet Archive</string>
-
     <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Set the same Creative Commons license for ALL folders on this server.</string>
     <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Set unique Creative Commons licenses for EACH INDIVIDUAL folder on this server.</string>
 
@@ -222,6 +219,7 @@
         <a href="#">Install Orbot</a> to enable advanced network security.]]>
     </string>
     <string name="next">Next</string>
+    <string name="done">Done</string>
     <string name="lorem_ipsum_short_paragraph">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -254,4 +252,9 @@
     <string name="skip">Skip</string>
     <string name="add_images_or_video">Add Images or Video</string>
     <string name="add_files">Add Files</string>
+
+    <string name="ia_learn_how_title">How to Acquire Keys in 3 easy steps</string>
+    <string name="ia_learn_how_summary_step_1">Step 1: Log into the Internet Archive. If you don\'t have an account, create one.</string>
+    <string name="ia_learn_how_summary_step_2">Step 2: If you are creating a new account, verify your email.</string>
+    <string name="ia_learn_how_summary_step_3">Step 3: Generate your API keys by selecting the box and it will auto load in the app!</string>
 </resources>
