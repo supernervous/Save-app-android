@@ -65,28 +65,17 @@ class MediaAdapter(
 
                     Media.Status.Error -> {
                         mActivity.get()?.let {
-                            val item = media[pos]
-
-                            AlertHelper.show(it, item.statusMessage,
+                            AlertHelper.show(it, media[pos].statusMessage,
                                 R.string.upload_unsuccessful, R.drawable.ic_error, listOf(
                                     AlertHelper.positiveButton(R.string.retry) { _, _ ->
-                                        item.sStatus = Media.Status.Queued
-                                        item.statusMessage = ""
-                                        item.save()
+                                        media[pos].sStatus = Media.Status.Queued
+                                        media[pos].statusMessage = ""
+                                        media[pos].save()
 
-                                        updateItem(item.id)
+                                        updateItem(media[pos].id)
                                     },
                                     AlertHelper.negativeButton(R.string.remove) { _, _ ->
-                                        val collection = item.collection
-
-                                        if (collection?.media?.isEmpty() == true) {
-                                            collection.delete()
-                                        }
-                                        else {
-                                            item.delete()
-                                        }
-
-                                        BroadcastManager.advertiseDelete(it, item.id)
+                                        deleteItem(pos)
                                     },
                                     AlertHelper.neutralButton()
                                 )
@@ -212,17 +201,27 @@ class MediaAdapter(
         notifyItemMoved(oldPos, newPos)
     }
 
-    fun onItemDismiss(pos: Int) {
-        if (!isEditMode || pos < 0 || pos >= media.size) return
+    fun deleteItem(pos: Int) {
+        if (pos < 0 || pos >= media.size) return
 
         val item = media[pos]
 
-        media.removeAt(pos)
+        val collection = item.collection
 
-        item.sStatus = Media.Status.Local
-        item.save()
+        // Delete collection along with the item, if the collection
+        // would become empty.
+        if ((collection?.size ?: 0) < 2) {
+            collection?.delete()
+        }
+        else {
+            item.delete()
+        }
 
-        notifyItemRemoved(pos)
+        removeItem(item.id)
+
+        mActivity.get()?.let {
+            BroadcastManager.advertiseDelete(it, item.id)
+        }
     }
 
 

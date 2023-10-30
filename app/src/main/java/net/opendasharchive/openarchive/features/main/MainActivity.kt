@@ -382,7 +382,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         if (project != null) {
             mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
-                project.collections.map { it.media.count() }
+                project.collections.map { it.size }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolderCount.show()
 

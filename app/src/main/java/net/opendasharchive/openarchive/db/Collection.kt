@@ -24,8 +24,11 @@ data class Collection(
         }
     }
 
-    val media
+    val media: MutableList<Media>
         get() = find(Media::class.java, "collection_id = ?", arrayOf(id.toString()), null, "status, id DESC", null)
+
+    val size: Long
+        get() = count<Media>(Media::class.java, "collection_id = ?", arrayOf(id.toString()))
 
     val isUploading
         get() = media.firstOrNull { it.isUploading } != null

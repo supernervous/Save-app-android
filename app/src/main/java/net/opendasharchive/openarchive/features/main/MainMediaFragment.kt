@@ -66,11 +66,15 @@ class MainMediaFragment : Fragment() {
     fun refresh() {
         mCollections = ArrayList(Collection.getByProject(mProjectId))
 
-        val toDelete = ArrayList<Long>()
+        // Remove all sections, which' collections don't exist anymore.
+        val toDelete = mAdapters.keys.filter {
+                id -> mCollections.firstOrNull { it.id == id } == null
+        }.toMutableList()
 
         mCollections.forEachIndexed { index, collection ->
             val media = collection.media
 
+            // Also remove all empty collections.
             if (media.isEmpty()) {
                 toDelete.add(collection.id)
                 return@forEachIndexed
