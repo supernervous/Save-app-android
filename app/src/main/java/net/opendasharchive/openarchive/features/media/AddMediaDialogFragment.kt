@@ -34,7 +34,7 @@ class AddMediaDialogFragment : DialogFragment() {
         mBinding = FragmentAddMediaDialogBinding.inflate(inflater)
 
         mBinding.photoGallery.setOnClickListener {
-            setFragmentResult(RESP_PHOTO_GALERY, bundleOf())
+            setFragmentResult(RESP_PHOTO_GALLERY, bundleOf())
             dismiss()
         }
         mBinding.files.setOnClickListener {
@@ -46,7 +46,7 @@ class AddMediaDialogFragment : DialogFragment() {
     }
 
     companion object {
-        public val RESP_PHOTO_GALERY = "add_media_dialog_fragment_photo_gallery_resp"
-        public val RESP_FILES = "add_media_dialog_fragment_files_resp"
+        const val RESP_PHOTO_GALLERY = "add_media_dialog_fragment_photo_gallery_resp"
+        const val RESP_FILES = "add_media_dialog_fragment_files_resp"
     }
 }

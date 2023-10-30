@@ -220,7 +220,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
                 true
             }
 
-            supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_PHOTO_GALERY, this) {
+            supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_PHOTO_GALLERY, this) {
                 _, _ -> addClicked()
             }
             supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_FILES, this) {
