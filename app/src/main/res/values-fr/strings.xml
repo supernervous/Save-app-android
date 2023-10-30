@@ -25,7 +25,7 @@
 
     <string name="action_cancel">Annuler</string>
 
-    <string name="status_error">Erreur</string>
+    <string name="error">Erreur</string>
     <string name="prefs_prohibit_screenshots_title">Bloquer les captures d’écran</string>
 
     <string name="prefs_theme_title">Style</string>
@@ -54,7 +54,7 @@
     <string name="edit">Modifier</string>
     <string name="menu_done">Terminé</string>
     <string name="remove_from_app">Supprimer de l’appli</string>
-    <string name="action_remove">Supprimer</string>
+    <string name="remove">Supprimer</string>
     <string name="action_archive_project">Archiver le projet</string>
     <string name="action_unarchive_project">Désarchiver le projet</string>
     <string name="access_key">Clé d’accès</string>

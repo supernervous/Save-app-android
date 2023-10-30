@@ -54,7 +54,7 @@
 
     <string name="action_cancel">Cancel</string>
 
-    <string name="status_error">Error</string>
+    <string name="error">Error</string>
 
     <string name="prefs_use_tor_title">Turn on Onion Routing</string>
     <string name="prefs_use_tor_summary">Transfer via the Tor Network only</string>
@@ -127,7 +127,7 @@
     <string name="menu_done">Done</string>
     <string name="remove_from_app">Remove from App</string>
     <string name="action_remove_project">Are you sure you want to remove your project?</string>
-    <string name="action_remove">Remove</string>
+    <string name="remove">Remove</string>
     <string name="action_archive_project">Archive Project</string>
     <string name="action_unarchive_project">Unarchive Project</string>
     <string name="IA_login_error">Please login with valid Internet Archive credentials.</string>

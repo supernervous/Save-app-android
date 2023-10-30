@@ -193,7 +193,7 @@ class InternetArchiveActivity : BaseActivity() {
                 if (exception.message?.startsWith("401") == true) {
                     showError(getString(R.string.error_incorrect_username_or_password), true)
                 } else {
-                    showError(exception.localizedMessage ?: getString(R.string.status_error))
+                    showError(exception.localizedMessage ?: getString(R.string.error))
                 }
             }
         }
@@ -358,7 +358,7 @@ class InternetArchiveActivity : BaseActivity() {
 
     private fun removeProject() {
         AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
-            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+            AlertHelper.positiveButton(R.string.remove) { _, _ ->
                 mSpace.delete()
 
                 Space.navigate(this)
@@ -369,7 +369,7 @@ class InternetArchiveActivity : BaseActivity() {
     private fun showFirstTimeIa() {
         if (Prefs.iaHintShown) return
 
-        var f = IaLearnHowFragment()
+        val f = IaLearnHowFragment()
         f.show(supportFragmentManager, f.tag)
 
         Prefs.iaHintShown = true

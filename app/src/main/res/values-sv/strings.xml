@@ -16,7 +16,7 @@
 
     <string name="action_cancel">Avbryt</string>
 
-    <string name="status_error">Fel</string>
+    <string name="error">Fel</string>
     <string name="prefs_user_interface_title">Presentation</string>
     <string name="prefs_theme_title">Stil</string>
     <string name="prefs_theme_light">Ljust</string>
@@ -38,7 +38,7 @@
     <string name="action_done">Färdig</string>
     <string name="edit">Ändra</string>
     <string name="menu_done">Färdig</string>
-    <string name="action_remove">Ta bort</string>
+    <string name="remove">Ta bort</string>
     <string name="new_folder">Ny mapp</string>
     <string name="metadata">Metadata</string>
 

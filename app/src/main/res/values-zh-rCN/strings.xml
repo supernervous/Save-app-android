@@ -36,7 +36,7 @@
 
     <string name="action_cancel">取消</string>
 
-    <string name="status_error">错误</string>
+    <string name="error">错误</string>
     <string name="prefs_prohibit_screenshots_title">禁止截屏</string>
 
     <string name="prefs_theme_light">亮色主题</string>
@@ -58,7 +58,7 @@
     <string name="action_done">完成</string>
     <string name="edit">编辑</string>
     <string name="menu_done">完成</string>
-    <string name="action_remove">移除</string>
+    <string name="remove">移除</string>
     <string name="new_folder">新文件夹</string>
     <string name="metadata">元数据</string>
     <string name="action_install">安装</string>

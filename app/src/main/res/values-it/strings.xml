@@ -24,7 +24,7 @@
 
     <string name="action_cancel">Annulla</string>
 
-    <string name="status_error">Errore</string>
+    <string name="error">Errore</string>
     <string name="prefs_prohibit_screenshots_title">Blocca acquisizione schermate</string>
 
     <string name="prefs_user_interface_title">Presentazione</string>
@@ -54,7 +54,7 @@
     <string name="edit">Modifica</string>
     <string name="menu_done">Fatto</string>
     <string name="remove_from_app">Rimuovi dall\' App</string>
-    <string name="action_remove">Rimuovi</string>
+    <string name="remove">Rimuovi</string>
     <string name="action_archive_project">Archivia Progetto</string>
     <string name="action_unarchive_project">Progetto inerente</string>
     <string name="access_key">Chiave d\'accesso</string>

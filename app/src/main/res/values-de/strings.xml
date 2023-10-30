@@ -34,7 +34,7 @@
 
     <string name="action_cancel">Abbrechen</string>
 
-    <string name="status_error">Fehler</string>
+    <string name="error">Fehler</string>
     <string name="prefs_prohibit_screenshots_title">Bildschirmfotos blockieren</string>
 
     <string name="prefs_theme_title">Aussehen</string>
@@ -69,7 +69,7 @@
     <string name="edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
     <string name="remove_from_app">Aus App entfernen</string>
-    <string name="action_remove">Entfernen</string>
+    <string name="remove">Entfernen</string>
     <string name="action_archive_project">Projekt archivieren</string>
     <string name="action_unarchive_project">Projekt entarchivieren</string>
     <string name="access_key">Access Key</string>

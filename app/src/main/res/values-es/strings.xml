@@ -42,7 +42,7 @@
 
     <string name="action_cancel">Cancelar</string>
 
-    <string name="status_error">Error</string>
+    <string name="error">Error</string>
 
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de pantalla</string>
 
@@ -73,7 +73,7 @@
     <string name="edit">Editar</string>
     <string name="menu_done">Listo</string>
     <string name="remove_from_app">Eliminar de la aplicación</string>
-    <string name="action_remove">Eliminar</string>
+    <string name="remove">Eliminar</string>
     <string name="action_archive_project">Archivar proyecto</string>
     <string name="action_unarchive_project">Desarchivar proyecto</string>
     <string name="access_key">Clave de acceso</string>

@@ -19,7 +19,7 @@
 
     <string name="action_cancel">Скасувати</string>
 
-    <string name="status_error">Помилка</string>
+    <string name="error">Помилка</string>
     <string name="prefs_prohibit_screenshots_title">Блокувати скріншоти</string>
 
     <string name="prefs_theme_title">Стиль</string>
@@ -46,7 +46,7 @@
     <string name="edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>
-    <string name="action_remove">Видалити</string>
+    <string name="remove">Видалити</string>
     <string name="action_archive_project">Заархівувати проект</string>
     <string name="action_unarchive_project">Розархівувати проєкт</string>
     <string name="access_key">Ключ доступу</string>

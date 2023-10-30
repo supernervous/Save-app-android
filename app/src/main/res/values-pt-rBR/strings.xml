@@ -36,7 +36,7 @@
 
     <string name="action_cancel">Cancelar</string>
 
-    <string name="status_error">Erro</string>
+    <string name="error">Erro</string>
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de tela</string>
 
     <string name="prefs_user_interface_title">Apresentação</string>
@@ -63,7 +63,7 @@
     <string name="action_done">Pronto</string>
     <string name="edit">Editar</string>
     <string name="menu_done">Pronto</string>
-    <string name="action_remove">Remover</string>
+    <string name="remove">Remover</string>
     <string name="new_folder">Nova Pasta</string>
     <string name="metadata">Metadados</string>
 

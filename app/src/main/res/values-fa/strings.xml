@@ -42,7 +42,7 @@
 
     <string name="action_cancel">لغو</string>
 
-    <string name="status_error">خطا</string>
+    <string name="error">خطا</string>
     <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
 
     <string name="prefs_user_interface_title">ارائه</string>
@@ -72,7 +72,7 @@
     <string name="edit">ویرایش</string>
     <string name="menu_done">انجام شد</string>
     <string name="remove_from_app">حذف از برنامه</string>
-    <string name="action_remove">حذف </string>
+    <string name="remove">حذف </string>
     <string name="action_archive_project">بایگانی کردن پروژه</string>
     <string name="action_unarchive_project">خروج پروژه از بایگانی</string>
     <string name="access_key">کلید دسترسی</string>

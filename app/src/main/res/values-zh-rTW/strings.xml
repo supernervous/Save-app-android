@@ -16,7 +16,7 @@
 
     <string name="action_cancel">取消</string>
 
-    <string name="status_error">錯誤</string>
+    <string name="error">錯誤</string>
     <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
 
     <string name="prefs_user_interface_title">呈現</string>
@@ -41,7 +41,7 @@
     <string name="action_done">完成</string>
     <string name="edit">編輯</string>
     <string name="menu_done">完成</string>
-    <string name="action_remove">移除</string>
+    <string name="remove">移除</string>
     <string name="new_folder">新資料夾</string>
     <string name="metadata">中繼資料</string>
 

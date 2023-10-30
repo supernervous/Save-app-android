@@ -17,7 +17,7 @@
 
     <string name="action_cancel">Annuleren</string>
 
-    <string name="status_error">Fout</string>
+    <string name="error">Fout</string>
     <string name="prefs_prohibit_screenshots_title">Blokkeer screenshots</string>
 
     <string name="prefs_user_interface_title">Presentatie</string>
@@ -44,7 +44,7 @@
     <string name="action_done">Gereed</string>
     <string name="edit">Bewerken</string>
     <string name="menu_done">Gereed</string>
-    <string name="action_remove">Verwijderen</string>
+    <string name="remove">Verwijderen</string>
     <string name="secret_key">Geheime Sleutel</string>
     <string name="new_folder">Nieuwe map</string>
     <string name="metadata">Metadata</string>

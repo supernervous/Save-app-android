@@ -52,7 +52,7 @@
 
     <string name="action_cancel">İptal</string>
 
-    <string name="status_error">Hata</string>
+    <string name="error">Hata</string>
 
     <string name="prefs_use_tor_title">Onion yöneltme kullanılsın</string>
     <string name="prefs_use_tor_summary">Yalnızca Tor ağı ile aktarılsın</string>
@@ -120,7 +120,7 @@
     <string name="menu_done">Tamam</string>
     <string name="remove_from_app">Uygulamadan kaldır</string>
     <string name="action_remove_project">Projenizi kaldırmak istediğinize emin misiniz?</string>
-    <string name="action_remove">Kaldır</string>
+    <string name="remove">Kaldır</string>
     <string name="action_archive_project">Projeyi arşive kaldır</string>
     <string name="action_unarchive_project">Projeyi arşivden çıkar</string>
     <string name="IA_login_error">Lütfen geçerli Internet Archive kimlik doğrulama bilgileri ile oturum açın.</string>

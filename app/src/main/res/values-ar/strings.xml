@@ -43,7 +43,7 @@
 
     <string name="action_cancel">إلغاء</string>
 
-    <string name="status_error">خطأ</string>
+    <string name="error">خطأ</string>
     <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
 
     <string name="prefs_user_interface_title">التقديم</string>
@@ -73,7 +73,7 @@
     <string name="edit">عدّل</string>
     <string name="menu_done">مُنجَز</string>
     <string name="remove_from_app">احذف من التطبيق</string>
-    <string name="action_remove">إزالة</string>
+    <string name="remove">إزالة</string>
     <string name="action_archive_project">حول المشروع إلى الأرشيف</string>
     <string name="action_unarchive_project">أخرج المشروع من الارشيف</string>
     <string name="access_key">مفتاح الدخول</string>

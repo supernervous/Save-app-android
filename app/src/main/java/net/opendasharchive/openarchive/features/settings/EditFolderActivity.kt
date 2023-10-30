@@ -69,7 +69,7 @@ class EditFolderActivity : BaseActivity() {
 
     private fun removeProject() {
         AlertHelper.show(this, R.string.action_remove_project, R.string.remove_from_app, buttons = listOf(
-            AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+            AlertHelper.positiveButton(R.string.remove) { _, _ ->
                 mProject.delete()
 
                 finish()
