@@ -10,6 +10,7 @@ import net.opendasharchive.openarchive.features.settings.SpaceSetupFragment
 import net.opendasharchive.openarchive.features.settings.SpaceSetupSuccessFragment
 import net.opendasharchive.openarchive.services.dropbox.DropboxFragment
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
+import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveFragment
 import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
 
@@ -27,6 +28,7 @@ class SpaceSetupActivity : BaseActivity() {
         initWebDavFragmentBindings()
         initSpaceSetupSuccessFragmentBindings()
         initDropboxFragmentBindings()
+        initInternetArchiveFragmentBindings()
     }
 
     private fun initSpaceSetupSuccessFragmentBindings() {
@@ -76,11 +78,14 @@ class SpaceSetupActivity : BaseActivity() {
                         .commit()
                 }
 
-                SpaceSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> startActivity(
-                    Intent(
-                        this, InternetArchiveActivity::class.java
-                    )
-                )
+                SpaceSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> {
+                    progress2()
+                    supportFragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(mBinding.spaceSetupFragment.id, InternetArchiveFragment.newInstance())
+                        .commit()
+                }
 
                 SpaceSetupFragment.RESULT_VAL_WEBDAV -> {
                     progress2()
@@ -119,6 +124,29 @@ class SpaceSetupActivity : BaseActivity() {
                     mBinding.spaceSetupFragment.id,
                     SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_dropbox))
                 )
+                .commit()
+        }
+    }
+
+    private fun initInternetArchiveFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(InternetArchiveFragment.RESP_SAVED, this) { _, _ ->
+            progress3()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(
+                    mBinding.spaceSetupFragment.id,
+                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_the_internet_archive))
+                )
+                .commit()
+        }
+
+        supportFragmentManager.setFragmentResultListener(InternetArchiveFragment.RESP_CANCEL, this) { _, _ ->
+            progress1()
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
                 .commit()
         }
     }
