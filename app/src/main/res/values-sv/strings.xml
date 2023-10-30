@@ -36,7 +36,7 @@
 
     <string name="action_next">Nästa</string>
     <string name="action_done">Färdig</string>
-    <string name="menu_edit">Ändra</string>
+    <string name="edit">Ändra</string>
     <string name="menu_done">Färdig</string>
     <string name="action_remove">Ta bort</string>
     <string name="new_folder">Ny mapp</string>

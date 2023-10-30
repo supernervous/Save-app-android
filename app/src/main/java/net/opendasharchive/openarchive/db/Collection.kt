@@ -13,7 +13,7 @@ data class Collection(
 
         fun getByProject(projectId: Long): List<Collection> {
             return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
-                null, "id DESC", null)
+                null, "upload_date DESC, id DESC", null)
         }
 
         fun get(collectionId: Long?): Collection? {
@@ -24,8 +24,11 @@ data class Collection(
         }
     }
 
-    val media: List<Media>
+    val media
         get() = find(Media::class.java, "collection_id = ?", arrayOf(id.toString()), null, "status, id DESC", null)
+
+    val isUploading
+        get() = media.firstOrNull { it.isUploading } != null
 
 
     override fun delete(): Boolean {

@@ -43,7 +43,7 @@
 
     <string name="action_next">Вперед</string>
     <string name="action_done">Готово</string>
-    <string name="menu_edit">Змінити</string>
+    <string name="edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>
     <string name="action_remove">Видалити</string>

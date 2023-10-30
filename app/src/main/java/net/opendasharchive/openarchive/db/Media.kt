@@ -95,4 +95,9 @@ data class Media(
 
     val space: Space?
         get() = project?.space
+
+    val isUploading
+        get() =  status == Status.Queued.id
+                || status == Status.Uploading.id
+                || status == Status.Error.id
 }

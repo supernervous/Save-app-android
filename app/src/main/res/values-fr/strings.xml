@@ -51,7 +51,7 @@
     <string name="action_next">Suivant</string>
     <string name="action_done">Terminé</string>
     <string name="status_flagged">Contenu important</string>
-    <string name="menu_edit">Modifier</string>
+    <string name="edit">Modifier</string>
     <string name="menu_done">Terminé</string>
     <string name="remove_from_app">Supprimer de l’appli</string>
     <string name="action_remove">Supprimer</string>
@@ -65,7 +65,6 @@
     <string name="metadata">Métadonnées</string>
     <string name="popup_flag_desc">Quand vous marquez un élément, il est acheminé vers un sous-dossier dans le dossier désigné du projet sur le serveur privé.</string>
 
-    <string name="popup_ia_title">Archive Internet</string>
     <string name="action_install">Installer</string>
     <string name="login_activity_logging_message">Connexion…</string>
     <string name="folders">Dossiers</string>

@@ -56,7 +56,7 @@
 
     <string name="action_next">下一步</string>
     <string name="action_done">完成</string>
-    <string name="menu_edit">编辑</string>
+    <string name="edit">编辑</string>
     <string name="menu_done">完成</string>
     <string name="action_remove">移除</string>
     <string name="new_folder">新文件夹</string>

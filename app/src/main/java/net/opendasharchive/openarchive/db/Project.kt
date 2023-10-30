@@ -14,8 +14,6 @@ data class Project(
 
     companion object {
 
-        const val EMPTY_ID = -1L
-
         fun getById(projectId: Long?): Project? {
             @Suppress("NAME_SHADOWING")
             val projectId = projectId ?: return null
@@ -37,6 +35,9 @@ data class Project(
                 if (!sl.isNullOrBlank()) licenseUrl = sl
             }
         }
+
+    val isUploading
+        get() = collections.firstOrNull { it.isUploading } != null
 
     val collections: List<Collection>
         get() = find(Collection::class.java, "project_id = ?", id.toString())

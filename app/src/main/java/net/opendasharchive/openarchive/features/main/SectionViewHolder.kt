@@ -40,9 +40,7 @@ data class SectionViewHolder(
         collection: Collection,
         media: List<Media>
     ) {
-        if (media.firstOrNull { it.sStatus == Media.Status.Queued
-                    || it.sStatus == Media.Status.Uploading
-                    || it.sStatus == Media.Status.Error } != null)
+        if (media.firstOrNull { it.isUploading } != null)
         {
             timestamp.setText(R.string.uploading)
 

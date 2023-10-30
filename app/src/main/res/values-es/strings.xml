@@ -70,7 +70,7 @@
     <string name="action_next">Seguir</string>
     <string name="action_done">Listo</string>
     <string name="status_flagged">Contenido Importante</string>
-    <string name="menu_edit">Editar</string>
+    <string name="edit">Editar</string>
     <string name="menu_done">Listo</string>
     <string name="remove_from_app">Eliminar de la aplicación</string>
     <string name="action_remove">Eliminar</string>
@@ -85,7 +85,6 @@
     <string name="popup_flag_title">Marcar Contenido Importante</string>
     <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
 
-    <string name="popup_ia_title">Internet Archive</string>
     <string name="action_install">Instalar</string>
     <string name="login_activity_logging_message">Iniciando sesión…</string>
     <string name="folders">Carpetas</string>

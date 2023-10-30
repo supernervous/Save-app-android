@@ -51,7 +51,7 @@
     <string name="action_next">Successivo</string>
     <string name="action_done">Fatto</string>
     <string name="status_flagged">Contenuto Significativo</string>
-    <string name="menu_edit">Modifica</string>
+    <string name="edit">Modifica</string>
     <string name="menu_done">Fatto</string>
     <string name="remove_from_app">Rimuovi dall\' App</string>
     <string name="action_remove">Rimuovi</string>
@@ -67,7 +67,6 @@
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>
     <string name="popup_flag_desc">Quando segnali un elemento, è instradato in una sottocartella all\'interno della cartella di progetto scelto nel server privato.</string>
 
-    <string name="popup_ia_title">Archivio Internet</string>
     <string name="action_install">Installa</string>
     <string name="folders">cartelle</string>
     <string name="create">Crea</string>

@@ -70,7 +70,7 @@
     <string name="action_next">التالي</string>
     <string name="action_done">مُنجَز</string>
     <string name="status_flagged">محتوى مميز</string>
-    <string name="menu_edit">عدّل</string>
+    <string name="edit">عدّل</string>
     <string name="menu_done">مُنجَز</string>
     <string name="remove_from_app">احذف من التطبيق</string>
     <string name="action_remove">إزالة</string>
@@ -85,7 +85,6 @@
     <string name="popup_flag_title">علامة محتوى مميز</string>
     <string name="popup_flag_desc">عندما تضيف العلامة على وحدة، يتم وضعها فى مجلد خاص تحت مجلد المشروع المختار على الخادوم الخاص.</string>
 
-    <string name="popup_ia_title">Internet Archive</string>
     <string name="action_install">تثبيت</string>
     <string name="login_activity_logging_message">تسجيل الدخول…</string>
     <string name="folders">المجلدات</string>

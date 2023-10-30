@@ -95,7 +95,7 @@ class UploadManagerActivity : BaseActivity() {
             stopService(Intent(this, PublishService::class.java))
         }
         else {
-            mMenuEdit?.setTitle(R.string.menu_edit)
+            mMenuEdit?.setTitle(R.string.edit)
             startService(Intent(this, PublishService::class.java))
         }
     }

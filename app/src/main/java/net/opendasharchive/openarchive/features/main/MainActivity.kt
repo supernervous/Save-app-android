@@ -34,6 +34,7 @@ import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
 import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.projects.AddFolderActivity
 import net.opendasharchive.openarchive.publish.BroadcastManager
+import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
@@ -123,6 +124,10 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         mSnackBar = mBinding.root.makeSnackBar(getString(R.string.importing_media))
         (mSnackBar?.view as? SnackbarLayout)?.addView(ProgressBar(this))
+
+        mBinding.uploadEditButton.setOnClickListener {
+            startActivity(Intent(this, UploadManagerActivity::class.java))
+        }
 
         mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
         mBinding.pager.adapter = mPagerAdapter
@@ -373,9 +378,12 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
                 project.collections.map { it.media.count() }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolderCount.show()
+
+            mBinding.uploadEditButton.toggle(project.isUploading)
         }
         else {
             mBinding.currentFolderCount.cloak()
+            mBinding.uploadEditButton.hide()
         }
     }
 

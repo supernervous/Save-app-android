@@ -69,7 +69,7 @@
     <string name="action_next">بعدی</string>
     <string name="action_done">انجام شد</string>
     <string name="status_flagged">محتوای مهم</string>
-    <string name="menu_edit">ویرایش</string>
+    <string name="edit">ویرایش</string>
     <string name="menu_done">انجام شد</string>
     <string name="remove_from_app">حذف از برنامه</string>
     <string name="action_remove">حذف </string>
@@ -85,7 +85,6 @@
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
     <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
 
-    <string name="popup_ia_title">بایگانی اینترنت</string>
     <string name="action_install">نصب</string>
     <string name="login_activity_logging_message">در حال ورود…</string>
     <string name="folders">پوشه ها</string>

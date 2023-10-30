@@ -42,7 +42,7 @@
 
     <string name="action_next">Volgende</string>
     <string name="action_done">Gereed</string>
-    <string name="menu_edit">Bewerken</string>
+    <string name="edit">Bewerken</string>
     <string name="menu_done">Gereed</string>
     <string name="action_remove">Verwijderen</string>
     <string name="secret_key">Geheime Sleutel</string>

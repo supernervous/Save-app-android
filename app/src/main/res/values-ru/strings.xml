@@ -50,7 +50,7 @@
     <string name="action_next">Далее</string>
     <string name="action_done">Готово</string>
     <string name="status_flagged">Важное содержание</string>
-    <string name="menu_edit">Редактировать</string>
+    <string name="edit">Редактировать</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Удалить из приложения</string>
     <string name="action_remove">Удалить</string>
@@ -65,7 +65,6 @@
     <string name="popup_flag_title">Отметить важное содержание</string>
     <string name="popup_flag_desc">Когда вы отмечаете элемент, он направляется в подпапку  выбранного проекта на частном сервере.</string>
 
-    <string name="popup_ia_title">Интернет архив</string>
     <string name="action_install">Установить приложение</string>
     <string name="folders">Папки</string>
     <string name="create">Создать</string>

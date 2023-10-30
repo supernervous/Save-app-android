@@ -116,7 +116,7 @@
     <string name="you_have_successfully_connected_to_a_private_server">Özel bir sunucu ile bağlantı kurdunuz!</string>
     <string name="you_have_successfully_connected_to_dropbox">Dropbox ile bağlantı kurdunuz!</string>
     <string name="create_a_new_folder">Yeni klasör oluştur</string>
-    <string name="menu_edit">Düzenle</string>
+    <string name="edit">Düzenle</string>
     <string name="menu_done">Tamam</string>
     <string name="remove_from_app">Uygulamadan kaldır</string>
     <string name="action_remove_project">Projenizi kaldırmak istediğinize emin misiniz?</string>
@@ -139,9 +139,6 @@
 
     <string name="popup_flag_title">Önemli içerik olarak işaretle</string>
     <string name="popup_flag_desc">Bir ögeyi işaretlediğinizde, özel sunucu üzerinde seçilmiş proje klasöründeki bir alt klasöre yönlendirilir.</string>
-
-    <string name="popup_ia_title">Internet Archive</string>
-    <string name="popup_ia_desc">Save ortamlarını Internet Archive üzerine göndermek ve kaydetmek için bir Internet Archive hesabı ile oturum açmalı ya da yeni bir hesap edinmelisiniz. </string>
 
     <string name="action_install">Kur</string>
     <string name="login_activity_logging_message">Oturum açılıyor…</string>
