@@ -31,7 +31,7 @@ import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
 class WebDavFragment : Fragment() {
-    private var spaceId: Long? = null
+    private var mSpaceId: Long? = null
     private lateinit var mSpace: Space
 
     private lateinit var mSnackbar: Snackbar
@@ -39,7 +39,7 @@ class WebDavFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        spaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
+        mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
     }
 
     override fun onCreateView(
@@ -48,12 +48,12 @@ class WebDavFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentWebDavBinding.inflate(inflater)
 
-        spaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
+        mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
 
-        if (ARG_VAL_NEW_SPACE != spaceId) {
+        if (ARG_VAL_NEW_SPACE != mSpaceId) {
             // setup views for editing and existing space
 
-            mSpace = Space.get(spaceId!!) ?: Space(Space.Type.WEBDAV)
+            mSpace = Space.get(mSpaceId!!) ?: Space(Space.Type.WEBDAV)
 
             mBinding.header.visibility = View.GONE
             mBinding.buttonBar.visibility = View.GONE

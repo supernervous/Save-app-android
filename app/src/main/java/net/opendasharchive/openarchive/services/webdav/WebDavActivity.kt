@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
 class WebDavActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityWebdavBinding
-    private var spaceId by Delegates.notNull<Long>()
+    private var mSpaceId by Delegates.notNull<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +24,11 @@ class WebDavActivity : BaseActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        spaceId = intent.getLongExtra(EXTRA_DATA_SPACE, WebDavFragment.ARG_VAL_NEW_SPACE)
+        mSpaceId = intent.getLongExtra(EXTRA_DATA_SPACE, WebDavFragment.ARG_VAL_NEW_SPACE)
 
-        if (spaceId != WebDavFragment.ARG_VAL_NEW_SPACE) {
+        if (mSpaceId != WebDavFragment.ARG_VAL_NEW_SPACE) {
             supportFragmentManager.commit {
-                replace(mBinding.webDavFragment.id, WebDavFragment.newInstance(spaceId))
+                replace(mBinding.webDavFragment.id, WebDavFragment.newInstance(mSpaceId))
             }
         }
 
