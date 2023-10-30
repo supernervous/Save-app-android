@@ -228,10 +228,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include
-            android:id="@+id/add_menu"
-            layout="@layout/content_picker_menu" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- note: altering corner size is breaking with material3 design guidelines -->

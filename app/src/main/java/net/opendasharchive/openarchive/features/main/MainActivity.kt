@@ -28,6 +28,7 @@ import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
@@ -213,29 +214,17 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         if (Picker.canPickFiles(this)) {
             mBinding.addButton.setOnLongClickListener {
-                mBinding.addMenu.container.show(animate = true)
+                val addMediaDialogFragment = AddMediaDialogFragment()
+                addMediaDialogFragment.show(supportFragmentManager, addMediaDialogFragment.tag)
 
                 true
             }
 
-            mBinding.addMenu.container.setOnClickListener {
-                it.hide(animate = true)
+            supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_PHOTO_GALERY, this) {
+                _, _ -> addClicked()
             }
-
-            mBinding.addMenu.menu.setNavigationItemSelectedListener {
-                when (it.itemId) {
-                    R.id.action_upload_media -> {
-                        addClicked()
-                    }
-
-                    R.id.action_upload_files -> {
-                        addClicked(typeFiles = true)
-                    }
-                }
-
-                mBinding.addMenu.container.hide(animate = true)
-
-                true
+            supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_FILES, this) {
+                _, _ -> addClicked(typeFiles = true)
             }
         }
     }
