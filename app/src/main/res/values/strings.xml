@@ -263,4 +263,8 @@
 
     <string name="edit_media">Edit Media</string>
     <string name="uploading_is_paused">Uploading is paused</string>
+    <string name="add_media_using">Add Media using:</string>
+    <string name="photo_galery">Photo Galery</string>
+    <string name="files">Files</string>
+
 </resources>
