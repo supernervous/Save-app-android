@@ -122,6 +122,7 @@
     <string name="select_where_to_store_your_media">Select where to store your media.</string>
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
     <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
+    <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="edit">Edit</string>
     <string name="menu_done">Done</string>
