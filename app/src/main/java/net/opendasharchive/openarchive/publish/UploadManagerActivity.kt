@@ -13,7 +13,6 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import timber.log.Timber
 
 class UploadManagerActivity : BaseActivity() {
 
@@ -49,14 +48,13 @@ class UploadManagerActivity : BaseActivity() {
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Timber.d("Updating media")
-
-            val mediaId = BroadcastManager.getMediaId(intent)
+            val action = BroadcastManager.getAction(intent)
+            val mediaId = action?.mediaId ?: return
 
             if (mediaId > -1) {
                 val media = Media.get(mediaId)
 
-                if (media?.sStatus == Media.Status.Uploaded) {
+                if (action == BroadcastManager.Action.Delete || media?.sStatus == Media.Status.Uploaded) {
                     mFrag?.removeItem(mediaId)
                 }
                 else {

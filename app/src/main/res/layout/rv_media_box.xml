@@ -37,7 +37,7 @@
             app:waveformColor="#999999" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/progress_container"
+            android:id="@+id/overlay_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent_black">
@@ -51,6 +51,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/error"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_error"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/colorDanger"
+                android:contentDescription="@string/error" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -8,23 +8,40 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 object BroadcastManager {
 
-    private const val MEIDA_CHANGE_INTENT = "media_change_intent"
+    enum class Action(val id: String, var mediaId: Long = -1) {
+        Change("media_change_intent"),
+        Delete("media_delete_intent")
+    }
+
     private const val MEDIA_ID = "media_id"
 
     fun advertiseChange(context: Context, mediaId: Long) {
-        val i = Intent(MEIDA_CHANGE_INTENT)
+        val i = Intent(Action.Change.id)
         i.putExtra(MEDIA_ID, mediaId)
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(i)
     }
 
-    fun getMediaId(intent: Intent): Long {
-        return intent.getLongExtra(MEDIA_ID, -1)
+    fun advertiseDelete(context: Context, mediaId: Long) {
+        val i = Intent(Action.Delete.id)
+        i.putExtra(MEDIA_ID, mediaId)
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(i)
+    }
+
+    fun getAction(intent: Intent): Action? {
+        val action = Action.values().firstOrNull { it.id == intent.action }
+        action?.mediaId = intent.getLongExtra(MEDIA_ID, -1)
+
+        return action
     }
 
     fun register(context: Context, receiver: BroadcastReceiver) {
         LocalBroadcastManager.getInstance(context)
-            .registerReceiver(receiver, IntentFilter(MEIDA_CHANGE_INTENT))
+            .registerReceiver(receiver, IntentFilter(Action.Change.id))
+
+        LocalBroadcastManager.getInstance(context)
+            .registerReceiver(receiver, IntentFilter(Action.Delete.id))
     }
 
     fun unregister(context: Context, receiver: BroadcastReceiver) {

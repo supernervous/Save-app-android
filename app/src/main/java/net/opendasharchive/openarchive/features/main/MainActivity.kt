@@ -50,7 +50,6 @@ import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
-import timber.log.Timber
 import java.text.NumberFormat
 
 class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener {
@@ -84,13 +83,21 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            // Get extra data included in the Intent
-            Timber.d("Updating media")
+            if (mCurrentItem >= mPagerAdapter.settingsIndex) return
 
-            val mediaId = BroadcastManager.getMediaId(intent)
+            val action = BroadcastManager.getAction(intent)
+            val mediaId = action?.mediaId ?: return
 
-            if (mediaId != -1L && mCurrentItem < mPagerAdapter.settingsIndex) {
-                mCurrentFragment?.updateItem(mediaId)
+            if (mediaId < 0) return
+
+            when (action) {
+                BroadcastManager.Action.Change -> {
+                    mCurrentFragment?.updateItem(mediaId)
+                }
+
+                BroadcastManager.Action.Delete -> {
+                    mCurrentFragment?.refresh()
+                }
             }
         }
     }
@@ -284,7 +291,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         when (item.itemId) {
             R.id.menu_delete -> {
                 AlertHelper.show(this, R.string.confirm_remove_media, null, buttons = listOf(
-                    AlertHelper.positiveButton(R.string.action_remove) { _, _ ->
+                    AlertHelper.positiveButton(R.string.remove) { _, _ ->
                         mCurrentFragment?.deleteSelected()
                     },
                     AlertHelper.negativeButton()))

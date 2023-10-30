@@ -7,6 +7,7 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
+import net.opendasharchive.openarchive.publish.BroadcastManager
 import net.opendasharchive.openarchive.publish.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
@@ -59,6 +60,37 @@ class MediaAdapter(
                         mActivity.get()?.let {
                             it.startActivity(
                                 Intent(it, UploadManagerActivity::class.java))
+                        }
+                    }
+
+                    Media.Status.Error -> {
+                        mActivity.get()?.let {
+                            val item = media[pos]
+
+                            AlertHelper.show(it, item.statusMessage,
+                                R.string.upload_unsuccessful, R.drawable.ic_error, listOf(
+                                    AlertHelper.positiveButton(R.string.retry) { _, _ ->
+                                        item.sStatus = Media.Status.Queued
+                                        item.statusMessage = ""
+                                        item.save()
+
+                                        updateItem(item.id)
+                                    },
+                                    AlertHelper.negativeButton(R.string.remove) { _, _ ->
+                                        val collection = item.collection
+
+                                        if (collection?.media?.isEmpty() == true) {
+                                            collection.delete()
+                                        }
+                                        else {
+                                            item.delete()
+                                        }
+
+                                        BroadcastManager.advertiseDelete(it, item.id)
+                                    },
+                                    AlertHelper.neutralButton()
+                                )
+                            )
                         }
                     }
 
@@ -130,6 +162,8 @@ class MediaAdapter(
         reorder()
 
         notifyItemRemoved(idx)
+
+        checkSelecting?.invoke()
 
         return true
     }
