@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
@@ -39,7 +38,6 @@ class MainMediaFragment : Fragment() {
     private var mCollections = ArrayList<Collection>()
 
     private lateinit var mBinding: FragmentMainMediaBinding
-    private lateinit var mPreviewViewModel: MediaGridListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +51,6 @@ class MainMediaFragment : Fragment() {
         mProjectId = arguments?.getLong(ARG_PROJECT_ID, -1) ?: -1
 
         mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
-
-        mPreviewViewModel =
-            MediaGridListViewModel.getInstance(this, requireNotNull(activity?.application))
-        mPreviewViewModel.observeValuesForWorkState(activity as AppCompatActivity)
 
         refresh()
 
