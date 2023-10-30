@@ -23,7 +23,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class PublishService : Service(), Runnable {
+class UploadService : Service(), Runnable {
     private var mRunning = false
     private var mKeepUploading = true
     private var mUploadThread: Thread? = null
@@ -236,7 +236,7 @@ class PublishService : Service(), Runnable {
         fun scheduleJob(context: Context) {
             val job = JobInfo.Builder(MY_BACKGROUND_JOB,
                 ComponentName(context, PublishJobService::class.java))
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setRequiresCharging(false)
                 .build()
 

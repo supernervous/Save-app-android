@@ -224,7 +224,7 @@
         </provider>
 
         <service
-            android:name=".publish.PublishService"
+            android:name=".publish.UploadService"
             android:exported="false" />
 
         <service

@@ -8,7 +8,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import net.opendasharchive.openarchive.publish.PublishService
+import net.opendasharchive.openarchive.publish.UploadService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import timber.log.Timber
@@ -52,10 +52,14 @@ class OpenArchiveApp : SugarApp() {
      */
     fun startUploadService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, PublishService::class.java))
+            startForegroundService(Intent(this, UploadService::class.java))
         } else {
-            startService(Intent(this, PublishService::class.java))
+            startService(Intent(this, UploadService::class.java))
         }
+    }
+
+    fun stopUploadService() {
+        stopService(Intent(this, UploadService::class.java))
     }
 
     private fun initNetCipher() {

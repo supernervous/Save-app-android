@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import net.opendasharchive.openarchive.CleanInsightsManager
+import net.opendasharchive.openarchive.OpenArchiveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
@@ -27,7 +28,6 @@ class UploadManagerActivity : BaseActivity() {
         setContentView(mBinding.root)
 
         setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = getString(R.string.uploads)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mFrag = supportFragmentManager.findFragmentById(R.id.fragUploadManager) as? UploadManagerFragment
@@ -38,6 +38,8 @@ class UploadManagerActivity : BaseActivity() {
         mFrag?.refresh()
 
         BroadcastManager.register(this, mMessageReceiver)
+
+        updateTitle()
     }
 
     override fun onPause() {
@@ -70,13 +72,7 @@ class UploadManagerActivity : BaseActivity() {
             }
 
             Handler(Looper.getMainLooper()).post {
-                val count = mFrag?.getUploadingCounter() ?: 0
-
-                supportActionBar?.title = if (count < 1) {
-                    getString(R.string.uploads)
-                } else {
-                    getString(R.string.uploading_left, count)
-                }
+                updateTitle()
             }
         }
     }
@@ -90,17 +86,22 @@ class UploadManagerActivity : BaseActivity() {
 
         if (mEditMode) {
             mMenuEdit?.setTitle(R.string.menu_done)
-            stopService(Intent(this, PublishService::class.java))
+
+            (application as OpenArchiveApp).stopUploadService()
         }
         else {
             mMenuEdit?.setTitle(R.string.edit)
-            startService(Intent(this, PublishService::class.java))
+
+            (application as OpenArchiveApp).startUploadService()
         }
+
+        updateTitle()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_upload, menu)
         mMenuEdit = menu.findItem(R.id.menu_edit)
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -116,5 +117,21 @@ class UploadManagerActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateTitle() {
+        if (mEditMode) {
+            supportActionBar?.title = getString(R.string.edit_media)
+            supportActionBar?.subtitle = getString(R.string.uploading_is_paused)
+        }
+        else {
+            val count = mFrag?.getUploadingCounter() ?: 0
+
+            supportActionBar?.title = if (count < 1) {
+                getString(R.string.uploads)
+            } else {
+                getString(R.string.uploading_left, count)
+            }
+        }
     }
 }

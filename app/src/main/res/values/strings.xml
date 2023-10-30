@@ -260,4 +260,7 @@
 
     <string name="upload_unsuccessful">Upload Unsuccessful</string>
     <string name="retry">Retry</string>
+
+    <string name="edit_media">Edit Media</string>
+    <string name="uploading_is_paused">Uploading is paused</string>
 </resources>
