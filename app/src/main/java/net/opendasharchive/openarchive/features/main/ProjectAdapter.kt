@@ -55,7 +55,7 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
 
     override fun getPageTitle(position: Int): CharSequence? {
         return if (position == 0 && projects.isEmpty()) {
-            val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black_24dp)
+            val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black)
 
             val spannableString = SpannableString(" ")
             spannableString.setSpan(imageSpan, 0, 1, 0)
