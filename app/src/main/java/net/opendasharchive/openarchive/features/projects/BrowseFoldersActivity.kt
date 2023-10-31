@@ -82,13 +82,23 @@ class BrowseFoldersActivity : BaseActivity() {
         // This should not happen. These should have been filtered on display.
         if (space.hasProject(folder.name)) return
 
-        val project = Project(folder.name, Date(), space.id)
-        project.save()
+        val license = space.license
 
-        val i = Intent()
-        i.putExtra(AddFolderActivity.EXTRA_PROJECT_ID, project.id)
+        if (license.isNullOrBlank()) {
+            val i = Intent()
+            i.putExtra(AddFolderActivity.EXTRA_FOLDER_NAME, folder.name)
 
-        setResult(RESULT_OK, i)
+            setResult(RESULT_CANCELED, i)
+        }
+        else {
+            val project = Project(folder.name, Date(), space.id, licenseUrl = license)
+            project.save()
+
+            val i = Intent()
+            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, project.id)
+
+            setResult(RESULT_OK, i)
+        }
 
         finish()
     }

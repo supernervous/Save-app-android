@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivityEditProjectBinding
+import net.opendasharchive.openarchive.databinding.ActivityEditFolderBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
@@ -18,7 +18,7 @@ class EditFolderActivity : BaseActivity() {
     }
 
     private lateinit var mProject: Project
-    private lateinit var mBinding: ActivityEditProjectBinding
+    private lateinit var mBinding: ActivityEditFolderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class EditFolderActivity : BaseActivity() {
 
         mProject = project
 
-        mBinding = ActivityEditProjectBinding.inflate(layoutInflater)
+        mBinding = ActivityEditFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         setSupportActionBar(mBinding.toolbar)

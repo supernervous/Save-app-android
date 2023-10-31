@@ -11,6 +11,8 @@ import net.opendasharchive.openarchive.databinding.ActivityCreateNewFolderBindin
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.settings.CcSelector
+import net.opendasharchive.openarchive.util.extensions.hide
 import java.util.Date
 
 class CreateNewFolderActivity : BaseActivity() {
@@ -31,12 +33,21 @@ class CreateNewFolderActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.new_folder)
 
+        mBinding.newFolder.setText(intent.getStringExtra(AddFolderActivity.EXTRA_FOLDER_NAME))
+
         mBinding.newFolder.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 store()
             }
 
             false
+        }
+
+        if (Space.current?.license != null) {
+            mBinding.cc.root.hide()
+        }
+        else {
+            CcSelector.init(mBinding.cc)
         }
     }
 
@@ -82,11 +93,13 @@ class CreateNewFolderActivity : BaseActivity() {
             return
         }
 
-        val project = Project(name, Date(), space.id)
+        val license = space.license ?: CcSelector.get(mBinding.cc)
+
+        val project = Project(name, Date(), space.id, licenseUrl = license)
         project.save()
 
         val i = Intent()
-        i.putExtra(AddFolderActivity.EXTRA_PROJECT_ID, project.id)
+        i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, project.id)
 
         setResult(RESULT_OK, i)
         finish()

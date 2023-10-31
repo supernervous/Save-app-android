@@ -106,7 +106,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private val mNewFolderResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_PROJECT_ID, -1))
+                refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_FOLDER_ID, -1))
             }
         }
 

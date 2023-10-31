@@ -10,23 +10,39 @@ object CcSelector {
     private const val CC_DOMAIN = "creativecommons.org"
     private const val CC_URL = "https://%s/licenses/%s/4.0/"
 
-    fun init(cc: ContentCcBinding, license: String?, enabled: Boolean = true, update: (license: String?) -> Unit) {
+    fun init(cc: ContentCcBinding, license: String? = null, enabled: Boolean = true, update: ((license: String?) -> Unit)? = null) {
         set(cc, license, enabled)
 
         cc.swCc.setOnCheckedChangeListener { _, isChecked ->
             toggle(cc, isChecked)
 
-            update(get(cc))
+            @Suppress("NAME_SHADOWING")
+            val license = get(cc)
+
+            update?.invoke(license)
         }
 
         cc.swNd.setOnCheckedChangeListener { _, isChecked ->
             cc.swSa.isEnabled = isChecked
 
-            update(get(cc))
+            @Suppress("NAME_SHADOWING")
+            val license = get(cc)
+
+            update?.invoke(license)
         }
 
-        cc.swSa.setOnCheckedChangeListener { _, _ -> update(get(cc)) }
-        cc.swNc.setOnCheckedChangeListener { _, _ -> update(get(cc)) }
+        cc.swSa.setOnCheckedChangeListener { _, _ ->
+            @Suppress("NAME_SHADOWING")
+            val license = get(cc)
+
+            update?.invoke(license)
+        }
+        cc.swNc.setOnCheckedChangeListener { _, _ ->
+            @Suppress("NAME_SHADOWING")
+            val license = get(cc)
+
+            update?.invoke(license)
+        }
 
         cc.tvLicense.setOnClickListener {
             it?.context?.openBrowser(cc.tvLicense.text.toString())

@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.projects
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import net.opendasharchive.openarchive.R
@@ -18,10 +19,12 @@ import net.opendasharchive.openarchive.util.extensions.tint
 class AddFolderActivity : BaseActivity() {
 
     companion object {
-        const val EXTRA_PROJECT_ID = "folder_id"
+        const val EXTRA_FOLDER_ID = "folder_id"
+        const val EXTRA_FOLDER_NAME = "folder_name"
     }
 
     private lateinit var mBinding: ActivityAddFolderBinding
+    private lateinit var mResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,24 @@ class AddFolderActivity : BaseActivity() {
             finish()
             setFolder(false)
         }
+
+        mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                setResult(RESULT_OK, it.data)
+                finish()
+            }
+            else {
+                val name = it.data?.getStringExtra(EXTRA_FOLDER_NAME)
+
+                if (!name.isNullOrBlank()) {
+                    val i = Intent(this, CreateNewFolderActivity::class.java)
+                    i.putExtra(EXTRA_FOLDER_NAME, name)
+
+                    mResultLauncher.launch(i)
+                }
+            }
+        }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -67,13 +88,6 @@ class AddFolderActivity : BaseActivity() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    private val mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            setResult(RESULT_OK, it.data)
-            finish()
-        }
     }
 
     private fun setFolder(browse: Boolean) {
