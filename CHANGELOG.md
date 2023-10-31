@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 beta5
+- Added Internet Archive tutorial.
+- UI/UX brushing of main scene and upload management scene.
+- Show errors of media items in main scene.
+- Delete items, when they get removed from the upload queue.
+- Better styled add-media dialog, which shows on long-tapping the "+" (add) button.
+- Updated dependencies to latest versions. Cleaned out old, unused dependencies.
+- Improved health check consent form.
+- Allow CC editing right when folder is added. (As long as there is no overriding license set up for the server.)
+- Fixed bug when adding media, where sometimes the first one wouldn't be in the correct collection.
+- Fixed bug where media of same collection would have been written to different folders.
+- Improved background upload.
+
 ## 0.3.0 beta4
 - Translation and wording updates.
 - Fixed lots of UI bugs.
