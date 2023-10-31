@@ -18,10 +18,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
-import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
@@ -42,7 +44,6 @@ import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.disableAnimation
-import net.opendasharchive.openarchive.util.extensions.executeAsyncTask
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.isVisible
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
@@ -78,8 +79,6 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
     private val mCurrentFragment
         get() = mPagerAdapter.getRegisteredMediaFragment(mCurrentItem)
-
-    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
@@ -393,22 +392,20 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         if (path.contains(packageName)) return
 
-        scope.executeAsyncTask(
-            onPreExecute = {
-                mSnackBar?.show()
-            },
-            doInBackground = {
-                Picker.import(this, getSelectedProject(), uri)
-            },
-            onPostExecute = { media ->
+        mSnackBar?.show()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val media = Picker.import(this@MainActivity, getSelectedProject(), uri)
+
+            MainScope().launch {
+                mSnackBar?.dismiss()
+                intent = null
+
                 if (media != null) {
                     preview()
                 }
-
-                mSnackBar?.dismiss()
-                intent = null
             }
-        )
+        }
     }
 
     private fun pickMedia() {
