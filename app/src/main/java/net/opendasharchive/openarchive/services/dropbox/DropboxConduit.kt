@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.services.dropbox
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import com.dropbox.core.v2.DbxClientV2
@@ -12,7 +11,6 @@ import net.opendasharchive.openarchive.services.SaveClient
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
 
 class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
@@ -29,13 +27,9 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
         val client = SaveClient.getDropbox(mContext, accessToken)
 
-        val mediaUri = Uri.parse(mMedia.originalFilePath)
+        val mediaUri = mMedia.fileUri
         val projectName = mMedia.serverUrl
         val fileName = getUploadFileName(mMedia, true)
-
-        @SuppressLint("SimpleDateFormat")
-        val folderName = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
-            .format(mMedia.createDate ?: System.currentTimeMillis())
 
         if (mMedia.contentLength == 0L) {
             val fileMedia = File(mediaUri.path ?: "")
@@ -50,7 +44,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
                         mMedia.serverUrl = finalMediaPath
                         mMedia.save()
                         jobSucceeded()
-                        uploadMetadata(client, projectName, folderName, fileName)
+                        uploadMetadata(client, projectName, mFolderName, fileName)
                     }
                 }
 
@@ -63,7 +57,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
                 }
             })
 
-            mTask?.upload(mediaUri.toString(), fileName, folderName, projectName)
+            mTask?.upload(mediaUri.toString(), fileName, mFolderName, projectName)
 
             return true
         }

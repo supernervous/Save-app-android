@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.services.webdav
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import com.google.common.net.UrlEscapers
@@ -14,7 +13,6 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -27,9 +25,6 @@ class WebDavConduit(
 
     private var mContinueUpload = true
 
-    @SuppressLint("SimpleDateFormat")
-    private val mDateFormat = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
-
 
     override suspend fun upload(): Boolean {
         val space = mMedia.space ?: return false
@@ -40,9 +35,8 @@ class WebDavConduit(
             return uploadUsingChunking(client)
         }
 
-        val mediaUri = Uri.parse(mMedia.originalFilePath)
+        val mediaUri = mMedia.fileUri
         val basePath = mMedia.serverUrl
-        val folderName = mDateFormat.format(mMedia.createDate ?: Date())
         val fileName: String = getUploadFileName(mMedia)
 
         val sb = StringBuffer() //server + '/' + basePath;
@@ -67,7 +61,7 @@ class WebDavConduit(
         try {
             if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
 
-            projectFolderPath += "/$folderName"
+            projectFolderPath += "/$mFolderName"
 
             if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
 

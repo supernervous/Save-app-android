@@ -102,8 +102,6 @@ class UploadService : Service() {
             val datePublish = Date()
 
             for (media in results) {
-                val project = media.project
-
                 if (media.sStatus != Media.Status.Uploading) {
                     media.uploadDate = datePublish
                     media.progress = 0 // Should we reset this?
@@ -111,14 +109,17 @@ class UploadService : Service() {
                     media.statusMessage = ""
                 }
 
-                media.licenseUrl = project?.licenseUrl
+                media.licenseUrl = media.project?.licenseUrl
+
+                val collection = media.collection
+
+                if (collection?.uploadDate == null) {
+                    collection?.uploadDate = datePublish
+                    collection?.save()
+                }
 
                 try {
-                    if (upload(media)) {
-                        val collection = media.collection
-                        collection?.uploadDate = datePublish
-                        collection?.save()
-                    }
+                    upload(media)
                 }
                 catch (ioe: IOException) {
                     Timber.d(ioe)

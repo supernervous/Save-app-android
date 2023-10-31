@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
@@ -17,11 +18,20 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 abstract class Conduit(
     protected val mMedia: Media,
     protected val mContext: Context
 ) {
+
+    @SuppressLint("SimpleDateFormat")
+    protected val mDateFormat = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
+
+    protected val mFolderName: String
+        get() = mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
+
 
     /**
      * Gives a SiteController a chance to add metadata to the intent resulting from the ChooseAccounts process
