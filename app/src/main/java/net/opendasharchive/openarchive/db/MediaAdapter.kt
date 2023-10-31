@@ -220,7 +220,7 @@ class MediaAdapter(
         removeItem(item.id)
 
         mActivity.get()?.let {
-            BroadcastManager.advertiseDelete(it, item.id)
+            BroadcastManager.postDelete(it, item.id)
         }
     }
 

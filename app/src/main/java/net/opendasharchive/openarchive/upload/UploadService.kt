@@ -149,7 +149,7 @@ class UploadService : Service(), Runnable {
         media.serverUrl = serverUrl
         media.sStatus = Media.Status.Uploading
         media.save()
-        BroadcastManager.advertiseChange(this, media.id)
+        BroadcastManager.postChange(this, media.id)
 
         val conduit = Conduit.get(media, this)
             ?: return false

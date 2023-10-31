@@ -77,7 +77,7 @@ abstract class Conduit(
         mMedia.sStatus = Media.Status.Uploaded
         mMedia.save()
 
-        BroadcastManager.advertiseChange(mContext, mMedia.id)
+        BroadcastManager.postChange(mContext, mMedia.id)
     }
 
     fun jobFailed(exception: Throwable) {
@@ -87,14 +87,14 @@ abstract class Conduit(
 
         Timber.d(exception)
 
-        BroadcastManager.advertiseChange(mContext, mMedia.id)
+        BroadcastManager.postChange(mContext, mMedia.id)
     }
 
     fun jobProgress(uploadedBytes: Long) {
         mMedia.progress = uploadedBytes
         mMedia.save()
 
-        BroadcastManager.advertiseChange(mContext, mMedia.id)
+        BroadcastManager.postChange(mContext, mMedia.id)
     }
 
     companion object {

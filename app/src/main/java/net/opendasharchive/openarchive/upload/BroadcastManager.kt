@@ -15,14 +15,14 @@ object BroadcastManager {
 
     private const val MEDIA_ID = "media_id"
 
-    fun advertiseChange(context: Context, mediaId: Long) {
+    fun postChange(context: Context, mediaId: Long) {
         val i = Intent(Action.Change.id)
         i.putExtra(MEDIA_ID, mediaId)
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(i)
     }
 
-    fun advertiseDelete(context: Context, mediaId: Long) {
+    fun postDelete(context: Context, mediaId: Long) {
         val i = Intent(Action.Delete.id)
         i.putExtra(MEDIA_ID, mediaId)
 
