@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.publish
+package net.opendasharchive.openarchive.upload
 
 import android.app.*
 import android.app.job.JobInfo
@@ -235,7 +235,7 @@ class UploadService : Service(), Runnable {
 
         fun scheduleJob(context: Context) {
             val job = JobInfo.Builder(MY_BACKGROUND_JOB,
-                ComponentName(context, PublishJobService::class.java))
+                ComponentName(context, UploadJobService::class.java))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setRequiresCharging(false)
                 .build()

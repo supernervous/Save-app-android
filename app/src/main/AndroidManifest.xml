@@ -56,7 +56,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".publish.UploadManagerActivity"
+            android:name=".upload.UploadManagerActivity"
             android:exported="false"
             android:label="@string/title_activity_upload_manager"
             android:taskAffinity=""
@@ -224,11 +224,11 @@
         </provider>
 
         <service
-            android:name=".publish.UploadService"
+            android:name=".upload.UploadService"
             android:exported="false" />
 
         <service
-            android:name=".publish.PublishJobService"
+            android:name=".upload.UploadJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>

@@ -7,8 +7,8 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
-import net.opendasharchive.openarchive.publish.BroadcastManager
-import net.opendasharchive.openarchive.publish.UploadManagerActivity
+import net.opendasharchive.openarchive.upload.BroadcastManager
+import net.opendasharchive.openarchive.upload.UploadManagerActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle

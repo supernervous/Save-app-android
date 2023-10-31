@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".publish.UploadManagerActivity"
+    tools:context=".upload.UploadManagerActivity"
     tools:showIn="@layout/activity_upload_manager">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragUploadManager"
-        android:name="net.opendasharchive.openarchive.publish.UploadManagerFragment"
+        android:name="net.opendasharchive.openarchive.upload.UploadManagerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

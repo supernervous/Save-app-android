@@ -8,7 +8,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import net.opendasharchive.openarchive.publish.UploadService
+import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import timber.log.Timber

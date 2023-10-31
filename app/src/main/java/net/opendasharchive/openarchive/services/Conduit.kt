@@ -6,7 +6,7 @@ import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.publish.BroadcastManager
+import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.publish
+package net.opendasharchive.openarchive.upload
 
 import android.os.Bundle
 import android.view.LayoutInflater

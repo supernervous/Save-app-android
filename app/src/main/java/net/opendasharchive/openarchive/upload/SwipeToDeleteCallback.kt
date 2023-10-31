@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.publish
+package net.opendasharchive.openarchive.upload
 
 import android.content.Context
 import android.graphics.Canvas
