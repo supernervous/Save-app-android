@@ -2,7 +2,8 @@ package net.opendasharchive.openarchive
 
 import android.app.Activity
 import android.content.Context
-import com.maxkeppeler.sheets.info.InfoSheet
+import android.content.Intent
+import net.opendasharchive.openarchive.features.settings.ConsentActivity
 import org.cleaninsights.sdk.*
 
 @Suppress("unused")
@@ -12,6 +13,8 @@ object CleanInsightsManager  {
 
     private var mCi: CleanInsights? = null
 
+    private var mCompleted: ((granted: Boolean) -> Unit)? = null
+
     fun init(context: Context) {
         mCi = CleanInsights(
             context.assets.open("cleaninsights.json").reader().use { it.readText() },
@@ -20,6 +23,21 @@ object CleanInsightsManager  {
 
     fun hasConsent(): Boolean {
         return mCi?.isCampaignCurrentlyGranted(CI_CAMPAIGN) ?: false
+    }
+
+    fun deny() {
+        mCi?.deny(CI_CAMPAIGN)
+
+        mCompleted?.invoke(false)
+        mCompleted = null
+    }
+
+    fun grant() {
+        mCi?.grant(CI_CAMPAIGN)
+        mCi?.grant(Feature.Lang)
+
+        mCompleted?.invoke(true)
+        mCompleted = null
     }
 
     fun getConsent(context: Activity, completed: (granted: Boolean) -> Unit) {
@@ -33,17 +51,9 @@ object CleanInsightsManager  {
                 campaign: Campaign,
                 complete: ConsentRequestUiComplete
             ) {
-                // TODO: See iOS - this screen needs to get way better.
-                InfoSheet().show(context) {
-                    title(context.getString(R.string.ci_title))
-                    content(context.getString(R.string.clean_insight_consent_prompt))
-                    onNegative(context.getString(R.string.ci_negative)) {
-                        complete(false)
-                    }
-                    onPositive(context.getString(R.string.ci_confirm)) {
-                        complete(true)
-                    }
-                }
+                mCompleted = completed
+
+                context.startActivity(Intent(context, ConsentActivity::class.java))
             }
 
             override fun show(feature: Feature, complete: ConsentRequestUiComplete) {

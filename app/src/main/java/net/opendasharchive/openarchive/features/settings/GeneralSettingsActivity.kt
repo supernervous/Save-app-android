@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import info.guardianproject.netcipher.proxy.OrbotHelper
+import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySettingsContainerBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -16,6 +18,8 @@ import net.opendasharchive.openarchive.util.Theme
 class GeneralSettingsActivity: BaseActivity() {
 
     class Fragment: PreferenceFragmentCompat() {
+
+        private var mCiConsentPref: SwitchPreferenceCompat? = null
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.prefs_general, rootKey)
@@ -64,6 +68,25 @@ class GeneralSettingsActivity: BaseActivity() {
 
                 true
             }
+
+            mCiConsentPref = findPreference("health_checks")
+
+            mCiConsentPref?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue as? Boolean == false) {
+                    CleanInsightsManager.deny()
+                }
+                else {
+                    startActivity(Intent(context, ConsentActivity::class.java))
+                }
+
+                true
+            }
+        }
+
+        override fun onResume() {
+            super.onResume()
+
+            mCiConsentPref?.isChecked = CleanInsightsManager.hasConsent()
         }
     }
 

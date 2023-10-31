@@ -162,10 +162,6 @@
 
 
     <!-- Clean Insights measurement -->
-    <string name="clean_insight_consent_prompt">We are trying to understand why uploads fail sometimes, and would like to take some limited, anonymous measurements.</string>
-    <string name="ci_title">Help us make Save better</string>
-    <string name="ci_negative">No way</string>
-    <string name="ci_confirm">Sure</string>
     <string name="server_name_optional">Server Name (Optional)</string>
     <string name="dropbox_id">Dropbox ID:</string>
     <string name="add_another_account">Add Another Account</string>
@@ -267,5 +263,19 @@
     <string name="add_media_using">Add Media using:</string>
     <string name="photo_galery">Photo Galery</string>
     <string name="files">Files</string>
+    <string name="health_checks">Health Checks</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Help improve the app by running health checks when uploads fail.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Health checks help us understand why uploads fail.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Contribute your data to be part of the solution.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">With your permission, we\'ll run a check each time you encounter an error while uploading.</string>
+    <string name="health_checks_capture">Health checks capture</string>
+    <string name="error_description">– Error description</string>
+    <string name="size_and_type_of_media">– Size and type of media</string>
+    <string name="number_of_retries">– Number of retries</string>
+    <string name="network_type">– Network type</string>
+    <string name="locale">– Locale</string>
+    <string name="allow_health_checks">Allow health checks?</string>
+    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">By allowing health checks, you give permission for the app to securely send health check data to the %s team.</string>
+    <string name="no_thanks">No thanks</string>
 
 </resources>

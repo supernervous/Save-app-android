@@ -191,11 +191,17 @@
             android:label="@string/title_activity_new_project"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".features.settings.EditFolderActivity"
             android:label="@string/title_activity_new_project"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".features.settings.ConsentActivity"
+            android:label="@string/health_checks"
+            android:taskAffinity="" />
 
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"

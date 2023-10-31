@@ -51,4 +51,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/health_checks">
+
+        <SwitchPreferenceCompat
+            app:key="health_checks"
+            app:title="@string/health_checks"
+            app:singleLineTitle="false"
+            app:summary="@string/help_improve_the_app_by_running_health_checks_when_uploads_fail" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
