@@ -5,14 +5,18 @@
     <string name="title_media_list">Загруженная информация</string>
 
     <!-- General -->
+
+    <!-- Default Values -->
     <string name="default_tags">OpenArchive</string>
+
+    <!-- Alert Values -->
 
     <string name="action_settings">Настройки</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Интернет архив</string>
 
-    <!-- MainFragment -->
+    <!-- Errors -->
 
     <!-- Server -->
     <string name="lbl_Cancel">Отмена</string>
@@ -26,26 +30,25 @@
     <string name="action_cancel">Отмена</string>
 
     <string name="error">Ошибка</string>
-    <string name="prefs_prohibit_screenshots_title">Не допускать скриншоты</string>
 
-    <string name="prefs_theme_title">Стиль</string>
+    <string name="prefs_prohibit_screenshots_title">Не допускать скриншоты</string>
+    <string name="prefs_theme_title">Тема</string>
     <string name="prefs_theme_light">Светлая</string>
     <string name="prefs_theme_dark">Темная</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Имя пользователя</string>
     <string name="prompt_password">Пароль</string>
     <string name="error_incorrect_username_or_password">Неверное имя пользователя или пароль</string>
     <string name="error_field_required">Это обязательное поле</string>
+
     <string name="title_welcome">Добро пожаловать</string>
 
     <string name="action_privacy">Политика обеспечения конфиденциальности.</string>
     <string name="uploads">Загруженная информация</string>
     <string name="uploading">Загрузка…</string>
-
     <string name="action_upload">Загрузить</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">Далее</string>
     <string name="action_done">Готово</string>
@@ -62,6 +65,7 @@
     <string name="new_folder">Новый каталог</string>
     <string name="dropbox">Внесите свои данные, чтобы стать частью решения.</string>
     <string name="metadata">Метаданные</string>
+
     <string name="popup_flag_title">Отметить важное содержание</string>
     <string name="popup_flag_desc">Когда вы отмечаете элемент, он направляется в подпапку  выбранного проекта на частном сервере.</string>
 
@@ -77,8 +81,23 @@
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">Выгружать медиа данные только когда вы подключены к Wi-Fi</string>
     <string name="security">Безопасность</string>
     <string name="next">Далее</string>
+    <string name="done">Готово</string>
     <string name="secure_mobile_media_preservation">Безопасное сохранение мобильных медиа данных</string>
     <string name="get_started">Начало работы</string>
     <string name="refresh">Обновить</string>
     <string name="select_all">Выбрать все</string>
+    <string name="got_it">ОК</string>
+    <string name="skip">Пропустить</string>
+    <string name="retry">Повторить</string>
+
+    <string name="files">Файлы</string>
+    <string name="health_checks">Проверка работоспособности</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Помогите улучшить приложение, запустив проверки работоспособности при сбое загрузки.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Проверки работоспособности помогают нам понять, почему загрузка не удалась.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Внесите свои данные, чтобы стать частью решения.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">С вашего разрешения мы будем проводить проверку каждый раз, когда вы сталкиваетесь с ошибкой при загрузке.</string>
+    <string name="health_checks_capture">Проверка работоспособности покрывает</string>
+    <string name="allow_health_checks">Разрешить проверку работоспособности?</string>
+    <string name="no_thanks">Нет, спасибо</string>
+
 </resources>

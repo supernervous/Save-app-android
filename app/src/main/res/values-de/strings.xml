@@ -5,14 +5,19 @@
     <string name="title_media_list">Uploads</string>
 
     <!-- General -->
+
+    <!-- Default Values -->
     <string name="default_tags">OpenArchive</string>
+
+    <!-- Alert Values -->
 
     <string name="action_settings">Einstellungen</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
 
-    <!-- MainFragment -->
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">Abbrechen</string>
     <string name="lbl_ok">OK</string>
@@ -35,9 +40,9 @@
     <string name="action_cancel">Abbrechen</string>
 
     <string name="error">Fehler</string>
-    <string name="prefs_prohibit_screenshots_title">Bildschirmfotos blockieren</string>
 
-    <string name="prefs_theme_title">Aussehen</string>
+    <string name="prefs_prohibit_screenshots_title">Bildschirmfotos blockieren</string>
+    <string name="prefs_theme_title">Design</string>
     <string name="prefs_theme_light">Hell</string>
     <string name="prefs_theme_dark">Dunkel</string>
     <string name="prefs_use_proofmode_title">Aktiviere ProofMode</string>
@@ -46,22 +51,22 @@
     <string name="prefs_share_proofmode_summary">Teile öffentlichen ProofMode Schlüssel</string>
 
 
+    <!-- Strings for nearby sharing -->
+
     <!-- Strings related to login -->
     <string name="prompt_email">Benutzername</string>
     <string name="prompt_password">Passwort</string>
     <string name="action_sign_in_short">Anmelden</string>
     <string name="error_incorrect_username_or_password">Benutzername oder Passwort falsch</string>
     <string name="error_field_required">Dieses Feld darf nicht leer sein</string>
+
     <string name="title_welcome">Willkommen</string>
 
     <string name="action_privacy">Datenschutzbestimmungen</string>
     <string name="action_about">Über %s</string>
     <string name="uploads">Uploads</string>
     <string name="uploading">Hochladen…</string>
-
     <string name="action_upload">Upload</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">Weiter</string>
     <string name="action_done">Fertig</string>
@@ -78,10 +83,12 @@
     <string name="new_folder">Neues Verzeichnis</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadaten</string>
+
     <string name="popup_flag_title">Besonderen Inhalt markieren</string>
     <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>
 
     <string name="action_install">Installieren</string>
+    <string name="add_another_account">Server hinzufügen</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
     <string name="prefs_proofmode_key_encryption_summary">Wenn Du das änderst, wird ein neuer Schlüssel generiert! Wenn Du den Vorherigen exportiert und signiert hast, wirst Du das mit dem Neuen wiederholen müssen.</string>
     <string name="folders">Ordner</string>
@@ -90,14 +97,33 @@
     <string name="upload_to_dropbox">Auf Dropbox hochladen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="back">Zurück</string>
+    <string name="my_media">Meine Medien</string>
     <string name="account">Konto</string>
     <string name="general">Allgemein</string>
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">Medien nur über WLAN hochladen</string>
     <string name="security">Sicherheit</string>
+    <string name="proofmode">ProofMode</string>
     <string name="next">Weiter</string>
+    <string name="done">Fertig</string>
     <string name="secure_mobile_media_preservation">Sichere Bewahrung mobiler Medien</string>
     <string name="get_started">Los gehts</string>
     <string name="refresh">Aktualisieren</string>
     <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
     <string name="select_all">Alles auswählen</string>
+    <string name="got_it">Verstanden</string>
+    <string name="skip">Überspringen</string>
+    <string name="add_files">Dateien hinzufügen</string>
+
+    <string name="retry">Erneut versuchen</string>
+
+    <string name="files">Dateien</string>
+    <string name="health_checks">Gesundheitscheck</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Hilf mit, die App durch Gesundheitschecks besser zu machen, wenn das Hochladen fehlschlägt.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Gesundheitschecks helfen uns zu verstehen, warum das Hochladen manchmal fehlschlägt.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Spende Deine Daten um Teil der Lösung zu werden.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Mit Deiner Erlaubnis lassen wir jedes Mal einen Check laufen, wenn ein Fehler beim Hochladen auftritt.</string>
+    <string name="health_checks_capture">Gesundheitschecks erfassen</string>
+    <string name="allow_health_checks">Erlaube Gesundheitschecks?</string>
+    <string name="no_thanks">Nein danke</string>
+
 </resources>

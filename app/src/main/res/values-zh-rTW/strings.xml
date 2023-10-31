@@ -4,10 +4,12 @@
     <string name="title_activity_login">登入</string>
     <string name="title_media_list">上傳項目</string>
 
-    <!-- General -->
+    <!-- Alert Values -->
+
     <string name="action_settings">設定</string>
 
-    <!-- MainFragment -->
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">取消</string>
     <string name="lbl_ok">正常</string>
@@ -17,12 +19,13 @@
     <string name="action_cancel">取消</string>
 
     <string name="error">錯誤</string>
-    <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
 
+    <string name="prefs_prohibit_screenshots_title">關閉螢幕截圖</string>
     <string name="prefs_user_interface_title">呈現</string>
-    <string name="prefs_theme_title">風格</string>
+    <string name="prefs_theme_title">主題</string>
     <string name="prefs_theme_light">亮色</string>
     <string name="prefs_theme_dark">深色</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">用戶名</string>
@@ -30,12 +33,12 @@
     <string name="action_sign_in_short">登入</string>
     <string name="error_incorrect_username_or_password">不正確的用戶帳號和密碼</string>
     <string name="error_field_required">這是必填欄位</string>
+
     <string name="title_welcome">歡迎</string>
+
     <string name="action_privacy">隱私政策</string>
     <string name="uploads">上傳項目</string>
     <string name="action_upload">上傳</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">下一個</string>
     <string name="action_done">完成</string>
@@ -56,7 +59,15 @@
     <string name="general">一般</string>
     <string name="security">安全</string>
     <string name="next">下一個</string>
+    <string name="done">完成</string>
     <string name="get_started">開始</string>
     <string name="refresh">更新</string>
     <string name="select_all">選擇全部</string>
+    <string name="got_it">收到</string>
+    <string name="skip">跳過</string>
+    <string name="retry">重試</string>
+
+    <string name="files">檔案</string>
+    <string name="no_thanks">不，謝謝</string>
+
 </resources>

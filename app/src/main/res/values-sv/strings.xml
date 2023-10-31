@@ -4,10 +4,12 @@
     <string name="title_activity_login">Logga in</string>
     <string name="title_media_list">Uppladdningar</string>
 
-    <!-- General -->
+    <!-- Alert Values -->
+
     <string name="action_settings">Inställningar</string>
 
-    <!-- MainFragment -->
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">Avbryt</string>
     <string name="lbl_ok">OK</string>
@@ -17,22 +19,24 @@
     <string name="action_cancel">Avbryt</string>
 
     <string name="error">Fel</string>
+
     <string name="prefs_user_interface_title">Presentation</string>
-    <string name="prefs_theme_title">Stil</string>
+    <string name="prefs_theme_title">Tema</string>
     <string name="prefs_theme_light">Ljust</string>
     <string name="prefs_theme_dark">Mörkt</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Användarnamn</string>
     <string name="prompt_password">Lösenord</string>
     <string name="error_incorrect_username_or_password">Felaktigt användarnamn eller lösenord</string>
     <string name="error_field_required">Detta fält krävs</string>
+
     <string name="title_welcome">Välkommen</string>
+
     <string name="action_privacy">Integritetspolicy</string>
     <string name="uploads">Uppladdningar</string>
     <string name="action_upload">Ladda upp</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">Nästa</string>
     <string name="action_done">Färdig</string>
@@ -51,7 +55,13 @@
     <string name="general">Generell</string>
     <string name="security">Säkerhet</string>
     <string name="next">Nästa</string>
+    <string name="done">Färdig</string>
     <string name="get_started">Kom igång</string>
     <string name="refresh">Ladda om sidan</string>
     <string name="select_all">Markera allt</string>
-</resources>
+    <string name="got_it">Förstått</string>
+    <string name="skip">Hoppa över</string>
+    <string name="retry">Försök igen</string>
+
+    <string name="files">Filer</string>
+    </resources>

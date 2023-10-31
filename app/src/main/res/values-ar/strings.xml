@@ -11,20 +11,25 @@
     <!-- Default Values -->
     <string name="default_tags">OpenArchive</string>
 
+    <!-- Alert Values -->
+
     <string name="action_settings">الإعدادات</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
     <!-- MainFragment -->
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">صورة رئيسية</string>
 
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">إلغاء</string>
     <string name="lbl_ok">موافق</string>
-
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
     <string name="info_license_sharealike">Require modified versions to also share?</string>
@@ -44,12 +49,13 @@
     <string name="action_cancel">إلغاء</string>
 
     <string name="error">خطأ</string>
-    <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
 
+    <string name="prefs_prohibit_screenshots_title">حظر لقطات الشاشة</string>
     <string name="prefs_user_interface_title">التقديم</string>
-    <string name="prefs_theme_title">النمط</string>
+    <string name="prefs_theme_title">السمة</string>
     <string name="prefs_theme_light">نهاري</string>
     <string name="prefs_theme_dark">ليلي</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">اسم المستخدم</string>
@@ -57,20 +63,18 @@
     <string name="action_sign_in_short">الولوج</string>
     <string name="error_incorrect_username_or_password">اسم المستخدم أو كلمة السر غير صحيحة</string>
     <string name="error_field_required">هذا الحقل إلزامي</string>
+
     <string name="title_welcome">مرحباً</string>
 
     <string name="action_privacy">سياسة الخصوصية</string>
     <string name="uploads">الملفات المرفوعة</string>
     <string name="uploading">تحميل…</string>
-
     <string name="action_upload">رفع</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">التالي</string>
     <string name="action_done">مُنجَز</string>
     <string name="status_flagged">محتوى مميز</string>
-    <string name="edit">عدّل</string>
+    <string name="edit">تحرير</string>
     <string name="menu_done">مُنجَز</string>
     <string name="remove_from_app">احذف من التطبيق</string>
     <string name="remove">إزالة</string>
@@ -98,8 +102,17 @@
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">ارفع الوسائط عندما تكون متصلا بالشيكة اللاسلكية فقط</string>
     <string name="security">نعم</string>
     <string name="next">التالي</string>
+    <string name="done">مُنجَز</string>
     <string name="secure_mobile_media_preservation">الحفظ الآمن لوسائط المحمول</string>
     <string name="get_started">بدء الاستخدام</string>
     <string name="refresh">تحديث</string>
     <string name="select_all">حدد الكل</string>
+    <string name="got_it">فهمت</string>
+    <string name="skip">تخطي</string>
+    <string name="retry">إعادة المحاولة</string>
+
+    <string name="edit_media">تعديل الوسائط</string>
+    <string name="files">الملفات</string>
+    <string name="no_thanks">لا شكراً</string>
+
 </resources>

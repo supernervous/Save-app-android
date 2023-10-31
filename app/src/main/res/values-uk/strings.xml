@@ -3,14 +3,41 @@
 
     <string name="title_activity_login">Увійти</string>
     <!-- General -->
+
+    <!-- Default Values -->
     <string name="default_tags">OpenArchive</string>
+
+    <!-- Alert Values -->
 
     <string name="action_settings">Налаштування</string>
 
+    <!-- FirstStartActivity -->
+    <string name="internet_archive">Internet Archive</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
+
     <!-- MainFragment -->
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">Зображення людини</string>
+
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">Скасувати</string>
     <string name="lbl_ok">Гаразд</string>
+    <string name="archive_title">підтвердження електронною поштою</string>
+    <string name="archive_message">Підтвердьте свою адресу електронної пошти та поверніться, щоб підключити обліковий запис Internet Archive.</string>
+
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Дозволити будь-кому видозмінювати та поширювати</string>
+    <string name="info_license_comm">Дозволити комерційне використання?</string>
+
     <string name="menu_delete">Вилучити медіа</string>
 
     <string name="hint_flag">Торкніться, щоб позначити як важливий вміст</string>
@@ -20,11 +47,23 @@
     <string name="action_cancel">Скасувати</string>
 
     <string name="error">Помилка</string>
-    <string name="prefs_prohibit_screenshots_title">Блокувати скріншоти</string>
 
-    <string name="prefs_theme_title">Стиль</string>
+    <string name="prefs_use_tor_summary">Передавати тільки через Orbot</string>
+    <string name="prefs_prohibit_screenshots_title">Блокувати скріншоти</string>
+    <string name="prefs_prohibit_screenshots_summary">Заборонити знімки екрана та записи екрана цієї програми</string>
+
+    <string name="prefs_user_interface_title">презентація</string>
+    <string name="prefs_theme_title">Тема</string>
+    <string name="prefs_theme_summary">Змінити Зберігає тему на світлу/темну</string>
+    <string name="prefs_theme_system">Контролюється системою</string>
     <string name="prefs_theme_light">Світла</string>
     <string name="prefs_theme_dark">Темна</string>
+    <string name="prefs_use_proofmode_summary">Зберіть додаткові метадані та нотаріально завірте всі носії</string>
+
+    <string name="prefs_share_proofmode_summary">Поширити публічний ключ ProofMode</string>
+
+
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Ім\'я користувача</string>
@@ -32,17 +71,33 @@
     <string name="action_sign_in_short">Увійти</string>
     <string name="error_incorrect_username_or_password">Неправильний логін або пароль</string>
     <string name="error_field_required">Це поле - обов\'язкове</string>
+
     <string name="title_welcome">Ласкаво просимо</string>
 
     <string name="action_privacy">Політика конфіденційності</string>
-    <string name="uploading">Завантаження…</string>
+    <string name="action_about">близько %s</string>
+    <string name="add_a_folder">Додати папку</string>
+    <string name="browse_existing_folders">View existing folders</string>
+    <string name="browse_existing">View existing folders</string>
+    <string name="title_activity_upload_manager">менеджер завантаження</string>
 
+    <string name="uploading">Завантаження…</string>
     <string name="action_upload">Додати</string>
 
-    <!-- Strings related to Settings -->
-
+    <string name="tap_to_add">Натисни на кнопку нижче щоб додати файли</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Щоб розпочати, під’єднайся до сховища для зберігання твоїх медіа.</string>
+    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">У бічному меню ви можете додати інший простір для зберігання та підключитися до кількох серверів</string>
+    <string name="send_directly_to_a_private_server">Відправка на сервер WebDAV</string>
+    <string name="upload_to_the_internet_archive">Завантаження до Internet Archive</string>
+    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> може під’єднуватися лише до WebDAV-підтримуваних серверів, як Nextcloud і Owncloud</string>
     <string name="action_next">Вперед</string>
     <string name="action_done">Готово</string>
+    <string name="status_flagged">важливий контент</string>
+    <string name="select_where_to_store_your_media">Обери, де зберігати твої медіафайли</string>
+    <string name="you_have_successfully_connected_to_a_private_server">Ти успішно під’єдналась / під’єднався до приватного сервера!</string>
+    <string name="you_have_successfully_connected_to_dropbox">Ти успішно під’єдналась / під’єднався до Dropbox!</string>
+    <string name="you_have_successfully_connected_to_the_internet_archive">Ти успішно під’єдналась / під’єднався до Internet Archive!</string>
+    <string name="create_a_new_folder">Створити нову папку</string>
     <string name="edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>
@@ -51,24 +106,98 @@
     <string name="action_unarchive_project">Розархівувати проєкт</string>
     <string name="access_key">Ключ доступу</string>
     <string name="secret_key">Секретний Ключ</string>
+    <string name="info_archiveorg_keys"><b><i>Save</i></b>потрібні ключі API твого акаунта Internet Archive для завантаження файлів.</string>
     <string name="action_acquire_keys">Отримати ключі</string>
     <string name="new_folder">Нова папка</string>
+    <string name="please_do_not_include_special_characters_in_the_name">Будь ласка, не використовуйте спеціальні символи в назві</string>
+    <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Ви впевнені, що хочете видалити цей сервер із програми?</string>
+    <string name="folder_name_already_exists">Назва папки вже існує</string>
     <string name="dropbox">Dropbox</string>
     <string name="metadata">Метадані</string>
+
+    <string name="confirm_remove_media">Ти впевнена / впевнений?</string>
+
     <string name="popup_flag_title">Позначте важливий контент</string>
+    <string name="popup_flag_desc">Коли ти позначаєш елемент, він поміщається до підпапки у вибраній папці на сервері для захисту глядачів.</string>
+
     <string name="action_install">Встановити</string>
     <string name="login_activity_logging_message">Вхід…</string>
-    <string name="folders">Теки</string>
+    <string name="you_already_have_a_server_with_these_credentials">У вас уже є сервер із цими обліковими даними</string>
+    <string name="tor_connection_exception">Неможливо підключитися до Orbot/Tor</string>
+    <string name="tor_connection_timeout">Неможливо підключитися до Orbot/Tor: Тайм-аут</string>
+    <string name="tor_connection_invalid">Неможливо підключитися до Orbot/Tor: Недійсний</string>
+    <string name="unsecured_internet_connection">Виявлено незахищене підключення до Інтернету</string>
+    <string name="version__">Версія %s</string>
+
+
+    <!-- Clean Insights measurement -->
+    <string name="server_name_optional">назву сервера (опціонально)</string>
+    <string name="dropbox_id">Вхід в Dropbox</string>
+    <string name="add_another_account">Додати інший акаунт</string>
+    <string name="prefs_proofmode_key_encryption_title_all">Захистіть ключ ProofMode біометричними даними або паролем пристрою</string>
+    <string name="prefs_proofmode_key_encryption_title_biometrics">Захистіть ключ ProofMode з біометричними даними</string>
+    <string name="prefs_proofmode_key_encryption_title_passcode">Захистіть ключ ProofMode паролем пристрою</string>
+    <string name="prefs_proofmode_key_encryption_summary">Якщо змінити це, буде створено новий ключ! Якщо ви експортували та підписали цей раніше, вам потрібно буде зробити це знову з новим.</string>
+    <string name="biometrics_title">Розблокувати ProofMode</string>
+    <string name="folders">Папки</string>
+    <string name="create_folder_name">Створити нову назву папки</string>
+    <string name="folder_name">Назва папки</string>
     <string name="create">Створити</string>
     <string name="add">Додати</string>
+    <string name="no_more_folders">Немає (більше) папок</string>
+    <string name="private_server">Приватний сервер</string>
     <string name="upload_to_dropbox">Завантажити до Dropbox</string>
+    <string name="sign_in_or_create_an_account_with_dropbox">Увійди або створи акаунт у Dropbox</string>
     <string name="authenticate">Авторизуйтесь</string>
     <string name="back">Назад</string>
+    <string name="my_media">Мої медіафайли</string>
+    <string name="if_you_do_not_have_existing_keys_learn_how_to_acquire_keys">Якщо у тебе немає існуючих ключів — <b>дізнайся, як </b>отримати ключі.</string>
+    <string name="server_info">Інформація про сервер</string>
+    <string name="enter_url">Введіть URL</string>
     <string name="account">Обліковий запис</string>
     <string name="general">Загальні</string>
+    <string name="connectivity_data"><![CDATA[Підключення та дані]]></string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Завантажувати медіа тільки коли є підключення Wi-Fi</string>
     <string name="security">Безпека</string>
+    <string name="proofmode">ProofMode</string>
+    <string name="no_webbrowser_found_error">Жодна програма не може обробити цей запит. Будь ласка, встановіть веб-браузер.</string>
+
+    <string name="intro_text_share">
+Завантажуй верифіковані медіафайли на власний обраний сервер. Додавай ліцензію Creative Commons, щоб позначити політику їх використання у майбутньому.</string>
+    <string name="intro_text_archive">
+Зберігай свої медіа у безпеці та порядку для довгострокового використання, створюючи у застосунку папки проєктів, які відображатимуть як твій особистий, так і медіаархів твоєї організації.</string>
+    <string name="intro_text_verify">Перевіряй свої медіа криптографічною верифікацією за допомогою хеша sha256 та опціонального ProofMode. Зберігай критичні метадані (наприклад нотатки, людей, локації) у кожному завантаженні.</string>
     <string name="next">Вперед</string>
+    <string name="done">Готово</string>
+    <string name="secure_mobile_media_preservation">Безпечне збереження медіафайлів з мобільних пристроїв</string>
     <string name="get_started">Почати</string>
+    <string name="proofmode_permissions_explanation">ProofMode збирає метадані з веж стільникового зв’язку неподалік, щоб допомогти перевірити медіа. Android вимагає дозволу для увімкнення цієї функції. Save використовуватиме це налаштування лище для захоплення даних і НЕ отримає доступу до керування і здійснення дзвінків з твого телефону.</string>
+    <string name="archived_folders">архівні папки</string>
+    <string name="view_archived_folders">Переглянути архівні папки</string>
+    <string name="learn_more_about_creative_commons">Дізнатися більше про Creative Commons</string>
     <string name="refresh">Оновити</string>
+    <string name="to_get_started_please_create_a_folder">Щоб розпочати, будь ласка, створи папку</string>
+    <string name="before_adding_media_create_a_new_folder_first">Перш ніж додавати файли, потрібно створити нову папку</string>
+    <string name="is_video">- відео</string>
+    <string name="use_upload_chunking_nextcloud_only">Використовувати дроблення під час завантаження (лише NextCloud)</string>
+    <string name="chunking_explanation">Функція “Дроблення” завантажує файли шматками — у випадку переривання з’єднання не доведеться починати завантаження спочатку.</string>
+    <string name="preview_media">Попередній перегляд</string>
+    <string name="add_more">Додати більше</string>
     <string name="select_all">Вибрати всі</string>
+    <string name="got_it">Зрозуміло</string>
+    <string name="do_not_show_me_this_again">Не показувати знову</string>
+    <string name="edit_multiple">Редагувати обрані</string>
+    <string name="press_and_hold_to_select_and_edit_multiple_media">Натисни й утримуй щоб обрати кілька файлів і редагувати обрані</string>
+    <string name="once_uploaded_you_will_not_be_able_to_edit_media">Коли файли завантажаться, ти не зможеш їх редагувати</string>
+    <string name="edit_media_info">Редагувати дані файлу</string>
+    <string name="counter">%1$d/%2$d</string>
+    <string name="add_a_location_optional">Додай розташування (опціонально)</string>
+    <string name="add_notes_optional">Додай нотатки (опціонально)</string>
+    <string name="skip">Пропустити</string>
+    <string name="retry">Повторити</string>
+
+    <string name="edit_media">Редагувати дані файлу</string>
+    <string name="files">Файли</string>
+    <string name="no_thanks">Ні, дякую</string>
+
 </resources>

@@ -61,7 +61,7 @@
     <string name="prefs_prohibit_screenshots_summary">Bu uygulamadan ekran görüntüsü ve ekran kaydı alınmasını engelleyin.</string>
 
     <string name="prefs_user_interface_title">Sunum</string>
-    <string name="prefs_theme_title">Biçim</string>
+    <string name="prefs_theme_title">Tema</string>
     <string name="prefs_theme_summary">Save temasını koyu ya da açık yapın</string>
     <string name="prefs_theme_system">Sistem tarafından denetleniyor</string>
     <string name="prefs_theme_light">Açık</string>
@@ -96,6 +96,7 @@
 
     <string name="uploads">Yüklemeler</string>
     <string name="uploading">Yükleniyor…</string>
+    <string name="uploading_left">Yükleniyor… (%d kaldı)</string>
 
     <string name="action_upload">Yükle</string>
 
@@ -115,6 +116,7 @@
     <string name="select_where_to_store_your_media">Ortamınızı saklamak istediğiniz yeri seçin.</string>
     <string name="you_have_successfully_connected_to_a_private_server">Özel bir sunucu ile bağlantı kurdunuz!</string>
     <string name="you_have_successfully_connected_to_dropbox">Dropbox ile bağlantı kurdunuz!</string>
+    <string name="you_have_successfully_connected_to_the_internet_archive">İnternet Archive ile bağlantı kurdunuz!</string>
     <string name="create_a_new_folder">Yeni klasör oluştur</string>
     <string name="edit">Düzenle</string>
     <string name="menu_done">Tamam</string>
@@ -140,6 +142,9 @@
     <string name="popup_flag_title">Önemli içerik olarak işaretle</string>
     <string name="popup_flag_desc">Bir ögeyi işaretlediğinizde, özel sunucu üzerinde seçilmiş proje klasöründeki bir alt klasöre yönlendirilir.</string>
 
+    <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Bu sunucudaki TÜM klasörler için aynı Creative Commons lisansı ayarlayın.</string>
+    <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Bu sunucudaki HER BİR klasör için ayrı Creative Commons lisansı ayarlayın.</string>
+
     <string name="action_install">Kur</string>
     <string name="login_activity_logging_message">Oturum açılıyor…</string>
     <string name="you_already_have_a_server_with_these_credentials">Bu kimlik doğrulama bilgileriyle zaten bir sunucunuz var</string>
@@ -151,10 +156,6 @@
 
 
     <!-- Clean Insights measurement -->
-    <string name="clean_insight_consent_prompt">Yüklemelerin neden bazen yapılamadığını anlamaya çalışıyoruz ve bazı sınırlı, anonim ölçümler yapmak istiyoruz.</string>
-    <string name="ci_title">Save uygulamasını geliştirmemize yardımcı olun</string>
-    <string name="ci_negative">Olmaz</string>
-    <string name="ci_confirm">Elbette</string>
     <string name="server_name_optional">Sunucu adı (isteğe bağlı)</string>
     <string name="dropbox_id">Dropbox kimliği:</string>
     <string name="add_another_account">Başka bir hesap ekle</string>
@@ -200,11 +201,12 @@
     </string>
     <string name="intro_text_encrypt"><![CDATA[
         TLS (Aktarım Katmanı Güvenliği) üzerinden otomatik olarak yükleme yapın
-        ve Tor ağı üzerinden aktarılan ortamınızı korumak için Orbot kullanın.
+        ve Tor ağı üzerinden aktarılan ortamınızı korumak için Orbot kullanın.<br />
         <br />
-        Gelişmiş ağ güvenliği sağlamak için <a href="#">Orbot kurun</a>.]]>
+        Gelişmiş ağ güvenliği sağlamak için <a href=\"#\">Orbot kurun</a>.]]>
     </string>
     <string name="next">Sonraki</string>
+    <string name="done">Tamam</string>
     <string name="lorem_ipsum_short_paragraph">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -234,4 +236,28 @@
     <string name="counter">%1$d/%2$d</string>
     <string name="add_a_location_optional">Bir konum ekle (isteğe bağlı)</string>
     <string name="add_notes_optional">Notlar ekle (isteğe bağlı)</string>
+    <string name="skip">Atla</string>
+    <string name="add_images_or_video">Görsel ya da video ekle</string>
+    <string name="add_files">Dosya ekle</string>
+
+    <string name="ia_learn_how_title">Anahtarları 3 kolay adımda nasıl alırsınız</string>
+    <string name="ia_learn_how_summary_step_1">1. adım: Internet Archive oturumu açın. Hesabınız yoksa bir hesap açın.</string>
+    <string name="ia_learn_how_summary_step_2">2. adım: Yeni bir hesap açıyorsanız e-posta adresinizi doğrulayın.</string>
+    <string name="ia_learn_how_summary_step_3">3. adım: Kutuyu işaretleyerek uygulamaya otomatik olarak yüklenecek API anahtarlarınızı oluşturun.</string>
+
+    <string name="upload_unsuccessful">Yükleme tamamlanamadı</string>
+    <string name="retry">Tekrar Dene</string>
+
+    <string name="edit_media">Ortamı düzenle</string>
+    <string name="uploading_is_paused">Yükleme duraklatıldı</string>
+    <string name="files">Dosyalar</string>
+    <string name="health_checks">Sağlık denetimleri</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Yüklemeler başarısız olduğunda sağlık denetimlerinin yapılmasına izin vererek uygulamanın geliştirilmesine yardımcı olun. </string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Sağlık denetimleri yüklemelerin neden başarısız olduğunu anlamamızı sağlar.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Çözümün bir parçası olmak için verilerinizle katkıda bulunun.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">İzninizi alarak, yükleme sırasında bir sorun çıktığında sağlık denetimi yapacağız.</string>
+    <string name="health_checks_capture">Sağlık denetimleri yapılıyor</string>
+    <string name="allow_health_checks">Sağlık denetimleri yapılabilsin</string>
+    <string name="no_thanks">Hayır, teşekkürler</string>
+
 </resources>

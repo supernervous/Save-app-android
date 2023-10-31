@@ -10,20 +10,25 @@
     <!-- Default Values -->
     <string name="default_tags">آرشیو باز</string>
 
+    <!-- Alert Values -->
+
     <string name="action_settings">تنظیمات</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">بایگانی اینترنت</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
     <!-- MainFragment -->
 
     <!-- ViewMediaActivity -->
     <string name="iv_content_desc">عکس اصلی</string>
 
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">لغو</string>
     <string name="lbl_ok">قابل قبول</string>
-
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
     <string name="info_license_sharealike">Require modified versions to also share?</string>
@@ -43,12 +48,13 @@
     <string name="action_cancel">لغو</string>
 
     <string name="error">خطا</string>
-    <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
 
+    <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
     <string name="prefs_user_interface_title">ارائه</string>
-    <string name="prefs_theme_title">سبک نمایش</string>
+    <string name="prefs_theme_title">قالب</string>
     <string name="prefs_theme_light">روشن</string>
     <string name="prefs_theme_dark">تاریک</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">نام کاربری</string>
@@ -56,15 +62,13 @@
     <string name="action_sign_in_short">ورود</string>
     <string name="error_incorrect_username_or_password">نام کاربری یا گذرواژه‌ نادرست است</string>
     <string name="error_field_required">این فیلد ضروری می باشد</string>
+
     <string name="title_welcome">خوش آمدید</string>
 
     <string name="action_privacy">حریم خصوصی</string>
     <string name="uploads">آپلودها</string>
     <string name="uploading">بارگذاری.......</string>
-
     <string name="action_upload">آپلود</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">بعدی</string>
     <string name="action_done">انجام شد</string>
@@ -98,8 +102,24 @@
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">فایل‌های رسانه‌ای را تنها زمانی که به Wi-Fi متصل هستید، بارگذاری کنید.</string>
     <string name="security">امنیت</string>
     <string name="next">بعدی</string>
+    <string name="done">انجام شد</string>
     <string name="secure_mobile_media_preservation">حفظ ایمن رسانه‌های موبایل</string>
     <string name="get_started">شروع کنید</string>
     <string name="refresh">تازه‌سازی</string>
     <string name="select_all">انتخاب همه</string>
+    <string name="got_it">متوجه شدم</string>
+    <string name="skip">از قلم بینداز</string>
+    <string name="retry">تلاش دوباره</string>
+
+    <string name="edit_media">تدوین رسانه</string>
+    <string name="files">فايل‌ها</string>
+    <string name="health_checks">بررسی‌های سلامت</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">با انجام بررسی‌های سلامت در صورت عدم موفقیت در بارگذاری‌ها، به بهبود برنامه کمک کنید.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">بررسی‌های سلامت به ما کمک می‌کند تا بفهمیم چرا بارگذاری‌ها ناموفق هستند.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">کمک کنید مشارکت داده‌های شما بخشی از راه حل باشند.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">با اجازه شما، هر بار که هنگام بارگذاری با خطایی مواجه شدید، آن را بررسی خواهیم کرد.</string>
+    <string name="health_checks_capture">یافته‌های بررسی‌های سلامت</string>
+    <string name="allow_health_checks">بررسی سلامت مجاز است؟</string>
+    <string name="no_thanks">نه، ممنون</string>
+
 </resources>

@@ -5,14 +5,19 @@
     <string name="title_media_list">Upload</string>
 
     <!-- General -->
+
+    <!-- Default Values -->
     <string name="default_tags">OpenArchive</string>
+
+    <!-- Alert Values -->
 
     <string name="action_settings">Impostazioni</string>
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Archivio Internet</string>
 
-    <!-- MainFragment -->
+    <!-- Errors -->
+
     <!-- Server -->
     <string name="lbl_Cancel">Annulla</string>
     <string name="lbl_ok">OK</string>
@@ -25,12 +30,13 @@
     <string name="action_cancel">Annulla</string>
 
     <string name="error">Errore</string>
-    <string name="prefs_prohibit_screenshots_title">Blocca acquisizione schermate</string>
 
+    <string name="prefs_prohibit_screenshots_title">Blocca acquisizione schermate</string>
     <string name="prefs_user_interface_title">Presentazione</string>
-    <string name="prefs_theme_title">Stile</string>
+    <string name="prefs_theme_title">Tema</string>
     <string name="prefs_theme_light">Chiaro</string>
     <string name="prefs_theme_dark">Scuro</string>
+    <!-- Strings for nearby sharing -->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
@@ -38,15 +44,13 @@
     <string name="action_sign_in_short">Accedi</string>
     <string name="error_incorrect_username_or_password">Nome utente o password errati</string>
     <string name="error_field_required">Questo campo è necessario</string>
+
     <string name="title_welcome">Benvenuto</string>
 
     <string name="action_privacy">Privacy Policy</string>
     <string name="uploads">Upload</string>
     <string name="uploading">Caricamento…</string>
-
     <string name="action_upload">Carica</string>
-
-    <!-- Strings related to Settings -->
 
     <string name="action_next">Successivo</string>
     <string name="action_done">Fatto</string>
@@ -79,8 +83,18 @@
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">Carica i media solo quando connesso ad una rete Wi-Fi</string>
     <string name="security">Sicurezza</string>
     <string name="next">Successivo</string>
+    <string name="done">Fatto</string>
     <string name="secure_mobile_media_preservation">Preservazione Sicura Media Mobile</string>
     <string name="get_started">Per incominciare</string>
     <string name="refresh">Aggiorna</string>
     <string name="select_all">Seleziona tutto</string>
+    <string name="got_it">Ho capito</string>
+    <string name="skip">Salta</string>
+    <string name="add_files">Aggiungi file</string>
+
+    <string name="retry">Riprova</string>
+
+    <string name="files">File</string>
+    <string name="no_thanks">No grazie</string>
+
 </resources>
