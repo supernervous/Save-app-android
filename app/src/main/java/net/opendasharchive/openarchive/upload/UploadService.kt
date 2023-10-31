@@ -12,7 +12,9 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.R
@@ -23,24 +25,23 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class UploadService : Service(), Runnable {
+class UploadService : Service() {
+
     private var mRunning = false
     private var mKeepUploading = true
-    private var mUploadThread: Thread? = null
-    private val mConduits = ArrayList<Conduit?>()
+    private val mConduits = ArrayList<Conduit>()
 
     override fun onCreate() {
         super.onCreate()
 
-        if (Build.VERSION.SDK_INT >= 26) createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
 
         doForeground()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (mUploadThread?.isAlive != true) {
-            mUploadThread = Thread(this)
-            mUploadThread?.start()
+        CoroutineScope(Dispatchers.IO).launch {
+            upload()
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -51,7 +52,7 @@ class UploadService : Service(), Runnable {
 
         mKeepUploading = false
 
-        for (conduit in mConduits) conduit?.cancel()
+        for (conduit in mConduits) conduit.cancel()
 
         mConduits.clear()
     }
@@ -60,7 +61,10 @@ class UploadService : Service(), Runnable {
         return null
     }
 
-    private fun shouldPublish(): Boolean {
+    /**
+     * Check if online, and connected to the appropriate network type.
+     */
+    private fun shouldUpload(): Boolean {
         if (Prefs.uploadWifiOnly) {
             if (isNetworkAvailable(true)) return true
         }
@@ -74,70 +78,66 @@ class UploadService : Service(), Runnable {
         return false
     }
 
-    override fun run() {
-        if (!mRunning) doPublish()
+    private suspend fun upload() {
+        if (mRunning) return stopSelf()
 
-        stopSelf()
-    }
-
-    private fun doPublish(): Boolean {
         mRunning = true
 
-        var publishing = false
+        if (!shouldUpload()) {
+            mRunning = false
 
-        //check if online, and connected to appropriate network type
-        if (shouldPublish()) {
-            publishing = true
+            return stopSelf()
+        }
 
-            // Get all media items that are set into queued state.
-            var results = emptyList<Media>()
+        // Get all media items that are set into queued state.
+        var results = emptyList<Media>()
+
+        while (mKeepUploading &&
+            Media.getByStatus(
+                listOf(Media.Status.Queued, Media.Status.Uploading),
+                Media.ORDER_PRIORITY)
+                .also { results = it }
+                .isNotEmpty()
+        ) {
             val datePublish = Date()
 
-            while (mKeepUploading &&
-                Media.getByStatus(listOf(Media.Status.Queued, Media.Status.Uploading), Media.ORDER_PRIORITY)
-                    .also { results = it }.isNotEmpty()
-            ) {
-                for (media in results) {
-                    val project = media.project
+            for (media in results) {
+                val project = media.project
 
-                    if (media.sStatus != Media.Status.Uploading) {
-                        media.uploadDate = datePublish
-                        media.progress = 0 // Should we reset this?
-                        media.sStatus = Media.Status.Uploading
-                        media.statusMessage = ""
-                    }
-
-                    media.licenseUrl = project?.licenseUrl
-
-                    try {
-                        if (uploadMedia(media)) {
-                            val collection = media.collection
-                            collection?.uploadDate = datePublish
-                            collection?.save()
-
-                            media.save()
-                        }
-                    }
-                    catch (ioe: IOException) {
-                        Timber.d(ioe)
-
-                        media.statusMessage = "error in uploading media: " + ioe.message
-                        media.sStatus = Media.Status.Error
-                        media.save()
-                    }
-
-                    if (!mKeepUploading) return false // Time to end this.
+                if (media.sStatus != Media.Status.Uploading) {
+                    media.uploadDate = datePublish
+                    media.progress = 0 // Should we reset this?
+                    media.sStatus = Media.Status.Uploading
+                    media.statusMessage = ""
                 }
+
+                media.licenseUrl = project?.licenseUrl
+
+                try {
+                    if (upload(media)) {
+                        val collection = media.collection
+                        collection?.uploadDate = datePublish
+                        collection?.save()
+                    }
+                }
+                catch (ioe: IOException) {
+                    Timber.d(ioe)
+
+                    media.statusMessage = "error in uploading media: " + ioe.message
+                    media.sStatus = Media.Status.Error
+                    media.save()
+                }
+
+                if (!mKeepUploading) break // Time to end this.
             }
         }
 
         mRunning = false
-
-        return publishing
+        stopSelf()
     }
 
     @Throws(IOException::class)
-    private fun uploadMedia(media: Media): Boolean {
+    private suspend fun upload(media: Media): Boolean {
         val serverUrl = media.project?.description
 
         if (serverUrl.isNullOrEmpty()) {
@@ -157,9 +157,7 @@ class UploadService : Service(), Runnable {
         CleanInsightsManager.measureEvent("upload", "try_upload", media.space?.tType?.friendlyName)
 
         mConduits.add(conduit)
-        runBlocking {
-            conduit.upload()
-        }
+        conduit.upload()
         mConduits.remove(conduit)
 
         return true
