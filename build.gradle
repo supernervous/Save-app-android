@@ -51,9 +51,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.2'
-        classpath "com.neenbedankt.gradle.plugins:android-apt:$versions.neenbedankt_gradle_plugin"
-        classpath "com.testdroid:gradle:$versions.testdroid_gradle"
-        classpath "gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:$versions.browserstack_gradle_plugin"
+        classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
+        classpath "com.testdroid:gradle:2.63.1"
+        classpath "gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
 }
@@ -86,7 +86,6 @@ allprojects {
                 includeModule 'com.github.abdularis', 'circularimageview'
                 includeModule 'com.github.guardianproject', 'sardine-android'
                 includeModule 'com.github.danimahardhika', 'cafebar'
-                includeModule 'com.github.paolorotolo', 'appintro'
             }
         }
 
@@ -96,7 +95,6 @@ allprojects {
                 includeModule 'com.amulyakhare', 'com.amulyakhare.textdrawable'
                 includeModule 'com.github.stfalcon', 'frescoimageviewer'
                 includeModule 'io.github.luizgrp.sectionedrecyclerviewadapter', 'sectionedrecyclerviewadapter'
-                includeModule 'com.tapadoo.android', 'alerter'
                 includeModule 'me.relex', 'photodraweeview'
             }
         }

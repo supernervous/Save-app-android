@@ -63,13 +63,13 @@ class Onboarding23InstructionsActivity : BaseActivity() {
                     mBinding.skipButton.visibility = View.INVISIBLE
                     mBinding.fab.setImageDrawable(
                         ContextCompat.getDrawable(
-                            mBinding.fab.context, com.github.appintro.R.drawable.ic_appintro_done,
+                            mBinding.fab.context, com.esafirm.imagepicker.R.drawable.ef_ic_done_white,
                         )
                     )
                 } else {
                     mBinding.skipButton.visibility = View.VISIBLE
                     val icon = ContextCompat.getDrawable(
-                        mBinding.fab.context, com.github.appintro.R.drawable.ic_appintro_arrow,
+                        mBinding.fab.context, R.drawable.ic_arrow_right,
                     )
                     icon?.isAutoMirrored = true
                     mBinding.fab.setImageDrawable(
@@ -83,6 +83,7 @@ class Onboarding23InstructionsActivity : BaseActivity() {
                 when (state) {
                     ViewPager2.SCROLL_STATE_DRAGGING -> mBinding.coverImage.alpha = 0F
                     ViewPager2.SCROLL_STATE_IDLE -> updateCoverImage()
+                    ViewPager2.SCROLL_STATE_SETTLING -> { /* ignored */ }
                 }
             }
         })
