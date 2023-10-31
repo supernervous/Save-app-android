@@ -96,7 +96,9 @@ class MainMediaFragment : Fragment() {
             holder?.bottomSpacing?.toggle(index == mSection.size - 1)
         }
 
-        deleteCollections(toDelete)
+        // DO NOT delete the collection here, this could lead to a race condition
+        // while adding images.
+        deleteCollections(toDelete, false)
 
         mBinding.addMediaHint.toggle(mCollections.isEmpty())
     }
@@ -117,7 +119,7 @@ class MainMediaFragment : Fragment() {
             }
         }
 
-        deleteCollections(toDelete)
+        deleteCollections(toDelete, true)
     }
 
     private fun createMediaList(collection: Collection, media: List<Media>): View {
@@ -144,7 +146,7 @@ class MainMediaFragment : Fragment() {
         return holder.root
     }
 
-    private fun deleteCollections(collectionIds: List<Long>) {
+    private fun deleteCollections(collectionIds: List<Long>, cleanup: Boolean) {
         collectionIds.forEach { collectionId ->
             mAdapters.remove(collectionId)
 
@@ -155,7 +157,8 @@ class MainMediaFragment : Fragment() {
 
             if (idx > -1 && idx < mCollections.size) {
                 val collection = mCollections.removeAt(idx)
-                collection.delete()
+
+                if (cleanup) collection.delete()
             }
         }
     }
