@@ -27,7 +27,7 @@ android {
         targetSdkVersion config.targetSdkVersion
         versionCode config.versionCode
         versionName config.versionName
-        archivesBaseName = "OpenArchive-$versionName"
+        archivesBaseName = "Save-$versionName"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
