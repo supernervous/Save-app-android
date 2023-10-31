@@ -7,34 +7,23 @@ import android.os.Build
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
-import android.webkit.CookieSyncManager
 import android.webkit.WebView
 import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import java.security.SecureRandom
 import java.util.*
 
 object Util {
 
-    // netcipher
-    const val ORBOT_HOST = "127.0.0.1"
-    const val ORBOT_HTTP_PORT = 8118
-
-    @JvmStatic
-    fun clearWebviewAndCookies(webview: WebView?, activity: Activity?) {
-        CookieSyncManager.createInstance(activity)
+    fun clearWebviewAndCookies(webview: WebView?) {
         val cookieManager = CookieManager.getInstance()
         cookieManager.removeAllCookies(null)
-        if (webview != null) {
-            webview.clearHistory()
-            webview.clearCache(true)
-            webview.clearFormData()
-            webview.loadUrl("about:blank")
-            webview.destroy()
-        }
-    }
 
-    fun isEmpty(string: String?): Boolean {
-        return string == null || string.trim { it <= ' ' }.isEmpty()
+        webview?.clearHistory()
+        webview?.clearCache(true)
+        webview?.clearFormData()
+        webview?.loadUrl("about:blank")
+        webview?.destroy()
     }
 
     // TODO audit code for security since we use the to generate random strings for url slugs
@@ -62,8 +51,9 @@ object Util {
     fun setBackgroundTint(view: View, @ColorRes color: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             view.backgroundTintList = view.resources.getColorStateList(color, view.context.theme)
-        } else {
-            view.backgroundTintList = view.resources.getColorStateList(color)
+        }
+        else {
+            view.backgroundTintList = ContextCompat.getColorStateList(view.context, color)
         }
     }
 
@@ -73,7 +63,7 @@ object Util {
         if (windowToken != null) {
             val imm: InputMethodManager =
                 activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(windowToken, 0);
+            imm.hideSoftInputFromWindow(windowToken, 0)
         }
     }
 }

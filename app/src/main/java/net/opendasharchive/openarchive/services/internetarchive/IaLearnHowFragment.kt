@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +26,7 @@ class IaLearnHowFragment : BottomSheetDialogFragment() {
         dialog.setOnShowListener {
             val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let {
-                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED;
+                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
         return dialog
@@ -36,14 +35,13 @@ class IaLearnHowFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         mBinding = FragmentIaLearnHowBinding.inflate(inflater)
 
         mBinding.viewPager.adapter = LearnHowAdapter(
             requireActivity().supportFragmentManager,
-            requireActivity().lifecycle,
-            requireActivity()
+            requireActivity().lifecycle
         )
         mBinding.dotsIndicator.attachTo(mBinding.viewPager)
 
@@ -71,8 +69,7 @@ class IaLearnHowFragment : BottomSheetDialogFragment() {
 
     class LearnHowAdapter(
         fragmentManager: FragmentManager,
-        lifecycle: Lifecycle,
-        context: Context
+        lifecycle: Lifecycle
     ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
         override fun getItemCount(): Int {

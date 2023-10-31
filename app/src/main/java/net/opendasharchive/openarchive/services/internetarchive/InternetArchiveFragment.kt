@@ -49,7 +49,7 @@ class InternetArchiveFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentInternetArchiveBinding.inflate(inflater)
 
         mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
@@ -97,7 +97,7 @@ class InternetArchiveFragment : Fragment() {
         }
 
         mBinding.btBack.setOnClickListener {
-            setFragmentResult(InternetArchiveFragment.RESP_CANCEL, bundleOf())
+            setFragmentResult(RESP_CANCEL, bundleOf())
         }
 
         mBinding.btNext.setOnClickListener {
@@ -159,7 +159,7 @@ class InternetArchiveFragment : Fragment() {
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
         mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
-        mSnackbar?.show()
+        mSnackbar.show()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -329,7 +329,7 @@ class InternetArchiveFragment : Fragment() {
 
     private fun showError(text: CharSequence, onForm: Boolean = false) {
         requireActivity().runOnUiThread {
-            mSnackbar?.dismiss()
+            mSnackbar.dismiss()
 
             if (onForm) {
                 mBinding.secretKey.error = text
@@ -337,7 +337,7 @@ class InternetArchiveFragment : Fragment() {
             }
             else {
                 mSnackbar = mBinding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
-                mSnackbar?.show()
+                mSnackbar.show()
 
                 mBinding.accessKey.requestFocus()
             }
@@ -373,11 +373,11 @@ class InternetArchiveFragment : Fragment() {
         @JvmStatic
         fun newInstance(spaceId: Long) = InternetArchiveFragment().apply {
             arguments = Bundle().apply {
-                putLong(InternetArchiveFragment.ARG_SPACE, spaceId)
+                putLong(ARG_SPACE, spaceId)
             }
         }
 
         @JvmStatic
-        fun newInstance() = newInstance(InternetArchiveFragment.ARG_VAL_NEW_SPACE)
+        fun newInstance() = newInstance(ARG_VAL_NEW_SPACE)
     }
 }

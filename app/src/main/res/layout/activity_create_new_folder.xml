@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
     tools:context="net.opendasharchive.openarchive.features.projects.CreateNewFolderActivity">
-    >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

@@ -194,7 +194,7 @@ class IaScrapeActivity : BaseActivity() {
 
         super.finish()
 
-        clearWebviewAndCookies(mBinding.webView, this)
+        clearWebviewAndCookies(mBinding.webView)
     }
 
     companion object {
