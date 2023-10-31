@@ -13,7 +13,7 @@ import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import timber.log.Timber
 
-class OpenArchiveApp : SugarApp() {
+class SaveApp : SugarApp() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)

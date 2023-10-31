@@ -33,7 +33,7 @@
     -->
 
     <application
-        android:name=".OpenArchiveApp"
+        android:name=".SaveApp"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:dataExtractionRules="@xml/data_extraction_rules"

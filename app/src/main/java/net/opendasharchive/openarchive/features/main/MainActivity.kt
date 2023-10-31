@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
-import net.opendasharchive.openarchive.OpenArchiveApp
+import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
@@ -234,7 +234,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         ProofModeHelper.init(this) {
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
-            (application as OpenArchiveApp).startUploadService()
+            (application as SaveApp).startUploadService()
         }
     }
 

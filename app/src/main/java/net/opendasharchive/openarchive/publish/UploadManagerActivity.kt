@@ -9,7 +9,7 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import net.opendasharchive.openarchive.CleanInsightsManager
-import net.opendasharchive.openarchive.OpenArchiveApp
+import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
@@ -87,12 +87,12 @@ class UploadManagerActivity : BaseActivity() {
         if (mEditMode) {
             mMenuEdit?.setTitle(R.string.menu_done)
 
-            (application as OpenArchiveApp).stopUploadService()
+            (application as SaveApp).stopUploadService()
         }
         else {
             mMenuEdit?.setTitle(R.string.edit)
 
-            (application as OpenArchiveApp).startUploadService()
+            (application as SaveApp).startUploadService()
         }
 
         updateTitle()
