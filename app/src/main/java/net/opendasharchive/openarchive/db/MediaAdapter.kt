@@ -20,6 +20,7 @@ class MediaAdapter(
     private val generator: (parent: ViewGroup) -> MediaViewHolder,
     data: List<Media>,
     private val recyclerView: RecyclerView,
+    private val supportedStatuses: List<Media.Status> = listOf(Media.Status.Local, Media.Status.Uploading, Media.Status.Error),
     private val checkSelecting: (() -> Unit)? = null
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
@@ -39,11 +40,8 @@ class MediaAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val mvh = generator(parent)
 
-        // Selection not wanted.
-        if (checkSelecting == null) return mvh
-
         mvh.itemView.setOnClickListener { v ->
-            if (selecting) {
+            if (selecting && checkSelecting != null) {
                 selectView(v)
             }
             else {
@@ -51,49 +49,61 @@ class MediaAdapter(
 
                 when (media[pos].sStatus) {
                     Media.Status.Local -> {
-                        mActivity.get()?.let {
-                            PreviewActivity.start(it, media[pos].projectId)
+                        if (supportedStatuses.contains(Media.Status.Local)) {
+                            mActivity.get()?.let {
+                                PreviewActivity.start(it, media[pos].projectId)
+                            }
                         }
                     }
 
                     Media.Status.Queued, Media.Status.Uploading -> {
-                        mActivity.get()?.let {
-                            it.startActivity(
-                                Intent(it, UploadManagerActivity::class.java))
+                        if (supportedStatuses.contains(Media.Status.Uploading)) {
+                            mActivity.get()?.let {
+                                it.startActivity(
+                                    Intent(it, UploadManagerActivity::class.java)
+                                )
+                            }
                         }
                     }
 
                     Media.Status.Error -> {
-                        mActivity.get()?.let {
-                            AlertHelper.show(it, media[pos].statusMessage,
-                                R.string.upload_unsuccessful, R.drawable.ic_error, listOf(
-                                    AlertHelper.positiveButton(R.string.retry) { _, _ ->
-                                        media[pos].sStatus = Media.Status.Queued
-                                        media[pos].statusMessage = ""
-                                        media[pos].save()
+                        if (supportedStatuses.contains(Media.Status.Error)) {
+                            mActivity.get()?.let {
+                                AlertHelper.show(
+                                    it, media[pos].statusMessage,
+                                    R.string.upload_unsuccessful, R.drawable.ic_error, listOf(
+                                        AlertHelper.positiveButton(R.string.retry) { _, _ ->
+                                            media[pos].sStatus = Media.Status.Queued
+                                            media[pos].statusMessage = ""
+                                            media[pos].save()
 
-                                        updateItem(media[pos].id)
-                                    },
-                                    AlertHelper.negativeButton(R.string.remove) { _, _ ->
-                                        deleteItem(pos)
-                                    },
-                                    AlertHelper.neutralButton()
+                                            updateItem(media[pos].id)
+                                        },
+                                        AlertHelper.negativeButton(R.string.remove) { _, _ ->
+                                            deleteItem(pos)
+                                        },
+                                        AlertHelper.neutralButton()
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
 
                     else -> {
-                        selectView(v)
+                        if (checkSelecting != null) {
+                            selectView(v)
+                        }
                     }
                 }
             }
         }
 
-        mvh.itemView.setOnLongClickListener { v ->
-            selectView(v)
+        if (checkSelecting != null) {
+            mvh.itemView.setOnLongClickListener { v ->
+                selectView(v)
 
-            true
+                true
+            }
         }
 
         mvh.flagIndicator?.setOnClickListener {

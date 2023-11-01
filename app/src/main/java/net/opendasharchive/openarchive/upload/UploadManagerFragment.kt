@@ -50,7 +50,8 @@ open class UploadManagerFragment : Fragment() {
                 activity,
                 { MediaViewHolder.SmallRow(it) },
                 Media.getByStatus(STATUSES, Media.ORDER_PRIORITY),
-                mBinding.uploadList
+                mBinding.uploadList,
+                listOf(Media.Status.Error)
             )
 
         mediaAdapter?.doImageFade = false
