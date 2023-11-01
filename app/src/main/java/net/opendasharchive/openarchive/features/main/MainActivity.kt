@@ -136,7 +136,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             startActivity(Intent(this, UploadManagerActivity::class.java))
         }
 
-        mPagerAdapter = ProjectAdapter(this, supportFragmentManager)
+        mPagerAdapter = ProjectAdapter(supportFragmentManager)
         mBinding.pager.adapter = mPagerAdapter
 
         // final int pageMargin = (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 8, getResources() .getDisplayMetrics());

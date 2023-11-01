@@ -1,19 +1,15 @@
 package net.opendasharchive.openarchive.features.main
 
-import android.content.Context
 import android.os.Parcelable
-import android.text.SpannableString
-import android.text.style.ImageSpan
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.SmartFragmentStatePagerAdapter
 import timber.log.Timber
 import kotlin.math.max
 
-class ProjectAdapter(private val context: Context, fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
+class ProjectAdapter(fragmentManager: FragmentManager) : SmartFragmentStatePagerAdapter(fragmentManager) {
 
     var projects = listOf<Project>()
         private set
@@ -23,9 +19,9 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
             return SettingsFragment()
         }
 
-        val project = getProject(position) ?: return SettingsFragment()
+        val project = getProject(position)
 
-        return MainMediaFragment.newInstance(project.id)
+        return MainMediaFragment.newInstance(project?.id ?: -1)
     }
 
     override fun getCount(): Int {
@@ -54,17 +50,7 @@ class ProjectAdapter(private val context: Context, fragmentManager: FragmentMana
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return if (position == 0 && projects.isEmpty()) {
-            val imageSpan = ImageSpan(context, R.drawable.ic_add_circle_outline_black)
-
-            val spannableString = SpannableString(" ")
-            spannableString.setSpan(imageSpan, 0, 1, 0)
-
-            spannableString
-        }
-        else {
-            getProject(position)?.description
-        }
+        return getProject(position)?.description
     }
 
     fun getRegisteredMediaFragment(position: Int): MainMediaFragment? {
