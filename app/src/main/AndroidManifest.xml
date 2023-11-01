@@ -231,11 +231,8 @@
 
         <service
             android:name=".upload.UploadService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
-
-        <service
-            android:name=".upload.UploadJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 

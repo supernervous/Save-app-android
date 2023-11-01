@@ -119,6 +119,15 @@ class UploadManagerActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun finish() {
+        // If we're still in edit mode, restart the upload service when the user leaves.
+        if (mEditMode) {
+            (application as SaveApp).startUploadService()
+        }
+
+        super.finish()
+    }
+
     private fun updateTitle() {
         if (mEditMode) {
             supportActionBar?.title = getString(R.string.edit_media)

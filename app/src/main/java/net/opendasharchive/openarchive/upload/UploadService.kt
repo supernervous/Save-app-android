@@ -2,16 +2,18 @@ package net.opendasharchive.openarchive.upload
 
 import android.app.*
 import android.app.job.JobInfo
+import android.app.job.JobParameters
 import android.app.job.JobScheduler
+import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.work.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,11 +27,20 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-class UploadService : Service() {
+class UploadService : JobService() {
+
+    companion object {
+        private const val MY_BACKGROUND_JOB = 0
+        private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
+    }
 
     private var mRunning = false
     private var mKeepUploading = true
     private val mConduits = ArrayList<Conduit>()
+
+    init {
+        Configuration.Builder().setJobSchedulerJobIdRange(0, Integer.MAX_VALUE).build()
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -40,8 +51,8 @@ class UploadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        CoroutineScope(Dispatchers.IO).launch {
-            upload()
+        run {
+            stopSelf()
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -57,36 +68,35 @@ class UploadService : Service() {
         mConduits.clear()
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
-
-    /**
-     * Check if online, and connected to the appropriate network type.
-     */
-    private fun shouldUpload(): Boolean {
-        if (Prefs.uploadWifiOnly) {
-            if (isNetworkAvailable(true)) return true
-        }
-        else if (isNetworkAvailable(false)) {
-            return true
+    override fun onStartJob(params: JobParameters?): Boolean {
+        run {
+            jobFinished(params, false)
         }
 
-        // Try again when there is a network.
-        scheduleJob(this)
-
-        return false
+        return true
     }
 
-    private suspend fun upload() {
-        if (mRunning) return stopSelf()
+    override fun onStopJob(params: JobParameters?): Boolean {
+        stopSelf()
+
+        return true
+    }
+
+    private fun run(completed: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            upload(completed)
+        }
+    }
+
+    private suspend fun upload(completed: () -> Unit) {
+        if (mRunning) return completed()
 
         mRunning = true
 
         if (!shouldUpload()) {
             mRunning = false
 
-            return stopSelf()
+            return completed()
         }
 
         // Get all media items that are set into queued state.
@@ -134,7 +144,7 @@ class UploadService : Service() {
         }
 
         mRunning = false
-        stopSelf()
+        completed()
     }
 
     @Throws(IOException::class)
@@ -164,7 +174,29 @@ class UploadService : Service() {
         return true
     }
 
-    private fun isNetworkAvailable(requireWifi: Boolean): Boolean {
+    /**
+     * Check if online, and connected to the appropriate network type.
+     */
+    private fun shouldUpload(): Boolean {
+        val requireUnmetered = Prefs.uploadWifiOnly
+
+        if (isNetworkAvailable(requireUnmetered)) return true
+
+        val type = if (requireUnmetered) JobInfo.NETWORK_TYPE_UNMETERED else JobInfo.NETWORK_TYPE_ANY
+
+        // Try again when there is a network.
+        val job = JobInfo.Builder(MY_BACKGROUND_JOB,
+            ComponentName(this, UploadService::class.java))
+            .setRequiredNetworkType(type)
+            .setRequiresCharging(false)
+            .build()
+
+        (getSystemService(JOB_SCHEDULER_SERVICE) as? JobScheduler)?.schedule(job)
+
+        return false
+    }
+
+    private fun isNetworkAvailable(requireUnmetered: Boolean): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -175,10 +207,10 @@ class UploadService : Service() {
                     return true
                 }
                 cap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    return !requireWifi
+                    return !requireUnmetered
                 }
                 cap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    return !requireWifi
+                    return true
                 }
             }
 
@@ -189,7 +221,9 @@ class UploadService : Service() {
             val info = cm.activeNetworkInfo
 
             @Suppress("DEPRECATION")
-            return info?.isConnected == true && (!requireWifi || info.type == ConnectivityManager.TYPE_WIFI)
+            return info?.isConnected == true && (!requireUnmetered
+                    || info.type == ConnectivityManager.TYPE_WIFI
+                    || info.type == ConnectivityManager.TYPE_ETHERNET)
         }
     }
 
@@ -226,21 +260,5 @@ class UploadService : Service() {
             .build()
 
         startForeground(1337, notification)
-    }
-
-    companion object {
-        private const val MY_BACKGROUND_JOB = 0
-        private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
-
-        fun scheduleJob(context: Context) {
-            val job = JobInfo.Builder(MY_BACKGROUND_JOB,
-                ComponentName(context, UploadJobService::class.java))
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setRequiresCharging(false)
-                .build()
-
-            (context.getSystemService(JOB_SCHEDULER_SERVICE) as? JobScheduler)
-                ?.schedule(job)
-        }
     }
 }
