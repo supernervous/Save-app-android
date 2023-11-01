@@ -51,15 +51,39 @@ class SaveApp : SugarApp() {
      * https://developer.android.com/guide/components/foreground-services#background-start-restrictions
      */
     fun startUploadService() {
+        val i = Intent(this, UploadService::class.java)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, UploadService::class.java))
+            try {
+                startForegroundService(i)
+            }
+            catch (e: Throwable) {
+                Timber.e(e)
+
+                try {
+                    startService(i)
+                }
+                catch (e: Throwable) {
+                    Timber.e(e)
+                }
+            }
         } else {
-            startService(Intent(this, UploadService::class.java))
+            try {
+                startService(i)
+            }
+            catch (e: Throwable) {
+                Timber.e(e)
+            }
         }
     }
 
     fun stopUploadService() {
-        stopService(Intent(this, UploadService::class.java))
+        try {
+            stopService(Intent(this, UploadService::class.java))
+        }
+        catch (e: Throwable) {
+            Timber.e(e)
+        }
     }
 
     private fun initNetCipher() {
