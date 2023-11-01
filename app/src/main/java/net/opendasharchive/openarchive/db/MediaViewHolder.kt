@@ -27,7 +27,6 @@ import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
-import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView.ViewHolder(binding.root) {
@@ -340,15 +339,21 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             error?.hide()
         }
         else if (media?.sStatus == Media.Status.Uploading) {
-            val progressValue = if (media.contentLength > 0) (media.progress.toFloat() / media.contentLength.toFloat() * 100f).roundToInt() else 0
+            val progressValue = if (media.contentLength > 0) {
+                (media.progress.toFloat() / media.contentLength.toFloat() * 100f).roundToInt()
+            } else 0
 
             overlayContainer?.show()
             progress?.show()
-            if( progressValue >= 3 ) {
-                // make sure to keep spinning until the upload has made some noteworthy progress
-                progress?.isIndeterminate = false
-                progress?.setProgressCompat(progressValue , false)
+
+            // Make sure to keep spinning until the upload has made some noteworthy progress.
+            if (progressValue > 2) {
+                progress?.setProgressCompat(progressValue , true)
             }
+            else {
+                progress?.isIndeterminate = true
+            }
+
             error?.hide()
         }
         else {
