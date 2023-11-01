@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
     android:orientation="vertical"
-    tools:context=".features.projects.AddFolderActivity">
+    tools:context=".features.folders.AddFolderActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

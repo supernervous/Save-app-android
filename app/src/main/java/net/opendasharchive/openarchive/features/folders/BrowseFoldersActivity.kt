@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.projects
+package net.opendasharchive.openarchive.features.folders
 
 import android.content.Intent
 import android.os.Bundle
@@ -84,13 +84,13 @@ class BrowseFoldersActivity : BaseActivity() {
 
         val license = space.license
 
-        if (license.isNullOrBlank()) {
-            val i = Intent()
-            i.putExtra(AddFolderActivity.EXTRA_FOLDER_NAME, folder.name)
-
-            setResult(RESULT_CANCELED, i)
-        }
-        else {
+//        if (license.isNullOrBlank()) {
+//            val i = Intent()
+//            i.putExtra(AddFolderActivity.EXTRA_FOLDER_NAME, folder.name)
+//
+//            setResult(RESULT_CANCELED, i)
+//        }
+//        else {
             val project = Project(folder.name, Date(), space.id, licenseUrl = license)
             project.save()
 
@@ -98,7 +98,7 @@ class BrowseFoldersActivity : BaseActivity() {
             i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, project.id)
 
             setResult(RESULT_OK, i)
-        }
+//        }
 
         finish()
     }

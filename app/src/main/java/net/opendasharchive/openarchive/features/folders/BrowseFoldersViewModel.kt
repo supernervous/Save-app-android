@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.projects
+package net.opendasharchive.openarchive.features.folders
 
 import android.content.Context
 import androidx.lifecycle.LiveData
