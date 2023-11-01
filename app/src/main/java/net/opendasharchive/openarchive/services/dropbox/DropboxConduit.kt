@@ -19,7 +19,6 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
         const val HOST = "dropbox.com"
     }
 
-    private var mContinueUpload = true
     private var mTask: UploadFileTask? = null
 
     override suspend fun upload(): Boolean {
@@ -69,7 +68,8 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     override fun cancel() {
-        mContinueUpload = false
+        super.cancel()
+
         mTask?.cancel()
     }
 

@@ -9,7 +9,6 @@ import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.SaveClient
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -22,9 +21,6 @@ class WebDavConduit(
 ) : Conduit(media, context) {
 
     private var mChunkStartIdx: Int = 0
-
-    private var mContinueUpload = true
-
 
     override suspend fun upload(): Boolean {
         val space = mMedia.space ?: return false
@@ -56,8 +52,6 @@ class WebDavConduit(
             if (fileMedia.exists()) mMedia.contentLength = fileMedia.length()
         }
 
-        var finalMediaPath: String? = null
-
         try {
             if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
 
@@ -65,7 +59,7 @@ class WebDavConduit(
 
             if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
 
-            finalMediaPath = "$projectFolderPath/$fileName"
+            val finalMediaPath = "$projectFolderPath/$fileName"
 
             if (!client.exists(finalMediaPath)) {
                 client.put(mContext.contentResolver,
@@ -85,7 +79,7 @@ class WebDavConduit(
                         }
 
                         override fun continueUpload(): Boolean {
-                            return mContinueUpload
+                            return !mCancelled
                         }
                     })
 
@@ -101,18 +95,11 @@ class WebDavConduit(
             return true
         }
         catch (e: IOException) {
-            Timber.w("Failed primary media upload of \"%s\": %s", finalMediaPath, e.message)
-
             jobFailed(e)
 
             return false
         }
     }
-
-    override fun cancel() {
-        mContinueUpload = false
-    }
-
 
     @Throws(IOException::class)
     private fun uploadUsingChunking(client: OkHttpSardine): Boolean {
@@ -189,7 +176,7 @@ class WebDavConduit(
                             }
 
                             override fun continueUpload(): Boolean {
-                                return mContinueUpload
+                                return !mCancelled
                             }
                         })
                 }

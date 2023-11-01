@@ -32,6 +32,8 @@ abstract class Conduit(
     protected val mFolderName: String
         get() = mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
 
+    protected var mCancelled = false
+
 
     /**
      * Gives a SiteController a chance to add metadata to the intent resulting from the ChooseAccounts process
@@ -40,7 +42,9 @@ abstract class Conduit(
     @Throws(IOException::class)
     abstract suspend fun upload(): Boolean
 
-    open fun cancel() {}
+    open fun cancel() {
+        mCancelled = true
+    }
 
 
     fun getProof(): Array<out File> {
@@ -91,6 +95,9 @@ abstract class Conduit(
     }
 
     fun jobFailed(exception: Throwable) {
+        // If an upload was cancelled, ignore the error.
+        if (mCancelled) return
+
         mMedia.statusMessage = exception.localizedMessage ?: exception.message ?: exception.toString()
         mMedia.sStatus = Media.Status.Error
         mMedia.save()

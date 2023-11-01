@@ -16,8 +16,6 @@ import java.io.IOException
 
 class IaConduit(media: Media, context: Context) : Conduit(media, context) {
 
-    private var mContinueUpload = true
-
 
     companion object {
         const val ARCHIVE_BASE_URL = "https://archive.org/"
@@ -71,10 +69,6 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         return false
     }
 
-    override fun cancel() {
-        mContinueUpload = false
-    }
-
     @Throws(IOException::class)
     private suspend fun uploadMetaData(content: String, basePath: String, fileName: String) {
         val requestBody = object : RequestBody() {
@@ -124,7 +118,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
                 }
 
                 override fun continueUpload(): Boolean {
-                    return mContinueUpload
+                    return !mCancelled
                 }
 
                 override fun transferComplete() {
@@ -153,7 +147,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
                 }
 
                 override fun continueUpload(): Boolean {
-                    return mContinueUpload
+                    return !mCancelled
                 }
 
                 override fun transferComplete() {
