@@ -92,8 +92,6 @@ class MainMediaFragment : Fragment() {
 
                 mBinding.mediaContainer.addView(view, 0)
             }
-
-            holder?.bottomSpacing?.toggle(index == mSection.size - 1)
         }
 
         // DO NOT delete the collection here, this could lead to a race condition

@@ -33,9 +33,6 @@ data class SectionViewHolder(
     val recyclerView
         get() = binding.recyclerView
 
-    val bottomSpacing
-        get() = binding.bottomSpacing
-
     fun setHeader(
         collection: Collection,
         media: List<Media>
