@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.github.derlio.waveform.SimpleWaveformView
 import com.github.derlio.waveform.soundfile.SoundFile
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val overlayContainer: View
             get() = (binding as RvMediaBoxBinding).overlayContainer
 
-        override val progress: ProgressBar
+        override val progress: CircularProgressIndicator
             get() = (binding as RvMediaBoxBinding).progress
 
         override val progressText: TextView?
@@ -96,7 +96,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val overlayContainer: View?
             get() = null
 
-        override val progress: ProgressBar?
+        override val progress: CircularProgressIndicator?
             get() = null
 
         override val progressText: TextView?
@@ -145,7 +145,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val overlayContainer: View
             get() = (binding as RvMediaRowSmallBinding).overlayContainer
 
-        override val progress: ProgressBar
+        override val progress: CircularProgressIndicator
             get() = (binding as RvMediaRowSmallBinding).progress
 
         override val progressText: TextView
@@ -189,7 +189,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val waveform: SimpleWaveformView
     abstract val videoIndicator: ImageView?
     abstract val overlayContainer: View?
-    abstract val progress: ProgressBar?
+    abstract val progress: CircularProgressIndicator?
     abstract val progressText: TextView?
     abstract val error: ImageView?
     abstract val title: TextView?
@@ -353,12 +353,16 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             error?.hide()
         }
         else if (media?.sStatus == Media.Status.Uploading) {
-            val progress = if (media.contentLength > 0) (media.progress.toFloat() / media.contentLength.toFloat() * 100f).roundToInt() else 0
+            val progressValue = if (media.contentLength > 0) (media.progress.toFloat() / media.contentLength.toFloat() * 100f).roundToInt() else 0
 
             overlayContainer?.show()
-            this.progress?.progress = progress
-            this.progress?.show()
-            progressText?.text = NumberFormat.getPercentInstance().format(progress.toFloat() / 100f)
+            progress?.show()
+            if( progressValue >= 3 ) {
+                // make sure to keep spinning until the upload has made some noteworthy progress
+                progress?.isIndeterminate = false
+                progress?.setProgressCompat(progressValue , false)
+            }
+            progressText?.text = NumberFormat.getPercentInstance().format(progressValue.toFloat() / 100f)
             progressText?.show()
             error?.hide()
         }

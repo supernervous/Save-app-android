@@ -40,17 +40,20 @@
             android:layout_height="match_parent"
             android:background="@color/transparent_black">
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:indeterminate="false"
-                android:indeterminateTint="@color/colorPrimary"
+                android:indeterminate="true"
+                android:indeterminateBehavior="cycle"
                 android:max="100"
+                app:indicatorColor="@color/colorPrimary"
+                app:indicatorSize="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackThickness="3dp" />
 
             <TextView
                 android:id="@+id/progress_text"
@@ -69,13 +72,13 @@
                 android:id="@+id/error"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="@string/error"
                 android:src="@drawable/ic_error"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorDanger"
-                android:contentDescription="@string/error" />
+                app:tint="@color/colorDanger" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

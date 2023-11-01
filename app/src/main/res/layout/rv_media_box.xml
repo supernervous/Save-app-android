@@ -14,11 +14,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintDimensionRatio="H,1:1"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/image"
@@ -42,27 +42,32 @@
             android:layout_height="match_parent"
             android:background="@color/transparent_black">
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:indeterminateTint="@color/colorPrimary"
+                android:indeterminate="true"
+                android:indeterminateBehavior="cycle"
+                android:max="100"
+                app:indicatorColor="@color/colorPrimary"
+                app:indicatorSize="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackThickness="3dp" />
 
             <ImageView
                 android:id="@+id/error"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="@string/error"
                 android:src="@drawable/ic_error"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorDanger"
-                android:contentDescription="@string/error" />
+                app:tint="@color/colorDanger" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -70,8 +75,8 @@
             android:id="@+id/selected_indicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
-            android:alpha="0.25" />
+            android:alpha="0.25"
+            android:background="@color/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
