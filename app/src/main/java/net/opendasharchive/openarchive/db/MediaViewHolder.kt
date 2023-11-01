@@ -50,9 +50,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progress: CircularProgressIndicator
             get() = (binding as RvMediaBoxBinding).progress
 
-        override val progressText: TextView?
-            get() = null
-
         override val error: ImageView
             get() = (binding as RvMediaBoxBinding).error
 
@@ -97,9 +94,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             get() = null
 
         override val progress: CircularProgressIndicator?
-            get() = null
-
-        override val progressText: TextView?
             get() = null
 
         override val error: ImageView?
@@ -148,9 +142,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progress: CircularProgressIndicator
             get() = (binding as RvMediaRowSmallBinding).progress
 
-        override val progressText: TextView
-            get() = (binding as RvMediaRowSmallBinding).progressText
-
         override val error: ImageView
             get() = (binding as RvMediaRowSmallBinding).error
 
@@ -190,7 +181,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val videoIndicator: ImageView?
     abstract val overlayContainer: View?
     abstract val progress: CircularProgressIndicator?
-    abstract val progressText: TextView?
     abstract val error: ImageView?
     abstract val title: TextView?
     abstract val fileInfo: TextView?
@@ -337,7 +327,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
             overlayContainer?.show()
             progress?.hide()
-            progressText?.hide()
             error?.show()
 
             if (media.statusMessage.isNotBlank()) {
@@ -348,8 +337,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         else if (media?.sStatus == Media.Status.Queued) {
             overlayContainer?.show()
             progress?.show()
-            progressText?.text = NumberFormat.getPercentInstance().format(0)
-            progressText?.show()
             error?.hide()
         }
         else if (media?.sStatus == Media.Status.Uploading) {
@@ -362,14 +349,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
                 progress?.isIndeterminate = false
                 progress?.setProgressCompat(progressValue , false)
             }
-            progressText?.text = NumberFormat.getPercentInstance().format(progressValue.toFloat() / 100f)
-            progressText?.show()
             error?.hide()
         }
         else {
             overlayContainer?.hide()
             progress?.hide()
-            progressText?.hide()
             error?.hide()
         }
 
