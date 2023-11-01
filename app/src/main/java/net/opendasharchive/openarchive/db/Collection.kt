@@ -13,7 +13,7 @@ data class Collection(
 
         fun getByProject(projectId: Long): List<Collection> {
             return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
-                null, "upload_date DESC, id DESC", null)
+                null, "upload_date ASC, id ASC", null)
         }
 
         fun get(collectionId: Long?): Collection? {
