@@ -148,8 +148,6 @@ class MediaAdapter(
 
         media.removeAt(idx)
 
-        reorder()
-
         notifyItemRemoved(idx)
 
         checkSelecting?.invoke()
@@ -160,8 +158,6 @@ class MediaAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(media: List<Media>) {
         this.media = ArrayList(media)
-
-        reorder()
 
         notifyDataSetChanged()
     }
@@ -191,12 +187,15 @@ class MediaAdapter(
     fun onItemMove(oldPos: Int, newPos: Int) {
         if (!isEditMode) return
 
-        val mediaToMov = media[oldPos]
-
-        media.removeAt(oldPos)
+        val mediaToMov = media.removeAt(oldPos)
         media.add(newPos, mediaToMov)
 
-        reorder()
+        var priority = media.size
+
+        for (item in media) {
+            item.priority = priority--
+            item.save()
+        }
 
         notifyItemMoved(oldPos, newPos)
     }
@@ -245,16 +244,6 @@ class MediaAdapter(
 
         return hasDeleted
     }
-
-    private fun reorder() {
-        var priority = media.size
-
-        for (item in media) {
-            item.priority = priority--
-            item.save()
-        }
-    }
-
 
     interface OnStartDragListener {
         /**
