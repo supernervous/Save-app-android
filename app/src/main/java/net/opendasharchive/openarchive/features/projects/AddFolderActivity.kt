@@ -29,6 +29,23 @@ class AddFolderActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                setResult(RESULT_OK, it.data)
+                finish()
+            }
+            else {
+                val name = it.data?.getStringExtra(EXTRA_FOLDER_NAME)
+
+                if (!name.isNullOrBlank()) {
+                    val i = Intent(this, CreateNewFolderActivity::class.java)
+                    i.putExtra(EXTRA_FOLDER_NAME, name)
+
+                    mResultLauncher.launch(i)
+                }
+            }
+        }
+
         mBinding = ActivityAddFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
@@ -58,24 +75,6 @@ class AddFolderActivity : BaseActivity() {
             finish()
             setFolder(false)
         }
-
-        mResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == RESULT_OK) {
-                setResult(RESULT_OK, it.data)
-                finish()
-            }
-            else {
-                val name = it.data?.getStringExtra(EXTRA_FOLDER_NAME)
-
-                if (!name.isNullOrBlank()) {
-                    val i = Intent(this, CreateNewFolderActivity::class.java)
-                    i.putExtra(EXTRA_FOLDER_NAME, name)
-
-                    mResultLauncher.launch(i)
-                }
-            }
-        }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
