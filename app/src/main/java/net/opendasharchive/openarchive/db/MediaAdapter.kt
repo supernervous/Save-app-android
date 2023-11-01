@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
@@ -19,7 +20,6 @@ class MediaAdapter(
     private val generator: (parent: ViewGroup) -> MediaViewHolder,
     data: List<Media>,
     private val recyclerView: RecyclerView,
-    private val dragStartListener: OnStartDragListener? = null,
     private val checkSelecting: (() -> Unit)? = null
 ) : RecyclerView.Adapter<MediaViewHolder>() {
 
@@ -119,14 +119,6 @@ class MediaAdapter(
         holder.bind(media[position], selecting, doImageFade)
 
         holder.handle?.toggle(isEditMode)
-
-        holder.handle?.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                dragStartListener?.onStartDrag(holder)
-            }
-
-            false
-        }
     }
 
     fun updateItem(mediaId: Long): Boolean {
@@ -204,17 +196,37 @@ class MediaAdapter(
         if (pos < 0 || pos >= media.size) return
 
         val item = media[pos]
+        var undone = false
 
-        val collection = item.collection
+        val snackbar = Snackbar.make(recyclerView, R.string.confirm_remove_media, Snackbar.LENGTH_LONG)
+        snackbar.setAction(R.string.undo) { _ ->
+            undone = true
+            media.add(pos, item)
 
-        // Delete collection along with the item, if the collection
-        // would become empty.
-        if ((collection?.size ?: 0) < 2) {
-            collection?.delete()
+            notifyItemInserted(pos)
         }
-        else {
-            item.delete()
-        }
+
+        snackbar.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                if (!undone) {
+                    val collection = item.collection
+
+                    // Delete collection along with the item, if the collection
+                    // would become empty.
+                    if ((collection?.size ?: 0) < 2) {
+                        collection?.delete()
+                    } else {
+                        item.delete()
+                    }
+
+                    BroadcastManager.postDelete(recyclerView.context, item.id)
+                }
+
+                super.onDismissed(transientBottomBar, event)
+            }
+        })
+
+        snackbar.show()
 
         removeItem(item.id)
 
@@ -243,14 +255,5 @@ class MediaAdapter(
         checkSelecting?.invoke()
 
         return hasDeleted
-    }
-
-    interface OnStartDragListener {
-        /**
-         * Called when a view is requesting a start of a drag.
-         *
-         * @param viewHolder The holder of the view to drag.
-         */
-        fun onStartDrag(viewHolder: RecyclerView.ViewHolder?)
     }
 }

@@ -132,10 +132,10 @@ class MainMediaFragment : Fragment() {
             requireActivity(),
             { MediaViewHolder.Box(it) },
             media,
-            holder.recyclerView,
-            checkSelecting = {
-                (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
-            })
+            holder.recyclerView
+        ) {
+            (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
+        }
 
         holder.recyclerView.adapter = mediaAdapter
         mAdapters[collection.id] = mediaAdapter

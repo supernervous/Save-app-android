@@ -141,6 +141,8 @@ class UploadManagerActivity : BaseActivity() {
             } else {
                 getString(R.string.uploading_left, count)
             }
+
+            supportActionBar?.subtitle = null
         }
     }
 }

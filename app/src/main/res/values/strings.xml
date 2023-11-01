@@ -277,5 +277,6 @@
     <string name="allow_health_checks">Allow health checks?</string>
     <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">By allowing health checks, you give permission for the app to securely send health check data to the %s team.</string>
     <string name="no_thanks">No thanks</string>
+    <string name="undo">Undo</string>
 
 </resources>

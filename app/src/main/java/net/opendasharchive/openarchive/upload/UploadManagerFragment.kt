@@ -50,12 +50,8 @@ open class UploadManagerFragment : Fragment() {
                 activity,
                 { MediaViewHolder.SmallRow(it) },
                 Media.getByStatus(STATUSES, Media.ORDER_PRIORITY),
-                mBinding.uploadList,
-                object : MediaAdapter.OnStartDragListener {
-                    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
-                        if (viewHolder != null) mItemTouchHelper.startDrag(viewHolder)
-                    }
-                })
+                mBinding.uploadList
+            )
 
         mediaAdapter?.doImageFade = false
         mBinding.uploadList.adapter = mediaAdapter
