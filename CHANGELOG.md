@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 beta6
+- Improved background upload stability.
+- Fixed file errors showing when pausing the upload while upload is in progress.
+- Added "undo" when deleting files from the upload manager scene.
+- Show option to restart a failed upload in upload manager scene.
+- Fixed ordering and layout of main scene.
+- Fixed problem with changed upload priority getting lost again.
+- Fixed some crashes.
+
 ## 0.3.0 beta5
 - Added Internet Archive tutorial.
 - UI/UX brushing of main scene and upload management scene.
