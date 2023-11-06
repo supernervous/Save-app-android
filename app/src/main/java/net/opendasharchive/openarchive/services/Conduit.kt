@@ -118,10 +118,20 @@ abstract class Conduit(
         BroadcastManager.postChange(mContext, mMedia.id)
     }
 
-    protected fun ensureFileSize() {
+    protected fun sanitize() {
         val length = mMedia.file.length()
-
         if (length > 0) mMedia.contentLength = length
+
+        val tags = mMedia.tagSet
+
+        if (mMedia.flag) {
+            tags.add(getFlagText())
+        }
+        else {
+            tags.remove(getFlagText())
+        }
+
+        mMedia.tagSet = tags
     }
 
     protected fun getPath(): List<String>? {
@@ -131,11 +141,7 @@ abstract class Conduit(
         val path = mutableListOf(projectName, collectionName)
 
         if (mMedia.flag) {
-            val conf = Configuration(mContext.resources.configuration)
-            conf.setLocale(Locale.US)
-
-            // Always use english, since this affects the target server, not the local device.
-            path.add(mContext.createConfigurationContext(conf).getString(R.string.status_flagged))
+            path.add(getFlagText())
         }
 
         return path
@@ -191,6 +197,16 @@ abstract class Conduit(
         return gson.toJson(mMedia, Media::class.java)
     }
 
+    /**
+     * Always use english, since this affects the target server, not the local device.
+     */
+    private fun getFlagText(): String {
+        val conf = Configuration(mContext.resources.configuration)
+        conf.setLocale(Locale.US)
+
+        return mContext.createConfigurationContext(conf).getString(R.string.status_flagged)
+    }
+
     companion object {
         const val FOLDER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'GMT'ZZZZZ"
 
@@ -204,7 +220,6 @@ abstract class Conduit(
          */
         const val CHUNK_FILESIZE_THRESHOLD = 10 * 1024 * 1024
 
-        @JvmStatic
         fun get(media: Media, context: Context): Conduit? {
             return when (media.project?.space?.tType) {
                 Space.Type.INTERNET_ARCHIVE -> IaConduit(media, context)

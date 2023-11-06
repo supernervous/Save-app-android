@@ -36,7 +36,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
         val fileName = getUploadFileName(mMedia)
 
-        ensureFileSize()
+        sanitize()
 
         var result: FileMetadata? = null
 

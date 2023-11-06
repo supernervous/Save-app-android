@@ -4,9 +4,6 @@
     <string name="title_activity_login">Увійти</string>
     <!-- General -->
 
-    <!-- Default Values -->
-    <string name="default_tags">OpenArchive</string>
-
     <!-- Alert Values -->
 
     <string name="action_settings">Налаштування</string>

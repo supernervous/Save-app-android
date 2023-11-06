@@ -22,7 +22,7 @@ class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
 
         mClient = SaveClient.getSardine(mContext, space)
 
-        ensureFileSize()
+        sanitize()
 
         val fileName = getUploadFileName(mMedia)
 

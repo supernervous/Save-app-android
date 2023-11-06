@@ -129,4 +129,10 @@ data class Media(
         get() =  status == Status.Queued.id
                 || status == Status.Uploading.id
                 || status == Status.Error.id
+
+    var tagSet: MutableSet<String>
+        get() = tags.split("\\p{Punct}|\\p{Blank}+".toRegex()).map { it.trim() }.toMutableSet()
+        set(value) {
+            tags = value.joinToString(";")
+        }
 }

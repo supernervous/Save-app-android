@@ -9,9 +9,6 @@
 
     <!-- General -->
 
-    <!-- Default Values -->
-    <string name="default_tags">OpenArchive</string>
-
     <!-- Alert Values -->
 
     <string name="action_settings">Ajustes</string>

@@ -27,14 +27,11 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         private fun getSlug(title: String): String {
             return title.replace("[^A-Za-z\\d]".toRegex(), "-")
         }
-
-        @Suppress("RegExpSimplifiable")
-        fun splitTags(tags: String): List<String> {
-            return tags.split("\\p{Punct}|\\p{Blank}+".toRegex())
-        }
     }
 
     override suspend fun upload(): Boolean {
+        sanitize()
+
         try {
             val mediaUri = mMedia.originalFilePath
             val mimeType = mMedia.mimeType
@@ -195,17 +192,12 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
             builder.add("x-archive-meta-location", mMedia.location)
         }
 
-        val tags = if (mMedia.tags.isNotEmpty()) {
-            val tags = splitTags(mMedia.tags).toMutableList()
-            tags.add(0, mContext.getString(R.string.default_tags))
+        if (mMedia.tags.isNotEmpty()) {
+            val tags = mMedia.tagSet
+            tags.add(mContext.getString(R.string.default_tags))
+            mMedia.tagSet = tags
 
-            tags.joinToString(";")
-        }
-        else {
-            ""
-        }
-        if (tags.isNotEmpty()) {
-            builder.add("x-archive-meta-subject", tags)
+            builder.add("x-archive-meta-subject", mMedia.tags)
         }
 
         if (mMedia.description.isNotEmpty()) {

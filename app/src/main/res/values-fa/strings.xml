@@ -7,9 +7,6 @@
 
     <!-- General -->
 
-    <!-- Default Values -->
-    <string name="default_tags">آرشیو باز</string>
-
     <!-- Alert Values -->
 
     <string name="action_settings">تنظیمات</string>
