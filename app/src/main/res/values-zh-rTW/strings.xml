@@ -69,5 +69,6 @@
 
     <string name="files">檔案</string>
     <string name="no_thanks">不，謝謝</string>
+    <string name="undo">復原</string>
 
 </resources>

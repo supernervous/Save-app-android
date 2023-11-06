@@ -100,5 +100,6 @@
     <string name="health_checks_capture">Capture de bilans de santé</string>
     <string name="allow_health_checks">Permettre les bilans de santé ?</string>
     <string name="no_thanks">Non merci</string>
+    <string name="undo">Annuler</string>
 
 </resources>

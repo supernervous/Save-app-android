@@ -96,5 +96,6 @@
 
     <string name="files">File</string>
     <string name="no_thanks">No grazie</string>
+    <string name="undo">Annulla</string>
 
 </resources>

@@ -99,5 +99,6 @@
     <string name="health_checks_capture">Проверка работоспособности покрывает</string>
     <string name="allow_health_checks">Разрешить проверку работоспособности?</string>
     <string name="no_thanks">Нет, спасибо</string>
+    <string name="undo">Отменить</string>
 
 </resources>

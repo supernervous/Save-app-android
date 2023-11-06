@@ -121,5 +121,6 @@
     <string name="health_checks_capture">یافته‌های بررسی‌های سلامت</string>
     <string name="allow_health_checks">بررسی سلامت مجاز است؟</string>
     <string name="no_thanks">نه، ممنون</string>
+    <string name="undo">اصلاح</string>
 
 </resources>

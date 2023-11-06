@@ -64,4 +64,6 @@
     <string name="retry">Försök igen</string>
 
     <string name="files">Filer</string>
-    </resources>
+    <string name="undo">Ångra</string>
+
+</resources>

@@ -71,5 +71,6 @@
 
     <string name="files">Bestanden</string>
     <string name="no_thanks">Nee bedankt</string>
+    <string name="undo">Ongedaan maken</string>
 
 </resources>

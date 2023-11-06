@@ -125,5 +125,6 @@
     <string name="health_checks_capture">Gesundheitschecks erfassen</string>
     <string name="allow_health_checks">Erlaube Gesundheitschecks?</string>
     <string name="no_thanks">Nein danke</string>
+    <string name="undo">Zurück</string>
 
 </resources>

@@ -54,6 +54,7 @@
 
     <string name="error">Error</string>
 
+    <string name="prefs_use_tor_title">Habilita el enrutamiento \\"Onion\\"</string>
     <string name="prefs_use_tor_summary">Transferencia solo a través de la red Tor</string>
     <string name="prefs_install_tor_summary">Instale Orbot para habilitar</string>
     <string name="prefs_prohibit_screenshots_title">Bloquear capturas de pantalla</string>
@@ -95,6 +96,8 @@
 
     <string name="uploads">Subidas</string>
     <string name="uploading">Subiendo…</string>
+    <string name="uploading_left">Subiendo archivos… (%d)</string>
+
     <string name="action_upload">Subir</string>
 
     <!-- Strings related to Settings -->
@@ -139,6 +142,9 @@
     <string name="popup_flag_title">Marcar Contenido Importante</string>
     <string name="popup_flag_desc">Cuando marcas un elemento, se envía a una subcarpeta dentro de la carpeta del proyecto elegido en el servidor privado.</string>
 
+    <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Permitir el uso de \"Creative Commons\" para todas las carpetas de este servidor</string>
+    <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Establezca licencias Creative Commons únicas para cada carpeta en este servidor.</string>
+
     <string name="action_install">Instalar</string>
     <string name="login_activity_logging_message">Iniciando sesión…</string>
     <string name="you_already_have_a_server_with_these_credentials">Ya tienes un servidor con estas credenciales</string>
@@ -156,6 +162,7 @@
     <string name="prefs_proofmode_key_encryption_title_all">Clave de ProofMode segura con datos biométricos o código de acceso del dispositivo</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Clave de ProofMode segura con datos biométricos</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Clave de ProofMode segura con código de acceso del dispositivo</string>
+    <string name="prefs_proofmode_key_encryption_summary">¡Cambiar esto creará una nueva clave!</string>
     <string name="biometrics_title">Desbloquear clave de ProofMode</string>
     <string name="folders">Carpetas</string>
     <string name="create_folder_name">Crear nombre para nueva carpeta</string>
@@ -187,8 +194,14 @@ sus intenciones para uso futuro</string>
 Mantén tus medios seguros y organizados a largo plazo y crea carpetas de proyectos en la aplicación que se correspondan con tu archivo de medios personal u organizacional.</string>
     <string name="intro_text_verify">
 Autentica tus medios con una verificación criptográfica de hash sha256 y, opcionalmente, ProofMode. Agrega metadatos críticos como notas, personas y ubicación con cada carga.</string>
+    <string name="intro_text_encrypt"><![CDATA[
+Sube automáticamente a través de TLS (seguridad de la capa de transporte) y usa Orbot para proteger tus medios en tránsito a través de la red Tor. <br /><br /><a href=\"#\">Instala Orbot</a> para habilitar una seguridad de red avanzada.]]></string>
     <string name="next">Seguir</string>
     <string name="done">Listo</string>
+    <string name="lorem_ipsum_short_paragraph">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris 
+volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus 
+dui nec risus. </string>
     <string name="secure_mobile_media_preservation">Preservación segura de medios móvil</string>
     <string name="get_started">Comenzar</string>
     <string name="proofmode_permissions_explanation">ProofMode recolecta metadatos de las torres de celular locales para ayudar a verificar medios. Android requiere permiso para habilitar esta configuración. Save solo usará esta configuración para capturar datos y NO accederá a tu teléfono para hacer/gestionar llamadas.</string>
@@ -214,10 +227,36 @@ Autentica tus medios con una verificación criptográfica de hash sha256 y, opci
     <string name="add_a_location_optional">Agregar una ubicación (opcional)</string>
     <string name="add_notes_optional">Agregar notas (opcional)</string>
     <string name="skip">Omitir</string>
+    <string name="add_images_or_video">Agregar medios</string>
+    <string name="add_files">Agregar medios</string>
+
+    <string name="ia_learn_how_title">Cómo conseguir llaves en 3 pasos</string>
+    <string name="ia_learn_how_summary_step_1">Paso 1: inicie sesión en Internet Archive. Si no tienes una cuenta, crea una.</string>
+    <string name="ia_learn_how_summary_step_2">Paso 2: Si está creando una cuenta nueva, verifique su correo electrónico.</string>
+    <string name="ia_learn_how_summary_step_3">Paso 3: Obtenga sus claves API seleccionando la casilla y se cargará automáticamente en la aplicación.</string>
+
+    <string name="upload_unsuccessful">La carga falló</string>
     <string name="retry">Reintentar</string>
 
     <string name="edit_media">Editar multimedia</string>
+    <string name="uploading_is_paused">La carga está en pausa.</string>
+    <string name="add_media_using">Agregue medios con:</string>
+    <string name="photo_galery">Fotos</string>
     <string name="files">Ficheros</string>
+    <string name="health_checks">Controles de salud</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Ayude a mejorar la aplicación ejecutando controles de estado cuando fallan las cargas.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Los controles de estado nos ayudan a comprender por qué fallan las cargas.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Aporta tus datos para ayudarnos</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Con su permiso, realizaremos una verificación cada vez que encuentre un error durante la carga.</string>
+    <string name="health_checks_capture">Los controles de salud reciben</string>
+    <string name="error_description">-- Descripción del error</string>
+    <string name="size_and_type_of_media">-- Tipo y tamaño de medios</string>
+    <string name="number_of_retries">-- Número de intentos</string>
+    <string name="network_type">-- Tipo de red</string>
+    <string name="locale">-- El lugar</string>
+    <string name="allow_health_checks">¿Permitir controles de salud?</string>
+    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Al permitir los controles de estado, otorga permiso para que la aplicación envíe de forma segura datos de control de estado al equipo del %s.</string>
     <string name="no_thanks">No gracias</string>
+    <string name="undo">Deshacer</string>
 
 </resources>

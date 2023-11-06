@@ -114,5 +114,6 @@
     <string name="edit_media">تعديل الوسائط</string>
     <string name="files">الملفات</string>
     <string name="no_thanks">لا شكراً</string>
+    <string name="undo">تراجَع</string>
 
 </resources>

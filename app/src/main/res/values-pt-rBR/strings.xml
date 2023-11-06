@@ -93,5 +93,6 @@
     <string name="edit_media">Editar Média </string>
     <string name="files">Arquivos</string>
     <string name="no_thanks">Não, obrigado!</string>
+    <string name="undo">Desfazer</string>
 
 </resources>

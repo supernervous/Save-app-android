@@ -199,5 +199,6 @@
     <string name="edit_media">Редагувати дані файлу</string>
     <string name="files">Файли</string>
     <string name="no_thanks">Ні, дякую</string>
+    <string name="undo">Скасувати</string>
 
 </resources>
