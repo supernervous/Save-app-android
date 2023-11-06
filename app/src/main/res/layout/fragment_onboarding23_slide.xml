@@ -41,7 +41,7 @@
                 android:id="@+id/summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lorem_ipsum_short_paragraph"
+                tools:text="@tools:sample/lorem/random"
                 android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>

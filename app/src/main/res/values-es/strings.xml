@@ -198,10 +198,6 @@ Autentica tus medios con una verificación criptográfica de hash sha256 y, opci
 Sube automáticamente a través de TLS (seguridad de la capa de transporte) y usa Orbot para proteger tus medios en tránsito a través de la red Tor. <br /><br /><a href=\"#\">Instala Orbot</a> para habilitar una seguridad de red avanzada.]]></string>
     <string name="next">Seguir</string>
     <string name="done">Listo</string>
-    <string name="lorem_ipsum_short_paragraph">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris 
-volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus 
-dui nec risus. </string>
     <string name="secure_mobile_media_preservation">Preservación segura de medios móvil</string>
     <string name="get_started">Comenzar</string>
     <string name="proofmode_permissions_explanation">ProofMode recolecta metadatos de las torres de celular locales para ayudar a verificar medios. Android requiere permiso para habilitar esta configuración. Save solo usará esta configuración para capturar datos y NO accederá a tu teléfono para hacer/gestionar llamadas.</string>

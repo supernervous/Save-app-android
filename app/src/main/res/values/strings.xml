@@ -217,11 +217,6 @@
     </string>
     <string name="next">Next</string>
     <string name="done">Done</string>
-    <string name="lorem_ipsum_short_paragraph">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus.
-    </string>
     <string name="secure_mobile_media_preservation">Secure Mobile Media Preservation</string>
     <string name="get_started">Get Started</string>
     <string name="proofmode_permissions_explanation">ProofMode gathers metadata from local cell towers to help verify media. Android requires permission to enable this setting. Save will only use this setting to capture data and will NOT access your phone to make/manage calls.</string>
