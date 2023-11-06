@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 beta7
+- Show circular upload progress.
+- Fixed display when no folder created, yet.
+- Removed licensing options after browsing folders again.
+- Updated translations.
+- Reworked WebDAV and Dropbox upload for better stability and correctness. Fixes flag bug.
+- Added tag "Significant Content" to metadata, when item is flagged.
+
 ## 0.3.0 beta6
 - Improved background upload stability.
 - Fixed file errors showing when pausing the upload while upload is in progress.
