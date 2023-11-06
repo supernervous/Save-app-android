@@ -1,259 +1,195 @@
 package net.opendasharchive.openarchive.services.webdav
 
 import android.content.Context
-import android.net.Uri
-import com.google.common.net.UrlEscapers
-import com.google.gson.Gson
 import com.thegrizzlylabs.sardineandroid.SardineListener
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.SaveClient
-import java.io.ByteArrayOutputStream
-import java.io.File
+import okhttp3.HttpUrl
 import java.io.IOException
 import java.util.*
 
 
-class WebDavConduit(
-    media: Media,
-    context: Context
-) : Conduit(media, context) {
+class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
 
-    private var mChunkStartIdx: Int = 0
+    private lateinit var mClient: OkHttpSardine
 
     override suspend fun upload(): Boolean {
         val space = mMedia.space ?: return false
+        val base = space.hostUrl ?: return false
+        val path = getPath() ?: return false
 
-        val client = SaveClient.getSardine(mContext, space)
+        mClient = SaveClient.getSardine(mContext, space)
 
-        if (space.useChunking) {
-            return uploadUsingChunking(client)
-        }
+        ensureFileSize()
 
-        val mediaUri = mMedia.fileUri
-        val basePath = mMedia.serverUrl
-        val fileName: String = getUploadFileName(mMedia)
-
-        val sb = StringBuffer() //server + '/' + basePath;
-            .append(space.host.replace("webdav", "dav"))
-
-        if (!space.host.endsWith("/")) sb.append('/')
-
-        var projectFolderPath = sb
-            .append("files/")
-            .append(space.username)
-            .append('/')
-            .append(basePath)
-            .toString()
-
-        if (mMedia.contentLength == 0L) {
-            val fileMedia = File(mediaUri.path ?: "")
-            if (fileMedia.exists()) mMedia.contentLength = fileMedia.length()
-        }
+        val fileName = getUploadFileName(mMedia)
 
         try {
-            if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
+            createFolders(base, path)
 
-            projectFolderPath += "/$mFolderName"
-
-            if (!client.exists(projectFolderPath)) client.createDirectory(projectFolderPath)
-
-            val finalMediaPath = "$projectFolderPath/$fileName"
-
-            if (!client.exists(finalMediaPath)) {
-                client.put(mContext.contentResolver,
-                    finalMediaPath,
-                    mediaUri,
-                    mMedia.contentLength,
-                    mMedia.mimeType,
-                    false,
-                    object : SardineListener {
-                        var lastBytes: Long = 0
-
-                        override fun transferred(bytes: Long) {
-                            if (bytes > lastBytes) {
-                                jobProgress(bytes)
-                                lastBytes = bytes
-                            }
-                        }
-
-                        override fun continueUpload(): Boolean {
-                            return !mCancelled
-                        }
-                    })
-
-                mMedia.serverUrl = finalMediaPath
-                jobSucceeded()
-                uploadMetadata(client, projectFolderPath, fileName)
-            }
-            else {
-                mMedia.serverUrl = finalMediaPath
-                jobSucceeded()
-            }
-
-            return true
+            uploadMetadata(base, path, fileName)
         }
-        catch (e: IOException) {
+        catch (e: Throwable) {
             jobFailed(e)
 
             return false
         }
+
+        if (space.useChunking && mMedia.contentLength > CHUNK_FILESIZE_THRESHOLD) {
+            return uploadChunked(base, path, fileName)
+        }
+
+        val fullPath = construct(base, path, fileName)
+
+        try {
+            mClient.put(mContext.contentResolver,
+                fullPath,
+                mMedia.fileUri,
+                mMedia.contentLength,
+                mMedia.mimeType,
+                false,
+                object : SardineListener {
+                    var lastBytes: Long = 0
+
+                    override fun transferred(bytes: Long) {
+                        if (bytes > lastBytes) {
+                            jobProgress(bytes)
+                            lastBytes = bytes
+                        }
+                    }
+
+                    override fun continueUpload(): Boolean {
+                        return !mCancelled
+                    }
+                })
+        }
+        catch (e: Throwable) {
+            jobFailed(e)
+
+            return false
+        }
+
+        mMedia.serverUrl = fullPath
+        jobSucceeded()
+
+        return true
+    }
+
+    override suspend fun createFolder(url: String) {
+        if (!mClient.exists(url)) mClient.createDirectory(url)
     }
 
     @Throws(IOException::class)
-    private fun uploadUsingChunking(client: OkHttpSardine): Boolean {
+    private suspend fun uploadChunked(base: HttpUrl, path: List<String>, fileName: String): Boolean {
+        val space = mMedia.space ?: return false
+        val url = space.hostUrl ?: return false
 
-        val mediaUri = Uri.parse(mMedia.originalFilePath)
-        var fileName: String = getUploadFileName(mMedia, true)
-        val folderName = mDateFormat.format(mMedia.updateDate ?: Date())
-        val chunkFolderPath = mMedia.serverUrl + "-" + fileName
+        val tmpBase = HttpUrl.Builder()
+            .scheme(url.scheme)
+            .username(url.username)
+            .password(url.password)
+            .host(url.host)
+            .port(url.port)
+            .query(url.query)
+            .fragment(url.fragment)
+            .addPathSegment("remote.php")
+            .addPathSegment("dav")
+            .build()
 
-        var sb = StringBuffer() //server + '/' + basePath;
-            .append(mMedia.space?.host?.replace("webdav", "dav"))
-
-        if (mMedia.space?.host?.endsWith("/") == false) sb.append('/')
-
-        var projectFolderPath = sb
-            .append("uploads/")
-            .append(mMedia.space?.username)
-            .append('/')
-            .append(chunkFolderPath)
-            .toString()
-
-        if (mMedia.contentLength == 0L) {
-            val fileMedia = File(mediaUri.path ?: "")
-            if (fileMedia.exists()) mMedia.contentLength = fileMedia.length()
-        }
-
-        val tmpMediaPath = projectFolderPath
+        val tmpPath = listOf("uploads", space.username, fileName)
 
         return try {
-            if (!client.exists(projectFolderPath)) {
-                client.createDirectory(projectFolderPath)
-            }
+            createFolders(tmpBase, tmpPath)
 
             // Create chunks and start uploads. Look for existing chunks, and skip if done.
             // Start with the last chunk and reupload.
-            val chunkSize = 1024 * 2000
-            val bufferSize = 1024 * 4
-            val buffer = ByteArray(bufferSize)
 
-            mChunkStartIdx = 0
+            var offset = 0
 
-            val inputStream = mContext.contentResolver.openInputStream(mediaUri)
+            mMedia.file.inputStream().use { inputStream ->
+                while (!mCancelled && offset < mMedia.contentLength) {
+                    var buffer = ByteArray(CHUNK_SIZE.toInt())
 
-            while (mChunkStartIdx < mMedia.contentLength) {
-                val baos = ByteArrayOutputStream()
-                var i = inputStream?.read(buffer) ?: continue
-                var totalBytes: Int = mChunkStartIdx + i
+                    val length = inputStream.read(buffer)
 
-                while (i != -1) {
-                    baos.write(buffer)
-                    if (baos.size() > chunkSize) break
-                    i = inputStream.read(buffer)
-                    if (i != -1) totalBytes += i
+                    if (length < 1) break
+
+                    if (length < CHUNK_SIZE) buffer = buffer.copyOfRange(0, length)
+
+                    val total = offset + length
+
+                    val chunkPath = construct(tmpBase, tmpPath, "$offset-$total")
+                    val chunkExists = mClient.exists(chunkPath)
+                    var chunkLengthMatches = false
+
+                    if (chunkExists) {
+                        val dirList = mClient.list(chunkPath)
+                        chunkLengthMatches =
+                            !dirList.isNullOrEmpty() && dirList.first().contentLength == length.toLong()
+                    }
+
+                    if (!chunkExists || !chunkLengthMatches) {
+                        mClient.put(
+                            chunkPath,
+                            buffer,
+                            mMedia.mimeType,
+                            object : SardineListener {
+                                override fun transferred(bytes: Long) {
+                                    jobProgress(offset.toLong() + bytes)
+                                }
+
+                                override fun continueUpload(): Boolean {
+                                    return !mCancelled
+                                }
+                            })
+                    }
+
+                    jobProgress(total.toLong())
+                    offset = total + 1
                 }
-
-                val chunkPath = "$tmpMediaPath/chunk-$mChunkStartIdx-$totalBytes"
-                val chunkExists = client.exists(chunkPath)
-                var chunkLengthMatches = false
-
-                if (chunkExists) {
-                    val listDav = client.list(chunkPath)
-                    chunkLengthMatches =
-                        !listDav.isNullOrEmpty() && listDav[0].contentLength >= chunkSize
-                }
-
-                if (!chunkExists || !chunkLengthMatches) {
-                    client.put(
-                        chunkPath,
-                        baos.toByteArray(),
-                        mMedia.mimeType,
-                        object : SardineListener {
-                            override fun transferred(bytes: Long) {
-                                jobProgress(mChunkStartIdx.toLong() + bytes)
-                            }
-
-                            override fun continueUpload(): Boolean {
-                                return !mCancelled
-                            }
-                        })
-                }
-
-                jobProgress(totalBytes.toLong())
-                mChunkStartIdx = totalBytes + 1
             }
 
-            inputStream?.close()
+            if (mCancelled) throw Exception("Cancelled")
 
-            fileName = getUploadFileName(mMedia)
+            val dest = mutableListOf("files", space.username)
+            dest.addAll(path)
 
-            sb = StringBuffer() //server + '/' + basePath;
-                .append(mMedia.space?.host?.replace("webdav", "dav"))
+            mClient.move(construct(tmpBase, tmpPath, ".file"), construct(tmpBase, dest, fileName))
 
-            if (mMedia.space?.host?.endsWith("/") == false) sb.append('/')
-
-            sb.append("files/")
-                .append(UrlEscapers.urlFragmentEscaper().escape(mMedia.space?.username ?: ""))
-                .append('/')
-                .append(UrlEscapers.urlFragmentEscaper().escape(mMedia.serverUrl))
-
-            projectFolderPath = sb.toString()
-
-            if (!client.exists(projectFolderPath)) {
-                client.createDirectory(projectFolderPath)
-            }
-
-            projectFolderPath += "/$folderName"
-
-            if (!client.exists(projectFolderPath)) {
-                client.createDirectory(projectFolderPath)
-            }
-
-            val finalMediaPath = "$projectFolderPath/$fileName"
-
-            client.move("$tmpMediaPath/.file", finalMediaPath)
-            mMedia.serverUrl = finalMediaPath
+            mMedia.serverUrl = construct(base, path, fileName)
 
             jobSucceeded()
 
-            uploadMetadata(client, projectFolderPath, fileName)
-
             true
         }
-        catch (e: IOException) {
-            client.delete(tmpMediaPath)
-
+        catch (e: Throwable) {
             jobFailed(e)
 
             false
         }
     }
 
-    private fun uploadMetadata(client: OkHttpSardine, basePath: String, fileName: String): Boolean {
-
+    private fun uploadMetadata(base: HttpUrl, path: List<String>, fileName: String) {
         // Update to the latest project license.
         mMedia.licenseUrl = mMedia.project?.licenseUrl
 
-        val urlMeta = "$basePath/$fileName.meta.json"
-        val json = Gson().toJson(mMedia, Media::class.java)
+        val metadata = getMetadata()
 
-        try {
-            client.put(urlMeta, json.toByteArray(), "text/plain", null)
+        if (mCancelled) throw Exception("Cancelled")
 
-            /// Upload ProofMode metadata, if enabled and successfully created.
-            for (file in getProof()) {
-                client.put(basePath + '/' + file.name, file, "text/plain",
-                    false, null)
-            }
+        mClient.put(
+            construct(base, path, "$fileName.meta.json"), metadata.toByteArray(),
+            "text/plain", null)
 
-            return true
+        /// Upload ProofMode metadata, if enabled and successfully created.
+        for (file in getProof()) {
+            if (mCancelled) throw Exception("Cancelled")
+
+            mClient.put(
+                construct(base, path, file.name), file, "text/plain",
+                false, null)
         }
-        catch (e: IOException) {
-            jobFailed(e)
-        }
-
-        return false
     }
 }

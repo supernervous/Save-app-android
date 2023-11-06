@@ -1,6 +1,8 @@
 package net.opendasharchive.openarchive.db
 
 import android.net.Uri
+import androidx.core.net.toFile
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import java.io.File
@@ -9,26 +11,53 @@ import java.util.*
 
 data class Media(
     var originalFilePath: String = "",
+
+    @Expose
+    @SerializedName("contentType")
     var mimeType: String = "",
+
+    @Expose
+    @SerializedName("dateCreated")
     var createDate: Date? = null,
+
     var updateDate: Date? = null,
     var uploadDate: Date? = null,
     var serverUrl: String = "",
+
+    @Expose
+    @SerializedName("originalFileName")
     var title: String = "",
+
+    @Expose
     var description: String = "",
+
+    @Expose
     var author: String = "",
+
+    @Expose
     var location: String = "",
+
+    @Expose
     var tags: String = "",
+
+    @Expose
+    @SerializedName("usage")
     var licenseUrl: String? = null,
-    @SerializedName(value = "mediaHashBytes")
+
     var mediaHash: ByteArray = byteArrayOf(),
-    @SerializedName(value = "mediaHash")
+
+    @Expose
+    @SerializedName(value = "hash")
     var mediaHashString: String = "",
+
     var status: Int = 0,
     var statusMessage: String = "",
     var projectId: Long = 0,
     var collectionId: Long = 0,
+
+    @Expose
     var contentLength: Long = 0,
+
     var progress: Long = 0,
     var flag: Boolean = false,
     var priority: Int = 0,
@@ -85,7 +114,7 @@ data class Media(
         get() = Uri.parse(originalFilePath)
 
     val file: File
-        get() = File(originalFilePath)
+        get() = fileUri.toFile()
 
     val collection: Collection?
         get() = findById(Collection::class.java, collectionId)

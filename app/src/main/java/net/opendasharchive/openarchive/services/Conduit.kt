@@ -2,16 +2,20 @@ package net.opendasharchive.openarchive.services
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
+import com.google.gson.GsonBuilder
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
+import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.Prefs
+import okhttp3.HttpUrl
 import org.witness.proofmode.ProofMode
 import org.witness.proofmode.crypto.HashUtils
 import timber.log.Timber
@@ -20,6 +24,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 abstract class Conduit(
     protected val mMedia: Media,
@@ -28,9 +33,6 @@ abstract class Conduit(
 
     @SuppressLint("SimpleDateFormat")
     protected val mDateFormat = SimpleDateFormat(FOLDER_DATETIME_FORMAT)
-
-    protected val mFolderName: String
-        get() = mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
 
     protected var mCancelled = false
 
@@ -41,6 +43,8 @@ abstract class Conduit(
      */
     @Throws(IOException::class)
     abstract suspend fun upload(): Boolean
+
+    abstract suspend fun createFolder(url: String)
 
     open fun cancel() {
         mCancelled = true
@@ -62,9 +66,9 @@ abstract class Conduit(
 
             if (hash == null) {
                 val proofHash = HashUtils.getSHA256FromFileContent(
-                    mContext.contentResolver.openInputStream(Uri.parse(mMedia.originalFilePath)))
+                    mContext.contentResolver.openInputStream(mMedia.fileUri))
 
-                hash = ProofMode.generateProof(mContext, Uri.parse(mMedia.originalFilePath), proofHash)
+                hash = ProofMode.generateProof(mContext, mMedia.fileUri, proofHash)
             }
 
             return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
@@ -114,9 +118,91 @@ abstract class Conduit(
         BroadcastManager.postChange(mContext, mMedia.id)
     }
 
+    protected fun ensureFileSize() {
+        val length = mMedia.file.length()
+
+        if (length > 0) mMedia.contentLength = length
+    }
+
+    protected fun getPath(): List<String>? {
+        val projectName = mMedia.project?.description ?: return null
+        val collectionName = mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
+
+        val path = mutableListOf(projectName, collectionName)
+
+        if (mMedia.flag) {
+            val conf = Configuration(mContext.resources.configuration)
+            conf.setLocale(Locale.US)
+
+            // Always use english, since this affects the target server, not the local device.
+            path.add(mContext.createConfigurationContext(conf).getString(R.string.status_flagged))
+        }
+
+        return path
+    }
+
+    protected suspend fun createFolders(base: HttpUrl?, path: List<String>) {
+        val tmp = mutableListOf<String>()
+
+        for (segment in path) {
+            tmp.add(segment)
+
+            if (mCancelled) throw Exception("Cancelled")
+
+            val url = construct(base, tmp)
+
+            createFolder(url)
+        }
+    }
+
+    /**
+     * Constructs, either a full URL or a path from the given arguments, depending if a `base` is given.
+     *
+     * If there's only a path to be constructed, then the path will have a leading slash and will
+     * not be escaped, as the Dropbox client likes it like that.
+     *
+     * If there's a full URL to be constructed, it *will* be escaped properly.
+     */
+    protected fun construct(base: HttpUrl?, path: List<String>, file: String? = null): String {
+        val builder = base?.newBuilder() ?: HttpUrl.Builder().scheme("http").host("ignored")
+
+        path.forEach { builder.addPathSegment(it) }
+
+        if (!file.isNullOrBlank()) builder.addPathSegment(file)
+
+        return if (base != null) {
+            builder.toString()
+        }
+        else {
+            "/${builder.build().pathSegments.joinToString("/")}"
+        }
+    }
+
+    protected fun construct(path: List<String>, file: String? = null): String {
+        return construct(null, path, file)
+    }
+
+    protected fun getMetadata(): String {
+        val gson = GsonBuilder()
+            .setPrettyPrinting()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create()
+
+        return gson.toJson(mMedia, Media::class.java)
+    }
+
     companion object {
         const val FOLDER_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'GMT'ZZZZZ"
 
+        /**
+         * 2 MByte
+         */
+        const val CHUNK_SIZE: Long = 2 * 1024 * 1024
+
+        /**
+         * 10 MByte
+         */
+        const val CHUNK_FILESIZE_THRESHOLD = 10 * 1024 * 1024
 
         @JvmStatic
         fun get(media: Media, context: Context): Conduit? {

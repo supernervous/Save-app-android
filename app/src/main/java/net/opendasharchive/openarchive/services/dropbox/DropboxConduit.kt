@@ -1,115 +1,235 @@
 package net.opendasharchive.openarchive.services.dropbox
 
 import android.content.Context
-import android.net.Uri
+import com.dropbox.core.NetworkIOException
+import com.dropbox.core.RetryException
 import com.dropbox.core.v2.DbxClientV2
+import com.dropbox.core.v2.files.CommitInfo
+import com.dropbox.core.v2.files.CreateFolderErrorException
 import com.dropbox.core.v2.files.FileMetadata
-import com.google.gson.Gson
+import com.dropbox.core.v2.files.UploadSessionAppendErrorException
+import com.dropbox.core.v2.files.UploadSessionCursor
+import com.dropbox.core.v2.files.UploadSessionFinishErrorException
+import com.dropbox.core.v2.files.WriteMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.SaveClient
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
     companion object {
         const val NAME = "Dropbox"
         const val HOST = "dropbox.com"
+        const val MAX_RETRIES = 5
     }
 
-    private var mTask: UploadFileTask? = null
+    private lateinit var mClient: DbxClientV2
 
     override suspend fun upload(): Boolean {
         val accessToken = mMedia.space?.password ?: return false
+        val path = getPath() ?: return false
 
-        val client = SaveClient.getDropbox(mContext, accessToken)
+        mClient = SaveClient.getDropbox(mContext, accessToken)
 
-        val mediaUri = mMedia.fileUri
-        val projectName = mMedia.serverUrl
-        val fileName = getUploadFileName(mMedia, true)
+        val fileName = getUploadFileName(mMedia)
 
-        if (mMedia.contentLength == 0L) {
-            val fileMedia = File(mediaUri.path ?: "")
-            if (fileMedia.exists()) mMedia.contentLength = fileMedia.length()
-        }
+        ensureFileSize()
+
+        var result: FileMetadata? = null
 
         try {
-            mTask = UploadFileTask(mContext, client, object : UploadFileTask.Callback {
-                override fun onUploadComplete(result: FileMetadata?) {
-                    if (result != null) {
-                        val finalMediaPath = result.pathDisplay
-                        mMedia.serverUrl = finalMediaPath
-                        mMedia.save()
-                        jobSucceeded()
-                        uploadMetadata(client, projectName, mFolderName, fileName)
+            createFolders(null, path)
+
+            uploadMetadata(path, fileName)
+
+            if (mCancelled) throw Exception("Cancelled")
+
+            val destination = construct(path, fileName)
+
+            if (mMedia.contentLength > CHUNK_FILESIZE_THRESHOLD) {
+                result = uploadChunked(destination)
+            }
+            else {
+                execute {
+                    mMedia.file.inputStream().use { inputStream ->
+                        result = mClient.files()
+                            .uploadBuilder(destination)
+                            .withMode(WriteMode.OVERWRITE)
+                            .withClientModified(mMedia.createDate)
+                            .uploadAndFinish(inputStream)
                     }
                 }
-
-                override fun onError(e: Exception) {
-                    jobFailed(e)
-                }
-
-                override fun onProgress(progress: Long) {
-                    jobProgress(progress)
-                }
-            })
-
-            mTask?.upload(mediaUri.toString(), fileName, mFolderName, projectName)
-
-            return true
+            }
         }
-        catch (e: Exception) {
+        catch (e: Throwable) {
             jobFailed(e)
 
             return false
         }
+
+        if (result == null) {
+            jobFailed(Exception("Empty result"))
+
+            return false
+        }
+
+        mMedia.serverUrl = result!!.pathDisplay
+        jobSucceeded()
+
+        return true
     }
 
-    override fun cancel() {
-        super.cancel()
-
-        mTask?.cancel()
-    }
-
-    private fun uploadMetadata(client: DbxClientV2, projectName: String, folderName: String, fileName: String) {
-
-        val metadataFileName = "$fileName.meta.json"
-        val gson = Gson()
-        val json = gson.toJson(mMedia, Media::class.java)
-
-        try {
-            val fileMetaData = File(mContext.filesDir, metadataFileName)
-
-            val fos = FileOutputStream(fileMetaData)
-            fos.write(json.toByteArray())
-            fos.flush()
-            fos.close()
-
-            var task = UploadFileTask(mContext, client, object : UploadFileTask.Callback {
-                    override fun onUploadComplete(result: FileMetadata?) {}
-                    override fun onError(e: Exception) {}
-                    override fun onProgress(progress: Long) {}
-                })
-
-            task.upload(Uri.fromFile(fileMetaData).toString(), metadataFileName,
-                folderName, projectName)
-
-            /// Upload ProofMode metadata, if enabled and successfully created.
-            for (file in getProof()) {
-                task = UploadFileTask(mContext, client,
-                    object : UploadFileTask.Callback {
-                        override fun onUploadComplete(result: FileMetadata?) {}
-                        override fun onError(e: Exception) {}
-                        override fun onProgress(progress: Long) {}
-                    })
-
-                task.upload(Uri.fromFile(file).toString(), file.name, folderName, projectName)
+    override suspend fun createFolder(url: String) {
+        execute {
+            try {
+                mClient.files().createFolderV2(url)
+            }
+            catch (e: CreateFolderErrorException) {
+                // Ignore. Already existing.
             }
         }
-        catch (e: IOException) {
-            jobFailed(e)
+    }
+
+    private suspend fun uploadMetadata(path: List<String>, fileName: String) {
+        // Update to the latest project license.
+        mMedia.licenseUrl = mMedia.project?.licenseUrl
+
+        val metadata = getMetadata()
+
+        if (mCancelled) throw java.lang.Exception("Cancelled")
+
+        execute {
+            metadata.byteInputStream().use {
+                mClient.files()
+                    .uploadBuilder(construct(path, "$fileName.meta.json"))
+                    .withMode(WriteMode.OVERWRITE)
+                    .uploadAndFinish(it)
+            }
+        }
+
+        for (file in getProof()) {
+            if (mCancelled) throw java.lang.Exception("Cancelled")
+
+            execute {
+                file.inputStream().use {
+                    mClient.files()
+                        .uploadBuilder(construct(path, file.name))
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(it)
+                }
+            }
+        }
+    }
+
+    private suspend fun uploadChunked(destination: String): FileMetadata? {
+        var result: FileMetadata? = null
+
+        mMedia.file.inputStream().use { inputStream ->
+            // Write first chunk, get upload session ID.
+
+            val sessionId = mClient.files().uploadSessionStart()
+                .uploadAndFinish(inputStream, CHUNK_SIZE)
+                .sessionId
+
+            var offset = CHUNK_SIZE
+            jobProgress(offset)
+
+            // Write middle chunks.
+            while (mMedia.contentLength - offset > CHUNK_SIZE) {
+                execute(offset) { skip ->
+                    if (skip != 0L) {
+                        withContext(Dispatchers.IO) {
+                            offset += inputStream.skip(skip)
+                        }
+                    }
+
+                    val cursor = UploadSessionCursor(sessionId, offset)
+
+                    mClient.files().uploadSessionAppendV2(cursor)
+                        .uploadAndFinish(inputStream, CHUNK_SIZE)
+                }
+
+                offset += CHUNK_SIZE
+                jobProgress(offset)
+            }
+
+            // Write last chunk and make file available.
+            val info = CommitInfo.newBuilder(destination)
+                .withMode(WriteMode.OVERWRITE)
+                .withClientModified(mMedia.createDate)
+                .build()
+
+            execute(offset) { skip ->
+                if (skip != 0L) {
+                    withContext(Dispatchers.IO) {
+                        offset += inputStream.skip(skip)
+                    }
+                }
+
+                val remaining = mMedia.contentLength - offset
+
+                result = mClient.files()
+                    .uploadSessionFinish(UploadSessionCursor(sessionId, offset), info)
+                    .uploadAndFinish(inputStream, remaining)
+            }
+        }
+
+        return result
+    }
+
+    private suspend fun execute(offset: Long? = null, body: suspend (skip: Long) -> Unit) {
+        var skip = 0L
+        var retries = 0
+
+        while (true) {
+            try {
+                body(skip)
+
+                break
+            }
+            catch (e: RetryException) {
+                if (retries < MAX_RETRIES) {
+                    delay(e.backoffMillis)
+                }
+                else {
+                    throw e
+                }
+            }
+            catch (e: UploadSessionAppendErrorException) {
+                if (offset != null && retries < MAX_RETRIES && e.errorValue.isIncorrectOffset) {
+                    skip = e.errorValue.incorrectOffsetValue.correctOffset - offset
+                }
+                else {
+                    throw e
+                }
+            }
+            catch (e: UploadSessionFinishErrorException) {
+                if (offset != null && retries < MAX_RETRIES
+                    && e.errorValue.isLookupFailed
+                    && e.errorValue.lookupFailedValue.isIncorrectOffset)
+                {
+                    skip = e.errorValue.lookupFailedValue.incorrectOffsetValue.correctOffset - offset
+                }
+                else {
+                    throw e
+                }
+            }
+            catch (e: NetworkIOException) {
+                if (retries < MAX_RETRIES) {
+                    // Ignore network problems. We try up to 5 times.
+                    // When doing chunking, we just try to send the next chunk.
+                    // Dropbox will tell us, if that next chunk's offset was wrong
+                    // and we will send it one more time again with the fixed offset.
+                }
+                else {
+                    throw e
+                }
+            }
+
+            retries++
         }
     }
 }

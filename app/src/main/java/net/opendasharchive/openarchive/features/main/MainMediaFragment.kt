@@ -71,13 +71,13 @@ class MainMediaFragment : Fragment() {
                 id -> mCollections.firstOrNull { it.id == id } == null
         }.toMutableList()
 
-        mCollections.forEachIndexed { index, collection ->
+        mCollections.forEach { collection ->
             val media = collection.media
 
             // Also remove all empty collections.
             if (media.isEmpty()) {
                 toDelete.add(collection.id)
-                return@forEachIndexed
+                return@forEach
             }
 
             val adapter = mAdapters[collection.id]

@@ -149,15 +149,6 @@ class UploadService : JobService() {
 
     @Throws(IOException::class)
     private suspend fun upload(media: Media): Boolean {
-        val serverUrl = media.project?.description
-
-        if (serverUrl.isNullOrEmpty()) {
-            media.delete()
-
-            return false
-        }
-
-        media.serverUrl = serverUrl
         media.sStatus = Media.Status.Uploading
         media.save()
         BroadcastManager.postChange(this, media.id)

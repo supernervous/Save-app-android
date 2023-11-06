@@ -69,6 +69,10 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         return false
     }
 
+    override suspend fun createFolder(url: String) {
+        // Ignored. Not used here.
+    }
+
     @Throws(IOException::class)
     private suspend fun uploadMetaData(content: String, basePath: String, fileName: String) {
         val requestBody = object : RequestBody() {
