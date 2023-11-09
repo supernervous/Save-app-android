@@ -94,9 +94,6 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     private suspend fun uploadMetadata(path: List<String>, fileName: String) {
-        // Update to the latest project license.
-        mMedia.licenseUrl = mMedia.project?.licenseUrl
-
         val metadata = getMetadata()
 
         if (mCancelled) throw java.lang.Exception("Cancelled")

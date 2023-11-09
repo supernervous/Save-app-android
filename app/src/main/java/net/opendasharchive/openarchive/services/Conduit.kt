@@ -132,6 +132,9 @@ abstract class Conduit(
         }
 
         mMedia.tagSet = tags
+
+        // Update to the latest project license.
+        mMedia.licenseUrl = mMedia.project?.licenseUrl
     }
 
     protected fun getPath(): List<String>? {

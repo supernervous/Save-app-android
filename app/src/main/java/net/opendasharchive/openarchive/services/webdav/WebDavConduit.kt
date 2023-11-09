@@ -172,9 +172,6 @@ class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     private fun uploadMetadata(base: HttpUrl, path: List<String>, fileName: String) {
-        // Update to the latest project license.
-        mMedia.licenseUrl = mMedia.project?.licenseUrl
-
         val metadata = getMetadata()
 
         if (mCancelled) throw Exception("Cancelled")

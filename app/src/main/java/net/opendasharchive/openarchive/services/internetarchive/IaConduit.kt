@@ -5,7 +5,6 @@ import android.net.Uri
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.SaveClient
 import okhttp3.*
@@ -45,9 +44,6 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
             put(url, requestBody, mainHeader())
 
             /// Upload metadata
-            val project = Project.getById(mMedia.projectId)
-            mMedia.licenseUrl = project?.licenseUrl
-
             basePath = "$slug-${Util.RandomString(4).nextString()}"
 
             uploadMetaData(Gson().toJson(mMedia), basePath, getUploadFileName(mMedia, true))
