@@ -21,6 +21,11 @@
     <queries>
         <package android:name="org.torproject.android" />
         <package android:name="com.dropbox.android" />
+        <intent>
+            <action android:name="android.intent.action.OPEN_DOCUMENT" />
+            <category android:name="android.intent.category.OPENABLE" />
+            <data android:mimeType="application/*" />
+        </intent>
     </queries>
 
     <!--
