@@ -50,7 +50,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.1.3'
         classpath "com.neenbedankt.gradle.plugins:android-apt:1.8"
         classpath "com.testdroid:gradle:2.63.1"
         classpath "gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1"
@@ -85,7 +85,6 @@ allprojects {
                 includeModule 'com.github.derlio', 'audio-waveform'
                 includeModule 'com.github.abdularis', 'circularimageview'
                 includeModule 'com.github.guardianproject', 'sardine-android'
-                includeModule 'com.github.danimahardhika', 'cafebar'
             }
         }
 
@@ -94,7 +93,6 @@ allprojects {
             content {
                 includeModule 'com.amulyakhare', 'com.amulyakhare.textdrawable'
                 includeModule 'com.github.stfalcon', 'frescoimageviewer'
-                includeModule 'io.github.luizgrp.sectionedrecyclerviewadapter', 'sectionedrecyclerviewadapter'
                 includeModule 'me.relex', 'photodraweeview'
             }
         }
