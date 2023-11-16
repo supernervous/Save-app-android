@@ -111,11 +111,20 @@ abstract class Conduit(
         BroadcastManager.postChange(mContext, mMedia.id)
     }
 
-    fun jobProgress(uploadedBytes: Long) {
-        mMedia.progress = uploadedBytes
-        mMedia.save()
+    // track when the last progress broadcast was sent, timestamp
+    private var lastProgressBroadcast = 0L
 
-        BroadcastManager.postChange(mContext, mMedia.id)
+    fun jobProgress(uploadedBytes: Long) {
+        // making sure we're not writing to the database more often than (1000/150=)~7 times a second.
+        // jobProgress is getting called up to several hundred times a second.
+        if (System.currentTimeMillis() > lastProgressBroadcast + 150) {
+            lastProgressBroadcast = System.currentTimeMillis()
+
+            mMedia.progress = uploadedBytes
+            mMedia.save()
+
+            BroadcastManager.postChange(mContext, mMedia.id)
+        }
     }
 
     protected fun sanitize() {
