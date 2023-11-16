@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 beta8
+- Fixed ANR on Android 14
+- Fixed exessive database reads/writes during file upload
+- Added file picker support on more devices
+
 ## 0.3.0 beta7
 - Show circular upload progress.
 - Fixed display when no folder created, yet.
