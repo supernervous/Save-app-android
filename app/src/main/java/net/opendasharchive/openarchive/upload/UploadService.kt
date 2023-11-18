@@ -43,28 +43,19 @@ class UploadService : JobService() {
          */
         fun startUploadService(activity: Activity) {
             val i = Intent(activity, UploadService::class.java)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                try {
-                    activity.startForegroundService(i)
-                }
-                catch (e: Throwable) {
-                    Timber.e(e)
-
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     try {
+                        activity.startForegroundService(i)
+                    } catch (e: Exception) {
+                        Timber.e("startUploadService() failed in foreground", e)
                         activity.startService(i)
                     }
-                    catch (e: Throwable) {
-                        Timber.e(e)
-                    }
-                }
-            } else {
-                try {
+                } else {
                     activity.startService(i)
                 }
-                catch (e: Throwable) {
-                    Timber.e(e)
-                }
+            } catch (e: Exception) {
+                Timber.e("startUploadService() failed in background", e)
             }
         }
 
