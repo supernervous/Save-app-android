@@ -85,7 +85,6 @@
 
     <string name="action_privacy">Gizlilik ilkesi</string>
     <string name="action_about">%s hakkında</string>
-    <string name="title_activity_new_project">Yeni_proje_işlemi</string>
     <string name="add_a_folder">Klasör ekle</string>
     <string name="browse_existing_folders">Var olan klasörlere göz at</string>
     <string name="browse_existing">Var olanlara göz at</string>
@@ -99,8 +98,6 @@
 
     <!-- Strings related to Settings -->
 
-    <string name="title_activity_create_new_project">Yeni_proje_oluşturma_işlemi</string>
-    <string name="title_activity_browser_projects">Projelere_göz_atma_işlemi</string>
     <string name="tap_to_add">Ortam eklemek için aşağıdaki düğmeye dokunun</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Başlamak için, ortamınızı saklayacağınız bir sunucuya bağlanın.</string>
     <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">Yan menüden başka bir sunucu ekleyebilir ve birkaç sunucuya bağlanabilirsiniz</string>
