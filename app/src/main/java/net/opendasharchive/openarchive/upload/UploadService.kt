@@ -8,11 +8,13 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.work.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,48 @@ class UploadService : JobService() {
     companion object {
         private const val MY_BACKGROUND_JOB = 0
         private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
+
+        /**
+         * This needs to be called from the foreground (from an activity in the foreground),
+         * otherwise, `#startForegroundService` will crash!
+         * See
+         * https://developer.android.com/guide/components/foreground-services#background-start-restrictions
+         */
+        fun startUploadService(activity: Activity) {
+            val i = Intent(activity, UploadService::class.java)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+                    activity.startForegroundService(i)
+                }
+                catch (e: Throwable) {
+                    Timber.e(e)
+
+                    try {
+                        activity.startService(i)
+                    }
+                    catch (e: Throwable) {
+                        Timber.e(e)
+                    }
+                }
+            } else {
+                try {
+                    activity.startService(i)
+                }
+                catch (e: Throwable) {
+                    Timber.e(e)
+                }
+            }
+        }
+
+        fun stopUploadService(context: Context) {
+            try {
+                context.stopService(Intent(context, UploadService::class.java))
+            }
+            catch (e: Throwable) {
+                Timber.e(e)
+            }
+        }
     }
 
     private var mRunning = false

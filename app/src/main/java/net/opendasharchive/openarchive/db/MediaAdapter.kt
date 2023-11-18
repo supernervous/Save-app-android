@@ -7,10 +7,10 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.upload.UploadManagerActivity
+import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -80,7 +80,7 @@ class MediaAdapter(
 
                                             updateItem(media[pos].id)
 
-                                            (it.application as SaveApp).startUploadService()
+                                            UploadService.startUploadService(it)
                                         },
                                         AlertHelper.negativeButton(R.string.remove) { _, _ ->
                                             deleteItem(pos)

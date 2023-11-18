@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
@@ -38,6 +37,7 @@ import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.upload.UploadManagerActivity
+import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
@@ -233,7 +233,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         ProofModeHelper.init(this) {
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
-            (application as SaveApp).startUploadService()
+            UploadService.startUploadService(this)
         }
     }
 

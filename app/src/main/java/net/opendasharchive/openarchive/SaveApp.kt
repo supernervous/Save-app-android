@@ -1,14 +1,11 @@
 package net.opendasharchive.openarchive
 
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import timber.log.Timber
@@ -41,48 +38,6 @@ class SaveApp : SugarApp() {
         // enable timber logging library for debug builds
         if(BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    /**
-     * This needs to be called from the foreground (from an activity in the foreground),
-     * otherwise, `#startForegroundService` will crash!
-     * See
-     * https://developer.android.com/guide/components/foreground-services#background-start-restrictions
-     */
-    fun startUploadService() {
-        val i = Intent(this, UploadService::class.java)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                startForegroundService(i)
-            }
-            catch (e: Throwable) {
-                Timber.e(e)
-
-                try {
-                    startService(i)
-                }
-                catch (e: Throwable) {
-                    Timber.e(e)
-                }
-            }
-        } else {
-            try {
-                startService(i)
-            }
-            catch (e: Throwable) {
-                Timber.e(e)
-            }
-        }
-    }
-
-    fun stopUploadService() {
-        try {
-            stopService(Intent(this, UploadService::class.java))
-        }
-        catch (e: Throwable) {
-            Timber.e(e)
         }
     }
 

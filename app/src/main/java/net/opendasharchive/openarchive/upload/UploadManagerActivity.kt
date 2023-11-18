@@ -9,7 +9,6 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import net.opendasharchive.openarchive.CleanInsightsManager
-import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
@@ -87,12 +86,12 @@ class UploadManagerActivity : BaseActivity() {
         if (mEditMode) {
             mMenuEdit?.setTitle(R.string.menu_done)
 
-            (application as SaveApp).stopUploadService()
+            UploadService.stopUploadService(this)
         }
         else {
             mMenuEdit?.setTitle(R.string.edit)
 
-            (application as SaveApp).startUploadService()
+            UploadService.startUploadService(this)
         }
 
         updateTitle()
@@ -122,7 +121,7 @@ class UploadManagerActivity : BaseActivity() {
     override fun finish() {
         // If we're still in edit mode, restart the upload service when the user leaves.
         if (mEditMode) {
-            (application as SaveApp).startUploadService()
+            UploadService.startUploadService(this)
         }
 
         super.finish()
