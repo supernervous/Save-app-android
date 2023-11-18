@@ -294,6 +294,11 @@ class UploadService : JobService() {
             .setContentIntent(pendingIntent)
             .build()
 
-        startForeground(1337, notification)
+        ServiceCompat.startForeground(
+            this,
+            1337,
+            notification,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC else 0
+        )
     }
 }
