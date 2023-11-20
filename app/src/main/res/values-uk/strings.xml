@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="app_subtext">Архівація вашого медіафайлу\n<a href="#">дізнайтеся більше</a></string>
+
     <string name="title_activity_login">Увійти</string>
-    <!-- General -->
+    <string name="title_activity_first_start">Перший початок</string>
+    <string name="title_media_list">Вивантаження</string>
 
     <!-- Alert Values -->
 
@@ -33,6 +36,7 @@
     -->
 
     <string name="info_license_deriv">Дозволити будь-кому видозмінювати та поширювати</string>
+    <string name="info_license_sharealike">Вимагати від них ділитися файлами, як ви?</string>
     <string name="info_license_comm">Дозволити комерційне використання?</string>
 
     <string name="menu_delete">Вилучити медіа</string>
@@ -45,7 +49,9 @@
 
     <string name="error">Помилка</string>
 
+    <string name="prefs_use_tor_title">Увімкніть маршрутизацію на Onion</string>
     <string name="prefs_use_tor_summary">Передавати тільки через Orbot</string>
+    <string name="prefs_install_tor_summary">Будь ласка, встановіть Orbot для увімкнення</string>
     <string name="prefs_prohibit_screenshots_title">Блокувати скріншоти</string>
     <string name="prefs_prohibit_screenshots_summary">Заборонити знімки екрана та записи екрана цієї програми</string>
 
@@ -55,8 +61,10 @@
     <string name="prefs_theme_system">Контролюється системою</string>
     <string name="prefs_theme_light">Світла</string>
     <string name="prefs_theme_dark">Темна</string>
+    <string name="prefs_use_proofmode_title">Увімкнути режим ProofMode</string>
     <string name="prefs_use_proofmode_summary">Зберіть додаткові метадані та нотаріально завірте всі носії</string>
 
+    <string name="prefs_share_proofmode_title">Сутність ProofMode</string>
     <string name="prefs_share_proofmode_summary">Поширити публічний ключ ProofMode</string>
 
 
@@ -69,6 +77,8 @@
     <string name="error_incorrect_username_or_password">Неправильний логін або пароль</string>
     <string name="error_field_required">Це поле - обов\'язкове</string>
 
+    <string name="importing_media">Імпортується медіафайл…</string>
+
     <string name="title_welcome">Ласкаво просимо</string>
 
     <string name="action_privacy">Політика конфіденційності</string>
@@ -78,8 +88,13 @@
     <string name="browse_existing">View existing folders</string>
     <string name="title_activity_upload_manager">менеджер завантаження</string>
 
+    <string name="uploads">Вивантаження</string>
     <string name="uploading">Завантаження…</string>
+    <string name="uploading_left">Вивантажується… (%d залишилося)</string>
+
     <string name="action_upload">Додати</string>
+
+    <!-- Strings related to Settings -->
 
     <string name="tap_to_add">Натисни на кнопку нижче щоб додати файли</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Щоб розпочати, під’єднайся до сховища для зберігання твоїх медіа.</string>
@@ -98,9 +113,11 @@
     <string name="edit">Змінити</string>
     <string name="menu_done">Готово</string>
     <string name="remove_from_app">Вилучити із застосунку</string>
+    <string name="action_remove_project">Ви справді хочете вилучити ваш проєкт?</string>
     <string name="remove">Видалити</string>
     <string name="action_archive_project">Заархівувати проект</string>
     <string name="action_unarchive_project">Розархівувати проєкт</string>
+    <string name="IA_login_error">Будь ласка, увійдіть, використовуючи дійсні облікові дані Internet Archive</string>
     <string name="access_key">Ключ доступу</string>
     <string name="secret_key">Секретний Ключ</string>
     <string name="info_archiveorg_keys"><b><i>Save</i></b>потрібні ключі API твого акаунта Internet Archive для завантаження файлів.</string>
@@ -116,6 +133,9 @@
 
     <string name="popup_flag_title">Позначте важливий контент</string>
     <string name="popup_flag_desc">Коли ти позначаєш елемент, він поміщається до підпапки у вибраній папці на сервері для захисту глядачів.</string>
+
+    <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Задайте однакову ліцензію Creative Commons для ВСІХ тек на цьому сервері.</string>
+    <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Задайте унікальні ліцензії Creative Commons для КОЖНОЇ окремої теки на цьому сервері.</string>
 
     <string name="action_install">Встановити</string>
     <string name="login_activity_logging_message">Вхід…</string>
@@ -164,6 +184,12 @@
     <string name="intro_text_archive">
 Зберігай свої медіа у безпеці та порядку для довгострокового використання, створюючи у застосунку папки проєктів, які відображатимуть як твій особистий, так і медіаархів твоєї організації.</string>
     <string name="intro_text_verify">Перевіряй свої медіа криптографічною верифікацією за допомогою хеша sha256 та опціонального ProofMode. Зберігай критичні метадані (наприклад нотатки, людей, локації) у кожному завантаженні.</string>
+    <string name="intro_text_encrypt"><![CDATA[
+Завантажуйте автоматично через протокол TLS (Transport Layer Security — захист на транспортному рівні) та використовуйте Orbot для захисту
+ медіафайлу під час передачі через мережу Tor. <br />
+<br />
+<a href=\"#\">Встановіть Orbot </a>для увімкнення додаткової безпеки мережі.]]>
+</string>
     <string name="next">Вперед</string>
     <string name="done">Готово</string>
     <string name="secure_mobile_media_preservation">Безпечне збереження медіафайлів з мобільних пристроїв</string>
@@ -191,10 +217,35 @@
     <string name="add_a_location_optional">Додай розташування (опціонально)</string>
     <string name="add_notes_optional">Додай нотатки (опціонально)</string>
     <string name="skip">Пропустити</string>
+    <string name="add_images_or_video">Додати зображення чи відео</string>
+    <string name="add_files">Додати файли</string>
+
+    <string name="ia_learn_how_title">Як отримати ключі за 3 прості кроки</string>
+    <string name="ia_learn_how_summary_step_1">Крок 1: увійдіть до Internet Archive. Якщо у вас немає облікового запису, створіть його.</string>
+    <string name="ia_learn_how_summary_step_2">Крок 2: якщо ви створюєте новий обліковий запис, перевірте свою електронну пошту.</string>
+    <string name="ia_learn_how_summary_step_3">Крок 3: згенеруйте свої API-ключі, поставивши галочку, і вони автоматично завантажаться в застосунок!</string>
+
+    <string name="upload_unsuccessful">Успішне вивантаження</string>
     <string name="retry">Повторити</string>
 
     <string name="edit_media">Редагувати дані файлу</string>
+    <string name="uploading_is_paused">Вивантаження призупинено</string>
+    <string name="add_media_using">Додати медіафайл за допомогою:</string>
+    <string name="photo_galery">Галерея світлин</string>
     <string name="files">Файли</string>
+    <string name="health_checks">Перевірки стану</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Допоможіть покращити застосунок, запустивши перевірку стану, коли вивантаження зазнає збою.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Перевірка стану допомагає нам зрозуміти, чому вивантаження не вдається.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Надайте свої дані, щоб стати частиною рішення.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">З вашого дозволу, ми будемо запускати перевірку щоразу, коли ви зіткнетеся з помилкою під час вивантаження.</string>
+    <string name="health_checks_capture">Фіксація перевірок стану</string>
+    <string name="error_description">– Опис помилки</string>
+    <string name="size_and_type_of_media">– Розмір і тип медіафайла</string>
+    <string name="number_of_retries">– Кількість спроб</string>
+    <string name="network_type">– Тип мережі</string>
+    <string name="locale">– Локаль</string>
+    <string name="allow_health_checks">Дозволити перевірки стану?</string>
+    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Дозволяючи перевірку стану, ви даєте право програмі безпечно надсилати дані про перевірку стану команді %s.</string>
     <string name="no_thanks">Ні, дякую</string>
     <string name="undo">Скасувати</string>
 

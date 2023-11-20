@@ -4,8 +4,6 @@
     <string name="title_activity_login">Авторизоваться</string>
     <string name="title_media_list">Загруженная информация</string>
 
-    <!-- General -->
-
     <!-- Alert Values -->
 
     <string name="action_settings">Настройки</string>

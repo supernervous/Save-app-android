@@ -4,8 +4,6 @@
     <string name="title_activity_login">Anmelden</string>
     <string name="title_media_list">Uploads</string>
 
-    <!-- General -->
-
     <!-- Alert Values -->
 
     <string name="action_settings">Einstellungen</string>
@@ -84,6 +82,9 @@
     <string name="popup_flag_title">Besonderen Inhalt markieren</string>
     <string name="popup_flag_desc">Wenn Du ein Element markierst, wird es in einem Unterordner innerhalb des ausgewählten Projektordners auf dem privaten Server abgelegt.</string>
 
+    <string name="set_the_same_creative_commons_license_for_all_folders_on_this_server">Die gleiche Creative–Commons–Lizenz für ALLE Ordner auf diesem Server verwenden.</string>
+    <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Eigene Creative–Commons–Lizenz für JEDEN EINZELNEN Ordner auf diesem Server verwenden.</string>
+
     <string name="action_install">Installieren</string>
     <string name="add_another_account">Server hinzufügen</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
@@ -104,15 +105,24 @@
     <string name="done">Fertig</string>
     <string name="secure_mobile_media_preservation">Sichere Bewahrung mobiler Medien</string>
     <string name="get_started">Los gehts</string>
+    <string name="archived_folders">Archivierte Ordner</string>
+    <string name="view_archived_folders">Archivierte Ordner ansehen</string>
     <string name="refresh">Aktualisieren</string>
     <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
     <string name="select_all">Alles auswählen</string>
     <string name="got_it">Verstanden</string>
+    <string name="edit_multiple">Mehrere editieren</string>
+    <string name="press_and_hold_to_select_and_edit_multiple_media">Gedrückt halten, um mehrere Elemente auszuwählen.</string>
+    <string name="edit_media_info">Editieren</string>
+    <string name="add_a_location_optional">Ort hinzufügen (optional)</string>
+    <string name="add_notes_optional">Notizen hinzufügen (optional)</string>
     <string name="skip">Überspringen</string>
     <string name="add_files">Dateien hinzufügen</string>
 
     <string name="retry">Erneut versuchen</string>
 
+    <string name="edit_media">Medien bearbeiten</string>
+    <string name="uploading_is_paused">Hochladen pausiert</string>
     <string name="files">Dateien</string>
     <string name="health_checks">Gesundheitscheck</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Hilf mit, die App durch Gesundheitschecks besser zu machen, wenn das Hochladen fehlschlägt.</string>

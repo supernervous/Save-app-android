@@ -4,8 +4,6 @@
     <string name="title_activity_login">Connexion</string>
     <string name="title_media_list">Téléversements</string>
 
-    <!-- General -->
-
     <!-- Alert Values -->
 
     <string name="action_settings">Paramètres</string>
