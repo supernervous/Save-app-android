@@ -59,13 +59,18 @@
 
     <string name="action_privacy">Datenschutzbestimmungen</string>
     <string name="action_about">Über %s</string>
+    <string name="add_a_folder">Ordner hinzufügen</string>
+    <string name="browse_existing_folders">Benütze existierenden Ordner</string>
+    <string name="browse_existing">Benütze existierenden</string>
     <string name="uploads">Uploads</string>
     <string name="uploading">Hochladen…</string>
     <string name="action_upload">Upload</string>
 
+    <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen</string>
     <string name="action_next">Weiter</string>
     <string name="action_done">Fertig</string>
     <string name="status_flagged">Besonderer Inhalt</string>
+    <string name="create_a_new_folder">Neuen Ordner erstellen</string>
     <string name="edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
     <string name="remove_from_app">Aus App entfernen</string>
@@ -90,8 +95,10 @@
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
     <string name="prefs_proofmode_key_encryption_summary">Wenn Du das änderst, wird ein neuer Schlüssel generiert! Wenn Du den Vorherigen exportiert und signiert hast, wirst Du das mit dem Neuen wiederholen müssen.</string>
     <string name="folders">Ordner</string>
+    <string name="folder_name">Ordnername</string>
     <string name="create">Erstellen</string>
     <string name="add">Hinzufügen</string>
+    <string name="private_server">Privater Server</string>
     <string name="upload_to_dropbox">Auf Dropbox hochladen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="back">Zurück</string>
@@ -108,6 +115,8 @@
     <string name="archived_folders">Archivierte Ordner</string>
     <string name="view_archived_folders">Archivierte Ordner ansehen</string>
     <string name="refresh">Aktualisieren</string>
+    <string name="to_get_started_please_create_a_folder">Ordner erstellen, um anzufangen</string>
+    <string name="before_adding_media_create_a_new_folder_first">Bevor Du Medien hinzufügen kannst, erstelle erst einen neuen Ordner.</string>
     <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
     <string name="select_all">Alles auswählen</string>
     <string name="got_it">Verstanden</string>
