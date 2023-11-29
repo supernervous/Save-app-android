@@ -66,10 +66,12 @@
     <string name="uploading">Hochladen…</string>
     <string name="action_upload">Upload</string>
 
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Um zu beginnen, verknüpfe einen Server um Deine Medien zu speichern.</string>
     <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen</string>
     <string name="action_next">Weiter</string>
     <string name="action_done">Fertig</string>
     <string name="status_flagged">Besonderer Inhalt</string>
+    <string name="select_where_to_store_your_media">Auswählen, wo Medien gespeichert werden.</string>
     <string name="create_a_new_folder">Neuen Ordner erstellen</string>
     <string name="edit">Bearbeiten</string>
     <string name="menu_done">Fertig</string>
@@ -91,6 +93,8 @@
     <string name="set_unique_creative_commons_licenses_for_each_individual_folder_on_this_server">Eigene Creative–Commons–Lizenz für JEDEN EINZELNEN Ordner auf diesem Server verwenden.</string>
 
     <string name="action_install">Installieren</string>
+    <!-- Clean Insights measurement -->
+    <string name="server_name_optional">Servername (optional)</string>
     <string name="add_another_account">Server hinzufügen</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Sichere den ProofMode-Schlüssel mit dem Gerätepasswort ab</string>
     <string name="prefs_proofmode_key_encryption_summary">Wenn Du das änderst, wird ein neuer Schlüssel generiert! Wenn Du den Vorherigen exportiert und signiert hast, wirst Du das mit dem Neuen wiederholen müssen.</string>
@@ -103,6 +107,7 @@
     <string name="authenticate">Authentifizieren</string>
     <string name="back">Zurück</string>
     <string name="my_media">Meine Medien</string>
+    <string name="server_info">Server Info</string>
     <string name="account">Konto</string>
     <string name="general">Allgemein</string>
     <string name="only_upload_media_when_you_are_connected_to_wi_fi">Medien nur über WLAN hochladen</string>
@@ -118,6 +123,7 @@
     <string name="to_get_started_please_create_a_folder">Ordner erstellen, um anzufangen</string>
     <string name="before_adding_media_create_a_new_folder_first">Bevor Du Medien hinzufügen kannst, erstelle erst einen neuen Ordner.</string>
     <string name="use_upload_chunking_nextcloud_only">Upload stückeln (nur Nextcloud)</string>
+    <string name="chunking_explanation">\"Stückeln\" lädt Medien in Stücken hoch, damit nicht der komplette Upload von vorne begonnen werden muß, wenn die Verbindung unterbrochen wurde.</string>
     <string name="select_all">Alles auswählen</string>
     <string name="got_it">Verstanden</string>
     <string name="edit_multiple">Mehrere editieren</string>
@@ -128,6 +134,7 @@
     <string name="skip">Überspringen</string>
     <string name="add_files">Dateien hinzufügen</string>
 
+    <string name="ia_learn_how_summary_step_2">Schritt 2: Wenn Du einen neuen Zugang erstellst, verifiziere Deine E-Mail-Adresse.</string>
     <string name="retry">Erneut versuchen</string>
 
     <string name="edit_media">Medien bearbeiten</string>
