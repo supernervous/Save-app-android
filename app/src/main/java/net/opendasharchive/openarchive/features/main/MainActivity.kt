@@ -1,9 +1,12 @@
 package net.opendasharchive.openarchive.features.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +14,7 @@ import android.widget.ProgressBar
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -235,6 +239,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
             UploadService.startUploadService(this)
         }
+
+        requestNotificationPermission()
     }
 
     override fun onResume() {
@@ -254,6 +260,26 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         }
 
         importSharedMedia(intent)
+    }
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { _: Boolean ->
+        // Nothing to do here, if we got permission we just use it later, if it was denied
+        // permissions simply won't show up. No need to bother users about it any further.
+        // The only notification in Save at the moment of writing this comment is showing up
+        // during media uploads.
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                //  ask for the permission
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onPause() {
