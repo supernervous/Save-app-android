@@ -102,6 +102,7 @@
     <string name="uploads">Uploads</string>
     <string name="uploading">Uploading…</string>
     <string name="uploading_left">Uploading… (%d left)</string>
+    <string name="uploads_notification_descriptions">These notifications show up while this app is performing media uploads.</string>
 
     <string name="action_upload">Upload</string>
 

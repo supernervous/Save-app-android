@@ -8,21 +8,20 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
 import androidx.work.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.CleanInsightsManager
-import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
@@ -35,37 +34,23 @@ class UploadService : JobService() {
         private const val MY_BACKGROUND_JOB = 0
         private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
 
-        /**
-         * This needs to be called from the foreground (from an activity in the foreground),
-         * otherwise, `#startForegroundService` will crash!
-         * See
-         * https://developer.android.com/guide/components/foreground-services#background-start-restrictions
-         */
         fun startUploadService(activity: Activity) {
-            val i = Intent(activity, UploadService::class.java)
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    try {
-                        activity.startForegroundService(i)
-                    } catch (e: Exception) {
-                        Timber.e("startUploadService() failed in foreground", e)
-                        activity.startService(i)
-                    }
-                } else {
-                    activity.startService(i)
-                }
-            } catch (e: Exception) {
-                Timber.e("startUploadService() failed in background", e)
+            val jobScheduler =
+                ContextCompat.getSystemService(activity, JobScheduler::class.java) ?: return
+            var jobBuilder = JobInfo.Builder(
+                MY_BACKGROUND_JOB,
+                ComponentName(activity, UploadService::class.java)
+            ).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                jobBuilder = jobBuilder.setUserInitiated(true)
             }
+            jobScheduler.schedule(jobBuilder.build())
         }
 
         fun stopUploadService(context: Context) {
-            try {
-                context.stopService(Intent(context, UploadService::class.java))
-            }
-            catch (e: Throwable) {
-                Timber.e(e)
-            }
+            val jobScheduler =
+                ContextCompat.getSystemService(context, JobScheduler::class.java) ?: return
+            jobScheduler.cancel(MY_BACKGROUND_JOB)
         }
     }
 
@@ -73,54 +58,41 @@ class UploadService : JobService() {
     private var mKeepUploading = true
     private val mConduits = ArrayList<Conduit>()
 
-    init {
-        Configuration.Builder().setJobSchedulerJobIdRange(0, Integer.MAX_VALUE).build()
-    }
-
     override fun onCreate() {
         super.onCreate()
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) createNotificationChannel()
-
-        doForeground()
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        run {
-            stopSelf()
-        }
-
-        return super.onStartCommand(intent, flags, startId)
+        Configuration.Builder().setJobSchedulerJobIdRange(0, Integer.MAX_VALUE).build()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        mKeepUploading = false
-
-        for (conduit in mConduits) conduit.cancel()
-
-        mConduits.clear()
     }
 
-    override fun onStartJob(params: JobParameters?): Boolean {
-        run {
-            jobFinished(params, false)
-        }
-
-        return true
-    }
-
-    override fun onStopJob(params: JobParameters?): Boolean {
-        stopSelf()
-
-        return true
-    }
-
-    private fun run(completed: () -> Unit) {
+    override fun onStartJob(params: JobParameters): Boolean {
         CoroutineScope(Dispatchers.IO).launch {
-            upload(completed)
+            upload {
+                jobFinished(params, false)
+            }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            setNotification(
+                params,
+                7918,
+                prepNotification(),
+                JobService.JOB_END_NOTIFICATION_POLICY_REMOVE
+            )
+        }
+
+        return true
+    }
+
+    override fun onStopJob(params: JobParameters): Boolean {
+        mKeepUploading = false
+        for (conduit in mConduits) conduit.cancel()
+        mConduits.clear()
+
+        return true
     }
 
     private suspend fun upload(completed: () -> Unit) {
@@ -140,7 +112,8 @@ class UploadService : JobService() {
         while (mKeepUploading &&
             Media.getByStatus(
                 listOf(Media.Status.Queued, Media.Status.Uploading),
-                Media.ORDER_PRIORITY)
+                Media.ORDER_PRIORITY
+            )
                 .also { results = it }
                 .isNotEmpty()
         ) {
@@ -165,8 +138,7 @@ class UploadService : JobService() {
 
                 try {
                     upload(media)
-                }
-                catch (ioe: IOException) {
+                } catch (ioe: IOException) {
                     Timber.d(ioe)
 
                     media.statusMessage = "error in uploading media: " + ioe.message
@@ -208,11 +180,14 @@ class UploadService : JobService() {
 
         if (isNetworkAvailable(requireUnmetered)) return true
 
-        val type = if (requireUnmetered) JobInfo.NETWORK_TYPE_UNMETERED else JobInfo.NETWORK_TYPE_ANY
+        val type =
+            if (requireUnmetered) JobInfo.NETWORK_TYPE_UNMETERED else JobInfo.NETWORK_TYPE_ANY
 
         // Try again when there is a network.
-        val job = JobInfo.Builder(MY_BACKGROUND_JOB,
-            ComponentName(this, UploadService::class.java))
+        val job = JobInfo.Builder(
+            MY_BACKGROUND_JOB,
+            ComponentName(this, UploadService::class.java)
+        )
             .setRequiredNetworkType(type)
             .setRequiresCharging(false)
             .build()
@@ -223,7 +198,8 @@ class UploadService : JobService() {
     }
 
     private fun isNetworkAvailable(requireUnmetered: Boolean): Boolean {
-        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
+        val cm =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val cap = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
@@ -232,17 +208,18 @@ class UploadService : JobService() {
                 cap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                     return true
                 }
+
                 cap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
                     return !requireUnmetered
                 }
+
                 cap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
                     return true
                 }
             }
 
             return false
-        }
-        else {
+        } else {
             @Suppress("DEPRECATION")
             val info = cm.activeNetworkInfo
 
@@ -255,10 +232,12 @@ class UploadService : JobService() {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name),
-            NotificationManager.IMPORTANCE_LOW)
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID, getString(R.string.uploads),
+            NotificationManager.IMPORTANCE_LOW
+        )
 
-        channel.description = getString(R.string.app_subtext)
+        channel.description = getString(R.string.uploads_notification_descriptions)
         channel.enableLights(false)
         channel.enableVibration(false)
         channel.setShowBadge(false)
@@ -268,28 +247,21 @@ class UploadService : JobService() {
             ?.createNotificationChannel(channel)
     }
 
-    @Synchronized
-    private fun doForeground() {
+    private fun prepNotification(): Notification {
         val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.FLAG_IMMUTABLE
-        }
-        else 0
+        } else 0
 
-        val pendingIntent = PendingIntent.getActivity(this, 0,
-            Intent(this, MainActivity::class.java), flag)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivity::class.java), flag
+        )
 
-        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_app_notify)
-            .setContentTitle(getString(R.string.app_name))
+            .setContentTitle(getString(R.string.uploading))
             .setDefaults(Notification.DEFAULT_LIGHTS)
             .setContentIntent(pendingIntent)
             .build()
-
-        ServiceCompat.startForeground(
-            this,
-            1337,
-            notification,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC else 0
-        )
     }
 }
