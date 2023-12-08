@@ -254,7 +254,7 @@
     <string name="edit_media">Edit Media</string>
     <string name="uploading_is_paused">Uploading is paused</string>
     <string name="add_media_using">Add Media using:</string>
-    <string name="photo_galery">Photo Galery</string>
+    <string name="photo_gallery">Photo Gallery</string>
     <string name="files">Files</string>
     <string name="health_checks">Health Checks</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Help improve the app by running health checks when uploads fail.</string>

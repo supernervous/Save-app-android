@@ -234,7 +234,7 @@
     <string name="edit_media">Редагувати медіафайл</string>
     <string name="uploading_is_paused">Вивантаження призупинено</string>
     <string name="add_media_using">Додати медіафайл з:</string>
-    <string name="photo_galery">Галерея фотографій</string>
+    <string name="photo_gallery">Галерея фотографій</string>
     <string name="files">Файли</string>
     <string name="health_checks">Перевірки стану</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Допоможіть покращити застосунок, запустивши перевірку його стану, якщо вивантаження зазнає збою.</string>

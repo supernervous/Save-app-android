@@ -61,11 +61,11 @@
 
 
                 <TextView
-                    android:id="@+id/text_photo_galery"
+                    android:id="@+id/text_photo_gallery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/photo_galery"
+                    android:text="@string/photo_gallery"
                     android:textAlignment="center"
                     android:textFontWeight="700"
                     android:textSize="14sp"
