@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+- Updated translations, fixed typos.
+- Added notifications for background uploads, so app stays alive on newer Android versions.
+
 ## 0.3.0 beta8
 - Fixed ANR on Android 14
 - Fixed exessive database reads/writes during file upload
