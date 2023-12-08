@@ -91,7 +91,6 @@
     <string name="uploads">Cargas</string>
     <string name="uploading">Cargando…</string>
     <string name="uploading_left">Cargando… (%d restantes)</string>
-
     <string name="action_upload">Cargar</string>
 
     <!-- Strings related to Settings -->

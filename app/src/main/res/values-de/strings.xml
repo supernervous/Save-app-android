@@ -67,6 +67,7 @@
     <string name="action_upload">Upload</string>
 
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Um zu beginnen, verknüpfe einen Server um Deine Medien zu speichern.</string>
+    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">Im Seitenmenü kannst Du weitere Server hinzufügen und Dich mit mehreren Servern verbinden.</string>
     <string name="upload_to_the_internet_archive">Zum Internet Archive hochladen</string>
     <string name="action_next">Weiter</string>
     <string name="action_done">Fertig</string>
@@ -139,6 +140,7 @@
 
     <string name="edit_media">Medien bearbeiten</string>
     <string name="uploading_is_paused">Hochladen pausiert</string>
+    <string name="photo_gallery">Fotogallerie</string>
     <string name="files">Dateien</string>
     <string name="health_checks">Gesundheitscheck</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Hilf mit, die App durch Gesundheitschecks besser zu machen, wenn das Hochladen fehlschlägt.</string>
