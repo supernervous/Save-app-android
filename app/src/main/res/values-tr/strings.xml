@@ -91,6 +91,8 @@
     <string name="uploads">Yüklemeler</string>
     <string name="uploading">Yükleniyor…</string>
     <string name="uploading_left">Yükleniyor… (%d kaldı)</string>
+    <string name="uploads_notification_descriptions">Bu bildirimler, bu uygulama ortam yüklemelerini yaparken görüntülenir.</string>
+
     <string name="action_upload">Yükle</string>
 
     <!-- Strings related to Settings -->

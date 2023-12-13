@@ -91,6 +91,8 @@
     <string name="uploads">Вивантаження</string>
     <string name="uploading">Вивантаження…</string>
     <string name="uploading_left">Вивантажується… (%d залишилося)</string>
+    <string name="uploads_notification_descriptions">Ці сповіщення показуються під час вивантаження медіа застосунком. </string>
+
     <string name="action_upload">Вивантажити</string>
 
     <!-- Strings related to Settings -->
@@ -233,7 +235,7 @@
     <string name="edit_media">Редагувати медіафайл</string>
     <string name="uploading_is_paused">Вивантаження призупинено</string>
     <string name="add_media_using">Додати медіафайл з:</string>
-    <string name="photo_gallery">Фотографії</string>
+    <string name="photo_gallery">Галерея</string>
     <string name="files">Файли</string>
     <string name="health_checks">Перевірки стану</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Допоможіть покращити застосунок, запустивши перевірку його стану, якщо вивантаження зазнає збою.</string>
