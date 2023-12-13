@@ -20,6 +20,9 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
+    <string name="gdrive">Google Drive</string>
+    <string name="upload_to_the_gdrive">Upload to Google cloud storage</string>
+    <string name="sign_in_or_create_an_account_with_gdrive">Sing in or create an account with Google Drive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
@@ -121,6 +124,7 @@
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
     <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
+    <string name="you_have_successfully_connected_to_gdrive">You have successfully connected to Google Drive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="edit">Edit</string>
     <string name="menu_done">Done</string>

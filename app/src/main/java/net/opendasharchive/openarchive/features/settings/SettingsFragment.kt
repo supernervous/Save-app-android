@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.databinding.FragmentSettingsBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.dropbox.DropboxActivity
+import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -103,6 +104,7 @@ class SettingsFragment : Fragment() {
         val clazz = when (space.tType) {
             Space.Type.INTERNET_ARCHIVE -> InternetArchiveActivity::class.java
             Space.Type.DROPBOX -> DropboxActivity::class.java
+            Space.Type.GDRIVE -> GDriveActivity::class.java
             else -> WebDavActivity::class.java
         }
 

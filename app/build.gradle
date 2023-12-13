@@ -143,6 +143,12 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
+    // google drive api
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.42.1'
+    implementation('com.google.api-client:google-api-client-android:1.26.0')
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0')
+
     // Tests
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.7.3'

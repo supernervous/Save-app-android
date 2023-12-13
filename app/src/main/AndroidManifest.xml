@@ -123,6 +123,9 @@
             android:name=".services.dropbox.DropboxActivity" />
 
         <activity
+            android:name=".services.gdrive.GDriveActivity" />
+
+        <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:exported="true"

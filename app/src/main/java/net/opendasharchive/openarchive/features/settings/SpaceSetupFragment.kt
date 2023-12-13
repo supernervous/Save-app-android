@@ -8,9 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSpaceSetupBinding
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -52,6 +54,17 @@ class SpaceSetupFragment : Fragment() {
             }
         }
 
+        if (Space.has(Space.Type.GDRIVE)) {
+            mBinding.gdrive.hide()
+        } else {
+            mBinding.gdrive.setOnClickListener {
+                setFragmentResult(
+                    RESULT_REQUEST_KEY,
+                    bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_GDRIVE)
+                )
+            }
+        }
+
         return mBinding.root
     }
 
@@ -61,5 +74,6 @@ class SpaceSetupFragment : Fragment() {
         const val RESULT_VAL_DROPBOX = "dropbox"
         const val RESULT_VAL_WEBDAV = "webdav"
         const val RESULT_VAL_INTERNET_ARCHIVE = "internet_archive"
+        const val RESULT_VAL_GDRIVE = "gdrive"
     }
 }

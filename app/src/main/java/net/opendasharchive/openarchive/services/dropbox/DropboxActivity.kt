@@ -35,13 +35,13 @@ class DropboxActivity: BaseActivity() {
         mBinding.dropboxId.setText(space?.username ?: "")
     }
 
+
+    // boilerplate to make back button in app bar work
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             finish()
-
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 
