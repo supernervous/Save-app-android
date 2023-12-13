@@ -1,13 +1,17 @@
 package net.opendasharchive.openarchive.features.media
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import net.opendasharchive.openarchive.R
@@ -21,7 +25,7 @@ import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
 
-class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
+class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
 
     companion object {
         private const val PROJECT_ID_EXTRA = "project_id"
@@ -38,9 +42,10 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilesPickerLauncher: ActivityResultLauncher<Intent>
 
-    private val mLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        refresh()
-    }
+    private val mLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            refresh()
+        }
 
     private var mProject: Project? = null
 
@@ -135,6 +140,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
 
                 return true
             }
+
             R.id.menu_upload -> {
                 val queue = {
                     mMedia.forEach {
@@ -148,30 +154,31 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
 
                 if (Prefs.dontShowUploadHint) {
                     queue()
-                }
-                else {
+                } else {
                     var dontShowAgain = false
 
-                    val builder = AlertHelper.build(this,
-                        title = R.string.once_uploaded_you_will_not_be_able_to_edit_media,
-                        icon = R.drawable.baseline_cloud_upload_black_48,
-                        buttons = listOf(
-                            AlertHelper.positiveButton(R.string.got_it) { _, _ ->
-                                Prefs.dontShowUploadHint = dontShowAgain
-                                queue()
-                            },
-                            AlertHelper.negativeButton()))
+                    val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogTheme))
+                        .setTitle(R.string.once_uploaded_you_will_not_be_able_to_edit_media)
+                        .setIcon(R.drawable.baseline_cloud_upload_black_48)
+                        .setPositiveButton(
+                            R.string.got_it
+                        ) { _: DialogInterface, _: Int ->
+                            Prefs.dontShowUploadHint = dontShowAgain
+                            queue()
+                        }
+                        .setNegativeButton(R.string.lbl_Cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+                        .setMultiChoiceItems(
+                            arrayOf(getString(R.string.do_not_show_me_this_again)),
+                            booleanArrayOf(false)
+                        )
+                        { _, _, isChecked ->
+                            dontShowAgain = isChecked
+                        }.show()
 
-                    builder.setMultiChoiceItems(
-                        arrayOf(getString(R.string.do_not_show_me_this_again)),
-                        booleanArrayOf(false))
-                    { _, _, isChecked ->
-                        dontShowAgain = isChecked
-                    }
+                    // hack for making sure this dialog always shows all lines of the pretty long title, even on small screens
+                    d.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.maxLines = 99;
 
-                    builder.show()
                 }
-
                 return true
             }
         }
@@ -184,16 +191,23 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
             mBinding.btAddMore -> {
                 Picker.pickMedia(this, mMediaPickerLauncher)
             }
+
             mBinding.btBatchEdit -> {
                 val selected = mMedia.filter { it.selected }
 
                 if (selected.size == 1) {
                     mLauncher.launch(ReviewActivity.getIntent(this, mMedia, selected.first()))
-                }
-                else if (selected.size > 1) {
-                    mLauncher.launch(ReviewActivity.getIntent(this, mMedia.filter { it.selected }, batchMode = true))
+                } else if (selected.size > 1) {
+                    mLauncher.launch(
+                        ReviewActivity.getIntent(
+                            this,
+                            mMedia.filter { it.selected },
+                            batchMode = true
+                        )
+                    )
                 }
             }
+
             mBinding.btSelectAll -> {
                 val select = mMedia.firstOrNull { !it.selected } != null
 
@@ -207,6 +221,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
 
                 mediaSelectionChanged()
             }
+
             mBinding.btRemove -> {
                 mMedia.forEach {
                     if (it.selected) {
@@ -227,8 +242,7 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
         if (mMedia.firstOrNull { it.selected } != null) {
             mBinding.btAddMore.hide()
             mBinding.bottomBar.show()
-        }
-        else {
+        } else {
             mBinding.btAddMore.toggle(mProject != null)
             mBinding.bottomBar.hide()
         }
@@ -241,8 +255,10 @@ class PreviewActivity: BaseActivity(), View.OnClickListener, PreviewAdapter.List
     private fun showFirstTimeBatch() {
         if (Prefs.batchHintShown) return
 
-        AlertHelper.show(this, R.string.press_and_hold_to_select_and_edit_multiple_media,
-            R.string.edit_multiple, R.drawable.ic_batchedit)
+        AlertHelper.show(
+            this, R.string.press_and_hold_to_select_and_edit_multiple_media,
+            R.string.edit_multiple, R.drawable.ic_batchedit
+        )
 
         Prefs.batchHintShown = true
     }
