@@ -209,7 +209,7 @@
     <string name="refresh">Yenile</string>
     <string name="to_get_started_please_create_a_folder">Başlamak için bir klasör oluşturun</string>
     <string name="before_adding_media_create_a_new_folder_first">Ortam eklemeden önce yeni bir klasör oluşturun.</string>
-    <string name="is_video">görüntü mü</string>
+    <string name="is_video">video mu</string>
     <string name="use_upload_chunking_nextcloud_only">Yükleme paketleri kullanılsın (yalnızca Nextcloud)</string>
     <string name="chunking_explanation">\"Paketleme\", ortamı parçalar halinde yükler. Böylece bağlantınız kesilirse yüklemeyi en baştan  değil kaldığınız yerden sürdürebilirsiniz.</string>
     <string name="preview_media">Ortam ön izlemesi</string>
