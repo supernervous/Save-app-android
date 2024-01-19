@@ -51,8 +51,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
 
             if (mMedia.contentLength > CHUNK_FILESIZE_THRESHOLD) {
                 result = uploadChunked(destination)
-            }
-            else {
+            } else {
                 execute {
                     mMedia.file.inputStream().use { inputStream ->
                         result = mClient.files()
@@ -63,8 +62,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
                     }
                 }
             }
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             jobFailed(e)
 
             return false
@@ -86,8 +84,7 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
         execute {
             try {
                 mClient.files().createFolderV2(url)
-            }
-            catch (e: CreateFolderErrorException) {
+            } catch (e: CreateFolderErrorException) {
                 // Ignore. Already existing.
             }
         }
@@ -177,6 +174,9 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
         return result
     }
 
+    /**
+     * method for retrying the `body` code block based on drop box exceptions
+     */
     private suspend fun execute(offset: Long? = null, body: suspend (skip: Long) -> Unit) {
         var skip = 0L
         var retries = 0
@@ -186,42 +186,35 @@ class DropboxConduit(media: Media, context: Context) : Conduit(media, context) {
                 body(skip)
 
                 break
-            }
-            catch (e: RetryException) {
+            } catch (e: RetryException) {
                 if (retries < MAX_RETRIES) {
                     delay(e.backoffMillis)
-                }
-                else {
+                } else {
                     throw e
                 }
-            }
-            catch (e: UploadSessionAppendErrorException) {
+            } catch (e: UploadSessionAppendErrorException) {
                 if (offset != null && retries < MAX_RETRIES && e.errorValue.isIncorrectOffset) {
                     skip = e.errorValue.incorrectOffsetValue.correctOffset - offset
-                }
-                else {
+                } else {
                     throw e
                 }
-            }
-            catch (e: UploadSessionFinishErrorException) {
+            } catch (e: UploadSessionFinishErrorException) {
                 if (offset != null && retries < MAX_RETRIES
                     && e.errorValue.isLookupFailed
-                    && e.errorValue.lookupFailedValue.isIncorrectOffset)
-                {
-                    skip = e.errorValue.lookupFailedValue.incorrectOffsetValue.correctOffset - offset
-                }
-                else {
+                    && e.errorValue.lookupFailedValue.isIncorrectOffset
+                ) {
+                    skip =
+                        e.errorValue.lookupFailedValue.incorrectOffsetValue.correctOffset - offset
+                } else {
                     throw e
                 }
-            }
-            catch (e: NetworkIOException) {
+            } catch (e: NetworkIOException) {
                 if (retries < MAX_RETRIES) {
                     // Ignore network problems. We try up to 5 times.
                     // When doing chunking, we just try to send the next chunk.
                     // Dropbox will tell us, if that next chunk's offset was wrong
                     // and we will send it one more time again with the fixed offset.
-                }
-                else {
+                } else {
                     throw e
                 }
             }
