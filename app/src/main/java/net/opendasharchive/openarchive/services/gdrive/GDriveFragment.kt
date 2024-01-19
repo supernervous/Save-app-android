@@ -6,18 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.Scopes
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.CleanInsightsManager
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveBinding
 import net.opendasharchive.openarchive.db.Space
 
@@ -47,6 +47,8 @@ class GDriveFragment : Fragment() {
         mBinding.btAuthenticate.setOnClickListener {
             mBinding.error.visibility = View.GONE
             authenticate()
+            mBinding.btBack.isEnabled = false
+            mBinding.btAuthenticate.isEnabled = false
         }
 
         return mBinding.root
@@ -99,6 +101,16 @@ class GDriveFragment : Fragment() {
                             setFragmentResult(RESP_AUTHENTICATED, bundleOf())
                         }
                     }
+                }
+
+                else -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.gdrive_authentication_canceled_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    mBinding.btBack.isEnabled = true
+                    mBinding.btAuthenticate.isEnabled = true
                 }
             }
         }

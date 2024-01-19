@@ -276,5 +276,6 @@
     <string name="no_thanks">No thanks</string>
     <string name="undo">Undo</string>
     <string name="gdrive_id">Google Drive ID</string>
+    <string name="gdrive_authentication_canceled_message">Google Drive authentication canceled.</string>
 
 </resources>
