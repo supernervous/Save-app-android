@@ -166,7 +166,7 @@ data class Space(
 
             Type.DROPBOX -> ContextCompat.getDrawable(context, R.drawable.ic_dropbox23)?.tint(color)
 
-            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.ic_gdrive)?.tint(color)
+            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_drive_2020q4_color_2x_web_64dp)
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }

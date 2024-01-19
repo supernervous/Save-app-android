@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:hint="@string/google_drive_id"
+                android:hint="@string/gdrive_id"
 
                 android:imeOptions="actionDone"
                 android:inputType="textNoSuggestions" />

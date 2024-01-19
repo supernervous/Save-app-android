@@ -21,7 +21,7 @@
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
     <string name="gdrive">Google Drive</string>
-    <string name="upload_to_the_gdrive">Upload to Google cloud storage</string>
+    <string name="upload_to_gdrive">Upload to Google Drive</string>
     <string name="sign_in_or_create_an_account_with_gdrive">Sing in or create an account with Google Drive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
@@ -275,6 +275,6 @@
     <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">By allowing health checks, you give permission for the app to securely send health check data to the %s team.</string>
     <string name="no_thanks">No thanks</string>
     <string name="undo">Undo</string>
-    <string name="google_drive_id">Google Drive ID</string>
+    <string name="gdrive_id">Google Drive ID</string>
 
 </resources>

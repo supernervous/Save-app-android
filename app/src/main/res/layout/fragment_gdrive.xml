@@ -32,9 +32,9 @@
                 android:backgroundTint="@color/colorBackgroundSpaceIcon"
                 android:importantForAccessibility="no"
                 android:padding="12dp"
-                android:src="@drawable/ic_gdrive"
+                android:src="@drawable/logo_drive_2020q4_color_2x_web_64dp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/colorPrimary" />
+                />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Title"
