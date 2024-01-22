@@ -18,9 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.features.folders.BrowseFoldersViewModel
 import net.opendasharchive.openarchive.services.Conduit
 import timber.log.Timber
 import java.io.InputStream
+import java.util.Date
 
 class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
 
@@ -88,6 +90,27 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
             } else {
                 return parentFolder!!
             }
+        }
+
+        fun listFoldersInRoot(gdrive: Drive) : List<BrowseFoldersViewModel.Folder>{
+            val result = ArrayList<BrowseFoldersViewModel.Folder>()
+            try {
+                var pageToken: String? = null
+                do {
+                    val folders =
+                        gdrive.files().list().setPageSize(1000).setPageToken(pageToken)
+                            .setQ("mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed = false")
+                            .setFields("nextPageToken, files(id, name, createdTime)").execute()
+                    for (f in folders.files) {
+                        var date = Date(f.createdTime.value)
+                        result.add(BrowseFoldersViewModel.Folder(f.name, date))
+                    }
+                    pageToken = folders.nextPageToken
+                } while (pageToken != null)
+            } catch (e: java.lang.IllegalArgumentException) {
+                Timber.e(e)
+            }
+            return result
         }
     }
 

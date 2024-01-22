@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import timber.log.Timber
 import java.io.IOException
 import java.util.Date
@@ -34,6 +35,8 @@ class BrowseFoldersViewModel : ViewModel() {
                         Space.Type.WEBDAV -> getWebDavFolders(context, space)
 
                         Space.Type.DROPBOX -> getDropboxFolders(context, space)
+
+                        Space.Type.GDRIVE -> getGDriveFolders(context, space)
 
                         else -> emptyList()
                     }
@@ -70,5 +73,9 @@ class BrowseFoldersViewModel : ViewModel() {
         val result = SaveClient.getDropbox(context, space.password).files().listFolder("")
 
         return result.entries.map { Folder(it.name, Date()) }
+    }
+
+    private suspend fun getGDriveFolders(context: Context, space: Space): List<Folder> {
+        return GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context))
     }
 }
