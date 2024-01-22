@@ -4,19 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
-import net.opendasharchive.openarchive.R
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import net.opendasharchive.openarchive.databinding.FragmentSpaceSetupBinding
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
-import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.setDrawable
-import net.opendasharchive.openarchive.util.extensions.tint
 
 class SpaceSetupFragment : Fragment() {
 
@@ -54,7 +49,7 @@ class SpaceSetupFragment : Fragment() {
             }
         }
 
-        if (Space.has(Space.Type.GDRIVE)) {
+        if (Space.has(Space.Type.GDRIVE) || !playServicesAvailable()) {
             mBinding.gdrive.hide()
         } else {
             mBinding.gdrive.setOnClickListener {
@@ -66,6 +61,11 @@ class SpaceSetupFragment : Fragment() {
         }
 
         return mBinding.root
+    }
+
+    private fun playServicesAvailable(): Boolean {
+        return ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance()
+            .isGooglePlayServicesAvailable(requireContext())
     }
 
     companion object {
