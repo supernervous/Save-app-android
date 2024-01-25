@@ -69,7 +69,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
     companion object {
         const val NAME = "Google Drive"
         var SCOPES =
-            arrayOf(Scope(DriveScopes.DRIVE), Scope(DriveScopes.DRIVE_FILE), Scope(Scopes.EMAIL))
+            arrayOf(Scope(DriveScopes.DRIVE_FILE), Scope(DriveScopes.DRIVE_METADATA_READONLY), Scope(Scopes.EMAIL))
         // READ_METADATA
 
         fun permissionsGranted(context: Context): Boolean {
@@ -82,7 +82,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
 
         fun getDrive(context: Context): Drive {
             val credential =
-                GoogleAccountCredential.usingOAuth2(context, setOf(Scopes.DRIVE_FILE, Scopes.EMAIL))
+                GoogleAccountCredential.usingOAuth2(context, setOf(DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY, Scopes.EMAIL))
             credential.selectedAccount = GoogleSignIn.getLastSignedInAccount(context)?.account
 
             // in case we need to debug authentication:
