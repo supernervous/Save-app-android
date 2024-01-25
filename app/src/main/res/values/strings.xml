@@ -20,6 +20,9 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
+    <string name="gdrive">Google Drive</string>
+    <string name="upload_to_gdrive">Upload to Google Drive</string>
+    <string name="sign_in_or_create_an_account_with_gdrive">Sing in or create an account with Google Drive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
@@ -121,6 +124,7 @@
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
     <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
+    <string name="you_have_successfully_connected_to_gdrive">You have successfully connected to Google Drive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="edit">Edit</string>
     <string name="menu_done">Done</string>
@@ -271,5 +275,7 @@
     <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">By allowing health checks, you give permission for the app to securely send health check data to the %s team.</string>
     <string name="no_thanks">No thanks</string>
     <string name="undo">Undo</string>
+    <string name="gdrive_id">Google Drive ID</string>
+    <string name="gdrive_authentication_canceled_message">Google Drive authentication canceled.</string>
 
 </resources>

@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.dropbox.DropboxConduit
+import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import net.opendasharchive.openarchive.upload.BroadcastManager
@@ -62,23 +63,23 @@ abstract class Conduit(
             var hash = ProofMode.generateProof(
                 mContext,
                 Uri.parse(mMedia.originalFilePath),
-                mMedia.mediaHashString)
+                mMedia.mediaHashString
+            )
 
             if (hash == null) {
                 val proofHash = HashUtils.getSHA256FromFileContent(
-                    mContext.contentResolver.openInputStream(mMedia.fileUri))
+                    mContext.contentResolver.openInputStream(mMedia.fileUri)
+                )
 
                 hash = ProofMode.generateProof(mContext, mMedia.fileUri, proofHash)
             }
 
             return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
-        }
-        catch (exception: FileNotFoundException) {
+        } catch (exception: FileNotFoundException) {
             Timber.e(exception)
 
             return emptyArray()
-        }
-        catch (exception: SecurityException) {
+        } catch (exception: SecurityException) {
             Timber.e(exception)
 
             return emptyArray()
@@ -88,7 +89,6 @@ abstract class Conduit(
     /**
      * result is a site specific unique id that we can use to fetch the data,
      * build an embed tag, etc. for some sites this might be a URL
-     *
      */
     fun jobSucceeded() {
         mMedia.progress = 100
@@ -102,7 +102,8 @@ abstract class Conduit(
         // If an upload was cancelled, ignore the error.
         if (mCancelled) return
 
-        mMedia.statusMessage = exception.localizedMessage ?: exception.message ?: exception.toString()
+        mMedia.statusMessage =
+            exception.localizedMessage ?: exception.message ?: exception.toString()
         mMedia.sStatus = Media.Status.Error
         mMedia.save()
 
@@ -112,6 +113,7 @@ abstract class Conduit(
     }
 
     // track when the last progress broadcast was sent, timestamp
+    // we use this to limit the rate of sending out these broadcasts
     private var lastProgressBroadcast = 0L
 
     fun jobProgress(uploadedBytes: Long) {
@@ -127,6 +129,11 @@ abstract class Conduit(
         }
     }
 
+    /**
+     * workaround to deal with some quirks in our data model?
+     *
+     * reads some values from mMedia and copies them to some other fields of mMedia
+     */
     protected fun sanitize() {
         val length = mMedia.file.length()
         if (length > 0) mMedia.contentLength = length
@@ -135,8 +142,7 @@ abstract class Conduit(
 
         if (mMedia.flag) {
             tags.add(getFlagText())
-        }
-        else {
+        } else {
             tags.remove(getFlagText())
         }
 
@@ -148,7 +154,8 @@ abstract class Conduit(
 
     protected fun getPath(): List<String>? {
         val projectName = mMedia.project?.description ?: return null
-        val collectionName = mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
+        val collectionName =
+            mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
 
         val path = mutableListOf(projectName, collectionName)
 
@@ -190,8 +197,7 @@ abstract class Conduit(
 
         return if (base != null) {
             builder.toString()
-        }
-        else {
+        } else {
             "/${builder.build().pathSegments.joinToString("/")}"
         }
     }
@@ -200,13 +206,17 @@ abstract class Conduit(
         return construct(null, path, file)
     }
 
+    /**
+     * Generate JSON encoded string of metadata corresponding Media currently
+     * stored in `this.mMedia`.
+     */
     protected fun getMetadata(): String {
         val gson = GsonBuilder()
             .setPrettyPrinting()
             .excludeFieldsWithoutExposeAnnotation()
             .create()
 
-        return gson.toJson(mMedia, Media::class.java)
+        return gson.toJson(this.mMedia, Media::class.java)
     }
 
     /**
@@ -239,6 +249,8 @@ abstract class Conduit(
                 Space.Type.WEBDAV -> WebDavConduit(media, context)
 
                 Space.Type.DROPBOX -> DropboxConduit(media, context)
+
+                Space.Type.GDRIVE -> GDriveConduit(media, context)
 
                 else -> null
             }
