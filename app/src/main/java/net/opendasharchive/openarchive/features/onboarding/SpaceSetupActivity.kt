@@ -13,7 +13,6 @@ import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
 import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveFragment
 import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
-import timber.log.Timber
 
 class SpaceSetupActivity : BaseActivity() {
 
@@ -216,7 +215,7 @@ class SpaceSetupActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
-            ?.onActivityResult(requestCode, resultCode, data);
+            ?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun progress1() {

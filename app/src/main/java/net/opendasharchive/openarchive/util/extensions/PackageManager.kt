@@ -9,7 +9,6 @@ fun PackageManager.getVersionName(packageName: String): String {
             getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
         }
         else {
-            @Suppress("DEPRECATION")
             getPackageInfo(packageName, 0)
         }.versionName
 

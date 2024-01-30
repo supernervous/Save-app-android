@@ -23,7 +23,7 @@ class SpaceSetupSuccessFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentSpaceSetupSuccessBinding.inflate(inflater)
 
         if (message.isNotEmpty()) {
@@ -38,9 +38,9 @@ class SpaceSetupSuccessFragment : Fragment() {
     }
 
     companion object {
-        public const val RESP_DONE = "space_setup_success_fragment_resp_done"
+        const val RESP_DONE = "space_setup_success_fragment_resp_done"
 
-        public const val ARG_MESSAGE = "space_setup_success_fragment_arg_message"
+        const val ARG_MESSAGE = "space_setup_success_fragment_arg_message"
 
         @JvmStatic
         fun newInstance(message: String) =

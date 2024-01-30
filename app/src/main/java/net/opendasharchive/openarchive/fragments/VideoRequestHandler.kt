@@ -42,7 +42,7 @@ class VideoRequestHandler(private val mContext: Context) : RequestHandler() {
                 bitmap =
                     mediaMetadataRetriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST)
             } catch (e: Exception) {
-                throw Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.message)
+                throw Throwable("Exception in retrieveVideoFrameFromVideo(String videoPath)" + e.message)
             } finally {
                 mediaMetadataRetriever?.release()
             }

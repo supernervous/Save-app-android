@@ -104,7 +104,7 @@ class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
             createFolders(tmpBase, tmpPath)
 
             // Create chunks and start uploads. Look for existing chunks, and skip if done.
-            // Start with the last chunk and reupload.
+            // Start with the last chunk and re-upload.
 
             var offset = 0
 

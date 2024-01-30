@@ -39,10 +39,6 @@ class MainMediaFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainMediaBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

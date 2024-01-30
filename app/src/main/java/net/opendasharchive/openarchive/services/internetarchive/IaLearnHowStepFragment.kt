@@ -28,8 +28,8 @@ class IaLearnHowStepFragment : Fragment() {
     }
 
     companion object {
-        const val ARG_SUMMARY_STRING_RES = "summary";
-        const val ARG_ILLUSTRATION_DRAWABLE_RES = "illustration";
+        const val ARG_SUMMARY_STRING_RES = "summary"
+        const val ARG_ILLUSTRATION_DRAWABLE_RES = "illustration"
 
         fun newInstance(@StringRes summary: Int, @DrawableRes illustration: Int): IaLearnHowStepFragment {
             return IaLearnHowStepFragment().apply {

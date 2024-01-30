@@ -49,8 +49,7 @@ object UriHelpers {
                 // MediaProvider
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":").toTypedArray()
-                val type = split[0]
-                val contentUri = when (type) {
+                val contentUri = when (split[0]) {
                     "image" -> {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     }
@@ -97,8 +96,8 @@ object UriHelpers {
                 null
             )
             if (cursor != null && cursor.moveToFirst()) {
-                val column_index = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(column_index)
+                val columnIndex = cursor.getColumnIndexOrThrow(column)
+                return cursor.getString(columnIndex)
             }
         } finally {
             cursor?.close()

@@ -64,10 +64,6 @@ class UploadService : JobService() {
         Configuration.Builder().setJobSchedulerJobIdRange(0, Integer.MAX_VALUE).build()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onStartJob(params: JobParameters): Boolean {
         CoroutineScope(Dispatchers.IO).launch {
             upload {
@@ -80,7 +76,7 @@ class UploadService : JobService() {
                 params,
                 7918,
                 prepNotification(),
-                JobService.JOB_END_NOTIFICATION_POLICY_REMOVE
+                JOB_END_NOTIFICATION_POLICY_REMOVE
             )
         }
 

@@ -77,8 +77,8 @@ class GDriveFragment : Fragment() {
                     CoroutineScope(Dispatchers.IO).launch {
                         val space = Space(Space.Type.GDRIVE)
                         // we don't really know the host here, that's hidden by Drive Api
-                        space.host = "what's the host of google drive? :shurg:"
-                        data?.let { it ->
+                        space.host = "what's the host of google drive? :shrug:"
+                        data?.let {
                             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(it)
                             if (result?.isSuccess == true) {
                                 result.signInAccount?.let { account ->

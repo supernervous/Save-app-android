@@ -176,7 +176,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
                         }.show()
 
                     // hack for making sure this dialog always shows all lines of the pretty long title, even on small screens
-                    d.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.maxLines = 99;
+                    d.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.maxLines = 99
 
                 }
                 return true

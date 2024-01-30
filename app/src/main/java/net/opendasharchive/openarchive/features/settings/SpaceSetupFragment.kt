@@ -20,7 +20,7 @@ class SpaceSetupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentSpaceSetupBinding.inflate(inflater)
 
         mBinding.webdav.setOnClickListener {

@@ -75,7 +75,7 @@ class BrowseFoldersViewModel : ViewModel() {
         return result.entries.map { Folder(it.name, Date()) }
     }
 
-    private suspend fun getGDriveFolders(context: Context, space: Space): List<Folder> {
+    private fun getGDriveFolders(context: Context, space: Space): List<Folder> {
         return GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context))
     }
 }

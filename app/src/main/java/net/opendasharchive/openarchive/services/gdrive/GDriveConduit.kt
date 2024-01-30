@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.opendasharchive.openarchive.services.gdrive
 
 import android.content.Context
@@ -147,31 +149,30 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
                     .setQ("mimeType='application/vnd.google-apps.folder' and name = '$folderName' and trashed = false and '$parentId' in parents")
                     .setFields("files(id, name)").execute()
 
-            if (folders.files.isEmpty()) {
-                // create new folder
-                val folderMeta = File()
-                folderMeta.name = folderName
-                folderMeta.parents = listOf(parentId)
-                folderMeta.mimeType = "application/vnd.google-apps.folder"
-                // return newly created folders
-
-                return gdrive.files().create(folderMeta).setFields("id").execute();
-            } else {
-                // folder exists, return folder
+            if (folders.files.isNotEmpty()) {
+                // folder exists, return it now
                 return folders.files.first()
             }
+
+            // create new folder
+            val folderMeta = File()
+            folderMeta.name = folderName
+            folderMeta.parents = listOf(parentId)
+            folderMeta.mimeType = "application/vnd.google-apps.folder"
+
+            // return newly created folders
+            return gdrive.files().create(folderMeta).setFields("id").execute()
         }
 
         fun createFolders(mDrive: Drive, destinationPath: List<String>): File {
             var parentFolder: File? = null
             for (pathElement in destinationPath) {
-                parentFolder = GDriveConduit.createFolder(mDrive, pathElement, parentFolder)
+                parentFolder = createFolder(mDrive, pathElement, parentFolder)
             }
             if (parentFolder == null) {
                 throw Exception("could not create folders $destinationPath")
-            } else {
-                return parentFolder!!
             }
+            return parentFolder
         }
 
         fun listFoldersInRoot(gdrive: Drive): List<BrowseFoldersViewModel.Folder> {
@@ -184,7 +185,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
                             .setQ("mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed = false")
                             .setFields("nextPageToken, files(id, name, createdTime)").execute()
                     for (f in folders.files) {
-                        var date = Date(f.createdTime.value)
+                        val date = Date(f.createdTime.value)
                         result.add(BrowseFoldersViewModel.Folder(f.name, date))
                     }
                     pageToken = folders.nextPageToken
@@ -207,7 +208,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
         sanitize()
 
         try {
-            val folder = GDriveConduit.createFolders(mDrive, destinationPath)
+            val folder = createFolders(mDrive, destinationPath)
             uploadMetadata(folder, destinationFileName)
             if (mCancelled) throw Exception("Cancelled")
             // val destination = construct(destinationPath, destinationFileName)
@@ -259,10 +260,10 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
         CoroutineScope(Dispatchers.IO).launch {
             Timber.v("GDriveConduit.uploadFile($targetFileName) [IO SCOPE]")
             try {
-                var fMeta = File()
-                fMeta.setName(targetFileName)
+                val fMeta = File()
+                fMeta.name = targetFileName
                 fMeta.parents = listOf(parentFolder.id)
-                var request =
+                val request =
                     mDrive.files().create(fMeta, InputStreamContent(null, inputStream))
                 request.mediaHttpUploader.isDirectUploadEnabled = false
                 request.mediaHttpUploader.chunkSize =
@@ -270,11 +271,12 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
                 request.mediaHttpUploader.setProgressListener {
                     if (it.uploadState == MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS) {
                         Timber.i("GDriveConduit.uploadFile: progress ${it.numBytesUploaded}")
+                        jobProgress(it.numBytesUploaded)
                     } else {
                         Timber.i("GDriveConduit.uploadFile: uploadState ${it.uploadState}")
                     }
                 }
-                var response = request.execute()
+                val response = request.execute()
                 Timber.d("gdrive uploaded '$targetFileName' (${response.id})")
             } catch (e: Exception) {
                 Timber.e("gdrive upload of '$targetFileName' failed", e)

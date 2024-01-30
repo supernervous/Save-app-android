@@ -24,7 +24,7 @@ class AddMediaDialogFragment : DialogFragment() {
     }
 
     override fun getView(): View {
-        return mDialogView;
+        return mDialogView
     }
 
     override fun onCreateView(

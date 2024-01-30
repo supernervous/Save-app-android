@@ -21,7 +21,7 @@ import java.io.File
 object FileUtils {
 
     /** TAG for log messages.  */
-    const val TAG = "FileUtils"
+    private const val TAG = "FileUtils"
     private const val DEBUG = false // Set to true to enable logging
 
 
@@ -99,8 +99,8 @@ object FileUtils {
                 null)
             if (cursor != null && cursor.moveToFirst()) {
                 if (DEBUG) DatabaseUtils.dumpCursor(cursor)
-                val column_index = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(column_index)
+                val columnIndex = cursor.getColumnIndexOrThrow(column)
+                return cursor.getString(columnIndex)
             }
         } finally {
             cursor?.close()
@@ -158,8 +158,7 @@ object FileUtils {
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":").toTypedArray()
-                val type = split[0]
-                val contentUri: Uri = when (type) {
+                val contentUri: Uri = when (split[0]) {
                     "image" -> {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                     }

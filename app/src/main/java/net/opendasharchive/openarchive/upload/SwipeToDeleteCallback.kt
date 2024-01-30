@@ -49,7 +49,7 @@ abstract class SwipeToDeleteCallback(context: Context?): ItemTouchHelper.Callbac
 
         val cancelled = dX == 0f && !isCurrentlyActive
         if (cancelled) {
-            return super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            return super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, false)
         }
 
         mBackground?.setBounds(iv.right + dX.toInt(), iv.top, iv.right, iv.bottom)

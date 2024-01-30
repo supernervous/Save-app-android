@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.CleanInsightsManager
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentDropboxBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.services.SaveClient
@@ -26,7 +25,7 @@ class DropboxFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentDropboxBinding.inflate(inflater)
 
         mBinding.error.visibility = View.GONE
