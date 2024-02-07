@@ -21,6 +21,7 @@
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
     <string name="gdrive">Google Drive</string>
+    <string name="gdrive_tm">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
     <string name="sign_in_or_create_an_account_with_gdrive">Sing in or create an account with Google Drive</string>
 
