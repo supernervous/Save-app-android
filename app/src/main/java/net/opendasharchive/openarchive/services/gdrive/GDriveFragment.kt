@@ -3,11 +3,13 @@ package net.opendasharchive.openarchive.services.gdrive
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.google.android.gms.auth.api.Auth
@@ -38,6 +40,21 @@ class GDriveFragment : Fragment() {
     ): View {
         mBinding = FragmentGdriveBinding.inflate(inflater)
 
+        mBinding.disclaimer1.text = HtmlCompat.fromHtml(
+            getString(
+                R.string.gdrive_disclaimer_1,
+                getString(R.string.app_name),
+                getString(R.string.google_name),
+                getString(R.string.gdrive_sudp_name),
+            ), HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
+        mBinding.disclaimer1.movementMethod = LinkMovementMethod.getInstance()
+        mBinding.disclaimer2.text = getString(
+            R.string.gdrive_disclaimer_2,
+            getString(R.string.google_name),
+            getString(R.string.gdrive),
+            getString(R.string.app_name),
+        )
         mBinding.error.visibility = View.GONE
 
         mBinding.btBack.setOnClickListener {

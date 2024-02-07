@@ -20,8 +20,8 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
-    <string name="gdrive">Google Drive</string>
-    <string name="gdrive_tm">Google Drive™</string>
+    <string name="gdrive" translatable="false">Google Drive</string>
+    <string name="gdrive_tm" translatable="false">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
     <string name="sign_in_or_create_an_account_with_gdrive">Sing in or create an account with Google Drive</string>
 
@@ -278,5 +278,9 @@
     <string name="undo">Undo</string>
     <string name="gdrive_id">Google Drive ID</string>
     <string name="gdrive_authentication_canceled_message">Google Drive authentication canceled.</string>
+    <string name="gdrive_disclaimer_1">%1$s\'s use and transfer of information received from %2$s APIs to any other app adheres to %3$s, including the Limited Use requirements.</string>
+    <string name="google_name" translatable="false">Google</string>
+    <string name="gdrive_sudp_name" translatable="false"><![CDATA[<a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>]]></string>
+    <string name="gdrive_disclaimer_2">%1$s\'s APIs allow you to send media to your %2$s via %3$s. %3$s, however, cannot see or access anything on your %2$s, which you didn\'t create with %3$s in the first place.</string>
 
 </resources>
