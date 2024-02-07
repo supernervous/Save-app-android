@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
@@ -103,33 +102,51 @@ class GDriveFragment : Fragment() {
                                 }
                             }
                         }
-                        space.save()
-                        Space.current = space
 
-                        CleanInsightsManager.getConsent(requireActivity()) {
-                            CleanInsightsManager.measureEvent(
-                                "backend",
-                                "new",
-                                Space.Type.GDRIVE.friendlyName
+                        if (GDriveConduit.permissionsGranted(requireContext())) {
+                            space.save()
+                            Space.current = space
+
+                            CleanInsightsManager.getConsent(requireActivity()) {
+                                CleanInsightsManager.measureEvent(
+                                    "backend",
+                                    "new",
+                                    Space.Type.GDRIVE.friendlyName
+                                )
+                            }
+
+                            MainScope().launch {
+                                setFragmentResult(RESP_AUTHENTICATED, bundleOf())
+                            }
+                        } else {
+                            authFailed(
+                                getString(
+                                    R.string.gdrive_auth_insufficient_permissions,
+                                    getString(R.string.app_name),
+                                    getString(R.string.gdrive)
+                                )
                             )
-                        }
-
-                        MainScope().launch {
-                            setFragmentResult(RESP_AUTHENTICATED, bundleOf())
                         }
                     }
                 }
 
-                else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.gdrive_authentication_canceled_message),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    mBinding.btBack.isEnabled = true
-                    mBinding.btAuthenticate.isEnabled = true
-                }
+                else -> authFailed()
             }
+        }
+    }
+
+    private fun authFailed() {
+        authFailed(null)
+    }
+
+    private fun authFailed(errorMessage: String?) {
+        MainScope().launch {
+            errorMessage?.let {
+                mBinding.error.text = errorMessage
+                mBinding.error.visibility = View.VISIBLE
+            }
+            mBinding.btBack.isEnabled = true
+            mBinding.btAuthenticate.isEnabled = true
         }
     }
 }
