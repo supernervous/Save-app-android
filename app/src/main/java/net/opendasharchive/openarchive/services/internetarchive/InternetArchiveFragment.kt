@@ -304,8 +304,17 @@ class InternetArchiveFragment : Fragment() {
                             val username = xpp.text.trim()
 
                             // If the access key wasn't correct, a dummy username is displayed. Ignore.
-                            if (username.isBlank() || username.lowercase() == "Readable ID Goes Here".lowercase()) {
+                            if (username.isBlank() ) {
                                 return null
+                            }
+
+                            // according to brenton@archive.org:
+                            // > I just confirmed with our engineer that that response is a correct,
+                            // > non-error response if you haven’t uploaded any items yet. It’s
+                            // > strange text, but it’s not an error. So, his suggestion is to try
+                            // > uploading something!
+                            if ( username.lowercase() == "Readable ID Goes Here".lowercase() ) {
+                                return getString(R.string.new_user)
                             }
 
                             // Yay! Found a username!
