@@ -18,9 +18,6 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import info.guardianproject.netcipher.proxy.OrbotHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.folders.BrowseFoldersViewModel
@@ -72,7 +69,6 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
         const val NAME = "Google Drive"
         var SCOPES =
             arrayOf(Scope(DriveScopes.DRIVE_FILE), Scope(Scopes.EMAIL))
-        // READ_METADATA
 
         fun permissionsGranted(context: Context): Boolean {
             Timber.v("GDriveConduit.permissionGranted()")
@@ -84,7 +80,10 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
 
         fun getDrive(context: Context): Drive {
             val credential =
-                GoogleAccountCredential.usingOAuth2(context, setOf(DriveScopes.DRIVE_FILE, Scopes.EMAIL))
+                GoogleAccountCredential.usingOAuth2(
+                    context,
+                    setOf(DriveScopes.DRIVE_FILE, Scopes.EMAIL)
+                )
             credential.selectedAccount = GoogleSignIn.getLastSignedInAccount(context)?.account
 
             // in case we need to debug authentication:
@@ -198,20 +197,14 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     override suspend fun upload(): Boolean {
-        Timber.v("GDriveConduit.upload()")
-
         val destinationPath = getPath() ?: return false
-        Timber.v("GDriveConduit.upload() destinationPath: $destinationPath")
-
         val destinationFileName = getUploadFileName(mMedia)
-        Timber.v("GDriveConduit.upload() destinationFileName: $destinationFileName")
         sanitize()
 
         try {
             val folder = createFolders(mDrive, destinationPath)
             uploadMetadata(folder, destinationFileName)
             if (mCancelled) throw Exception("Cancelled")
-            // val destination = construct(destinationPath, destinationFileName)
             uploadFile(mMedia.file, folder, destinationFileName)
         } catch (e: Exception) {
             jobFailed(e)
@@ -228,7 +221,6 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     private fun uploadMetadata(parent: File, fileName: String) {
-        Timber.v("GDriveConduit.uploadMetadata($fileName)")
         val metadataFileName = "$fileName.meta.json"
 
         if (mCancelled) throw java.lang.Exception("Cancelled")
@@ -255,32 +247,23 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
         parentFolder: File,
         targetFileName: String,
     ) {
-        Timber.v("GDriveConduit.uploadFile($targetFileName)")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            Timber.v("GDriveConduit.uploadFile($targetFileName) [IO SCOPE]")
-            try {
-                val fMeta = File()
-                fMeta.name = targetFileName
-                fMeta.parents = listOf(parentFolder.id)
-                val request =
-                    mDrive.files().create(fMeta, InputStreamContent(null, inputStream))
-                request.mediaHttpUploader.isDirectUploadEnabled = false
-                request.mediaHttpUploader.chunkSize =
-                    262144  // magic minimum chunk-size number (smaller number will cause exception)
-                request.mediaHttpUploader.setProgressListener {
-                    if (it.uploadState == MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS) {
-                        Timber.i("GDriveConduit.uploadFile: progress ${it.numBytesUploaded}")
-                        jobProgress(it.numBytesUploaded)
-                    } else {
-                        Timber.i("GDriveConduit.uploadFile: uploadState ${it.uploadState}")
-                    }
+        try {
+            val fMeta = File()
+            fMeta.name = targetFileName
+            fMeta.parents = listOf(parentFolder.id)
+            val request =
+                mDrive.files().create(fMeta, InputStreamContent(null, inputStream))
+            request.mediaHttpUploader.isDirectUploadEnabled = false
+            request.mediaHttpUploader.chunkSize =
+                262144  // magic minimum chunk-size number (smaller number will cause exception)
+            request.mediaHttpUploader.setProgressListener {
+                if (it.uploadState == MediaHttpUploader.UploadState.MEDIA_IN_PROGRESS) {
+                    jobProgress(it.numBytesUploaded)
                 }
-                val response = request.execute()
-                Timber.d("gdrive uploaded '$targetFileName' (${response.id})")
-            } catch (e: Exception) {
-                Timber.e("gdrive upload of '$targetFileName' failed", e)
             }
+            val response = request.execute()
+        } catch (e: Exception) {
+            Timber.e("gdrive upload of '$targetFileName' failed", e)
         }
     }
 }
