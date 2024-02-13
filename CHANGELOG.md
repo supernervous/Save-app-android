@@ -1,5 +1,12 @@
 # Changelog
 
+## unreleased
+- added support for Google Drive
+- added percentage display while uploading
+- fixed login for new Internet Archive profiles
+- fixed UI glitch when changing day-/night-theme
+- fixed upload dialog text overflow
+
 ## 0.3.0
 - Updated translations, fixed typos.
 - Added notifications for background uploads, so app stays alive on newer Android versions.
