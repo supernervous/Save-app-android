@@ -1,8 +1,6 @@
 package net.opendasharchive.openarchive
 
-import net.opendasharchive.openarchive.databinding.FragmentWebDavBinding
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
-import net.opendasharchive.openarchive.util.Constants
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
