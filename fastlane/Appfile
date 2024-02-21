@@ -1,2 +1,2 @@
-json_key_file("") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+json_key_file("/home/ryjen/.local/share/open-archive/saveapp-414521-fde85f85b6cb.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 package_name("net.opendasharchive.openarchive") # e.g. com.krausefx.app
