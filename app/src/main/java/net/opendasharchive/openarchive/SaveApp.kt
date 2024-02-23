@@ -23,8 +23,10 @@ class SaveApp : SugarApp() {
     override fun onCreate() {
         super.onCreate()
 
-        CheckDeviceIntegrity(createIntegrityRepository(applicationContext))
-            .invoke(Process.myUid().toString())
+        CheckDeviceIntegrity(createIntegrityRepository(applicationContext)).apply {
+            registerActivityLifecycleCallbacks(this)
+            invoke(Process.myUid().toString())
+        }
 
         val config = ImagePipelineConfig.newBuilder(this)
             .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())

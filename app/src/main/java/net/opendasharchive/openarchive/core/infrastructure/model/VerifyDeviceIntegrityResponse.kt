@@ -7,6 +7,7 @@ data class VerifyDeviceIntegrityResponse(
 ) {
     data class Actions(
         val canRefresh: Boolean,
-        val getLicense: Boolean
+        val showDialog: Int? = null,
+        val stopApp: Boolean
     )
 }
