@@ -9,9 +9,12 @@ class IntegrityRepository(
 ) {
 
     /**
-     * verifies the device is valid
+     * verifies the device integrity is valid with google
      */
-    suspend fun verifyDevice(deviceId: String) = integritySource.token(deviceId)
+    suspend fun verifyDeviceIntegrity(deviceId: String) = integritySource.token(deviceId)
 
-    suspend fun verifyToken(token: String) = verifySource.verify(token)
+    /**
+     * verifies the integrity token is valid with backend
+     */
+    suspend fun verifyIntegrityToken(token: String) = verifySource.verify(token)
 }

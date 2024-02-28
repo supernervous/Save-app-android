@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
@@ -13,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -27,6 +29,8 @@ import net.opendasharchive.openarchive.FolderAdapterListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
+import net.opendasharchive.openarchive.core.domain.usecase.CheckDeviceIntegrity
+import net.opendasharchive.openarchive.core.domain.usecase.createIntegrityRepository
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
@@ -53,6 +57,7 @@ import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.text.NumberFormat
 
 class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener {
@@ -87,6 +92,21 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            CheckDeviceIntegrity(createIntegrityRepository(applicationContext))
+                .invoke(Process.myUid().toString()).onSuccess { action ->
+                    if (action.stopApp) {
+                        // TODO: killswitch use case
+                        Process.killProcess(Process.myPid())
+                    } else {
+                        // show standard dialogs
+                        action.showDialog?.invoke(this@MainActivity)
+                    }
+                }.onFailure {
+                    Timber.d("could not check integrity")
+                }
+        }
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)

@@ -41,6 +41,7 @@ android {
             resValue 'string', "dropbox_key", getDropboxKey()
 
             buildConfigField "String", "themisDomain", oaThemisDomain
+            buildConfigField "String", "themisApiKey", oaThemisApiKey
             buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
 
@@ -51,6 +52,7 @@ android {
             resValue 'string', "dropbox_key", getDropboxKey()
 
             buildConfigField "String", "themisDomain", oaThemisDomain
+            buildConfigField "String", "themisApiKey", oaThemisApiKey
             buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
     }
