@@ -17,7 +17,6 @@ class SaveApp : SugarApp() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-
     }
 
     override fun onCreate() {
