@@ -9,6 +9,7 @@ def getDropboxKey() {
 }
 
 android {
+
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
@@ -38,7 +39,9 @@ android {
         debug {
             buildConfigField "String", "dropbox_key", getDropboxKey()
             resValue 'string', "dropbox_key", getDropboxKey()
-            configureBuildVariables(this)
+
+            buildConfigField "String", "themisDomain", oaThemisDomain
+            buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
 
         release {
@@ -46,7 +49,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "dropbox_key", getDropboxKey()
             resValue 'string', "dropbox_key", getDropboxKey()
-            configureBuildVariables(this)
+
+            buildConfigField "String", "themisDomain", oaThemisDomain
+            buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
     }
     packagingOptions {
@@ -78,7 +83,7 @@ android {
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.21"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
 
     implementation "androidx.core:core-ktx:1.12.0"
     implementation "androidx.appcompat:appcompat:1.6.1"
