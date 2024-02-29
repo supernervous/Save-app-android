@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.BuildConfig
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
 import net.opendasharchive.openarchive.R
@@ -95,7 +96,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         lifecycleScope.launch(Dispatchers.IO) {
             CheckDeviceIntegrity(createIntegrityRepository(applicationContext))
-                .invoke(Process.myUid().toString()).onSuccess { action ->
+                .invoke(BuildConfig.themisIntegrityToken).onSuccess { action ->
                     if (action.stopApp) {
                         // TODO: killswitch use case
                         Process.killProcess(Process.myPid())

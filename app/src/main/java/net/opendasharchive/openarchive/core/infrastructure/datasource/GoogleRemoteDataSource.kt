@@ -41,9 +41,10 @@ class GoogleRemoteDataSource(
 
     private suspend fun StandardIntegrityTokenProvider.requestToken(input: String): Result<StandardIntegrityToken> =
         try {
+            val requestHash = hash(input)
             val token = this.request(
                 StandardIntegrityTokenRequest.builder()
-                    .setRequestHash(hash(input.toByteArray()))
+                    .setRequestHash(requestHash)
                     .build()
             ).await()
             Result.success(token)
@@ -52,10 +53,13 @@ class GoogleRemoteDataSource(
         }
 
     // TODO: move to reusable place
-    private fun hash(input: ByteArray): String {
-        val flags = Base64.NO_WRAP or Base64.URL_SAFE
+    private fun hash(input: String): String {
+        val flags = Base64.NO_WRAP
         val messageDigest = MessageDigest.getInstance("SHA-256")
-        messageDigest.update(input)
-        return Base64.encodeToString(messageDigest.digest(), flags);
+        messageDigest.update(input.toByteArray(Charsets.UTF_8))
+        val sha = messageDigest.digest()
+        val hex = sha.joinToString("") { "%02x".format(it) }
+        val sum = Base64.encodeToString(hex.toByteArray(Charsets.UTF_8), flags)
+        return sum
     }
 }

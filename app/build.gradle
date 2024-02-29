@@ -42,6 +42,7 @@ android {
 
             buildConfigField "String", "themisDomain", oaThemisDomain
             buildConfigField "String", "themisApiKey", oaThemisApiKey
+            buildConfigField "String", "themisIntegrityToken", oaThemisIntegrityToken
             buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
 
@@ -53,6 +54,7 @@ android {
 
             buildConfigField "String", "themisDomain", oaThemisDomain
             buildConfigField "String", "themisApiKey", oaThemisApiKey
+            buildConfigField "String", "themisIntegrityToken", oaThemisIntegrityToken
             buildConfigField "Long", "cloudProjectNumber", oaCloudProjectNumber
         }
     }
