@@ -13,13 +13,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
@@ -127,10 +128,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
                     mLastMediaItem = position
                 }
 
-                lifecycleScope.launch(Dispatchers.Main) {
-                    updateBottomNavbar(position)
-                    refreshCurrentProject()
-                }
+                updateBottomNavbar(position)
+                refreshCurrentProject()
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -377,10 +376,10 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
 
         mSnackBar?.show()
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             val media = Picker.import(this@MainActivity, getSelectedProject(), uri)
 
-            lifecycleScope.launch(Dispatchers.Main) {
+            MainScope().launch {
                 mSnackBar?.dismiss()
                 intent = null
 
