@@ -2,18 +2,14 @@ package net.opendasharchive.openarchive.features.internetarchive.infrastructure.
 
 import android.content.Context
 import com.google.gson.Gson
-import kotlinx.coroutines.suspendCancellableCoroutine
+import net.opendasharchive.openarchive.core.infrastructure.client.enqueueResult
+import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchiveAuth
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginRequest
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginResponse
 import net.opendasharchive.openarchive.services.SaveClient
-import okhttp3.Call
-import okhttp3.Callback
+import net.opendasharchive.openarchive.services.internetarchive.IaConduit.Companion.ARCHIVE_API_ENDPOINT
 import okhttp3.FormBody
 import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 private val LOGIN_URI = "https://archive.org/services/xauthn?op=login"
 
@@ -21,36 +17,33 @@ class InternetArchiveRemoteSource(
     private val context: Context
 ) {
 
-    suspend fun login(request: InternetArchiveLoginRequest): Result<InternetArchiveLoginResponse> {
-        val client = SaveClient.get(context)
-        return suspendCancellableCoroutine { continuation ->
-            client.newCall(
-                Request.Builder()
-                    .url(LOGIN_URI)
-                    .post(
-                        FormBody.Builder().add("email", request.email)
-                            .add("password", request.password).build()
-                    )
-                    .build()
-            ).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    continuation.resumeWithException(e)
-                }
+    private val gson = Gson()
 
-                override fun onResponse(call: Call, response: Response) {
-                    val data =
-                        Gson().fromJson(
-                            response.body?.string(),
-                            InternetArchiveLoginResponse::class.java
-                        )
-                    continuation.resume(Result.success(data))
-                }
-
-            })
-
-            continuation.invokeOnCancellation {
-                client.dispatcher.cancelAll()
-            }
+    suspend fun login(request: InternetArchiveLoginRequest): Result<InternetArchiveLoginResponse> =
+        SaveClient.get(context).enqueueResult(
+            Request.Builder()
+                .url(LOGIN_URI)
+                .post(
+                    FormBody.Builder().add("email", request.email)
+                        .add("password", request.password).build()
+                )
+                .build()
+        ) { response ->
+            val data = gson.fromJson(
+                response.body?.string(),
+                InternetArchiveLoginResponse::class.java
+            )
+            Result.success(data)
         }
-    }
+
+    suspend fun testConnection(auth: InternetArchiveAuth): Result<Boolean> =
+        SaveClient.get(context).enqueueResult(
+            Request.Builder()
+                .url(ARCHIVE_API_ENDPOINT)
+                .method("GET", null)
+                .addHeader("Authorization", "LOW ${auth.access}:${auth.secret}")
+                .build()
+        ) { response ->
+            Result.success(response.isSuccessful)
+        }
 }

@@ -11,5 +11,5 @@ val internetArchiveModule = module {
     factory { InternetArchiveRemoteSource(get()) }
     factory { InternetArchiveMapper() }
     single { InternetArchiveRepository(get(), get()) }
-    viewModel { InternetArchiveLoginViewModel(get()) }
+    viewModel { args -> InternetArchiveLoginViewModel(get(), args.get()) }
 }
