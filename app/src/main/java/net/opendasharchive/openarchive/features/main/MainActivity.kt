@@ -32,6 +32,7 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
+import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity
 import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.PreviewActivity
@@ -458,7 +459,9 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             mBinding.spacesCard.hide()
         }
 
-        startActivity(Intent(this, SpaceSetupActivity::class.java))
+        //startActivity(Intent(this, SpaceSetupActivity::class.java))
+
+        startActivity(Intent(this, InternetArchiveActivity::class.java))
     }
 
     override fun getSelectedSpace(): Space? {
