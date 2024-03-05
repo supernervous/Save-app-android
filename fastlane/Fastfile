@@ -6,30 +6,64 @@ platform :android do
     gradle(task: "test")
   end
 
+  desc "Create a release build for manual deployment"
+  lane :release do
+    gradle(
+      task: "assemble",
+      build_type: "release",
+      properties: {
+        "android.injected.signing.store.file" => ENV["FASTLANE_KEYSTORE_FILE"],
+        "android.injected.signing.store.password" => ENV["FASTLANE_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["FASTLANE_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["FASTLANE_KEY_PASSWORD"],
+      }
+    )
+
+    send_progress_message("Copying APK to current folder")
+    copy_artifacts(
+      artifacts: [lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]],
+      target_path: ENV["PWD"]
+    )
+  end
+
+  desc "Increments the version code"
+  lane :increment_version_code do
+    android_increment_version_code(
+      app_project_dir: "./app"
+    )
+  end
+
+  desc "Increments the version name"
+  lane :increment_version_name do
+    android_increment_version_name(
+      app_project_dir: "./app"
+    )
+  end
+
   desc "Submit a new Internal Build"
   lane :internal do
-    send_progress_message("Build Started :rocket:")
+    send_progress_message("Build Started")
     gradle(task: "clean assembleRelease")
 
-    send_progress_message("Uploading To Internal track :rocket:")
+    send_progress_message("Uploading To Internal track")
     upload_to_play_store(track: "internal")
   end
 
   desc "Submit a new Alpha Build"
   lane :alpha do
-    send_progress_message("Build Started :rocket:")
+    send_progress_message("Build Started")
     gradle(task: "clean assembleRelease")
 
-    send_progress_message("Uploading To Alpha track :rocket:")
+    send_progress_message("Uploading To Alpha track")
     upload_to_play_store(track: "alpha")
   end
 
   desc "Submit a new Beta Build"
   lane :beta do
-    send_progress_message("Build Started :rocket:")
+    send_progress_message("Build Started 🚀")
     gradle(task: "clean assembleRelease")
 
-    send_progress_message("Uploading To Beta track :rocket:")
+    send_progress_message("Uploading To Beta track")
     upload_to_play_store(track: "beta")
   end
 
@@ -53,18 +87,14 @@ def on_error(exception)
 end
 
 after_all do |lane|
-  file_name = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH].gsub(/\/.*\//,"")
-  send_message "Successfully deployed new App Update! :champagne:"
-  default_payloads = [
-      :git_branch,
-      :last_git_commit_hash,
-      :last_git_commit_message
-  ]
-  payload = {
-      "Build Date" => Time.new.to_s,
-      "APK" => file_name
-  }
-  send_message file_name
-  send_message "#{default_payloads}"
-  send_message "#{payload}"
+  if lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    file_name = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH].gsub(/\/.*\//,"")
+    send_message "Successfully deployed new App Update!"
+    payload = {
+	"Build Date" => Time.new.to_s,
+	"APK" => file_name
+    }
+    send_message file_name
+    send_message "#{payload}"
+  end
 end
