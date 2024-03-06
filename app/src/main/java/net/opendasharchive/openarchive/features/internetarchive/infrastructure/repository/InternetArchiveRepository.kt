@@ -1,9 +1,11 @@
 package net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchiveAuth
+import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveLocalSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginRequest
@@ -11,6 +13,7 @@ import net.opendasharchive.openarchive.features.internetarchive.infrastructure.m
 
 class InternetArchiveRepository(
     private val remoteSource: InternetArchiveRemoteSource,
+    private val localSource: InternetArchiveLocalSource,
     private val mapper: InternetArchiveMapper
 ) {
     suspend fun login(email: String, password: String): Result<InternetArchive> =
@@ -24,8 +27,10 @@ class InternetArchiveRepository(
                 when(response.version) {
                    else -> mapper(response.values)
                 }
-            }
+            }.onSuccess { localSource.set(it) }
         }
+
+    fun subscribe() = localSource.subscribe()
 
     suspend fun testConnection(auth: InternetArchiveAuth): Result<Unit> = withContext(Dispatchers.IO) {
         remoteSource.testConnection(auth).mapCatching { if (!it) throw UnauthenticatedException() }

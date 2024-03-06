@@ -1,8 +1,8 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation
 
 data class InternetArchiveState(
-    val username: String = "",
+    val userName: String = "",
+    val screenName: String = "",
     val email: String = "",
-    val expires: String= "",
 )
 

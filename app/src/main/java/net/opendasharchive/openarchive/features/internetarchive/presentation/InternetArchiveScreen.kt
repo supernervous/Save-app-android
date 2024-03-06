@@ -46,6 +46,7 @@ fun InternetArchiveScreen(space: Space, onResult: (IAResult) -> Unit) {
             when (action) {
                 is Action.Remove ->  onResult(IAResult.Deleted)
                 is Action.Cancel ->  onResult(IAResult.Cancelled)
+                else -> Unit
             }
         }
     }
@@ -56,7 +57,7 @@ fun InternetArchiveScreen(space: Space, onResult: (IAResult) -> Unit) {
 @Composable
 private fun InternetArchiveContent(state: InternetArchiveState, dispatch: Dispatch<Action>) {
     
-    var isRemoving: Boolean by remember { mutableStateOf(false) }
+    var isRemoving by remember { mutableStateOf(false) }
     
     Box(
         modifier = Modifier
@@ -70,31 +71,33 @@ private fun InternetArchiveContent(state: InternetArchiveState, dispatch: Dispat
 
             Text(
                 modifier = Modifier.padding(top = 12.dp),
-                text = stringResource(id = R.string.prompt_email),
+                text = "User Name",
                 style = MaterialTheme.typography.caption
             )
+            Text(
+                text = state.userName,
+                fontSize = 18.sp
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 12.dp),
+                text = "Screen Name",
+                style = MaterialTheme.typography.caption
+            )
+
+            Text(
+                text = state.screenName,
+                fontSize = 18.sp
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 12.dp),
+                text = "Email",
+                style = MaterialTheme.typography.caption
+            )
+
             Text(
                 text = state.email,
-                fontSize = 18.sp
-            )
-            Text(
-                modifier = Modifier.padding(top = 12.dp),
-                text = "Username",
-                style = MaterialTheme.typography.caption
-            )
-            Text(
-                text = state.username,
-                fontSize = 18.sp
-            )
-
-            Text(
-                modifier = Modifier.padding(top = 12.dp),
-                text = "Expires",
-                style = MaterialTheme.typography.caption
-            )
-
-            Text(
-                text = state.expires,
                 fontSize = 18.sp
             )
 
@@ -114,6 +117,7 @@ private fun InternetArchiveContent(state: InternetArchiveState, dispatch: Dispat
     
     if (isRemoving) {
         RemoveInternetArchiveDialog(onDismiss = { isRemoving = false }) {
+            isRemoving = false
             dispatch(Action.Remove)
         }
     }
@@ -147,8 +151,8 @@ private fun InternetArchiveScreenPreview() {
     InternetArchiveContent(
         state = InternetArchiveState(
             email = "abc@example.com",
-            username = "@abc_name",
-            expires = Date().toString()
+            userName = "@abc_name",
+            screenName = "ABC Name"
         )
     ) {}
 }

@@ -11,9 +11,9 @@ class InternetArchiveMapper {
     )
 
     operator fun invoke(response: InternetArchiveLoginResponse.Values) = InternetArchive(
-        username = response.screenname ?: response.itemname ?: "",
+        userName = response.itemname ?: "",
         email = response.email ?: "",
-        expires = response.expires ?: "",
+        screenName = response.screenname ?: "",
         auth = response.s3?.let { invoke(it) } ?: InternetArchiveAuth("", "")
     )
 }

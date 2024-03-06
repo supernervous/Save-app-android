@@ -37,7 +37,7 @@ class InternetArchiveActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
                 measureNewBackend(Space.Type.INTERNET_ARCHIVE)
             }
-            IAResult.Cancelled -> Space.navigate(this)
+            IAResult.Deleted -> Space.navigate(this)
             else -> Unit
         }
     }
