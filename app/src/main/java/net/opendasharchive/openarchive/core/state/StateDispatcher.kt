@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.core.state
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
@@ -18,7 +19,7 @@ class StateDispatcher<T, A>(
     private val effects: Effect<T, A>
 ) {
     private val _state = MutableStateFlow(initialState)
-    val state = _state
+    val state = _state.asStateFlow()
 
     fun dispatch(action: A) {
         val state = _state.updateAndGet { reducer(it, action) }

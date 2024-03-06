@@ -1,5 +1,7 @@
 package net.opendasharchive.openarchive.features.internetarchive
 
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
@@ -8,8 +10,13 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val internetArchiveModule = module {
-    factory { InternetArchiveRemoteSource(get()) }
+    single {
+        Gson().newBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create()
+    }
+    factory { InternetArchiveRemoteSource(get(), get()) }
     factory { InternetArchiveMapper() }
-    single { InternetArchiveRepository(get(), get()) }
+    factory { InternetArchiveRepository(get(), get()) }
     viewModel { args -> InternetArchiveLoginViewModel(get(), args.get()) }
 }

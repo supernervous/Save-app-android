@@ -11,14 +11,12 @@ import net.opendasharchive.openarchive.services.internetarchive.IaConduit.Compan
 import okhttp3.FormBody
 import okhttp3.Request
 
-private val LOGIN_URI = "https://archive.org/services/xauthn?op=login"
+private const val LOGIN_URI = "https://archive.org/services/xauthn?op=login"
 
 class InternetArchiveRemoteSource(
-    private val context: Context
+    private val context: Context,
+    private val gson: Gson
 ) {
-
-    private val gson = Gson()
-
     suspend fun login(request: InternetArchiveLoginRequest): Result<InternetArchiveLoginResponse> =
         SaveClient.get(context).enqueueResult(
             Request.Builder()

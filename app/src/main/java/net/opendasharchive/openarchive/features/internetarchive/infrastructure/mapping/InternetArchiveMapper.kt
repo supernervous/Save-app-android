@@ -6,14 +6,14 @@ import net.opendasharchive.openarchive.features.internetarchive.infrastructure.m
 
 class InternetArchiveMapper {
 
-    private fun toAuth(response: InternetArchiveLoginResponse.S3) = InternetArchiveAuth(
+    private operator fun invoke(response: InternetArchiveLoginResponse.S3) = InternetArchiveAuth(
         access = response.access, secret = response.secret
     )
 
-    fun toDomain(response: InternetArchiveLoginResponse.Values) = InternetArchive(
+    operator fun invoke(response: InternetArchiveLoginResponse.Values) = InternetArchive(
         username = response.screenname ?: response.itemname ?: "",
         email = response.email ?: "",
         expires = response.expires ?: "",
-        auth = response.s3?.let { toAuth(it) } ?: InternetArchiveAuth("", "")
+        auth = response.s3?.let { invoke(it) } ?: InternetArchiveAuth("", "")
     )
 }

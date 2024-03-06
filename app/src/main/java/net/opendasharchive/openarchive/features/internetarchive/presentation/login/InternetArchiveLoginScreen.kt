@@ -5,6 +5,8 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -42,8 +45,7 @@ import kotlinx.coroutines.delay
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.features.internetarchive.presentation.RESP_CANCEL
-import net.opendasharchive.openarchive.features.internetarchive.presentation.RESP_SAVED
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.CreateLogin
@@ -54,7 +56,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun InternetArchiveLoginScreen(space: Space, onResult: (String) -> Unit) {
+fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
     val viewModel: InternetArchiveLoginViewModel = koinViewModel {
         parametersOf(space)
     }
@@ -76,9 +78,9 @@ fun InternetArchiveLoginScreen(space: Space, onResult: (String) -> Unit) {
                     )
                 )
 
-                is Action.Cancel -> onResult(RESP_CANCEL)
+                is Action.Cancel -> onResult(IAResult.Cancelled)
 
-                is Action.LoginSuccess -> onResult(RESP_SAVED)
+                is Action.LoginSuccess -> onResult(IAResult.Saved)
 
                 else -> Unit
             }
@@ -118,6 +120,7 @@ private fun InternetArchiveLoginContent(
 
             TextField(
                 value = state.email,
+                enabled = !state.isBusy,
                 onValueChange = { dispatch(UpdateEmail(it)) },
                 label = {
                     Text(
@@ -144,7 +147,9 @@ private fun InternetArchiveLoginContent(
             Spacer(Modifier.height(12.dp))
 
             TextField(
-                value = state.password, onValueChange = { dispatch(UpdatePassword(it)) },
+                value = state.password,
+                enabled = !state.isBusy,
+                onValueChange = { dispatch(UpdatePassword(it)) },
                 label = {
                     Text(
                         stringResource(id = R.string.prompt_password),
@@ -168,9 +173,12 @@ private fun InternetArchiveLoginContent(
                 }
             )
 
-            AnimatedVisibility(visible = state.isLoginError) {
+            AnimatedVisibility(
+                modifier = Modifier.padding(top = 20.dp),
+                visible = state.isLoginError,
+                enter = fadeIn(), exit = fadeOut()
+            ) {
                 Text(
-                    modifier = Modifier.padding(top = 20.dp),
                     text = stringResource(id = R.string.error_incorrect_username_or_password),
                     color = MaterialTheme.colors.error
                 )
@@ -190,16 +198,21 @@ private fun InternetArchiveLoginContent(
                     Text(stringResource(id = R.string.action_cancel))
                 }
                 Button(
+                    enabled = !state.isBusy,
                     onClick = { dispatch(Login) },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.colorPrimary),
                         contentColor = colorResource(id = R.color.colorBackground)
                     )
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.title_activity_login),
-                        fontSize = 18.sp,
-                    )
+                    if (state.isBusy) {
+                        CircularProgressIndicator()
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.title_activity_login),
+                            fontSize = 18.sp,
+                        )
+                    }
                 }
             }
 

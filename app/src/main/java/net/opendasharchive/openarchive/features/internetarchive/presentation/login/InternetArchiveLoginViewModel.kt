@@ -1,13 +1,13 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.login
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
-import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
+import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.InternetArchiveLoginUseCase
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.Cancel
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.CreateLogin
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.ErrorFade
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.Login
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.LoginError
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.LoginSuccess
@@ -15,7 +15,7 @@ import net.opendasharchive.openarchive.features.internetarchive.presentation.log
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdatePassword
 
 class InternetArchiveLoginViewModel(
-    private val repository: InternetArchiveRepository,
+    private val loginUseCase: InternetArchiveLoginUseCase,
     private val space: Space,
 ) : StatefulViewModel<InternetArchiveLoginState, Action>(InternetArchiveLoginState()) {
 
@@ -25,25 +25,24 @@ class InternetArchiveLoginViewModel(
     ): InternetArchiveLoginState = when (action) {
         is UpdateEmail -> state.copy(email = action.value)
         is UpdatePassword -> state.copy(password = action.value)
-        is LoginError -> state.copy(isLoginError = true)
-        is Action.ErrorFade -> state.copy(isLoginError = false)
+        is Login -> state.copy(isBusy = true)
+        is LoginError -> state.copy(isLoginError = true, isBusy = false)
+        is LoginSuccess, is Cancel -> state.copy(isBusy = false)
+        is ErrorFade -> state.copy(isLoginError = false)
         else -> state
     }
 
     override suspend fun effects(state: InternetArchiveLoginState, action: Action) {
         when (action) {
-            is Login -> withContext(Dispatchers.IO) {
-                repository.login(state.email, state.password)
-                    .onSuccess {
-                        space.username = it.auth.access
-                        space.password = it.auth.secret
-                        space.save()
-                        send(LoginSuccess(it))
-                    }.onFailure {
-                        dispatch(LoginError(it))
+            is Login ->
+                loginUseCase(state.email, state.password)
+                    .onSuccess { ia ->
+                        space.saveAndSetCurrent()
+                        send(LoginSuccess(ia))
                     }
-            }
-            is CreateLogin, is Action.Cancel -> send(action)
+                    .onFailure { dispatch(LoginError(it)) }
+
+            is CreateLogin, is Cancel -> send(action)
             else -> Unit
         }
     }
@@ -65,5 +64,10 @@ class InternetArchiveLoginViewModel(
 
         data class UpdateEmail(val value: String) : Action
         data class UpdatePassword(val value: String) : Action
+    }
+
+    private fun Space.saveAndSetCurrent() {
+        save()
+        Space.current = this
     }
 }

@@ -27,13 +27,14 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveViewModel.Action
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.util.Date
 
 @Composable
-fun InternetArchiveScreen(space: Space, onResult: (String) -> Unit) {
+fun InternetArchiveScreen(space: Space, onResult: (IAResult) -> Unit) {
     val viewModel: InternetArchiveViewModel = koinViewModel {
         parametersOf(space)
     }
@@ -43,12 +44,8 @@ fun InternetArchiveScreen(space: Space, onResult: (String) -> Unit) {
     LaunchedEffect(Unit) {
         viewModel.effects.collect { action ->
             when (action) {
-                is Action.Remove -> {
-                    onResult(RESP_DELETED)
-                }
-                is Action.Cancel -> {
-                    onResult(RESP_CANCEL)
-                }
+                is Action.Remove ->  onResult(IAResult.Deleted)
+                is Action.Cancel ->  onResult(IAResult.Cancelled)
             }
         }
     }
@@ -116,14 +113,14 @@ private fun InternetArchiveContent(state: InternetArchiveState, dispatch: Dispat
     }
     
     if (isRemoving) {
-        RemoveInternetArchiveDialog(isRemoving = isRemoving, onDismiss = { isRemoving = false }) {
+        RemoveInternetArchiveDialog(onDismiss = { isRemoving = false }) {
             dispatch(Action.Remove)
         }
     }
 }
 
 @Composable
-private fun RemoveInternetArchiveDialog(isRemoving: Boolean, onDismiss: () -> Unit, onRemove: () -> Unit) {
+private fun RemoveInternetArchiveDialog(onDismiss: () -> Unit, onRemove: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(id = R.string.remove_from_app))},
@@ -159,6 +156,5 @@ private fun InternetArchiveScreenPreview() {
 @Composable
 @Preview(showBackground = true)
 private fun RemoveInternetArchiveDialogPreview() {
-    RemoveInternetArchiveDialog(isRemoving = true, onDismiss = { }) {
-    }
+    RemoveInternetArchiveDialog(onDismiss = { }) {}
 }

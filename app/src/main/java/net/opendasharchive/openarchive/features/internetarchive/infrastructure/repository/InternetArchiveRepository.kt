@@ -3,9 +3,11 @@ package net.opendasharchive.openarchive.features.internetarchive.infrastructure.
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
+import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchiveAuth
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginRequest
+import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.UnauthenticatedException
 
 class InternetArchiveRepository(
     private val remoteSource: InternetArchiveRemoteSource,
@@ -15,13 +17,17 @@ class InternetArchiveRepository(
         withContext(Dispatchers.IO) {
             remoteSource.login(
                 InternetArchiveLoginRequest(email, password)
-            ).mapCatching {
-                if (it.success.not()) {
-                    throw IllegalArgumentException(it.values.reason)
+            ).mapCatching { response ->
+                if (response.success.not()) {
+                    throw IllegalArgumentException(response.values.reason)
                 }
-                when(it.version) {
-                   else -> mapper.toDomain(it.values)
+                when(response.version) {
+                   else -> mapper(response.values)
                 }
             }
         }
+
+    suspend fun testConnection(auth: InternetArchiveAuth): Result<Unit> = withContext(Dispatchers.IO) {
+        remoteSource.testConnection(auth).mapCatching { if (!it) throw UnauthenticatedException() }
+    }
 }
