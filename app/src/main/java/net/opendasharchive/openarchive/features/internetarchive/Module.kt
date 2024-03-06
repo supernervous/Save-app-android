@@ -6,6 +6,7 @@ import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.I
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
+import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveViewModel
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -20,5 +21,6 @@ val internetArchiveModule = module {
     factory { InternetArchiveMapper() }
     factory { InternetArchiveRepository(get(), get()) }
     factory { InternetArchiveLoginUseCase(get()) }
+    viewModel { args -> InternetArchiveViewModel(args.get()) }
     viewModel { args -> InternetArchiveLoginViewModel(get(), args.get()) }
 }
