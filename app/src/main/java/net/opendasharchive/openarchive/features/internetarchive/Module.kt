@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.features.internetarchive
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
+import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.InternetArchiveLoginUseCase
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
@@ -18,5 +19,6 @@ val internetArchiveModule = module {
     factory { InternetArchiveRemoteSource(get(), get()) }
     factory { InternetArchiveMapper() }
     factory { InternetArchiveRepository(get(), get()) }
+    factory { InternetArchiveLoginUseCase(get()) }
     viewModel { args -> InternetArchiveLoginViewModel(get(), args.get()) }
 }
