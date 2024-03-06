@@ -7,17 +7,21 @@ import net.opendasharchive.openarchive.features.internetarchive.presentation.Int
 class InternetArchiveViewModel(private val space: Space) :
     StatefulViewModel<InternetArchiveState, Action>(InternetArchiveState()) {
 
-    override fun reduce(state: InternetArchiveState, action: Action) = when (action) {
-        else -> state
-    }
+    override fun reduce(state: InternetArchiveState, action: Action) = state
 
     override suspend fun effects(state: InternetArchiveState, action: Action) {
         when (action) {
-            else -> Unit
+            is Action.Remove -> {
+                space.delete()
+                send(action)
+            }
+            is Action.Cancel -> send(action)
         }
     }
 
     sealed interface Action {
+        data object Remove : Action
 
+        data object Cancel : Action
     }
 }

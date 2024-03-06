@@ -26,6 +26,7 @@ class InternetArchiveLoginViewModel(
         is UpdateEmail -> state.copy(email = action.value)
         is UpdatePassword -> state.copy(password = action.value)
         is LoginError -> state.copy(isLoginError = true)
+        is Action.ErrorFade -> state.copy(isLoginError = false)
         else -> state
     }
 
@@ -42,8 +43,7 @@ class InternetArchiveLoginViewModel(
                         dispatch(LoginError(it))
                     }
             }
-
-            is CreateLogin -> send(action)
+            is CreateLogin, is Action.Cancel -> send(action)
             else -> Unit
         }
     }
@@ -51,9 +51,13 @@ class InternetArchiveLoginViewModel(
     sealed interface Action {
         data object Login : Action
 
+        data object Cancel : Action
+
         data class LoginSuccess(val value: InternetArchive) : Action
 
         data class LoginError(val value: Throwable) : Action
+
+        data object ErrorFade : Action
 
         data object CreateLogin : Action {
             const val URI = "https://archive.org/account/signup"

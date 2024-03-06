@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.ARG_SPACE
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.ARG_VAL_NEW_SPACE
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginScreen
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.getSpace
-import net.opendasharchive.openarchive.services.internetarchive.InternetArchiveFragment
+
+const val RESP_SAVED = "ia_fragment_resp_saved"
+const val RESP_DELETED = "ia_dav_fragment_resp_deleted"
+const val RESP_CANCEL = "ia_fragment_resp_cancel"
 
 @Deprecated("only used for backward compatibility")
 class InternetArchiveFragment : Fragment() {
@@ -27,9 +32,13 @@ class InternetArchiveFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 if (isNewSpace) {
-                    InternetArchiveLoginScreen(space)
+                    InternetArchiveLoginScreen(space) { result ->
+                        setFragmentResult(result, bundleOf())
+                    }
                 } else {
-                    InternetArchiveScreen(space)
+                    InternetArchiveScreen(space) { result ->
+                        setFragmentResult(result, bundleOf())
+                    }
                 }
             }
         }

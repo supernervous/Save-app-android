@@ -20,6 +20,7 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
+    <string name="internet_archive_description">Upload and preserve media in a digital library</string>
     <string name="gdrive" translatable="false">Google Drive</string>
     <string name="gdrive_tm" translatable="false">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
