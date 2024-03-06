@@ -2,12 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.android'
 
-def getDropboxKey() {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("dropbox_key")
-}
-
 android {
     compileOptions {
         sourceCompatibility 1.8
@@ -34,15 +28,15 @@ android {
     flavorDimensions += "free"
     buildTypes {
         debug {
-            buildConfigField "String", "dropbox_key", getDropboxKey()
-            resValue 'string', "dropbox_key", getDropboxKey()
+            // Define OpenArchive variables in $HOME/.gradle/gradle.properties
+            buildConfigField "String", "dropbox_key", oaDropboxKey
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "dropbox_key", getDropboxKey()
-            resValue 'string', "dropbox_key", getDropboxKey()
+            // Define OpenArchive variables in $HOME/.gradle/gradle.properties
+            buildConfigField "String", "dropbox_key", oaDropboxKey
         }
     }
     packagingOptions {
