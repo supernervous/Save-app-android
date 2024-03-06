@@ -1,34 +1,80 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/code
+version: 2.1
+
+executors:
+  android:
+    working_directory: ~/save-app
     docker:
       - image: cimg/android:2024.01
     environment:
       JVM_OPTS: -Xmx3200m
+
+workflows:
+  version: 2.1
+  build-lint-test:
+    jobs:
+      - lint:
+          filters:
+            branches:
+              only:
+                - development
+                - /feature\/.*/
+                - /bug\/.*/
+      - test:
+          filters:
+            branches:
+              only:
+                - development
+                - /feature\/.*/
+                - /bug\/.*/
+
+commands:
+  setup:
     steps:
       - checkout
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      #      - run:
-      #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-      #         command: sudo chmod +x ./gradlew
       - run:
-          name: Create local.properties
-          command: touch local.properties
+          name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+          command: sudo chmod +x ./gradlew
       - run:
-          name: Add dummy api Key
-          command: echo "dropbox_key=\"foo\"" >> local.properties
+          name: Create user properties folder
+          command: mkdir $HOME/.gradle
+      - run:
+          name: Add user properties
+          command: |
+            if [ ! `grep "oaDropboxKey" "$HOME/.gradle/gradle.properties"` ]; then
+              echo "Setting user properties"
+              echo "oaDropboxKey=\"${OA_DROPBOX_KEY:-foo}\"" >> $HOME/.gradle/gradle.properties
+            fi
+  save:
+    steps:
       - save_cache:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+jobs:
+  test:
+    executor: android
+    parallelism: 3
+    steps:
+      - setup
       - run:
           name: Run Tests
-          command: ./gradlew lint test
+          command: ./gradlew test
+      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: app/build/test-results
+      - save
+
+  lint:
+    executor: android
+    parallelism: 3
+    steps:
+      - setup
+      - run:
+          name: Run Tests
+          command: ./gradlew lint
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: app/build/reports
           destination: reports
-      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: app/build/test-results
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+      - save
