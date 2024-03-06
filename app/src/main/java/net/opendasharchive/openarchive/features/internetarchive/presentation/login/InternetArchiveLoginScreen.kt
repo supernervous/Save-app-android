@@ -119,7 +119,12 @@ private fun InternetArchiveLoginContent(
             TextField(
                 value = state.email,
                 onValueChange = { dispatch(UpdateEmail(it)) },
-                label = { Text(stringResource(id = R.string.prompt_email)) },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.prompt_email),
+                        color = colorResource(id = R.color.colorPrimary)
+                    )
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -127,16 +132,25 @@ private fun InternetArchiveLoginContent(
                     keyboardType = KeyboardType.Email
                 ),
                 isError = state.isEmailError,
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = colorResource(id = R.color.colorPrimary)
-                )
+                colors = colorResource(id = R.color.colorPrimary).let {
+                    TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = it,
+                        focusedLabelColor = it,
+                        cursorColor = it
+                    )
+                }
             )
 
             Spacer(Modifier.height(12.dp))
 
             TextField(
                 value = state.password, onValueChange = { dispatch(UpdatePassword(it)) },
-                label = { Text(stringResource(id = R.string.prompt_password)) },
+                label = {
+                    Text(
+                        stringResource(id = R.string.prompt_password),
+                        color = colorResource(id = R.color.colorPrimary)
+                    )
+                },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -145,9 +159,13 @@ private fun InternetArchiveLoginContent(
                     imeAction = ImeAction.Go
                 ),
                 isError = state.isPasswordError,
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = colorResource(id = R.color.colorPrimary)
-                )
+                colors = colorResource(id = R.color.colorPrimary).let {
+                    TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = it,
+                        focusedLabelColor = it,
+                        cursorColor = it
+                    )
+                }
             )
 
             AnimatedVisibility(visible = state.isLoginError) {
