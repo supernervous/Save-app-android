@@ -19,7 +19,7 @@ class ProjectAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     }
 
     val settingsIndex: Int
-        get() = projects.size
+        get() = max(1, projects.size)
 
     fun updateData(projects: List<Project>) {
         this.projects = projects
