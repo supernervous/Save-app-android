@@ -1,10 +1,8 @@
 package net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
-import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchiveAuth
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveLocalSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.datasource.InternetArchiveRemoteSource
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.mapping.InternetArchiveMapper
@@ -24,15 +22,15 @@ class InternetArchiveRepository(
                 if (response.success.not()) {
                     throw IllegalArgumentException(response.values.reason)
                 }
-                when(response.version) {
-                   else -> mapper(response.values)
+                when (response.version) {
+                    else -> mapper(response.values)
                 }
             }.onSuccess { localSource.set(it) }
         }
 
-    fun subscribe() = localSource.subscribe()
-
-    suspend fun testConnection(auth: InternetArchiveAuth): Result<Unit> = withContext(Dispatchers.IO) {
-        remoteSource.testConnection(auth).mapCatching { if (!it) throw UnauthenticatedException() }
-    }
+    suspend fun testConnection(auth: InternetArchive.Auth): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            remoteSource.testConnection(auth)
+                .mapCatching { if (!it) throw UnauthenticatedException() }
+        }
 }

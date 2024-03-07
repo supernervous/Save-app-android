@@ -9,24 +9,18 @@ import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginScreen
 import net.opendasharchive.openarchive.features.main.MainActivity
 
 @Deprecated("use jetpack compose")
 class InternetArchiveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val (space, isNewSpace) = intent.extras.getSpace(Space.Type.INTERNET_ARCHIVE)
 
         setContent {
-            if (isNewSpace) {
-                InternetArchiveLoginScreen(space) {
-                    finish(it)
-                }
-            } else {
-                InternetArchiveScreen(space) {
-                    finish(it)
-                }
+            InternetArchiveScreen(space, isNewSpace) {
+                finish(it)
             }
         }
     }
@@ -37,6 +31,7 @@ class InternetArchiveActivity : AppCompatActivity() {
                 startActivity(Intent(this, MainActivity::class.java))
                 measureNewBackend(Space.Type.INTERNET_ARCHIVE)
             }
+
             IAResult.Deleted -> Space.navigate(this)
             else -> Unit
         }

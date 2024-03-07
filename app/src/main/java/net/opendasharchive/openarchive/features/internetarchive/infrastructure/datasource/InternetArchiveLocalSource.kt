@@ -8,6 +8,9 @@ import net.opendasharchive.openarchive.features.internetarchive.domain.model.Int
 
 class InternetArchiveLocalSource {
     // TODO: just use a memory cache for demo, will need to store in DB
+    //       the database should be SQLCipher (https://www.zetetic.net/sqlcipher/)
+    //       as we are storing access keys.  Sugar record does not support sql cipher
+    //       so planning a migration using local data sources.
     private val cache = MutableStateFlow<InternetArchive?>(null)
 
     fun set(value: InternetArchive) =  cache.update { value }

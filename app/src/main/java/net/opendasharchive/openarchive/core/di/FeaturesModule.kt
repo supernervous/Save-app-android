@@ -5,4 +5,5 @@ import org.koin.dsl.module
 
 val featuresModule = module {
     includes(internetArchiveModule)
+    // TODO: have some registry of feature modules
 }

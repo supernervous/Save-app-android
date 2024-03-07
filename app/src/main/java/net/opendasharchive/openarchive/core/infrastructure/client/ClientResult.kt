@@ -9,7 +9,8 @@ import okhttp3.Response
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
- suspend fun <T> OkHttpClient.enqueueResult(
+
+suspend fun <T> OkHttpClient.enqueueResult(
     request: Request,
     onResume: (Response) -> T
 ) = suspendCancellableCoroutine { continuation ->

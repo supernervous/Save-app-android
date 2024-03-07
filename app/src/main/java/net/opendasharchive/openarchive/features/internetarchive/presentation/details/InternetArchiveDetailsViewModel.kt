@@ -1,29 +1,24 @@
-package net.opendasharchive.openarchive.features.internetarchive.presentation
+package net.opendasharchive.openarchive.features.internetarchive.presentation.details
 
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.collect
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
-import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveViewModel.Action
+import net.opendasharchive.openarchive.features.internetarchive.presentation.details.InternetArchiveDetailsViewModel.Action
 
-class InternetArchiveViewModel(
-    private val repository: InternetArchiveRepository,
+class InternetArchiveDetailsViewModel(
+    private val gson: Gson,
     private val space: Space
-) : StatefulViewModel<InternetArchiveState, Action>(InternetArchiveState()) {
+) : StatefulViewModel<InternetArchiveDetailsState, Action>(InternetArchiveDetailsState()) {
 
     init {
-        viewModelScope.launch {
-            repository.subscribe().collect {
-                dispatch(Action.Loaded(it))
-            }
-        }
+       dispatch(Action.Load(space))
     }
 
-    override fun reduce(state: InternetArchiveState, action: Action) = when(action) {
+    override fun reduce(state: InternetArchiveDetailsState, action: Action) = when(action) {
         is Action.Loaded -> state.copy(
             userName = action.value.userName,
             email = action.value.email,
@@ -32,11 +27,16 @@ class InternetArchiveViewModel(
         else -> state
     }
 
-    override suspend fun effects(state: InternetArchiveState, action: Action) {
+    override suspend fun effects(state: InternetArchiveDetailsState, action: Action) {
         when (action) {
             is Action.Remove -> {
                 space.delete()
                 send(action)
+            }
+
+            is Action.Load -> {
+                val metaData = gson.fromJson(space.metaData, InternetArchive.MetaData::class.java)
+                dispatch(Action.Loaded(metaData))
             }
 
             is Action.Cancel -> send(action)
@@ -46,7 +46,9 @@ class InternetArchiveViewModel(
 
     sealed interface Action {
 
-        data class Loaded(val value: InternetArchive) : Action
+        data class Load(val value: Space) : Action
+
+        data class Loaded(val value: InternetArchive.MetaData) : Action
 
         data object Remove : Action
 

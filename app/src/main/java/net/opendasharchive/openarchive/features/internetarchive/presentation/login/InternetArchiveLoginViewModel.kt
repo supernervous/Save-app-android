@@ -13,11 +13,19 @@ import net.opendasharchive.openarchive.features.internetarchive.presentation.log
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.LoginSuccess
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdateEmail
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdatePassword
+import org.koin.compose.koinInject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
+import org.koin.java.KoinJavaComponent.inject
 
 class InternetArchiveLoginViewModel(
-    private val loginUseCase: InternetArchiveLoginUseCase,
     private val space: Space,
-) : StatefulViewModel<InternetArchiveLoginState, Action>(InternetArchiveLoginState()) {
+) : StatefulViewModel<InternetArchiveLoginState, Action>(InternetArchiveLoginState()), KoinComponent {
+
+    private val loginUseCase: InternetArchiveLoginUseCase by inject {
+        parametersOf(space)
+    }
 
     override fun reduce(
         state: InternetArchiveLoginState,
@@ -37,7 +45,6 @@ class InternetArchiveLoginViewModel(
             is Login ->
                 loginUseCase(state.email, state.password)
                     .onSuccess { ia ->
-                        space.saveAndSetCurrent()
                         send(LoginSuccess(ia))
                     }
                     .onFailure { dispatch(LoginError(it)) }
@@ -66,8 +73,4 @@ class InternetArchiveLoginViewModel(
         data class UpdatePassword(val value: String) : Action
     }
 
-    private fun Space.saveAndSetCurrent() {
-        save()
-        Space.current = this
-    }
 }

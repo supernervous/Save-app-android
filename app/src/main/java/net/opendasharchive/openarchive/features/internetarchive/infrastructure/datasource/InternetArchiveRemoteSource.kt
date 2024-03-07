@@ -3,7 +3,7 @@ package net.opendasharchive.openarchive.features.internetarchive.infrastructure.
 import android.content.Context
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.core.infrastructure.client.enqueueResult
-import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchiveAuth
+import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginRequest
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.model.InternetArchiveLoginResponse
 import net.opendasharchive.openarchive.services.SaveClient
@@ -34,7 +34,7 @@ class InternetArchiveRemoteSource(
             Result.success(data)
         }
 
-    suspend fun testConnection(auth: InternetArchiveAuth): Result<Boolean> =
+    suspend fun testConnection(auth: InternetArchive.Auth): Result<Boolean> =
         SaveClient.get(context).enqueueResult(
             Request.Builder()
                 .url(ARCHIVE_API_ENDPOINT)

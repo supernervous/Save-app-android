@@ -13,7 +13,6 @@ import net.opendasharchive.openarchive.features.internetarchive.presentation.com
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithSpaceId
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginScreen
 
 @Deprecated("only used for backward compatibility")
 class InternetArchiveFragment : Fragment() {
@@ -28,14 +27,8 @@ class InternetArchiveFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                if (isNewSpace) {
-                    InternetArchiveLoginScreen(space) { result ->
-                        finish(result)
-                    }
-                } else {
-                    InternetArchiveScreen(space) { result ->
-                        finish(result)
-                    }
+                InternetArchiveScreen(space, isNewSpace) { result ->
+                    finish(result)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.login
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,16 +17,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
+import net.opendasharchive.openarchive.core.presentation.theme.textFieldColors
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
@@ -63,18 +68,16 @@ fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
 
     val state by viewModel.state.collectAsState()
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {}
-    )
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = {})
 
     LaunchedEffect(Unit) {
         viewModel.effects.collect { action ->
             when (action) {
                 is CreateLogin -> launcher.launch(
                     Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(CreateLogin.URI)
+                        Intent.ACTION_VIEW, Uri.parse(CreateLogin.URI)
                     )
                 )
 
@@ -92,8 +95,7 @@ fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
 
 @Composable
 private fun InternetArchiveLoginContent(
-    state: InternetArchiveLoginState,
-    dispatch: Dispatch<Action>
+    state: InternetArchiveLoginState, dispatch: Dispatch<Action>
 ) {
 
     LaunchedEffect(state.isLoginError) {
@@ -109,17 +111,16 @@ private fun InternetArchiveLoginContent(
             .padding(24.dp)
     ) {
         Column(
-            Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
+            Modifier
+                .align(Alignment.Center)
+                .padding(bottom = 20.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             InternetArchiveHeader(
-                modifier = Modifier.padding(bottom = 24.dp),
-                titleSize = 32.sp
+                modifier = Modifier.padding(bottom = 24.dp), titleSize = 32.sp
             )
 
-            TextField(
-                value = state.email,
+            TextField(value = state.email,
                 enabled = !state.isBusy,
                 onValueChange = { dispatch(UpdateEmail(it)) },
                 label = {
@@ -135,13 +136,7 @@ private fun InternetArchiveLoginContent(
                     keyboardType = KeyboardType.Email
                 ),
                 isError = state.isEmailError,
-                colors = colorResource(id = R.color.colorPrimary).let {
-                    TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = it,
-                        focusedLabelColor = it,
-                        cursorColor = it
-                    )
-                }
+                colors = textFieldColors()
             )
 
             Spacer(Modifier.height(12.dp))
@@ -164,56 +159,19 @@ private fun InternetArchiveLoginContent(
                     imeAction = ImeAction.Go
                 ),
                 isError = state.isPasswordError,
-                colors = colorResource(id = R.color.colorPrimary).let {
-                    TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = it,
-                        focusedLabelColor = it,
-                        cursorColor = it
-                    )
-                }
+                colors = textFieldColors(),
             )
 
             AnimatedVisibility(
                 modifier = Modifier.padding(top = 20.dp),
                 visible = state.isLoginError,
-                enter = fadeIn(), exit = fadeOut()
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 Text(
                     text = stringResource(id = R.string.error_incorrect_username_or_password),
-                    color = MaterialTheme.colors.error
+                    color = MaterialTheme.colorScheme.error
                 )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                OutlinedButton(
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onSurface),
-                    onClick = { dispatch(Action.Cancel) }
-                ) {
-                    Text(stringResource(id = R.string.action_cancel))
-                }
-                Button(
-                    enabled = !state.isBusy,
-                    onClick = { dispatch(Login) },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.colorPrimary),
-                        contentColor = colorResource(id = R.color.colorBackground)
-                    )
-                ) {
-                    if (state.isBusy) {
-                        CircularProgressIndicator(color = colorResource(id = R.color.colorPrimary))
-                    } else {
-                        Text(
-                            text = stringResource(id = R.string.title_activity_login),
-                            fontSize = 18.sp,
-                        )
-                    }
-                }
             }
 
             Row(
@@ -221,25 +179,60 @@ private fun InternetArchiveLoginContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "No account?"
+                    text = "No account?", color = ThemeColors.material.onSurface
                 )
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.colorPrimary)),
+                TextButton(colors = ButtonDefaults.textButtonColors(contentColor = colorResource(id = R.color.colorPrimary)),
                     onClick = { dispatch(CreateLogin) }) {
                     Text(text = "Create Login", fontSize = 16.sp, fontWeight = FontWeight.Black)
                 }
             }
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(top = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            OutlinedButton(colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+                shape = RoundedCornerShape(4.dp),
+                onClick = { dispatch(Action.Cancel) }) {
+                Text(
+                    text = stringResource(id = R.string.action_cancel),
+                    color = ThemeColors.material.onSurface
+                )
+            }
+            Button(
+                enabled = !state.isBusy,
+                shape = RoundedCornerShape(4.dp),
+                onClick = { dispatch(Login) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.colorPrimary),
+                    contentColor = colorResource(id = R.color.colorBackground)
+                )
+            ) {
+                if (state.isBusy) {
+                    CircularProgressIndicator(color = colorResource(id = R.color.colorPrimary))
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.title_activity_login),
+                        fontSize = 18.sp,
+                    )
+                }
+            }
+        }
+
     }
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InternetArchiveLoginPreview() {
     InternetArchiveLoginContent(
         state = InternetArchiveLoginState(
-            email = "user@example.org",
-            password = "abc123"
+            email = "user@example.org", password = "abc123"
         )
     ) {}
 }
