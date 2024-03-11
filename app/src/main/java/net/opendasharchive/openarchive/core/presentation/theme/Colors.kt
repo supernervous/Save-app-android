@@ -14,6 +14,7 @@ private val c23_darker_grey = Color(0xff212021)
 private val c23_dark_grey = Color(0xff333333)
 private val c23_medium_grey = Color(0xff696666)
 private val c23_grey = Color(0xff9f9f9f)
+private val c23_grey_50 = Color(0xff777979)
 private val c23_light_grey = Color(0xffe3e3e4)
 private val c23_teal_100 = Color(0xff00ffeb) // h=175,3 s=100 v=100 -->
 private val c23_teal_90 = Color(0xff00e7d5) // v=90.6 -->
@@ -32,6 +33,9 @@ data class ColorTheme(
     val material: ColorScheme,
     val primaryDark: Color = c23_teal_40,
     val primaryBright: Color = c23_powder_blue,
+
+    val disabledContainer: Color = c23_teal_20,
+    val onDisabledContainer: Color = c23_light_grey,
 
     val colorBottomNavbar: Color = material.primary,
 
@@ -64,7 +68,7 @@ private val LightColorScheme = ColorTheme(
 
         primary = c23_teal,
         onPrimary = Color.Black,
-        primaryContainer = c23_teal_90,
+        primaryContainer = c23_teal,
         onPrimaryContainer = Color.Black,
 
         secondary = c23_teal,
@@ -78,9 +82,9 @@ private val LightColorScheme = ColorTheme(
         onTertiaryContainer = Color.Black,
 
         error = Color.Red,
-        onError = Color.White,
+        onError = Color.Black,
         errorContainer = Color.Red,
-        onErrorContainer = Color.White,
+        onErrorContainer = Color.Black,
 
         background = Color.Black,
         onBackground = Color.White,
@@ -92,7 +96,7 @@ private val LightColorScheme = ColorTheme(
 
         outline = Color.Black,
         inverseOnSurface = Color.White,
-        inverseSurface = Color.Black,
+        inverseSurface = c23_dark_grey,
         inversePrimary = Color.Black,
         surfaceTint = c23_teal
     ),
@@ -101,14 +105,14 @@ private val LightColorScheme = ColorTheme(
 private val DarkColorScheme = ColorTheme(
     material = darkColorScheme(
         primary = c23_teal,
-        onPrimary = Color.White,
-        primaryContainer = c23_teal_20,
-        onPrimaryContainer = Color.White,
+        onPrimary = Color.Black,
+        primaryContainer = c23_teal,
+        onPrimaryContainer = Color.Black,
 
         secondary = c23_teal,
-        onSecondary = Color.White,
+        onSecondary = Color.Black,
         secondaryContainer = c23_teal_20,
-        onSecondaryContainer = Color.White,
+        onSecondaryContainer = Color.Black,
 
         tertiary = c23_powder_blue,
         onTertiary = Color.Black,
@@ -116,9 +120,9 @@ private val DarkColorScheme = ColorTheme(
         onTertiaryContainer = Color.Black,
 
         error = Color.Red,
-        onError = Color.White,
+        onError = Color.Black,
         errorContainer = Color.Red,
-        onErrorContainer = Color.White,
+        onErrorContainer = Color.Black,
 
         background = Color.Black,
         onBackground = Color.White,
@@ -129,8 +133,8 @@ private val DarkColorScheme = ColorTheme(
         onSurfaceVariant = Color.White,
 
         outline = Color.White,
+        inverseSurface = c23_light_grey,
         inverseOnSurface = Color.Black,
-        inverseSurface = Color.White,
         inversePrimary = Color.White,
         surfaceTint = c23_teal
     ),
@@ -143,14 +147,14 @@ val LocalColors = staticCompositionLocalOf { LightColorScheme }
 @Composable
 fun textFieldColors() = TextFieldDefaults.colors(
     focusedIndicatorColor = ThemeColors.material.primary,
-    unfocusedIndicatorColor = ThemeColors.material.primary,
     focusedLabelColor = ThemeColors.material.primary,
+    focusedContainerColor = ThemeColors.material.surface,
+    focusedTextColor = ThemeColors.material.onSurface,
+    unfocusedIndicatorColor = ThemeColors.material.onSurfaceVariant,
+    unfocusedContainerColor = ThemeColors.material.surfaceVariant,
+    unfocusedTextColor = ThemeColors.material.onSurfaceVariant,
     unfocusedLabelColor = ThemeColors.material.primary,
     cursorColor = ThemeColors.material.primary,
-    focusedContainerColor = ThemeColors.material.surface,
-    unfocusedContainerColor = ThemeColors.material.surface,
-    disabledContainerColor = ThemeColors.material.surface,
-    unfocusedTextColor = ThemeColors.material.onSurface,
-    focusedTextColor = ThemeColors.material.onSurface,
-    disabledTextColor = ThemeColors.material.onSurface
+    disabledContainerColor = ThemeColors.disabledContainer,
+    disabledTextColor = ThemeColors.onDisabledContainer
 )

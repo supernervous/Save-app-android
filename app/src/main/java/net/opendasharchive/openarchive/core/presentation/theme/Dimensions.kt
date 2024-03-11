@@ -16,20 +16,22 @@ data class Icons(
 )
 
 @Immutable
-data class Padding(
+data class Spacing(
+    val xsmall: Dp = 4.dp,
     val small: Dp = 8.dp,
     val medium: Dp = 16.dp,
-    val large: Dp = 32.dp,
+    val large: Dp = 24.dp,
+    val xlarge: Dp = 32.dp
 )
 
 @Immutable
 data class DimensionsTheme(
     val touchable: Dp = 48.dp,
-    val padding: Padding = Padding(),
+    val spacing: Spacing = Spacing(),
     val elevations: Elevations = Elevations(),
     val icons: Icons = Icons(),
     val bubbleArrow: Dp = 24.dp,
-    val buttonCorner: Dp = 4.dp
+    val roundedCorner: Dp = 8.dp
 )
 
 private val DimensionsLight = DimensionsTheme()

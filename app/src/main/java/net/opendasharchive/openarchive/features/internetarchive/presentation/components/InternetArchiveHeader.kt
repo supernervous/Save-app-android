@@ -1,13 +1,14 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,20 +25,20 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.core.presentation.theme.LocalColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
+import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 
 @Composable
 fun InternetArchiveHeader(modifier: Modifier = Modifier, titleSize: TextUnit = 18.sp) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
         Box(modifier = Modifier
-            .size(48.dp)
+            .size(ThemeDimensions.touchable)
             .background(
-                color = colorResource(id = R.color.colorBackgroundSpaceIcon),
+                color = ThemeColors.material.surface,
                 shape = CircleShape
             ).clip(CircleShape)) {
             Image(
-                modifier = Modifier.matchParentSize().padding(12.dp),
+                modifier = Modifier.matchParentSize().padding(ThemeDimensions.spacing.small),
                 painter = painterResource(id = R.drawable.ic_internet_archive),
                 contentDescription = stringResource(
                     id = R.string.internet_archive
@@ -45,7 +46,7 @@ fun InternetArchiveHeader(modifier: Modifier = Modifier, titleSize: TextUnit = 1
                 colorFilter = tint(colorResource(id = R.color.colorPrimary))
             )
         }
-        Column(modifier = Modifier.padding(start = 8.dp)) {
+        Column(modifier = Modifier.padding(start = ThemeDimensions.spacing.small)) {
             Text(
                 text = stringResource(id = R.string.internet_archive),
                 fontSize = titleSize,

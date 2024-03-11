@@ -75,10 +75,10 @@ private fun InternetArchiveDetailsContent(
 
             InternetArchiveHeader()
 
-            Spacer(Modifier.height(ThemeDimensions.padding.large))
+            Spacer(Modifier.height(ThemeDimensions.spacing.large))
 
             Text(
-                text = "User Name",
+                text = stringResource(id = R.string.label_username),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -90,7 +90,7 @@ private fun InternetArchiveDetailsContent(
 
             Text(
                 modifier = Modifier.padding(top = 16.dp),
-                text = "Screen Name",
+                text = stringResource(id = R.string.label_screen_name),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -103,7 +103,7 @@ private fun InternetArchiveDetailsContent(
 
             Text(
                 modifier = Modifier.padding(top = 16.dp),
-                text = "Email",
+                text = stringResource(id = R.string.label_email),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -119,7 +119,7 @@ private fun InternetArchiveDetailsContent(
             modifier = Modifier
                 .padding(top = 12.dp)
                 .align(Alignment.BottomCenter),
-            shape = RoundedCornerShape(ThemeDimensions.buttonCorner),
+            shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
             onClick = {
                 isRemoving = true
             },
@@ -151,14 +151,14 @@ private fun RemoveInternetArchiveDialog(onDismiss: () -> Unit, onRemove: () -> U
         dismissButton = {
             OutlinedButton(
                 onClick = onDismiss,
-                shape = RoundedCornerShape(ThemeDimensions.buttonCorner)
+                shape = RoundedCornerShape(ThemeDimensions.roundedCorner)
             ) {
                 Text(stringResource(id = R.string.action_cancel))
             }
         }, confirmButton = {
             Button(
                 onClick = onRemove,
-                shape = RoundedCornerShape(ThemeDimensions.buttonCorner),
+                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
                 colors = ButtonDefaults.buttonColors(containerColor = ThemeColors.material.error)
             ) {
                 Text(stringResource(id = R.string.remove))
