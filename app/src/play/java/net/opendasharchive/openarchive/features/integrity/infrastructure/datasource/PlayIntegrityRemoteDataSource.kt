@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.core.infrastructure.datasource
+package net.opendasharchive.openarchive.features.integrity.infrastructure.datasource
 
 import android.util.Base64
 import com.google.android.play.core.integrity.StandardIntegrityManager
@@ -31,12 +31,16 @@ class PlayIntegrityRemoteDataSource(
             return currentTokenProvider!!.requestToken(input)
         }
 
-        return provider().fold(onSuccess = { provider ->
-            currentTokenProvider = provider
-            provider.requestToken(input)
-        }, onFailure = {
-            Result.failure(it)
-        })
+        return try {
+            provider().fold(onSuccess = { provider ->
+                currentTokenProvider = provider
+                provider.requestToken(input)
+            }, onFailure = {
+                Result.failure(it)
+            })
+        } catch (err: Throwable) {
+            Result.failure(err)
+        }
     }
 
     private suspend fun StandardIntegrityTokenProvider.requestToken(input: String): Result<StandardIntegrityToken> =

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Process
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
@@ -24,13 +23,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import net.opendasharchive.openarchive.BuildConfig
 import net.opendasharchive.openarchive.FolderAdapter
 import net.opendasharchive.openarchive.FolderAdapterListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
-import net.opendasharchive.openarchive.core.domain.usecase.CheckDeviceIntegrityUseCase
+import net.opendasharchive.openarchive.core.infrastructure.repository.FeatureRepository
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
@@ -77,7 +75,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private var mLastItem: Int = 0
     private var mLastMediaItem: Int = 0
 
-    private val checkDeviceIntegrity: CheckDeviceIntegrityUseCase by inject()
+    private val featureRepository: FeatureRepository by inject()
 
     private var mCurrentItem
         get() = mBinding.pager.currentItem
@@ -96,18 +94,16 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            checkDeviceIntegrity(BuildConfig.themisIntegrityToken).onSuccess { action ->
-                    if (action.stopApp) {
-                        // TODO: killswitch use case
-                        Process.killProcess(Process.myPid())
-                    } else {
-                        // show standard dialogs
-                        action.showDialog?.invoke(this@MainActivity)
-                    }
+        if (savedInstanceState == null) {
+            lifecycleScope.launch {
+                featureRepository.load { feature ->
+                    feature.onLoad(this@MainActivity)
+                }.onSuccess {
+                    Timber.d("Loaded ${it.size} features")
                 }.onFailure {
-                    Timber.d("could not check integrity")
+                    Timber.e("unable to load features", it)
                 }
+            }
         }
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -225,6 +221,19 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
                 this
             ) { _, _ ->
                 addClicked(typeFiles = true)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleScope.launch {
+            featureRepository.unload { feature ->
+                feature.onUnload(this@MainActivity)
+            }.onSuccess {
+                Timber.d("unloaded ${it.size} features")
+            }.onFailure {err ->
+                Timber.e(err, "unable to unload features")
             }
         }
     }

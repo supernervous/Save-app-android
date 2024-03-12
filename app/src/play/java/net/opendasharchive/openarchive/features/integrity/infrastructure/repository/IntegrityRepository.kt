@@ -1,7 +1,7 @@
-package net.opendasharchive.openarchive.core.infrastructure.repository
+package net.opendasharchive.openarchive.features.integrity.infrastructure.repository
 
-import net.opendasharchive.openarchive.core.infrastructure.datasource.PlayIntegrityRemoteDataSource
-import net.opendasharchive.openarchive.core.infrastructure.datasource.ThemisRemoteDataSource
+import net.opendasharchive.openarchive.features.integrity.infrastructure.datasource.PlayIntegrityRemoteDataSource
+import net.opendasharchive.openarchive.features.integrity.infrastructure.datasource.ThemisRemoteDataSource
 
 class IntegrityRepository(
     private val integritySource: PlayIntegrityRemoteDataSource,

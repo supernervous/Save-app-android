@@ -1,10 +1,10 @@
-package net.opendasharchive.openarchive.core.infrastructure.datasource
+package net.opendasharchive.openarchive.features.integrity.infrastructure.datasource
 
 import android.content.Context
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.BuildConfig
-import net.opendasharchive.openarchive.core.infrastructure.model.VerifyDeviceIntegrityRequest
-import net.opendasharchive.openarchive.core.infrastructure.model.VerifyDeviceIntegrityResponse
+import net.opendasharchive.openarchive.features.integrity.infrastructure.model.VerifyDeviceIntegrityRequest
+import net.opendasharchive.openarchive.features.integrity.infrastructure.model.VerifyDeviceIntegrityResponse
 import net.opendasharchive.openarchive.services.SaveClient
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
@@ -25,7 +25,8 @@ class ThemisRemoteDataSource(
 
         val payload = parser.toJson(input).toRequestBody(mediaType)
 
-        val domain = if (BuildConfig.DEBUG) BuildConfig.themisDomain else "production.${BuildConfig.themisDomain}"
+        val domain =
+            if (BuildConfig.DEBUG) BuildConfig.themisDomain else "production.${BuildConfig.themisDomain}"
 
         val request = Request.Builder()
             .url("https://${domain}/v1/verify/device")
@@ -41,7 +42,8 @@ class ThemisRemoteDataSource(
             return Result.failure(RuntimeException(response.message))
         }
 
-        val output = parser.fromJson(response.body?.string(), VerifyDeviceIntegrityResponse::class.java)
+        val output =
+            parser.fromJson(response.body?.string(), VerifyDeviceIntegrityResponse::class.java)
 
         return Result.success(output)
     }

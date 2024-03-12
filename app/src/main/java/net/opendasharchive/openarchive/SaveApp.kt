@@ -9,11 +9,11 @@ import info.guardianproject.netcipher.proxy.OrbotHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import net.opendasharchive.openarchive.core.di.coreModule
-import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.core.module.coreModules
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
@@ -28,7 +28,8 @@ class SaveApp : SugarApp() {
 
         startKoin {
             androidContext(this@SaveApp)
-            modules(coreModule, featuresModule)
+            androidLogger()
+            coreModules()
         }
 
         Theme.set(Prefs.theme)

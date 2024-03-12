@@ -47,7 +47,8 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
+            applicationIdSuffix ".release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "dropbox_key", getDropboxKey()
             resValue 'string', "dropbox_key", getDropboxKey()
@@ -64,9 +65,12 @@ android {
         }
     }
     productFlavors {
-        releaseflavor {
-            dimension "free"
-            applicationId 'net.opendasharchive.openarchive.release'
+        fdroid {
+            dimension = "free"
+        }
+        play {
+            dimension = "free"
+            isDefault = true
         }
     }
 
