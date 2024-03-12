@@ -1,10 +1,8 @@
 package net.opendasharchive.openarchive.core.presentation.theme
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -36,31 +34,6 @@ data class ColorTheme(
 
     val disabledContainer: Color = c23_teal_20,
     val onDisabledContainer: Color = c23_light_grey,
-
-    val colorBottomNavbar: Color = material.primary,
-
-    val colorOnBottomNavbar: Color = material.onBackground,
-
-    val colorAddButton: Color = material.background,
-    val colorOnAddButton: Color = material.onBackground,
-    val colorNavigationDrawerBackground: Color = material.background,
-    val colorOnboarding23GetStarted: Color = material.onBackground,
-    val colorSpaceSetupProgressOn: Color = Color.Black,
-    val colorSpaceSetupProgressOff: Color = c23_grey,
-    val colorBackgroundSpaceIcon: Color = c23_light_grey,
-
-
-    val colorPill: Color = Color(0xFFE3E3E4),
-    val colorMediaOverlayIcon: Color = Color.White,
-    val colorDanger: Color = material.error,
-    val colorDivider: Color = Color.LightGray,
-    val colorImageBackground: Color = Color.Black,
-    val colorFloatIconBackground: Color = Color.Transparent,
-    val colorSectionHeaderText: Color = Color.Gray,
-    val colorMediaTitleText: Color = Color.LightGray,
-    val colorWaveformIndicator: Color = Color(0xffaa0000),
-    val colorWaveform: Color = Color(0xFF999999)
-
 )
 
 private val LightColorScheme = ColorTheme(
@@ -86,19 +59,24 @@ private val LightColorScheme = ColorTheme(
         errorContainer = Color.Red,
         onErrorContainer = Color.Black,
 
-        background = Color.Black,
-        onBackground = Color.White,
+        background = Color.White,
+        onBackground = Color.Black,
 
         surface = c23_light_grey,
         onSurface = Color.Black,
         surfaceVariant = c23_grey,
-        onSurfaceVariant = Color.Black,
+        onSurfaceVariant = c23_darker_grey,
 
         outline = Color.Black,
         inverseOnSurface = Color.White,
         inverseSurface = c23_dark_grey,
         inversePrimary = Color.Black,
-        surfaceTint = c23_teal
+        surfaceTint = c23_teal,
+        outlineVariant = c23_darker_grey,
+        scrim = c23_light_grey,
+        surfaceBright = c23_light_grey,
+        surfaceContainer = Color.White,
+        surfaceDim = c23_light_grey
     ),
 )
 
@@ -107,12 +85,12 @@ private val DarkColorScheme = ColorTheme(
         primary = c23_teal,
         onPrimary = Color.Black,
         primaryContainer = c23_teal,
-        onPrimaryContainer = Color.Black,
+        onPrimaryContainer = Color.White,
 
         secondary = c23_teal,
         onSecondary = Color.Black,
         secondaryContainer = c23_teal_20,
-        onSecondaryContainer = Color.Black,
+        onSecondaryContainer = Color.White,
 
         tertiary = c23_powder_blue,
         onTertiary = Color.Black,
@@ -130,13 +108,18 @@ private val DarkColorScheme = ColorTheme(
         surface = c23_darker_grey,
         onSurface = Color.White,
         surfaceVariant = c23_dark_grey,
-        onSurfaceVariant = Color.White,
+        onSurfaceVariant = c23_light_grey,
 
         outline = Color.White,
         inverseSurface = c23_light_grey,
         inverseOnSurface = Color.Black,
         inversePrimary = Color.White,
-        surfaceTint = c23_teal
+        surfaceTint = c23_teal,
+        outlineVariant = c23_light_grey,
+        scrim = c23_light_grey,
+        surfaceBright = c23_grey,
+        surfaceContainer = c23_medium_grey,
+        surfaceDim = c23_dark_grey
     ),
 )
 
@@ -144,17 +127,3 @@ fun getThemeColors(isDarkTheme: Boolean) = if (isDarkTheme) DarkColorScheme else
 
 val LocalColors = staticCompositionLocalOf { LightColorScheme }
 
-@Composable
-fun textFieldColors() = TextFieldDefaults.colors(
-    focusedIndicatorColor = ThemeColors.material.primary,
-    focusedLabelColor = ThemeColors.material.primary,
-    focusedContainerColor = ThemeColors.material.surface,
-    focusedTextColor = ThemeColors.material.onSurface,
-    unfocusedIndicatorColor = ThemeColors.material.onSurfaceVariant,
-    unfocusedContainerColor = ThemeColors.material.surfaceVariant,
-    unfocusedTextColor = ThemeColors.material.onSurfaceVariant,
-    unfocusedLabelColor = ThemeColors.material.primary,
-    cursorColor = ThemeColors.material.primary,
-    disabledContainerColor = ThemeColors.disabledContainer,
-    disabledTextColor = ThemeColors.onDisabledContainer
-)

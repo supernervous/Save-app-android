@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,15 +29,24 @@ import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 
 @Composable
 fun InternetArchiveHeader(modifier: Modifier = Modifier, titleSize: TextUnit = 18.sp) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-        Box(modifier = Modifier
-            .size(ThemeDimensions.touchable)
-            .background(
-                color = ThemeColors.material.surface,
-                shape = CircleShape
-            ).clip(CircleShape)) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(ThemeDimensions.touchable)
+                .background(
+                    color = ThemeColors.material.surface,
+                    shape = CircleShape
+                )
+                .clip(CircleShape)
+        ) {
             Image(
-                modifier = Modifier.matchParentSize().padding(ThemeDimensions.spacing.small),
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(11.dp),
                 painter = painterResource(id = R.drawable.ic_internet_archive),
                 contentDescription = stringResource(
                     id = R.string.internet_archive
@@ -46,7 +54,7 @@ fun InternetArchiveHeader(modifier: Modifier = Modifier, titleSize: TextUnit = 1
                 colorFilter = tint(colorResource(id = R.color.colorPrimary))
             )
         }
-        Column(modifier = Modifier.padding(start = ThemeDimensions.spacing.small)) {
+        Column(modifier = Modifier.padding(start = ThemeDimensions.spacing.medium)) {
             Text(
                 text = stringResource(id = R.string.internet_archive),
                 fontSize = titleSize,

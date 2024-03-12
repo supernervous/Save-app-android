@@ -298,5 +298,6 @@
     <string name="label_login">Login</string>
     <string name="label_create_login">Create Login</string>
     <string name="prompt_no_account">No account?</string>
+    <string name="action_continue">Continue</string>
 
 </resources>

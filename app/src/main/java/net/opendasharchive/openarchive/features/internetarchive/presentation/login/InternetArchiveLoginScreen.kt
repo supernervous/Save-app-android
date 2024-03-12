@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.login
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,11 +14,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -31,8 +30,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -41,7 +40,6 @@ import kotlinx.coroutines.delay
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
-import net.opendasharchive.openarchive.core.presentation.theme.textFieldColors
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
@@ -110,23 +108,15 @@ private fun InternetArchiveLoginContent(
             modifier = Modifier.padding(bottom = ThemeDimensions.spacing.large)
         )
 
-        val colors = textFieldColors()
-
         OutlinedTextField(
             value = state.username,
             enabled = !state.isBusy,
             onValueChange = { dispatch(UpdateUsername(it)) },
             label = {
-                Text(
-                    text = stringResource(id = R.string.label_username),
-                    color = ThemeColors.material.onBackground
-                )
+                Text(stringResource(R.string.label_username))
             },
             placeholder = {
-                Text(
-                    text = stringResource(id = R.string.placeholder_email_or_username),
-                    color = ThemeColors.material.onSurfaceVariant
-                )
+                Text(stringResource(R.string.placeholder_email_or_username))
             },
             singleLine = true,
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
@@ -136,7 +126,6 @@ private fun InternetArchiveLoginContent(
                 keyboardType = KeyboardType.Email
             ),
             isError = state.isUsernameError,
-            colors = colors
         )
 
         Spacer(Modifier.height(ThemeDimensions.spacing.large))
@@ -146,19 +135,13 @@ private fun InternetArchiveLoginContent(
             enabled = !state.isBusy,
             onValueChange = { dispatch(UpdatePassword(it)) },
             label = {
-                Text(
-                    stringResource(id = R.string.label_password),
-                    color = ThemeColors.material.onBackground
-                )
+                Text(stringResource(R.string.label_password))
             },
             placeholder = {
-                Text(
-                    stringResource(id = R.string.placeholder_password),
-                    color = ThemeColors.material.onSurfaceVariant
-                )
-
+                Text(stringResource(R.string.placeholder_password))
             },
             singleLine = true,
+            shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -166,7 +149,6 @@ private fun InternetArchiveLoginContent(
                 imeAction = ImeAction.Go
             ),
             isError = state.isPasswordError,
-            colors = colors,
         )
 
         AnimatedVisibility(
@@ -175,27 +157,26 @@ private fun InternetArchiveLoginContent(
             exit = fadeOut()
         ) {
             Text(
-                text = stringResource(id = R.string.error_incorrect_username_or_password),
+                text = stringResource(R.string.error_incorrect_username_or_password),
                 color = MaterialTheme.colorScheme.error
             )
         }
         Row(
             modifier = Modifier
-                .padding(top = ThemeDimensions.spacing.medium)
+                .padding(top = ThemeDimensions.spacing.small)
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = R.string.prompt_no_account),
-                color = ThemeColors.material.onSurface
+                text = stringResource(R.string.prompt_no_account),
+                color = ThemeColors.material.onBackground
             )
             TextButton(
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = colorResource(id = R.color.colorPrimary)
-                ),
+                modifier = Modifier.heightIn(ThemeDimensions.touchable),
                 onClick = { dispatch(CreateLogin) }) {
                 Text(
-                    text = stringResource(id = R.string.label_create_login),
+                    text = stringResource(R.string.label_create_login),
+                    fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -211,37 +192,24 @@ private fun InternetArchiveLoginContent(
             TextButton(
                 modifier = Modifier
                     .weight(1f)
+                    .heightIn(ThemeDimensions.touchable)
                     .padding(ThemeDimensions.spacing.small),
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
                 shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
                 onClick = { dispatch(Action.Cancel) }) {
-                Text(
-                    text = stringResource(id = R.string.action_cancel)
-                )
+                Text(stringResource(R.string.action_cancel))
             }
             Button(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(ThemeDimensions.spacing.small),
+                    .heightIn(ThemeDimensions.touchable)
+                    .weight(1f),
                 enabled = !state.isBusy && state.isValid,
                 shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
                 onClick = { dispatch(Login) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ThemeColors.material.primaryContainer,
-                    contentColor = ThemeColors.material.onPrimaryContainer,
-                    disabledContainerColor = ThemeColors.disabledContainer,
-                    disabledContentColor = ThemeColors.onDisabledContainer
-                )
             ) {
                 if (state.isBusy) {
-                    CircularProgressIndicator(color = colorResource(id = R.color.colorPrimary))
+                    CircularProgressIndicator(color = ThemeColors.material.primary)
                 } else {
-                    Text(
-                        text = stringResource(id = R.string.label_login),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+                    Text(stringResource(R.string.label_login))
                 }
             }
         }
@@ -249,7 +217,7 @@ private fun InternetArchiveLoginContent(
 }
 
 @Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true)
 private fun InternetArchiveLoginPreview() {
     InternetArchiveLoginContent(
         state = InternetArchiveLoginState(

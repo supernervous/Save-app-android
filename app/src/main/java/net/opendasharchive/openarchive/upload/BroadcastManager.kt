@@ -30,7 +30,7 @@ object BroadcastManager {
     }
 
     fun getAction(intent: Intent): Action? {
-        val action = Action.values().firstOrNull { it.id == intent.action }
+        val action = Action.entries.firstOrNull { it.id == intent.action }
         action?.mediaId = intent.getLongExtra(MEDIA_ID, -1)
 
         return action

@@ -297,15 +297,17 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private fun refreshSpace() {
         val currentSpace = Space.current
 
-        if (currentSpace != null) {
-            mBinding.space.setDrawable(
-                currentSpace.getAvatar(this)
-                    ?.scaled(32, this), Position.Start, tint = false
-            )
-            mBinding.space.text = currentSpace.friendlyName
-        } else {
-            mBinding.space.setDrawable(R.drawable.avatar_default, Position.Start, tint = false)
-            mBinding.space.text = getString(R.string.app_name)
+        MainScope().launch {
+            if (currentSpace != null) {
+                mBinding.space.setDrawable(
+                    currentSpace.getAvatar(this@MainActivity)
+                        ?.scaled(32, this@MainActivity), Position.Start, tint = false
+                )
+                mBinding.space.text = currentSpace.friendlyName
+            } else {
+                mBinding.space.setDrawable(R.drawable.avatar_default, Position.Start, tint = false)
+                mBinding.space.text = getString(R.string.app_name)
+            }
         }
 
         mSpaceAdapter.update(Space.getAll().asSequence().toList())
@@ -332,17 +334,19 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private fun refreshCurrentProject() {
         val project = getSelectedProject()
 
-        if (project != null) {
-            mPagerAdapter.notifyProjectChanged(project)
+        MainScope().launch {
+            if (project != null) {
+                mPagerAdapter.notifyProjectChanged(project)
 
-            project.space?.setAvatar(mBinding.currentFolderIcon)
-            mBinding.currentFolderIcon.show()
+                project.space?.setAvatar(mBinding.currentFolderIcon)
+                mBinding.currentFolderIcon.show()
 
-            mBinding.currentFolderName.text = project.description
-            mBinding.currentFolderName.show()
-        } else {
-            mBinding.currentFolderIcon.cloak()
-            mBinding.currentFolderName.cloak()
+                mBinding.currentFolderName.text = project.description
+                mBinding.currentFolderName.show()
+            } else {
+                mBinding.currentFolderIcon.cloak()
+                mBinding.currentFolderName.cloak()
+            }
         }
 
         refreshCurrentFolderCount()
@@ -351,16 +355,18 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private fun refreshCurrentFolderCount() {
         val project = getSelectedProject()
 
-        if (project != null) {
-            mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
-                project.collections.map { it.size }
-                    .reduceOrNull { acc, count -> acc + count } ?: 0)
-            mBinding.currentFolderCount.show()
+        MainScope().launch {
+            if (project != null) {
+                mBinding.currentFolderCount.text = NumberFormat.getInstance().format(
+                    project.collections.map { it.size }
+                        .reduceOrNull { acc, count -> acc + count } ?: 0)
+                mBinding.currentFolderCount.show()
 
-            mBinding.uploadEditButton.toggle(project.isUploading)
-        } else {
-            mBinding.currentFolderCount.cloak()
-            mBinding.uploadEditButton.hide()
+                mBinding.uploadEditButton.toggle(project.isUploading)
+            } else {
+                mBinding.currentFolderCount.cloak()
+                mBinding.uploadEditButton.hide()
+            }
         }
     }
 

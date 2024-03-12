@@ -71,13 +71,13 @@ class MainMediaFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         BroadcastManager.register(requireContext(), mMessageReceiver)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         BroadcastManager.unregister(requireContext(), mMessageReceiver)
     }
 

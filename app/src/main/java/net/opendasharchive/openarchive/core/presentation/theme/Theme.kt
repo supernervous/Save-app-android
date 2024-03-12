@@ -4,10 +4,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 
 @Composable
-fun Theme(content: @Composable () -> Unit) {
-    val isDarkTheme = isSystemInDarkTheme()
+fun Theme(
+    content: @Composable () -> Unit
+) {
+    val isDarkTheme by rememberUpdatedState(newValue = isSystemInDarkTheme())
 
     val colors = getThemeColors(isDarkTheme)
 
