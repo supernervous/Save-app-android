@@ -9,7 +9,6 @@ import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.services.SaveClient
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okio.BufferedSink
 import java.io.File
 import java.io.IOException
 
@@ -68,15 +67,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
 
     @Throws(IOException::class)
     private suspend fun uploadMetaData(content: String, basePath: String, fileName: String) {
-        val requestBody = object : RequestBody() {
-            override fun contentType(): MediaType? {
-                return "texts".toMediaTypeOrNull()
-            }
-
-            override fun writeTo(sink: BufferedSink) {
-                sink.writeString(content, Charsets.UTF_8)
-            }
-        }
+        val requestBody = RequestBodyUtil.create(content)
 
         put(
             "$ARCHIVE_API_ENDPOINT/$basePath/$fileName.meta.json",
@@ -91,7 +82,6 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         val requestBody = getRequestBodyMetaData(
             uploadFile,
             Uri.fromFile(uploadFile).toString(),
-            "texts".toMediaTypeOrNull()
         )
 
         put("$ARCHIVE_API_ENDPOINT/$basePath/${uploadFile.name}",
@@ -127,7 +117,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     /// request body for meta data
-    private fun getRequestBodyMetaData(media: File, mediaUri: String, mediaType: MediaType?): RequestBody {
+    private fun getRequestBodyMetaData(media: File, mediaUri: String, mediaType: MediaType? = "texts".toMediaTypeOrNull()): RequestBody {
         return RequestBodyUtil.create(
             mContext.contentResolver,
             Uri.parse(mediaUri),

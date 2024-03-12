@@ -25,10 +25,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="6dp"
+            android:paddingHorizontal="12dp"
             android:gravity="center_horizontal"
             android:text="@string/in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers"
             android:textSize="14sp" />

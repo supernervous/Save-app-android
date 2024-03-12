@@ -1,14 +1,14 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
-import okio.source
-import okhttp3.internal.closeQuietly
-import okhttp3.RequestBody
-import kotlin.Throws
-import okio.BufferedSink
 import android.content.ContentResolver
 import android.net.Uri
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.internal.closeQuietly
+import okio.BufferedSink
 import okio.Source
+import okio.source
 import timber.log.Timber
 import java.io.*
 
@@ -142,6 +142,22 @@ object RequestBodyUtil {
                         source.closeQuietly()
                     }
                 }
+            }
+        }
+    }
+
+    fun create(content: String, mediaType: MediaType? = "texts".toMediaTypeOrNull()): RequestBody {
+        return object : RequestBody() {
+            override fun contentType(): MediaType? {
+                return mediaType
+            }
+
+            override fun contentLength(): Long {
+                return content.length.toLong()
+            }
+
+            override fun writeTo(sink: BufferedSink) {
+                sink.writeString(content, Charsets.UTF_8)
             }
         }
     }

@@ -43,9 +43,10 @@
             android:id="@+id/get_started"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingBottom="10dp">
@@ -61,9 +62,9 @@
             <ImageView
                 android:id="@+id/arrow"
                 android:layout_width="24dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:paddingStart="8dp"
+                android:paddingTop="8dp"
                 android:src="@drawable/onboarding23_arrow_right"
                 app:tint="@color/colorOnboarding23GetStarted" />
 
