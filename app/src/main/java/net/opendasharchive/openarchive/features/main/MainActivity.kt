@@ -30,8 +30,7 @@ import net.opendasharchive.openarchive.FolderAdapterListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SpaceAdapter
 import net.opendasharchive.openarchive.SpaceAdapterListener
-import net.opendasharchive.openarchive.core.domain.usecase.CheckDeviceIntegrity
-import net.opendasharchive.openarchive.core.domain.usecase.createIntegrityRepository
+import net.opendasharchive.openarchive.core.domain.usecase.CheckDeviceIntegrityUseCase
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.db.Space
@@ -58,6 +57,7 @@ import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.setDrawable
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.NumberFormat
 
@@ -77,6 +77,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private var mLastItem: Int = 0
     private var mLastMediaItem: Int = 0
 
+    private val checkDeviceIntegrity: CheckDeviceIntegrityUseCase by inject()
+
     private var mCurrentItem
         get() = mBinding.pager.currentItem
         set(value) {
@@ -95,8 +97,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            CheckDeviceIntegrity(createIntegrityRepository(applicationContext))
-                .invoke(BuildConfig.themisIntegrityToken).onSuccess { action ->
+            checkDeviceIntegrity(BuildConfig.themisIntegrityToken).onSuccess { action ->
                     if (action.stopApp) {
                         // TODO: killswitch use case
                         Process.killProcess(Process.myPid())

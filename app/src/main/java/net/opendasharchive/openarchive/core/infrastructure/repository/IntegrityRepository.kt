@@ -1,10 +1,10 @@
 package net.opendasharchive.openarchive.core.infrastructure.repository
 
-import net.opendasharchive.openarchive.core.infrastructure.datasource.GoogleRemoteDataSource
+import net.opendasharchive.openarchive.core.infrastructure.datasource.PlayIntegrityRemoteDataSource
 import net.opendasharchive.openarchive.core.infrastructure.datasource.ThemisRemoteDataSource
 
 class IntegrityRepository(
-    private val integritySource: GoogleRemoteDataSource,
+    private val integritySource: PlayIntegrityRemoteDataSource,
     private val verifySource: ThemisRemoteDataSource
 ) {
 

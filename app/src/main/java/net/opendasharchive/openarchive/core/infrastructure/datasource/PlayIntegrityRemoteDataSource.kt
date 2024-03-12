@@ -10,7 +10,7 @@ import kotlinx.coroutines.tasks.await
 import net.opendasharchive.openarchive.BuildConfig
 import java.security.MessageDigest
 
-class GoogleRemoteDataSource(
+class PlayIntegrityRemoteDataSource(
     private val integrityManager: StandardIntegrityManager,
 ) {
     private var currentTokenProvider: StandardIntegrityTokenProvider? = null

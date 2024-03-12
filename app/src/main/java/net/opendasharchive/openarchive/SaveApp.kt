@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive
 
 import android.content.Context
-import android.os.Process
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
@@ -39,7 +38,7 @@ class SaveApp : SugarApp() {
         }
 
         // enable timber logging library for debug builds
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
     }

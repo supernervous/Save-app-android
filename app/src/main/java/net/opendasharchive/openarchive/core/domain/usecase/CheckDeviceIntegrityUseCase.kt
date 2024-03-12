@@ -1,26 +1,10 @@
 package net.opendasharchive.openarchive.core.domain.usecase
 
 import android.app.Activity
-import android.content.Context
-import com.google.android.play.core.integrity.IntegrityManagerFactory
-import net.opendasharchive.openarchive.core.infrastructure.datasource.GoogleRemoteDataSource
-import net.opendasharchive.openarchive.core.infrastructure.datasource.ThemisRemoteDataSource
 import net.opendasharchive.openarchive.core.infrastructure.repository.IntegrityRepository
 import timber.log.Timber
 
-
-// TODO: move to dependency injection
-internal fun createIntegrityRepository(context: Context) = IntegrityRepository(
-    integritySource = GoogleRemoteDataSource(
-        integrityManager = IntegrityManagerFactory.createStandard(context),
-    ), verifySource = ThemisRemoteDataSource(context)
-)
-
-data class CheckDeviceIntegrityAction(
-    val showDialog: ((Activity) -> Unit)? = null, val stopApp: Boolean
-)
-
-class CheckDeviceIntegrity(
+class CheckDeviceIntegrityUseCase(
     private val integrityRepository: IntegrityRepository
 ) {
     private val logger by lazy {
@@ -35,7 +19,11 @@ class CheckDeviceIntegrity(
             }.onFailure { logger.d(it) }
 
 
-    private suspend fun verify(deviceId: String): Result<CheckDeviceIntegrityAction> {
+    data class Response(
+        val showDialog: ((Activity) -> Unit)? = null, val stopApp: Boolean
+    )
+
+    private suspend fun verify(deviceId: String): Result<Response> {
         return integrityRepository.verifyDeviceIntegrity(deviceId).onFailure { err ->
             logger.e(err)
         }.mapCatching { token ->
@@ -43,7 +31,7 @@ class CheckDeviceIntegrity(
                 logger.e(err)
             }.map { response ->
                 response.actions.let { actions ->
-                    CheckDeviceIntegrityAction(
+                    Response(
                         showDialog = actions.showDialog?.let { dialog ->
                             { activity -> token.showDialog(activity, dialog) }
                         }, stopApp = actions.stopApp
