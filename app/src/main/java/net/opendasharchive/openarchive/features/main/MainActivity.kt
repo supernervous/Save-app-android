@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -210,9 +211,11 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     override fun onStart() {
         super.onStart()
 
-        ProofModeHelper.init(this) {
-            // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
-            UploadService.startUploadService(this)
+        lifecycleScope.launch {
+            ProofModeHelper.init(this@MainActivity) {
+                // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
+                UploadService.startUploadService(this@MainActivity)
+            }
         }
 
         requestNotificationPermission()

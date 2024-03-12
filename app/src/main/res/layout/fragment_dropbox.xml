@@ -94,6 +94,7 @@
                 android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
                 android:layout_weight="1"
                 android:text="@string/authenticate"
+                style="@style/OAButtonStyle"
                 tools:ignore="ButtonStyle" />
 
         </LinearLayout>
