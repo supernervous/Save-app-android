@@ -91,7 +91,7 @@
     <string name="prompt_password">Password</string>
 
     <string name="label_username">@string/prompt_email</string>
-    <string name="placeholder_email_or_username">Enter a email or username</string>
+    <string name="placeholder_email_or_username">Enter an email or username</string>
     <string name="label_password">@string/prompt_password</string>
     <string name="placeholder_password">Enter a password</string>
 
