@@ -16,10 +16,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,6 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
 import net.opendasharchive.openarchive.R
@@ -44,13 +54,13 @@ import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.CreateLogin
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.Login
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdatePassword
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdateUsername
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Login
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdatePassword
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdateUsername
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction as Action
 
 @Composable
 fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
@@ -65,7 +75,7 @@ fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
             onResult = {})
 
     LaunchedEffect(Unit) {
-        viewModel.effects.collect { action ->
+        viewModel.actions.collect { action ->
             when (action) {
                 is CreateLogin -> launcher.launch(
                     Intent(
@@ -89,6 +99,10 @@ fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
 private fun InternetArchiveLoginContent(
     state: InternetArchiveLoginState, dispatch: Dispatch<Action>
 ) {
+
+    var showPassword by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(state.isLoginError) {
         while (state.isLoginError) {
@@ -141,8 +155,16 @@ private fun InternetArchiveLoginContent(
                 Text(stringResource(R.string.placeholder_password))
             },
             singleLine = true,
+            trailingIcon = {
+                IconButton(modifier = Modifier.sizeIn(ThemeDimensions.touchable), onClick = { showPassword = !showPassword }) {
+                    Icon(
+                        imageVector = if (showPassword) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        contentDescription = "show password"
+                    )
+                }
+            },
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 autoCorrect = false,

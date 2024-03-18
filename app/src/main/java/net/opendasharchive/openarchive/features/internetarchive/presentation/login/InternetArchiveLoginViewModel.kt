@@ -2,36 +2,35 @@ package net.opendasharchive.openarchive.features.internetarchive.presentation.lo
 
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
 import net.opendasharchive.openarchive.db.Space
-import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.InternetArchiveLoginUseCase
 import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.ValidateLoginCredentialsUseCase
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.Cancel
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.CreateLogin
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.ErrorClear
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.Login
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.LoginError
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.LoginSuccess
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdatePassword
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginViewModel.Action.UpdateUsername
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Cancel
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.ErrorClear
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Login
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.LoginError
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.LoginSuccess
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdatePassword
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdateUsername
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction as Action
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginState as State
 
 class InternetArchiveLoginViewModel(
     private val validateLoginCredentials: ValidateLoginCredentialsUseCase,
     private val space: Space,
-) : StatefulViewModel<InternetArchiveLoginState, Action>(InternetArchiveLoginState()),
-    KoinComponent {
+) : StatefulViewModel<State, Action>(State()), KoinComponent {
 
     private val loginUseCase: InternetArchiveLoginUseCase by inject {
         parametersOf(space)
     }
 
     override fun reduce(
-        state: InternetArchiveLoginState,
+        state: State,
         action: Action
-    ): InternetArchiveLoginState = when (action) {
+    ): State = when (action) {
         is UpdateUsername -> state.copy(
             username = action.value,
             isValid = validateLoginCredentials(action.value, state.password)
@@ -49,37 +48,18 @@ class InternetArchiveLoginViewModel(
         else -> state
     }
 
-    override suspend fun effects(state: InternetArchiveLoginState, action: Action) {
+    override suspend fun effects(state: State, action: Action) {
         when (action) {
             is Login ->
                 loginUseCase(state.username, state.password)
                     .onSuccess { ia ->
-                        send(LoginSuccess(ia))
+                        notify(LoginSuccess(ia))
                     }
                     .onFailure { dispatch(LoginError(it)) }
 
-            is CreateLogin, is Cancel -> send(action)
+            is CreateLogin, is Cancel -> notify(action)
             else -> Unit
         }
-    }
-
-    sealed interface Action {
-        data object Login : Action
-
-        data object Cancel : Action
-
-        data class LoginSuccess(val value: InternetArchive) : Action
-
-        data class LoginError(val value: Throwable) : Action
-
-        data object ErrorClear : Action
-
-        data object CreateLogin : Action {
-            const val URI = "https://archive.org/account/signup"
-        }
-
-        data class UpdateUsername(val value: String) : Action
-        data class UpdatePassword(val value: String) : Action
     }
 
 }

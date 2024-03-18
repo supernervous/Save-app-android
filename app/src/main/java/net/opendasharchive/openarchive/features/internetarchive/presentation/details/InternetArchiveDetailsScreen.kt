@@ -45,7 +45,7 @@ fun InternetArchiveDetailsScreen(space: Space, onResult: (IAResult) -> Unit) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.effects.collect { action ->
+        viewModel.actions.collect { action ->
             when (action) {
                 is Action.Remove -> onResult(IAResult.Deleted)
                 is Action.Cancel -> onResult(IAResult.Cancelled)

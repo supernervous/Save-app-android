@@ -12,7 +12,6 @@ private const val ARG_SPACE = "space"
 
 @Deprecated("only for use with fragments and activities")
 enum class IAResult(
-    @Deprecated("only for use with fragments and activities")
     val value: String
 ) {
     Saved("ia_fragment_resp_saved"), Deleted("ia_fragment_resp_deleted"), Cancelled("ia_fragment_resp_cancel"),

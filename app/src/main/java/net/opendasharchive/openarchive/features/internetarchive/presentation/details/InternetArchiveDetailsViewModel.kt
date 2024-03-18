@@ -1,12 +1,9 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.details
 
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
-import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
 import net.opendasharchive.openarchive.features.internetarchive.presentation.details.InternetArchiveDetailsViewModel.Action
 
 class InternetArchiveDetailsViewModel(
@@ -31,7 +28,7 @@ class InternetArchiveDetailsViewModel(
         when (action) {
             is Action.Remove -> {
                 space.delete()
-                send(action)
+                notify(action)
             }
 
             is Action.Load -> {
@@ -39,7 +36,7 @@ class InternetArchiveDetailsViewModel(
                 dispatch(Action.Loaded(metaData))
             }
 
-            is Action.Cancel -> send(action)
+            is Action.Cancel -> notify(action)
             else -> Unit
         }
     }
