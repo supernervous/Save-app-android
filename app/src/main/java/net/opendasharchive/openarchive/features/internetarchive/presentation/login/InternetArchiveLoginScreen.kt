@@ -100,6 +100,8 @@ private fun InternetArchiveLoginContent(
     state: InternetArchiveLoginState, dispatch: Dispatch<Action>
 ) {
 
+    // If extra paranoid could pre-hash password in memory
+    // and use the store/dispatcher
     var showPassword by rememberSaveable {
         mutableStateOf(false)
     }
