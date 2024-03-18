@@ -3,11 +3,11 @@ package net.opendasharchive.openarchive.core.state
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
-class StateListener<T> {
+class StoreObserver<T> : Notifier<T>, Listener<T> {
     private val _actions = Channel<T>()
-    val actions = _actions.receiveAsFlow()
+    override val actions = _actions.receiveAsFlow()
 
-    suspend fun send(action: T) {
+    override suspend fun notify(action: T) {
         _actions.send(action)
     }
 }
