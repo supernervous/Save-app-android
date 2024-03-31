@@ -9,10 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:filterTouchesWhenObscured="true"
         android:gravity="top"
         android:orientation="vertical"
-        android:padding="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
@@ -25,10 +26,13 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="6dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
             android:text="@string/in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers"
             android:textSize="14sp" />
@@ -37,7 +41,6 @@
             android:id="@+id/webdav"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
@@ -96,12 +99,12 @@
                     android:id="@+id/icon_next_webdav"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/onboarding23_arrow_right"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn"
-                    android:importantForAccessibility="no" />
+                    app:tint="@color/colorSpaceSetupProgressOn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -111,7 +114,6 @@
             android:id="@+id/dropbox"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
@@ -170,12 +172,12 @@
                     android:id="@+id/icon_next_dropbox"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/onboarding23_arrow_right"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn"
-                    android:importantForAccessibility="no" />
+                    app:tint="@color/colorSpaceSetupProgressOn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -185,7 +187,6 @@
             android:id="@+id/internet_archive"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
@@ -244,13 +245,13 @@
                     android:id="@+id/icon_next_internet_archive"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/onboarding23_arrow_right"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/internet_archive_texts"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn"
-                    android:importantForAccessibility="no" />
+                    app:tint="@color/colorSpaceSetupProgressOn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -260,7 +261,6 @@
             android:id="@+id/gdrive"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginVertical="@dimen/activity_vertical_margin"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
@@ -319,13 +319,13 @@
                     android:id="@+id/icon_next_gdrive"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/onboarding23_arrow_right"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/gdrive_texts"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/colorSpaceSetupProgressOn"
-                    android:importantForAccessibility="no" />
+                    app:tint="@color/colorSpaceSetupProgressOn" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
